@@ -74,6 +74,3 @@ class TestEarleyParser(unittest.TestCase):
             print(tree.indented_string("    "))
         self.assertEqual(len(result.trees), 4)
     
-
-    if __name__ == '__main__':
-        unittest.main()
