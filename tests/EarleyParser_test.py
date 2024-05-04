@@ -67,9 +67,9 @@ class TestEarleyParser(unittest.TestCase):
                 lambda sem: sem
             ),
         ])
-        log = Log()
-        parser = EarleyParser(grammarRules, log)
-        result = parser.parse(["John", "loves", "Mary"], "s", ["S"])
+        log = Log(False)
+        parser = EarleyParser(log)
+        result = parser.parse(grammarRules, ["John", "loves", "Mary"], "s", ["S"])
         for tree in result.trees:
             print(tree.indented_string("    "))
         self.assertEqual(len(result.trees), 4)

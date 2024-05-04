@@ -5,8 +5,8 @@ from lib.entity.GrammarRule import GrammarRule
 from lib.entity.GrammarRules import GrammarRules
 from lib.entity.Log import Log
 from lib.entity.ParseResult import ParseResult
-from lib.entity.ParseTreeNode import ParseTreeNode
 from lib.entity.RuleConstituent import RuleConstituent
+from lib.interface.Loggable import Loggable
 from lib.parser.entity.Chart import Chart
 from lib.parser.entity.ChartState import ChartState
 from lib.parser.tree_extract import extract_tree_roots, find_unknown_word
@@ -18,21 +18,15 @@ class EarleyParser:
     "Speech and Language Processing" (first edition) - Daniel Jurafsky & James H. Martin (Prentice Hall, 2000)
     """
 
-    grammarRules: GrammarRules
-    log: Log
+    log: Loggable
 
-    def __init__(self, grammarRules: GrammarRules, log: Log):
-        self.grammarRules = grammarRules
+    def __init__(self, log: Loggable = Log(False)):
         self.log = log
 
 
-    def parse(self, words: list[str], rootCategory: str, rootVariables: list[str]) -> ParseResult:
-        """
-        Parses words using EarleyParser.grammar
-        Returns parse tree roots
-        """
+    def parse(self, grammar_rules: GrammarRules, words: list[str], rootCategory: str, rootVariables: list[str]) -> ParseResult:
 
-        chart = self.buildChart(self.grammarRules, words, rootCategory, rootVariables)
+        chart = self.buildChart(grammar_rules, words, rootCategory, rootVariables)
 
         rootNodes = extract_tree_roots(chart)
         error = ""
@@ -52,15 +46,14 @@ class EarleyParser:
                 error = NOT_UNDERSTOOD
                 errorArg = ""
 
-        result = ParseResult(
+        return ParseResult(
             trees=rootNodes,
             error=error,
             error_arg=errorArg,
         )
+    
 
-        return result
-
-    def buildChart(self, grammarRules: GrammarRules, words, rootCategory, rootVariables):
+    def buildChart(self, grammar_rules: GrammarRules, words, rootCategory, rootVariables):
         """
         The body of Earley's algorithm
         """
@@ -83,7 +76,7 @@ class EarleyParser:
                 if not state.is_complete():
 
                     # add all entries that have this abstract consequent as their antecedent
-                    self.predict(grammarRules, chart, state)
+                    self.predict(grammar_rules, chart, state)
 
                     # if the current word in the sentence has this part-of-speech, then
                     # we add a completed entry to the chart (part-of-speech => word)
@@ -97,27 +90,29 @@ class EarleyParser:
                 j += 1
 
         return chart
+    
 
-    def predict(self, grammarRules: GrammarRules, chart: Chart, state: ChartState):
+    def predict(self, grammar_rules: GrammarRules, chart: Chart, state: ChartState):
         """
         Adds all entries to the chart that have the current consequent of $state as their antecedent.
         """
 
         consequentIndex = state.dot_position - 1
         nextConsequent = state.rule.consequents[consequentIndex]
-        nextConsequentVariables = state.rule.consequents[consequentIndex].arguments
+        next_consequent_variables = state.rule.consequents[consequentIndex].arguments
         end_word_index = state.end_word_index
 
         if self.log.is_active():
             self.log.add_debug("predict", state.to_string(chart))
 
-        for rule in grammarRules.find_rules(nextConsequent.predicate, len(nextConsequentVariables)) :
+        for rule in grammar_rules.find_rules(nextConsequent.predicate, len(next_consequent_variables)) :
 
-            predictedState = ChartState(rule, 1, end_word_index, end_word_index)
-            chart.enqueue(predictedState, end_word_index)
+            predicted_state = ChartState(rule, 1, end_word_index, end_word_index)
+            chart.enqueue(predicted_state, end_word_index)
 
             if self.log.is_active():
-                self.log.add_debug("> predicted", predictedState.to_string(chart))
+                self.log.add_debug("> predicted", predicted_state.to_string(chart))
+
 
     def scan(self, chart: Chart, state: ChartState):
         """
@@ -126,80 +121,81 @@ class EarleyParser:
         then a new, completed, entry is added to the chart: (cat => word)
         """
 
-        nextConsequent = state.rule.consequents[state.dot_position - 1]
-        nextPosType = state.rule.consequents[state.dot_position - 1].position_type
-        nextVariables = state.rule.consequents[state.dot_position - 1].arguments
+        next_consequent = state.rule.consequents[state.dot_position - 1]
+        next_pos_type = state.rule.consequents[state.dot_position - 1].position_type
+        next_variables = state.rule.consequents[state.dot_position - 1].arguments
         end_word_index = state.end_word_index
-        endWord = chart.words[end_word_index]
-        lexItemFound = False
-        newPosType = POS_TYPE_RELATION
+        end_word = chart.words[end_word_index]
+        lex_item_found = False
+        new_pos_type = POS_TYPE_RELATION
 
         if self.log.is_active():
             self.log.add_debug("scan", state.to_string(chart))
 
-        if nextPosType == POS_TYPE_REG_EXP:
-            if re.match(nextConsequent, endWord):
-                lexItemFound = True
-                newPosType = POS_TYPE_REG_EXP
+        if next_pos_type == POS_TYPE_REG_EXP:
+            if re.match(next_consequent, end_word):
+                lex_item_found = True
+                new_pos_type = POS_TYPE_REG_EXP
 
         # proper noun
-        if not lexItemFound and nextConsequent == CATEGORY_PROPER_NOUN:
-            lexItemFound = True
+        if not lex_item_found and next_consequent == CATEGORY_PROPER_NOUN:
+            lex_item_found = True
 
         # literal word form
-        if not lexItemFound:
-            if (nextConsequent.predicate == endWord.lower()) and (len(nextVariables) == 0):
-                lexItemFound = True
-                newPosType = POS_TYPE_WORD_FORM
+        if not lex_item_found:
+            if (next_consequent.predicate == end_word.lower()) and (len(next_variables) == 0):
+                lex_item_found = True
+                new_pos_type = POS_TYPE_WORD_FORM
 
-        if lexItemFound:
+        if lex_item_found:
             rule = GrammarRule(
-                RuleConstituent(nextConsequent.predicate, nextVariables, newPosType),
-                [RuleConstituent(endWord, [TERMINAL], POS_TYPE_WORD_FORM)],
+                RuleConstituent(next_consequent.predicate, next_variables, new_pos_type),
+                [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
                 lambda sem: sem
             )
 
-            scannedState = ChartState(rule, 2, end_word_index, end_word_index+1)
-            chart.enqueue(scannedState, end_word_index+1)
+            scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)
+            chart.enqueue(scanned_state, end_word_index+1)
 
             if self.log.is_active():
-                self.log.add_debug("> scanned", scannedState.to_string(chart)+" "+endWord)
+                self.log.add_debug("> scanned", scanned_state.to_string(chart)+" "+end_word)
 
-    def complete(self, chart: Chart, completedState: ChartState):
+
+    def complete(self, chart: Chart, completed_state: ChartState):
         """
-        This function is called whenever a state is completed.
+        This function is called whenever a state is complete.
         Its purpose is to advance other states.
-        //
+        
         For example:
         - this state is NP -> noun, it has been completed
         - now proceed all other states in the chart that are waiting for an NP at the current position
         """
 
-        completedAntecedent = completedState.rule.antecedent.predicate
+        completed_antecedent = completed_state.rule.antecedent.predicate
 
         if self.log.is_active():
-            self.log.add_debug("complete", completedState.to_string(chart))
+            self.log.add_debug("complete", completed_state.to_string(chart))
 
         # index the completed state for fast lookup in the tree extraction phase
-        chart.index_completed_state(completedState)
+        chart.index_completed_state(completed_state)
 
-        for chartedState in chart.states[completedState.start_word_index] :
+        for charted_state in chart.states[completed_state.start_word_index] :
 
-            dot_position = chartedState.dot_position
-            rule = chartedState.rule
+            dot_position = charted_state.dot_position
+            rule = charted_state.rule
 
-            if (dot_position > len(rule.consequents)) or (rule.consequents[dot_position-1].predicate != completedAntecedent):
+            if (dot_position > len(rule.consequents)) or (rule.consequents[dot_position-1].predicate != completed_antecedent):
                 continue
 
             # check if the types match
-            if chartedState.rule.consequents[dot_position-1].position_type != completedState.rule.antecedent.position_type:
+            if charted_state.rule.consequents[dot_position-1].position_type != completed_state.rule.antecedent.position_type:
                 continue
 
             # create a new state that is a dot-advancement of an older state
-            advancedState = ChartState(rule, dot_position+1, chartedState.start_word_index, completedState.end_word_index)
+            advanced_state = ChartState(rule, dot_position+1, charted_state.start_word_index, completed_state.end_word_index)
 
             # enqueue the new state
-            chart.enqueue(advancedState, completedState.end_word_index)
+            chart.enqueue(advanced_state, completed_state.end_word_index)
 
             if self.log.is_active():
-                self.log.add_debug("> advanced", advancedState.to_string(chart))
+                self.log.add_debug("> advanced", advanced_state.to_string(chart))

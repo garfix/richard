@@ -1,5 +1,8 @@
 class Log:
-    active: bool = False
+    active: bool = True
+
+    def __init__(self, active: bool):
+        self.active = False
 
     def is_active(self):
         return self.active

@@ -5,10 +5,12 @@ from lib.entity.GrammarRule import GrammarRule
 
 @dataclass(frozen=True)
 class ChartState:
+
     rule: GrammarRule
     dot_position:    int
     start_word_index: int
     end_word_index:   int
+    
     
     def is_terminal(self):
         if len(self.rule.consequents[0].arguments) == 0:
@@ -25,18 +27,6 @@ class ChartState:
                self.dot_position == other_state.dot_position and \
                self.start_word_index == other_state.start_word_index and \
                self.end_word_index == other_state.end_word_index
-
-
-    def basic_form(self):
-        s = self.rule.basic_form()
-        s += f" [{self.start_word_index}-{self.end_word_index}]"
-        return s
-
-
-    def start_form(self):
-        s = self.rule.basic_form()
-        s += f" {self.start_word_index}"
-        return s
 
 
     def to_string(self, chart):
