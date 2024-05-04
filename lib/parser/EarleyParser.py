@@ -180,6 +180,9 @@ class EarleyParser:
         if self.log.is_active():
             self.log.add_debug("complete", completedState.to_string(chart))
 
+        # index the completed state for fast lookup in the tree extraction phase
+        chart.index_completed_state(completedState)
+
         for chartedState in chart.states[completedState.start_word_index] :
 
             dot_position = chartedState.dot_position
@@ -195,15 +198,8 @@ class EarleyParser:
             # create a new state that is a dot-advancement of an older state
             advancedState = ChartState(rule, dot_position+1, chartedState.start_word_index, completedState.end_word_index)
 
-            # add this state to the index for tree extraction
-            chart.updateAdvancedStatesIndex(completedState, advancedState)
-
             # enqueue the new state
             chart.enqueue(advancedState, completedState.end_word_index)
 
             if self.log.is_active():
                 self.log.add_debug("> advanced", advancedState.to_string(chart))
-
-
-
-

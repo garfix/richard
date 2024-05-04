@@ -6,11 +6,15 @@ from lib.entity.GrammarRule import GrammarRule
 class ParseTreeNode:
     category: str
     children: list
-    Form: str
-    Rule: GrammarRule
+    form: str
+    rule: GrammarRule
 
     def IsLeafNode(self) -> bool:
         return len(self.children) == 0
+    
+
+    # def to_string(self):
+    #     return self.category + "/" + self.
 
 
     def IndentedString(self, indent):
@@ -21,8 +25,8 @@ class ParseTreeNode:
             body = self.category + "\n"
 
         for i, child in enumerate(self.children):
-            if child.Form != "":
-                body += indent + "+- " + child.category + " '" + child.Form + "'\n"
+            if child.form != "":
+                body += indent + "+- " + child.category + " '" + child.form + "'\n"
                 continue
 
             body += indent + "+- " + child.category + "\n"

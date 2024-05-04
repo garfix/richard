@@ -9,16 +9,17 @@ class Chart:
     rootVariables: list[str]
     words: list[str]
     states: list[list[ChartState]]
-    advanced: dict[str, list[list[ChartState]]]
-    completed: dict[str, list[list[ChartState]]]
+
+    # all states that were completed, by dot position
+    completed_states: dict[int, list[ChartState]]
 
     def __init__(self, words: list[str], rootCategory: str, rootVariables: list[str]) -> None:
         self.rootCategory = rootCategory
         self.words = words
         self.rootVariables = rootVariables
         self.states = [[] for _ in range(len(words) + 1)]
-        self.advanced = {}
-        self.completed = {}
+
+        self.completed_states = {}
     
     def buildIncompleteGammaState(chart):
         return ChartState(
@@ -38,43 +39,6 @@ class Chart:
                 lambda sem: sem,
             ),
             2, 0, len(chart.words))
-
-    def updateAdvancedStatesIndex(chart, completedState, advancedState):
-
-        canonical = advancedState.start_form()
-        completedConsequentsCount = advancedState.dot_position - 2
-
-        if not canonical in chart.advanced:
-            chart.advanced[canonical] = []
-
-        children = []
-        if completedConsequentsCount == 0:
-            children = [completedState]
-            chart.addAdvancedStateIndex(advancedState, children)
-        else:
-            for previousChildren in chart.advanced[canonical] :
-                if len(previousChildren) == completedConsequentsCount:
-                    if previousChildren[len(previousChildren)-1].end_word_index == completedState.start_word_index:
-                        children = chart.appendState(previousChildren, completedState)
-                        chart.addAdvancedStateIndex(advancedState, children)
-
-
-    def addAdvancedStateIndex(chart, advancedState, children):
-        canonical = advancedState.start_form()
-        chart.advanced[canonical].append( children)
-
-        if advancedState.is_complete():
-            chart.updateCompletedStatesIndex(advancedState, children)
-
-
-    def updateCompletedStatesIndex(chart, advancedState, children):
-
-        canonical = advancedState.basic_form()
-
-        if not canonical in chart.completed:
-            chart.completed[canonical] = []
-
-        chart.completed[canonical].append( children)
 
 
     def appendState(chart, oldStates, newState):
@@ -105,3 +69,7 @@ class Chart:
         chart.states[position].append( state)
 
     
+    def index_completed_state(self, completed_state: ChartState):
+        if not completed_state.end_word_index in self.completed_states:
+            self.completed_states[completed_state.end_word_index] = []
+        self.completed_states[completed_state.end_word_index].append(completed_state)
