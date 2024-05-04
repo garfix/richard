@@ -9,7 +9,8 @@ from lib.entity.RuleConstituent import RuleConstituent
 from lib.interface.Loggable import Loggable
 from lib.parser.entity.Chart import Chart
 from lib.parser.entity.ChartState import ChartState
-from lib.parser.tree_extract import extract_tree_roots, find_unknown_word
+from lib.parser.tree_extract import extract_tree_roots
+from lib.parser.unknown_word import find_unknown_word
 
 
 class EarleyParser:

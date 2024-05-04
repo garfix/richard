@@ -6,8 +6,7 @@ from lib.parser.entity.ChartState import ChartState
 
 
 def extract_tree_roots(chart: Chart):
-    completedGammaState = chart.build_complete_gamma_state()
-    return create_trees_for_state(chart, completedGammaState)
+    return create_trees_for_state(chart, chart.build_complete_gamma_state())
 
 
 def create_trees_for_state(chart: Chart, state: ChartState):
@@ -21,8 +20,10 @@ def create_trees_for_state(chart: Chart, state: ChartState):
             state.rule
         ))
     else:
-        for child_state_permutation in find_child_state_sequences(chart, state):
-            for permutation_trees in create_trees_for_states(chart, child_state_permutation):
+        # the state has one or more child states. in fact there can be multiple child state sequences
+        for child_state_sequence in find_child_state_sequences(chart, state):
+            # each child state can have multiple parse trees, built from it children; go through all permutations of these child state parse trees
+            for permutation_trees in create_trees_for_states(chart, child_state_sequence):
                 trees.append(ParseTreeNode(
                     state.rule.antecedent.predicate,
                     permutation_trees,
@@ -35,22 +36,25 @@ def create_trees_for_state(chart: Chart, state: ChartState):
 
 def find_child_state_sequences(chart: Chart, parent_state: ChartState) -> list[list[ChartState]]:
     """
-    Each state may have multiple sequences of possible children, find them.
+    each state may have multiple sequences of possible children, find them.
     """
     return find_state_sequences(chart, parent_state, parent_state.end_word_index, len(parent_state.rule.consequents) - 1)
 
 
 def find_state_sequences(chart: Chart, parent_state: ChartState, end_word_position: int, consequent_index: int):
+    """
+    try to match the consequent_index'th consequent of parent_state to a new state, ending in the end_word_position
+    and prepend the earlier states. this may result in multiple state sequences
+    """
     sequences = []
     for state in chart.completed_states[end_word_position]:
-        if state.rule.antecedent.predicate == parent_state.rule.consequents[consequent_index].predicate:
+        if state.rule.antecedent.equals(parent_state.rule.consequents[consequent_index]):
             if consequent_index == 0:
                 sequences.append([state])
             else:
-                previous_sequences = find_state_sequences(chart, parent_state, state.start_word_index, consequent_index-1)
-                for previous_sequence in previous_sequences:
-                    previous_sequence.append(state)
-                    sequences.append(previous_sequence)
+                # find one or more preceding sequences of this state
+                for previous_sequence in find_state_sequences(chart, parent_state, state.start_word_index, consequent_index-1):
+                    sequences.append(previous_sequence + [state])
     return sequences
 
 
@@ -67,28 +71,3 @@ def create_permutations(things: list[list]) -> list[list]:
     See for example https://www.geeksforgeeks.org/python-all-possible-permutations-of-n-lists/
     """
     return list(itertools.product(*things))
-
-
-# Returns the word that could not be parsed (or ""), and the index of the last completed word
-def find_unknown_word(chart: Chart):
-    """
-    Returns the word that could not be parsed (or ""), and the index of the last completed word
-    """
-
-    nextWord = ""
-    lastUnderstoodIndex = -1
-
-    # for i = len(chart.states) - 1; i >= 0; i -= 1:
-    for i in range(len(chart.states) - 1, -1, -1):
-        states = chart.states[i]
-        for state in states :
-            if state.is_complete():
-                if state.end_word_index > lastUnderstoodIndex:
-                    lastUnderstoodIndex = state.end_word_index - 1
-
-    if lastUnderstoodIndex+1 < len(chart.words):
-        nextWord = chart.words[lastUnderstoodIndex+1]
-    else:
-        nextWord = " ".join(chart.words)
-
-    return nextWord
