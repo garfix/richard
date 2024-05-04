@@ -1,24 +1,22 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from lib.entity.GrammarRule import GrammarRule
 
 
-@dataclass()
+@dataclass(frozen=True)
 class ParseTreeNode:
+
     category: str
-    children: list
+    children: list[ParseTreeNode]
     form: str
     rule: GrammarRule
 
-    def IsLeafNode(self) -> bool:
+
+    def is_leaf_node(self) -> bool:
         return len(self.children) == 0
     
 
-    # def to_string(self):
-    #     return self.category + "/" + self.
-
-
-    def IndentedString(self, indent):
-
+    def indented_string(self, indent: str):
         body = ""
 
         if indent == "":
@@ -35,6 +33,6 @@ class ParseTreeNode:
                 newIndent += "|  "
             else:
                 newIndent += "   "
-            body += child.IndentedString(newIndent)
+            body += child.indented_string(newIndent)
 
         return body

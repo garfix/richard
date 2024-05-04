@@ -6,7 +6,7 @@ from lib.parser.entity.ChartState import ChartState
 
 
 def extract_tree_roots(chart: Chart):
-    completedGammaState = chart.buildCompleteGammaState()
+    completedGammaState = chart.build_complete_gamma_state()
     return create_trees_for_state(chart, completedGammaState)
 
 

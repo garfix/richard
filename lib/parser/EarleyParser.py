@@ -26,7 +26,7 @@ class EarleyParser:
         self.log = log
 
 
-    def parse(self, words: list[str], rootCategory: str, rootVariables: list[str]) -> list[ParseTreeNode]:
+    def parse(self, words: list[str], rootCategory: str, rootVariables: list[str]) -> ParseResult:
         """
         Parses words using EarleyParser.grammar
         Returns parse tree roots
@@ -53,12 +53,12 @@ class EarleyParser:
                 errorArg = ""
 
         result = ParseResult(
-            root_nodes=rootNodes,
+            trees=rootNodes,
             error=error,
             error_arg=errorArg,
         )
 
-        return rootNodes, result
+        return result
 
     def buildChart(self, grammarRules: GrammarRules, words, rootCategory, rootVariables):
         """
@@ -68,7 +68,7 @@ class EarleyParser:
         chart = Chart(words, rootCategory, rootVariables)
         wordCount = len(words)
 
-        chart.enqueue(chart.buildIncompleteGammaState(), 0)
+        chart.enqueue(chart.build_incomplete_gamma_state(), 0)
 
         for i in range(wordCount + 1):
 
@@ -127,7 +127,7 @@ class EarleyParser:
         """
 
         nextConsequent = state.rule.consequents[state.dot_position - 1]
-        nextPosType = state.rule.consequents[state.dot_position - 1].positionType
+        nextPosType = state.rule.consequents[state.dot_position - 1].position_type
         nextVariables = state.rule.consequents[state.dot_position - 1].arguments
         end_word_index = state.end_word_index
         endWord = chart.words[end_word_index]
@@ -192,7 +192,7 @@ class EarleyParser:
                 continue
 
             # check if the types match
-            if chartedState.rule.consequents[dot_position-1].positionType != completedState.rule.antecedent.positionType:
+            if chartedState.rule.consequents[dot_position-1].position_type != completedState.rule.antecedent.position_type:
                 continue
 
             # create a new state that is a dot-advancement of an older state

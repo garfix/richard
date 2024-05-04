@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from lib.type.PositionType import PositionType
 
@@ -6,16 +7,16 @@ from lib.type.PositionType import PositionType
 class RuleConstituent:
     predicate: str
     arguments: list[str]
-    positionType: PositionType
+    position_type: PositionType
 
-    def equals(self, other):
+    def equals(self, other: RuleConstituent):
         if self.predicate != other.predicate:
             return False
         
         if len(self.arguments) != len(other.arguments):
             return False
         
-        if self.positionType != other.positionType:
+        if self.position_type != other.position_type:
             return False
 
         return True

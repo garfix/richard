@@ -1,72 +1,60 @@
-from lib.constants import POS_TYPE_RELATION
+from lib.constants import GAMMA, POS_TYPE_RELATION
 from lib.entity.GrammarRule import GrammarRule
 from lib.entity.RuleConstituent import RuleConstituent
 from lib.parser.entity.ChartState import ChartState
 
 
 class Chart:
-    rootCategory: str
-    rootVariables: list[str]
+    root_category: str
+    root_variables: list[str]
     words: list[str]
     states: list[list[ChartState]]
-
     # all states that were completed, by dot position
     completed_states: dict[int, list[ChartState]]
 
-    def __init__(self, words: list[str], rootCategory: str, rootVariables: list[str]) -> None:
-        self.rootCategory = rootCategory
-        self.words = words
-        self.rootVariables = rootVariables
-        self.states = [[] for _ in range(len(words) + 1)]
 
+    def __init__(self, words: list[str], root_category: str, root_variables: list[str]) -> None:
+        self.root_category = root_category
+        self.words = words
+        self.root_variables = root_variables
+        self.states = [[] for _ in range(len(words) + 1)]
         self.completed_states = {}
+
     
-    def buildIncompleteGammaState(chart):
+    def build_incomplete_gamma_state(chart):
         return ChartState(
             GrammarRule(
-                RuleConstituent("gamma", ["G"], POS_TYPE_RELATION),
-                [RuleConstituent(chart.rootCategory, chart.rootVariables, POS_TYPE_RELATION)],
+                RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
+                [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
                 lambda sem: sem,
             ),
             1, 0, 0)
 
 
-    def buildCompleteGammaState(chart):
+    def build_complete_gamma_state(chart):
         return ChartState(
             GrammarRule(
-                RuleConstituent("gamma", ["G"], POS_TYPE_RELATION),
-                [RuleConstituent(chart.rootCategory, chart.rootVariables, POS_TYPE_RELATION)],
+                RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
+                [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
                 lambda sem: sem,
             ),
             2, 0, len(chart.words))
 
 
-    def appendState(chart, oldStates, newState):
-        newStates = []
-        for state in oldStates :
-            newStates.append(state)
-        newStates.append( newState)
-        return newStates
-
-
     def enqueue(chart, state, position):
-        found = chart.containsState(state, position)
+        found = chart.contains_state(state, position)
         if not found:
-            chart.pushState(state, position)
+            chart.states[position].append(state)
 
         return found
 
 
-    def containsState(chart, state, position):
-        for presentState in chart.states[position] :
-            if presentState.equals(state):
+    def contains_state(chart, state, position):
+        for present_state in chart.states[position] :
+            if present_state.equals(state):
                 return True
 
-        return False
-
-
-    def pushState(chart, state, position):
-        chart.states[position].append( state)
+        return False        
 
     
     def index_completed_state(self, completed_state: ChartState):

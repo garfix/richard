@@ -41,14 +41,14 @@ class GrammarRule:
 
         sep = ""
         for i in range(len(self.consequents)):
-            if self.consequents[i].positionType == POS_TYPE_RELATION:
+            if self.consequents[i].position_type == POS_TYPE_RELATION:
                 s += sep + self.consequents[i].predicate + "("
                 sep2 = ""
                 for variable in self.consequents[i].arguments :
                     s += sep2 + variable
                     sep2 = ", "
                 s += ")"
-            elif self.consequents[i].positionType == POS_TYPE_WORD_FORM:
+            elif self.consequents[i].position_type == POS_TYPE_WORD_FORM:
                 s += sep + "'" + self.consequents[i].predicate + "'"
             else:
                 s += sep + "/" + self.consequents[i].predicate + "/"

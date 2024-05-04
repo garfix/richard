@@ -2,7 +2,7 @@ A Natural Language Understanding and Execution framework for Python.
 
 ## Requires
 
-* python: 3.10, or higher
+* Python 3.10 (or higher)
 
 ## Test
 
