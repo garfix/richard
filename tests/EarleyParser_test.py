@@ -1,0 +1,59 @@
+import unittest
+
+from lib.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
+from lib.entity.GrammarRule import GrammarRule
+from lib.entity.GrammarRules import GrammarRules
+from lib.entity.Log import Log
+from lib.entity.RuleConstituent import RuleConstituent
+from lib.parser.EarleyParser import EarleyParser
+
+class TestEarleyParser(unittest.TestCase):
+   
+    def test_upper(self):
+        grammarRules = GrammarRules([
+            # s(P1) -> np(E1) vp(P1, E2)
+            GrammarRule(
+                RuleConstituent("s", ["P1"], POS_TYPE_RELATION),
+                [RuleConstituent("np", ["E1"], POS_TYPE_RELATION), RuleConstituent("vp", ["P1", "E2"], POS_TYPE_RELATION)],
+                lambda sem: sem
+            ),
+            # vp(P1, E1) -> verb(P1) np(E1)
+            GrammarRule(
+                RuleConstituent("vp", ["P1", "E1"], POS_TYPE_RELATION),
+                [RuleConstituent("verb", ["P1"], POS_TYPE_RELATION), RuleConstituent("np", ["E1"], POS_TYPE_RELATION)],
+                lambda sem: sem
+            ),
+            # np(E1) -> noun(E1)
+            GrammarRule(
+                RuleConstituent("np", ["E1"], POS_TYPE_RELATION),
+                [RuleConstituent("noun", ["E1"], POS_TYPE_RELATION)],
+                lambda sem: sem
+            ),
+            # verb(P1) -> "loves"
+            GrammarRule(
+                RuleConstituent("verb", ["P1"], POS_TYPE_RELATION),
+                [RuleConstituent("loves", [], POS_TYPE_WORD_FORM)],
+                lambda sem: sem
+            ),
+            # noun(P1) -> "John"
+            GrammarRule(
+                RuleConstituent("noun", ["E1"], POS_TYPE_RELATION),
+                [RuleConstituent("john", [], POS_TYPE_WORD_FORM)],
+                lambda sem: sem
+            ),
+            # noun(P1) -> "Mary"
+            GrammarRule(
+                RuleConstituent("noun", ["E1"], POS_TYPE_RELATION),
+                [RuleConstituent("mary", [], POS_TYPE_WORD_FORM)],
+                lambda sem: sem
+            ),            
+        ])
+        log = Log()
+        parser = EarleyParser(grammarRules, log)
+        trees, response = parser.parse(["John", "loves", "Mary"], "s", ["S"])
+        print(trees[0].IndentedString("    "))
+        self.assertEqual(len(trees), 1)
+    
+
+    if __name__ == '__main__':
+        unittest.main()
