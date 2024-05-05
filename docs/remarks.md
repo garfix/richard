@@ -1,0 +1,84 @@
+## 2024-05-05
+
+I started a new Github repository for this project and another one to create the "Github Pages" documentation site for it. I didn't know about this Github service but this is a good time to try it out.
+
+## 2024-04-23
+
+I started this new project because NLI-GO was too much bogged down in its self-created dual-aspect programming language. It caused hard problems every time and conflicted too much with the goal of being simple.
+
+After some months of idling I had the idea of implementing semantics in the host programming language directly, as functions. In this case it's Go, but it should be any language that allows functions as terms and hence as arguments to other functions. This holds true for most modern languages. It seems to me the simple consequence of Richard Montague's writings, but strangly I can't find any example of such direct implementation of semantics when searching the web. 
+
+A few days ago I managed to manually create a single function, representing the meaning of the sentence "add 2 to 5" by combining the meaning-functions of the phrases of a sentence. That was an important proof-of-concept, but I need some more cases to be confident that this approach works.
+
+One point of concern are long-term dependencies. I've used this sentence before and I will use it now:
+
+    Which babies were the toys easiest to take from?
+
+    s                                       sense: check($np, $dep_vp)
+        which
+        np(E1)                              sense: quant(_, some(_), E1, $nbar)
+            nbar(E1)
+                noun(E1) - babies
+        dep_vp(P1, E1)                      sense: check($np, $advp $vp)
+            be() - were
+            np(E1)                          sense: quant(Q1, $qp, E1, $nbar)
+                qp() - the
+                noun(E1) - toys
+            adv(P1) - easiest
+            vp(P1, E1, E2) - to take from   sense: take_from(P1, E2, E1)
+
+The core of this sentence's meaning is the `check($np, $dep_vp)` from `s`. It first collects all `$np` ("all babies"), then feeds these as arguments to `$dep_vp` ("were the toys easiest to take from"). 
+
+I can do that also in the new system. Find all `np()`, then pass these as argument to `dep_vp()`. The result of the function would then be a list of baby-ids. But I'm wondering if it is okay that a `dep_vp` always returns the missing `np`. Could it be possible that the newly found `P1` is needed as well? Should the `dep_vp` return a list of bindings?
+
+Where NLI-GO was like Prolog that relied on multiple variable bindings, Richard! uses function return values as meaning. This makes it quite a bit different, and I can't yet see all the consequences.
+
+Next to being functional semantic, the new approach also uses intersection to form meaning (a "red car" is the set of cars that is the intersection of all red objects and all car objects).
+
+Another point of concern: quants, consider:
+
+    Do at least 5 babies play with a ball?
+
+    s                                       sense: check($np, $dep_vp)
+        np(E1)                              sense: quant(_, $qp, E1, $nbar)
+            qp()                            sense: at least 5(E1)
+            nbar(E1)
+                noun(E1) - babies
+        vp(P1, E2)                          sense: play(P1, E2)
+
+To process `check($np, $dep_vp)`, the system needs to go through all `np`'s and then check if the requirement `qp` ("at least five") is met. In the `do()` variant, it needs to try the `np()`'s until `qp()` is met. Perhaps `np` should deliver an iterator?
+
+    {
+        /* "... I told you to pick up" */
+        rule: vp_without_np(P1, L1) -> np(E1) meta_verb(P1, E1, E2, P2) np(E2) vp_without_nps(P2, E2, L1),
+        sense: go:check($np1, go:check($np2, $vp_without_nps $meta_verb))
+    }
+
+`meta_verb` returns a set of bindings?
+
+    "Does every parent have 4 children?"
+
+    for every parent
+        for exactly 4 children
+            the parent has the child
+
+    s
+        does
+        some_vp : check(np1(), check(np2, verb))
+            np1
+                qp1 : go:quantifier(Result, Range, $quantifier)
+                    quantifier - every : [Result == Range]
+                nbar parent
+            verb
+            np2
+                qp1 : go:quantifier(Result, Range, $quantifier)  
+                    quantifier - 4 : [Result == 4]
+
+                nbar children
+
+
+    func check()
+            
+
+Richard! doesn't translate from syntax to logic, instead it just uses functions for semantic composition, and adds custom code to each node. This custom code executes the sentence (imperative) rather than just forms a logical expression. The parsing is functional, but the semantics is imperative.
+

@@ -1,4 +1,4 @@
-A Natural Language Understanding and Execution framework for Python.
+A Natural Language Understanding and Execution library for Python.
 
 ## Requires
 

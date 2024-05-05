@@ -25,9 +25,9 @@ class EarleyParser:
         self.log = log
 
 
-    def parse(self, grammar_rules: GrammarRules, words: list[str], rootCategory: str, rootVariables: list[str]) -> ParseResult:
+    def parse(self, grammar_rules: GrammarRules, tokens: list[str]) -> ParseResult:
 
-        chart = self.buildChart(grammar_rules, words, rootCategory, rootVariables)
+        chart = self.buildChart(grammar_rules, tokens, "s", ["P"])
 
         rootNodes = extract_tree_roots(chart)
         error = ""
@@ -40,7 +40,7 @@ class EarleyParser:
             if nextWord != "":
                 error = UNKNOWN_WORD
                 errorArg = nextWord
-            elif len(words) == 0:
+            elif len(tokens) == 0:
                 error = NO_SENTENCE
                 errorArg = ""
             else:
