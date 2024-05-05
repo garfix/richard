@@ -71,6 +71,6 @@ class TestEarleyParser(unittest.TestCase):
         parser = EarleyParser(log)
         result = parser.parse(grammarRules, ["John", "loves", "Mary"])
         for tree in result.trees:
-            print(tree.indented_string("    "))
+            print(tree)
         self.assertEqual(len(result.trees), 4)
     

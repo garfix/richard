@@ -16,7 +16,7 @@ class ParseTreeNode:
         return len(self.children) == 0
     
 
-    def indented_string(self, indent: str):
+    def __str__(self, indent: str = "    "):
         body = ""
 
         if indent == "":
@@ -33,6 +33,6 @@ class ParseTreeNode:
                 newIndent += "|  "
             else:
                 newIndent += "   "
-            body += child.indented_string(newIndent)
+            body += child.__str__(newIndent)
 
         return body
