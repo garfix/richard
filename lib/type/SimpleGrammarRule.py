@@ -1,0 +1,1 @@
+SimpleGrammarRule = dict({'syn': str})

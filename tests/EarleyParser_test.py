@@ -9,7 +9,7 @@ from lib.parser.EarleyParser import EarleyParser
 
 class TestEarleyParser(unittest.TestCase):
    
-    def test_upper(self):
+    def test_ambiguity(self):
         # create a toy grammar to generates superfluous sentences (to test the parsing of ambiguity)
         grammarRules = GrammarRules([
             # s(P1) -> np(E1) vp(P1, E2)

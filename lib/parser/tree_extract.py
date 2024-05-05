@@ -5,7 +5,12 @@ from lib.parser.entity.ChartState import ChartState
 
 
 def extract_tree_roots(chart: Chart):
-    return create_trees_for_state(chart, chart.build_complete_gamma_state())
+
+    gamma_state = chart.build_complete_gamma_state()
+    if not gamma_state.end_word_index in chart.completed_states:
+        return []
+
+    return create_trees_for_state(chart, gamma_state)
 
 
 def create_trees_for_state(chart: Chart, state: ChartState):
