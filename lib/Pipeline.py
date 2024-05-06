@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from lib.entity.SentenceRequest import SentenceRequest
-from ..interface.Processor import Processor
+from .interface.Processor import Processor
 
 
 @dataclass(frozen=True)

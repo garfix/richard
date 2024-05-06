@@ -1,6 +1,6 @@
 import unittest
 
-from lib.entity.Pipeline import Pipeline
+from lib.Pipeline import Pipeline
 from lib.entity.SentenceRequest import SentenceRequest
 from lib.processor.parser.BasicParser import BasicParser
 from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
