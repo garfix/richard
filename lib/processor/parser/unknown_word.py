@@ -1,4 +1,4 @@
-from lib.parser.entity.Chart import Chart
+from .entity.Chart import Chart
 
 
 # Returns the word that could not be parsed (or ""), and the index of the last completed word

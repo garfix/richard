@@ -1,7 +1,7 @@
 import itertools
 from lib.entity.ParseTreeNode import ParseTreeNode
-from lib.parser.entity.Chart import Chart
-from lib.parser.entity.ChartState import ChartState
+from .entity.Chart import Chart
+from .entity.ChartState import ChartState
 
 
 def extract_tree_roots(chart: Chart):

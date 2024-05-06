@@ -1,8 +1,9 @@
 import unittest
 
 from lib.entity.Pipeline import Pipeline
-from lib.entity.Request import Request
-from lib.parser.ParserProcess import ParserProcess
+from lib.entity.SentenceRequest import SentenceRequest
+from lib.processor.parser.BasicParser import BasicParser
+from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestParser(unittest.TestCase):
    
@@ -17,17 +18,20 @@ class TestParser(unittest.TestCase):
             { "syn": "proper_noun -> 'mary'" },
             { "syn": "verb -> 'loves'" },
         ]
-        parser = ParserProcess(grammar)
+
+        tokenizer = BasicTokenizer()
+        parser = BasicParser(grammar, tokenizer)
 
         pipeline = Pipeline([
+            tokenizer,
             parser
         ])
 
-        request = Request("John loves Mary")
+        request = SentenceRequest("John loves Mary")
 
         pipeline.enter(request)
 
-        tree = request.get_alternative(parser)
+        tree = request.get_current_product(parser)
 
         print(tree)
     

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from urllib.request import Request
+
+from lib.entity.SentenceRequest import SentenceRequest
 from ..interface.Processor import Processor
 
 
@@ -16,15 +17,15 @@ class Pipeline:
     processors: list[Processor]
 
 
-    def enter(self, request: Request):
+    def enter(self, request: SentenceRequest):
         self.try_processor(0, request)
 
     
-    def try_processor(self, process_index: int, request: Request):
+    def try_processor(self, process_index: int, request: SentenceRequest):
         processor = self.processors[process_index]
         alternatives = processor.process(request)
         for alternative in alternatives:
-            request.set_alternative(processor, alternative)
+            request.set_current_product(processor, alternative)
             if process_index+1 == len(self.processors):
                 return True
             success = self.try_processor(process_index+1, request)

@@ -1,7 +1,7 @@
 from lib.constants import GAMMA, POS_TYPE_RELATION
 from lib.entity.GrammarRule import GrammarRule
 from lib.entity.RuleConstituent import RuleConstituent
-from lib.parser.entity.ChartState import ChartState
+from .ChartState import ChartState
 
 
 class Chart:

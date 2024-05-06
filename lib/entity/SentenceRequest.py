@@ -1,7 +1,7 @@
 from lib.interface.Processor import Processor
 
 
-class Request:
+class SentenceRequest:
     """
     A request is the data structure that keeps track of the active interpretation of the sentence.
     This interpretation consists of one alternative interpretation per processor so far.
@@ -16,11 +16,11 @@ class Request:
         self.text = text
 
 
-    def set_alternative(self, processor: Processor, alternative: any):
+    def set_current_product(self, processor: Processor, alternative: any):
         self.alternatives[processor] = alternative
 
 
-    def get_alternative(self, processor: Processor):
+    def get_current_product(self, processor: Processor):
         if processor in self.alternatives:
             return self.alternatives[processor]
         else:

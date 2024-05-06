@@ -2,14 +2,16 @@ import re
 from lib.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from lib.entity.GrammarRule import GrammarRule
 from lib.entity.GrammarRules import GrammarRules
-from lib.entity.Request import Request
+from lib.entity.SentenceRequest import SentenceRequest
 from lib.entity.RuleConstituent import RuleConstituent
-from lib.parser.EarleyParser import EarleyParser
+from lib.interface.Processor import Processor
 from lib.type.SimpleGrammar import SimpleGrammar
+from .EarleyParser import EarleyParser
 
 
-class ParserProcess:
+class BasicParser(Processor):
 
+    tokenizer: Processor
     grammar_rules: GrammarRules
     parser: EarleyParser
 
@@ -17,7 +19,10 @@ class ParserProcess:
     re_space: re.Pattern
 
 
-    def __init__(self, grammar: SimpleGrammar) -> None:
+    def __init__(self, grammar: SimpleGrammar, tokenizer: Processor) -> None:
+
+        self.tokenizer = tokenizer
+
         self.re_rule = re.compile("\s*(\w+)\s*->((\s*[\w']+)+)")
         self.re_space = re.compile("\s+")
 
@@ -56,9 +61,8 @@ class ParserProcess:
         return GrammarRules(rules)
             
 
-    def process(self, request: Request):
-        result = self.parser.parse(self.grammar_rules, request.text.split(" "))
+    def process(self, request: SentenceRequest):
+        tokens = request.get_current_product(self.tokenizer)
+        result = self.parser.parse(self.grammar_rules, tokens)
         return result.trees
     
-
-
