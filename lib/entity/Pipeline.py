@@ -24,6 +24,7 @@ class Pipeline:
     def try_processor(self, process_index: int, request: SentenceRequest):
         processor = self.processors[process_index]
         alternatives = processor.process(request)
+        request.set_alternative_products(processor, alternatives)
         for alternative in alternatives:
             request.set_current_product(processor, alternative)
             if process_index+1 == len(self.processors):
