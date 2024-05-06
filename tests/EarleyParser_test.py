@@ -5,7 +5,7 @@ from lib.entity.GrammarRule import GrammarRule
 from lib.entity.GrammarRules import GrammarRules
 from lib.entity.Log import Log
 from lib.entity.RuleConstituent import RuleConstituent
-from lib.processor.parser.EarleyParser import EarleyParser
+from lib.processor.parser.earley.EarleyParser import EarleyParser
 
 class TestEarleyParser(unittest.TestCase):
    

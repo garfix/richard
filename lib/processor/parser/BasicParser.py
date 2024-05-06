@@ -2,9 +2,9 @@ from lib.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from lib.entity.GrammarRules import GrammarRules
 from lib.entity.SentenceRequest import SentenceRequest
 from lib.interface.Processor import Processor
-from lib.processor.parser.SimpleGrammarRulesParser import SimpleGrammarRulesParser
+from lib.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from lib.type.SimpleGrammar import SimpleGrammar
-from .EarleyParser import EarleyParser
+from .earley.EarleyParser import EarleyParser
 
 
 class BasicParser(Processor):
