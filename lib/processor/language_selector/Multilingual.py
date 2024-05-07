@@ -2,7 +2,7 @@ from lib.entity.SentenceRequest import SentenceRequest
 from lib.interface.Processor import Processor
 
 
-class MultiLingual:
+class Multilingual:
     """
     This compositing processor takes other processors as input and uses the processor of the active language when asks to `process` input
     It can be used to combine any combinations of processors, like tokenization processors or parsing processors

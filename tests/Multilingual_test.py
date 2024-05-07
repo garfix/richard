@@ -3,7 +3,7 @@ import unittest
 from lib.Pipeline import Pipeline
 from lib.entity.SentenceRequest import SentenceRequest
 from lib.processor.language_selector.LanguageSelector import LanguageSelector
-from lib.processor.language_selector.MultiLingual import MultiLingual
+from lib.processor.language_selector.Multilingual import Multilingual
 from lib.processor.parser.BasicParser import BasicParser
 from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
@@ -35,7 +35,7 @@ class TestMultilingual(unittest.TestCase):
             { "syn": "verb -> 'houdt' 'van'" },
         ], tokenizer)}
 
-        parser = MultiLingual(parsers, language_selector)
+        parser = Multilingual(parsers, language_selector)
 
         pipeline = Pipeline([
             language_selector,
