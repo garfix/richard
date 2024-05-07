@@ -15,25 +15,25 @@ class TestMultilingual(unittest.TestCase):
         tokenizer = BasicTokenizer()
 
         parsers = {
-        "nl_NL": BasicParser([
-            { "syn": "s -> np vp" },
-            { "syn": "vp -> verb np" },
-            { "syn": "np -> noun" },
-            { "syn": "noun -> proper_noun" },
-            { "syn": "proper_noun -> 'john'" },
-            { "syn": "proper_noun -> 'mary'" },
-            { "syn": "verb -> 'loves'" },
-        ], tokenizer),
-
-        "en_US": BasicParser([
-            { "syn": "s -> np vp" },
-            { "syn": "vp -> verb np" },
-            { "syn": "np -> noun" },
-            { "syn": "noun -> proper_noun" },
-            { "syn": "proper_noun -> 'jan'" },
-            { "syn": "proper_noun -> 'marie'" },
-            { "syn": "verb -> 'houdt' 'van'" },
-        ], tokenizer)}
+            "nl_NL": BasicParser([
+                { "syn": "s -> np vp" },
+                { "syn": "vp -> verb np" },
+                { "syn": "np -> noun" },
+                { "syn": "noun -> proper_noun" },
+                { "syn": "proper_noun -> 'john'" },
+                { "syn": "proper_noun -> 'mary'" },
+                { "syn": "verb -> 'loves'" },
+            ], tokenizer),
+            "en_US": BasicParser([
+                { "syn": "s -> np vp" },
+                { "syn": "vp -> verb np" },
+                { "syn": "np -> noun" },
+                { "syn": "noun -> proper_noun" },
+                { "syn": "proper_noun -> 'jan'" },
+                { "syn": "proper_noun -> 'marie'" },
+                { "syn": "verb -> 'houdt' 'van'" },
+            ], tokenizer)
+        }
 
         parser = Multilingual(parsers, language_selector)
 
