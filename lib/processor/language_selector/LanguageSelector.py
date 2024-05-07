@@ -2,7 +2,7 @@ from lib.entity.SentenceRequest import SentenceRequest
 from lib.interface.Processor import Processor
 
 
-class LanguageSwitcher(Processor):
+class LanguageSelector(Processor):
 
     locales: list[str]
 

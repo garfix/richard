@@ -2,16 +2,20 @@ import unittest
 
 from lib.Pipeline import Pipeline
 from lib.entity.SentenceRequest import SentenceRequest
-from lib.processor.language_switcher.LanguageSwitcher import LanguageSwitcher
-from lib.processor.parser.MultiLingualParser import MultiLingualParser
+from lib.processor.language_selector.LanguageSelector import LanguageSelector
+from lib.processor.language_selector.MultiLingual import MultiLingual
+from lib.processor.parser.BasicParser import BasicParser
 from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestMultilingual(unittest.TestCase):
    
     def test_two_languages(self):
 
-        grammars = {
-        "nl_NL": [
+        language_selector = LanguageSelector(["en_US", "nl_NL"])
+        tokenizer = BasicTokenizer()
+
+        parsers = {
+        "nl_NL": BasicParser([
             { "syn": "s -> np vp" },
             { "syn": "vp -> verb np" },
             { "syn": "np -> noun" },
@@ -19,24 +23,22 @@ class TestMultilingual(unittest.TestCase):
             { "syn": "proper_noun -> 'john'" },
             { "syn": "proper_noun -> 'mary'" },
             { "syn": "verb -> 'loves'" },
-        ],
+        ], tokenizer),
 
-        "en_US": [
+        "en_US": BasicParser([
             { "syn": "s -> np vp" },
             { "syn": "vp -> verb np" },
             { "syn": "np -> noun" },
             { "syn": "noun -> proper_noun" },
             { "syn": "proper_noun -> 'jan'" },
             { "syn": "proper_noun -> 'marie'" },
-            { "syn": "verb -> 'belieft'" },
-        ]}
+            { "syn": "verb -> 'houdt' 'van'" },
+        ], tokenizer)}
 
-        language_switcher = LanguageSwitcher(["en_US", "nl_NL"])
-        tokenizer = BasicTokenizer()
-        parser = MultiLingualParser(grammars, language_switcher, tokenizer)
+        parser = MultiLingual(parsers, language_selector)
 
         pipeline = Pipeline([
-            language_switcher,
+            language_selector,
             tokenizer,
             parser
         ])
@@ -49,7 +51,7 @@ class TestMultilingual(unittest.TestCase):
 
         print(tree)
 
-        request = SentenceRequest("Jan belieft Marie")
+        request = SentenceRequest("Jan houdt van Marie")
 
         pipeline.enter(request)
 
