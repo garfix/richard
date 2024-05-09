@@ -26,7 +26,7 @@ class Chart:
             GrammarRule(
                 RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
                 [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
-                lambda sem: sem,
+                None,
             ),
             1, 0, 0)
 
@@ -36,7 +36,7 @@ class Chart:
             GrammarRule(
                 RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
                 [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
-                lambda sem: sem,
+                lambda node: node.sem(chart.root_category)(node.child(chart.root_category)),
             ),
             2, 0, len(chart.words))
 

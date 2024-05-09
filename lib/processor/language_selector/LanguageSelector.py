@@ -9,7 +9,7 @@ class LanguageSelector(Processor):
     """
 
     locales: list[str]
-
+    
     def __init__(self, locales: list[str]) -> None:
         super().__init__()
         self.locales = locales

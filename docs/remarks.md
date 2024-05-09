@@ -1,3 +1,43 @@
+## 2024-05-09
+
+To handle quantification, have a look at this simplified representation
+
+    S - check(np, vp)
+    - np - quant(qp, nbar)
+        - qp - every
+        - nbar - parent
+    - vp - has two children
+
+The problem is that the function `check` needs direct access to the sem of `qp` as it needs to check if `vp` applies to (in this case) _all_ np's. `qp` however is not a direct child of `s`, but it's a _grandchild_`. Where NLI-GO could access the grandchild because of its declarative nature, Richard could not (at this moment).
+
+Would it be possible to arrange the syntax so that it becomes a direct child?
+
+    S - check(np, vp)
+    - qp - every
+    - nbar - parent
+    - vp - has two children
+
+In theory, yes, but it would split the NP over two nodes, which complicates things, and further, it seems that no linguistic theory has ever done that. 
+
+Giving a node access to the semantics of it's grandchild can be handled in a ridiculously simple way, by passing the parse tree node to the semantic function.
+
+    sem: lambda node: check(
+                        node.child_sem('np').child_sem('qp'), 
+                        node.child_sem('np').child_sem('np'), 
+                        node.child_sem('vp')
+                    )
+
+Note that this is a special case. Quantification is the only application that needs access to a grandchild that I know of.
+
+Giving semantics access to the parse tree node, and hence to a bit of its syntactic and word form basis, can have added benefits. SHRDLU for example contains the interaction
+
+    H: How many things are on top of green cubes?
+    C: I'M NOT SURE WHAT YOU MEAN BY "ON TOP OF" IN THE PHRASE "ON TOP OF GREEN CUBES" .
+
+Where the quoted phrases are taken literally from the input sentence, and would not be readily available to semantics in NLI-GO, for example. I'm not saying this is important, but it crossed my mind.
+
+The other _big_ advantage of this method is that it requires no composition step.
+
 ## 2024-05-05
 
 I started a new Github repository for this project and another one to create the "Github Pages" documentation site for it. I didn't know about this Github service but this is a good time to try it out.

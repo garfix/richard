@@ -13,11 +13,11 @@ class MemoryDb:
         self.store = {}
 
 
-    def assert_record(self, relation: str, record: Record):
-        if not relation in self.store:
-            self.store[relation] = []
+    def assert_record(self, record: Record):
+        if not record.table in self.store:
+            self.store[record.table] = []
 
-        self.store[relation].append(record)
+        self.store[record.table].append(record)
 
 
     def match(self, record: Record) -> list[Record]:
@@ -26,8 +26,8 @@ class MemoryDb:
         """
         result = []
 
-        if record.table in self.store:
-            for r in self.store[record.table]:
+        if record._table in self.store:
+            for r in self.store[record._table]:
                 if record.subsetOf(r):
                     result.append(r)
         

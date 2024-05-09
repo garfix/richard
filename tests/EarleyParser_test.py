@@ -72,5 +72,6 @@ class TestEarleyParser(unittest.TestCase):
         result = parser.parse(grammarRules, ["John", "loves", "Mary"])
         for tree in result.trees:
             print(tree)
+            
         self.assertEqual(len(result.trees), 4)
     

@@ -73,7 +73,6 @@ class EarleyParser:
                 state = chart.states[i][j]
 
                 # check if the entry is parsed completely
-                # print(state)
                 if not state.is_complete():
 
                     # add all entries that have this abstract consequent as their antecedent
@@ -152,7 +151,7 @@ class EarleyParser:
             rule = GrammarRule(
                 RuleConstituent(next_consequent.predicate, next_variables, new_pos_type),
                 [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
-                lambda sem: sem
+                None
             )
 
             scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)

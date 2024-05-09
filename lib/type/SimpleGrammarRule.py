@@ -1,1 +1,1 @@
-SimpleGrammarRule = dict({'syn': str})
+SimpleGrammarRule = dict({'syn': str, 'sem': callable})
