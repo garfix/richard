@@ -10,6 +10,7 @@ class ParseTreeNode:
     children: list[ParseTreeNode]
     form: str
     rule: GrammarRule
+    sem: callable
 
 
     def is_leaf_node(self) -> bool:
@@ -38,7 +39,7 @@ class ParseTreeNode:
         return body
     
     
-    def sem(self, category: str = ""):
+    def child_sem(self, category: str = ""):
         """
         If category is "" it returns the semantics of this node.
         If not empty, it returns the sem of the child with named category.

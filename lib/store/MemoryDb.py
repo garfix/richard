@@ -26,8 +26,8 @@ class MemoryDb:
         """
         result = []
 
-        if record._table in self.store:
-            for r in self.store[record._table]:
+        if record.table in self.store:
+            for r in self.store[record.table]:
                 if record.subsetOf(r):
                     result.append(r)
         

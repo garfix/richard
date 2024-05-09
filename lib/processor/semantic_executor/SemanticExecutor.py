@@ -7,16 +7,16 @@ class SemanticExecutor(Processor):
     """
     Executes the function that forms the meaning of the sentence, and produces its result
     """
-    parser: Processor
+    composer: Processor
 
 
-    def __init__(self, parser: Processor) -> None:
+    def __init__(self, composer: Processor) -> None:
         super().__init__()
-        self.parser = parser    
+        self.composer = composer    
 
     
     def process(self, request: SentenceRequest):
-        root_node = request.get_current_product(self.parser)
-        semantic_function = root_node.rule.sem
-        results = semantic_function(root_node)
+        semantic_function = request.get_current_product(self.composer)
+        print('START EXECUTION')
+        results = semantic_function()
         return results
