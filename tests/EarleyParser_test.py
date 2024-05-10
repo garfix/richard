@@ -67,11 +67,12 @@ class TestEarleyParser(unittest.TestCase):
                 lambda sem: sem
             ),
         ])
-        log = Log(False)
-        parser = EarleyParser(log)
+        parser = EarleyParser()
         result = parser.parse(grammarRules, ["John", "loves", "Mary"])
-        for tree in result.trees:
-            print(tree)
-            
+                    
         self.assertEqual(len(result.trees), 4)
-    
+        self.assertEqual(result.trees[0].inline_str(), "s(np(noun(john 'John')) verb(loves 'loves') np(noun(proper_noun(mary 'Mary'))))")
+        self.assertEqual(result.trees[1].inline_str(), "s(np(noun(proper_noun(john 'John'))) verb(loves 'loves') np(noun(proper_noun(mary 'Mary'))))")
+        self.assertEqual(result.trees[2].inline_str(), "s(np(noun(john 'John')) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
+        self.assertEqual(result.trees[3].inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
+

@@ -10,7 +10,8 @@ def extract_tree_roots(chart: Chart):
     if not gamma_state.end_word_index in chart.completed_states:
         return []
 
-    return create_trees_for_state(chart, gamma_state)
+    gamma_nodes = create_trees_for_state(chart, gamma_state)
+    return [gamma_node.children[0] for gamma_node in gamma_nodes]
 
 
 def create_trees_for_state(chart: Chart, state: ChartState):

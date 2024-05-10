@@ -1,32 +1,15 @@
 import unittest
 
 from lib.Pipeline import Pipeline
-from lib.entity.ParseTreeNode import ParseTreeNode
 from lib.entity.Record import Record
 from lib.entity.SentenceRequest import SentenceRequest
 from lib.processor.parser.BasicParser import BasicParser
 from lib.processor.semantic_composer.SemanticComposer import SemanticComposer
 from lib.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from lib.semantics.commands import find
 from lib.store.MemoryDb import MemoryDb
 
-
-
-def find(quant: tuple[callable, callable], vp: callable) -> list:
-    qp, nbar = quant
-    elements = nbar()
-    range_count = len(elements)
-
-    result = []
-    for element in elements:
-        for e2 in vp(element):
-            result.append(element)
-    result = list(set(result))
-    result_count = len(result)
-    if qp(result_count, range_count):
-        return result
-    else:
-        return []
 
 db = MemoryDb()
 db.assert_record(Record('has_child', {'parent': 'mary', 'child': 'lucy'}))
@@ -45,8 +28,7 @@ class TestQuantifier(unittest.TestCase):
         grammar = [
             { 
                 "syn": "s -> np vp_no_sub", 
-                "sem": lambda np, vp_no_sub: 
-                        lambda: find(np(), vp_no_sub) 
+                "sem": lambda np, vp_no_sub: lambda: find(np(), vp_no_sub) 
             },
             { 
                 "syn": "vp_no_sub -> aux qp child", 
@@ -90,36 +72,6 @@ class TestQuantifier(unittest.TestCase):
             composer,
             executor
         ])
-
-
-
-        # grammar = [
-        #     { "syn": "s -> np vp_no_sub", "sem": lambda node: find(node.child("np").sem(node.child("np")), node.child("vp_no_sub")) },
-        #     { "syn": "vp_no_sub -> aux qp child", "sem": lambda node: find(
-        #         (node.child('qp'), node.child['child']),
-        #         lambda parent: [r.values['child'] for r in db.match('has_child', {'parent': parent})]
-        #     ) },
-        #     { "syn": "np -> qp nbar", "sem": lambda node: (node.child('qp'), node.child('nbar')) },
-        #     { "syn": "qp -> quantifier", "sem": lambda node: node.child("quantifier") },
-        #     { "syn": "quantifier -> det", "sem": lambda node: node.child("det") },
-        #     { "syn": "nbar -> noun", "sem": lambda node: node.child("noun") },
-        #     { "syn": "det -> 'every'", "sem": lambda node: lambda result, range: result == range },
-        #     { "syn": "det -> number", "sem": lambda node: lambda result, range: result == node.child('number').sem() },
-        #     { "syn": "number -> 'two'", "sem": lambda: 2 },
-        #     { "syn": "noun -> 'parent'", "sem": lambda: list(set([r.values['parent'] for r in db.match('has_child', {})])) },
-        #     { "syn": "child -> 'children'", "sem": lambda: list(set([r.values['child'] for r in db.match('has_child', {})])) },
-        #     { "syn": "aux -> 'has'", "sem": None },
-        # ]
-
-        # tokenizer = BasicTokenizer()
-        # parser = BasicParser(grammar, tokenizer)
-        # executor = SemanticExecutor(parser)
-
-        # pipeline = Pipeline([
-        #     tokenizer,
-        #     parser,
-        #     executor
-        # ])
 
         request = SentenceRequest("Every parent has two children")
         pipeline.enter(request)
