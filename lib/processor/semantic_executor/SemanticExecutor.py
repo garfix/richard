@@ -17,6 +17,7 @@ class SemanticExecutor(Processor):
     
     def process(self, request: SentenceRequest):
         semantic_function = request.get_current_product(self.composer)
+        print()
         print('START EXECUTION')
         results = semantic_function()
         return results
