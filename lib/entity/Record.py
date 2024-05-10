@@ -28,6 +28,10 @@ class Record:
     @property
     def values(self):
         return self._values
+    
+
+    def __str__(self):
+        return self._table + " " + str(self._values)
 
 
     def subsetOf(self, other: Record):

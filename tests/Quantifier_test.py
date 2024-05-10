@@ -12,25 +12,7 @@ from lib.store.MemoryDb import MemoryDb
 
 
 
-# def find(quant: tuple[ParseTreeNode, ParseTreeNode], vp: ParseTreeNode) -> list:
-#     print('find')
-#     qp, nbar = quant
-#     elements = nbar.sem(nbar)
-#     range_count = len(elements)
-
-#     result = []
-#     for element in elements:
-#         for e2 in vp.sem(element):
-#             result.append(e2)
-#     result_count = len(result)
-#     quantifier = qp()
-#     if quantifier(result_count, range_count):
-#         return result
-#     else:
-#         return []
-
 def find(quant: tuple[callable, callable], vp: callable) -> list:
-    print('find')
     qp, nbar = quant
     elements = nbar()
     range_count = len(elements)
@@ -41,12 +23,9 @@ def find(quant: tuple[callable, callable], vp: callable) -> list:
             result.append(element)
     result = list(set(result))
     result_count = len(result)
-    print(result_count, result)
     if qp(result_count, range_count):
-        print('correct number')
         return result
     else:
-        print('wrong number')
         return []
 
 db = MemoryDb()
@@ -59,28 +38,40 @@ db.assert_record(Record('has_child', {'parent': 'william', 'child': 'bertrand'})
 
 # qp => dp, detp?
 
-def s(np, vp_no_sub_a): 
-    return lambda: find(np(), vp_no_sub_a)
-
-def has_child(aux, qp, parent):
-    return lambda sub: find(
-        (qp, parent),
-        lambda obj: list(set(db.match(Record('has_child', {'parent': sub, 'child': obj})))))
-
 class TestQuantifier(unittest.TestCase):
    
     def test_quantifier(self):
 
-
         grammar = [
-            { "syn": "s -> np vp_no_sub", "sem": s },
-            { "syn": "vp_no_sub -> aux qp child", "sem": has_child },
-            { "syn": "np -> qp nbar", "sem": lambda qp, nbar: lambda: (qp, nbar) },
-            { "syn": "qp -> quantifier", "sem": lambda quantifier: lambda result, range: quantifier(result, range) },
-            { "syn": "quantifier -> det", "sem": lambda det: lambda result, range: det(result, range) },
+            { 
+                "syn": "s -> np vp_no_sub", 
+                "sem": lambda np, vp_no_sub: 
+                        lambda: find(np(), vp_no_sub) 
+            },
+            { 
+                "syn": "vp_no_sub -> aux qp child", 
+                "sem": lambda aux, qp, parent:
+                        lambda sub: find(
+                            (qp, parent),
+                            lambda obj: list(set(db.match(Record('has_child', {'parent': sub, 'child': obj})))))
+            },
+            { 
+                "syn": "np -> qp nbar", 
+                "sem": lambda qp, nbar:  lambda: (qp, nbar) 
+            },
+            { 
+                "syn": "qp -> det", 
+                "sem": lambda det: lambda result, range: det(result, range) 
+            },
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
-            { "syn": "det -> 'every'", "sem": lambda: lambda result, range: result == range },
-            { "syn": "det -> number", "sem": lambda number: lambda result, range: result == number() },
+            { 
+                "syn": "det -> 'every'", 
+                "sem": lambda: lambda result, range: result == range 
+            },
+            { 
+                "syn": "det -> number", 
+                "sem": lambda number: lambda result, range: result == number() 
+            },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "number -> 'three'", "sem": lambda: lambda: 3 },
             { "syn": "noun -> 'parent'", "sem": lambda: lambda: list(set([r.values['parent'] for r in db.match(Record('has_child', {}))])) },
@@ -132,13 +123,10 @@ class TestQuantifier(unittest.TestCase):
 
         request = SentenceRequest("Every parent has two children")
         pipeline.enter(request)
-
-        result = request.get_alternative_products(executor)
-        print("result: ", result)
-        # self.assertEqual(len(result), 3)
+        result = request.get_current_product(executor)
+        self.assertEqual(len(result), 3)
 
         request = SentenceRequest("Every parent has three children")
         pipeline.enter(request)
-
-        result = request.get_alternative_products(executor)
-        print("result: ", result)
+        result = request.get_current_product(executor)
+        self.assertEqual(len(result), 0)

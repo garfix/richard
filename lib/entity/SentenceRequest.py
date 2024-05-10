@@ -38,4 +38,3 @@ class SentenceRequest:
             return self.current_products[processor]
         else:
             raise Exception("No product available for " + processor.__class__.__name__)
-    

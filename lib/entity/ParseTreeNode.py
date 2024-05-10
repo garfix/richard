@@ -10,8 +10,6 @@ class ParseTreeNode:
     children: list[ParseTreeNode]
     form: str
     rule: GrammarRule
-    sem: callable
-
 
     def is_leaf_node(self) -> bool:
         return len(self.children) == 0
@@ -39,43 +37,3 @@ class ParseTreeNode:
         return body
     
     
-    def child_sem(self, category: str = ""):
-        """
-        If category is "" it returns the semantics of this node.
-        If not empty, it returns the sem of the child with named category.
-        Use "/" to access a deeper child.
-        """
-        if category == "":
-            return self.rule.sem
-
-        node = self
-        for step in category.split("/"):
-            found = False
-            for child in node.children:
-                if child.category == step:
-                    node = child
-                    found = True
-            if not found:
-                raise Exception("No child node " + step + " found for " + node.category)
-        return node.rule.sem
-    
-
-    def child(self, category: str = ""):
-        """
-        If category is "" it returns the semantics of this node.
-        If not empty, it returns the sem of the child with named category.
-        Use "/" to access a deeper child.
-        """
-        if category == "":
-            return self.rule.sem
-
-        node = self
-        for step in category.split("/"):
-            found = False
-            for child in node.children:
-                if child.category == step:
-                    node = child
-                    found = True
-            if not found:
-                raise Exception("No child node " + step + " found for " + node.category)
-        return node

@@ -21,8 +21,7 @@ def create_trees_for_state(chart: Chart, state: ChartState):
             state.rule.antecedent.predicate,
             [],
             state.rule.consequents[0].predicate,
-            state.rule,
-            state.rule.sem
+            state.rule
         ))
     else:
         # the state has one or more child states. in fact, there can be multiple child state sequences
@@ -33,8 +32,7 @@ def create_trees_for_state(chart: Chart, state: ChartState):
                     state.rule.antecedent.predicate,
                     permutation_trees,
                     "",
-                    state.rule,
-                    state.rule.sem
+                    state.rule
                 ))
 
     return trees
