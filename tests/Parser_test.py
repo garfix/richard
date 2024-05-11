@@ -1,9 +1,9 @@
 import unittest
 
-from lib.Pipeline import Pipeline
-from lib.entity.SentenceRequest import SentenceRequest
-from lib.processor.parser.BasicParser import BasicParser
-from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from richard.Pipeline import Pipeline
+from richard.entity.SentenceRequest import SentenceRequest
+from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestParser(unittest.TestCase):
    

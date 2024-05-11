@@ -1,14 +1,14 @@
 import unittest
 
-from lib.Pipeline import Pipeline
-from lib.entity.Record import Record
-from lib.entity.SentenceRequest import SentenceRequest
-from lib.processor.parser.BasicParser import BasicParser
-from lib.processor.semantic_composer.SemanticComposer import SemanticComposer
-from lib.processor.semantic_executor.SemanticExecutor import SemanticExecutor
-from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from lib.semantics.commands import find
-from lib.store.MemoryDb import MemoryDb
+from richard.Pipeline import Pipeline
+from richard.entity.Record import Record
+from richard.entity.SentenceRequest import SentenceRequest
+from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
+from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
+from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from richard.semantics.commands import find
+from richard.store.MemoryDb import MemoryDb
 
 
 class TestQuantifier(unittest.TestCase):

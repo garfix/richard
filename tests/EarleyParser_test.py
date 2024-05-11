@@ -1,11 +1,11 @@
 import unittest
 
-from lib.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
-from lib.entity.GrammarRule import GrammarRule
-from lib.entity.GrammarRules import GrammarRules
-from lib.entity.Log import Log
-from lib.entity.RuleConstituent import RuleConstituent
-from lib.processor.parser.earley.EarleyParser import EarleyParser
+from richard.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
+from richard.entity.GrammarRule import GrammarRule
+from richard.entity.GrammarRules import GrammarRules
+from richard.entity.Log import Log
+from richard.entity.RuleConstituent import RuleConstituent
+from richard.processor.parser.earley.EarleyParser import EarleyParser
 
 class TestEarleyParser(unittest.TestCase):
    

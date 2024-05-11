@@ -1,11 +1,11 @@
 import unittest
 
-from lib.Pipeline import Pipeline
-from lib.entity.SentenceRequest import SentenceRequest
-from lib.processor.language_selector.LanguageSelector import LanguageSelector
-from lib.processor.language_selector.Multilingual import Multilingual
-from lib.processor.parser.BasicParser import BasicParser
-from lib.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from richard.Pipeline import Pipeline
+from richard.entity.SentenceRequest import SentenceRequest
+from richard.processor.language_selector.LanguageSelector import LanguageSelector
+from richard.processor.language_selector.Multilingual import Multilingual
+from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestMultilingual(unittest.TestCase):
    
