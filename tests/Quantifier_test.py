@@ -11,19 +11,17 @@ from lib.semantics.commands import find
 from lib.store.MemoryDb import MemoryDb
 
 
-db = MemoryDb()
-db.assert_record(Record('has_child', {'parent': 'mary', 'child': 'lucy'}))
-db.assert_record(Record('has_child', {'parent': 'mary', 'child': 'bonny'}))
-db.assert_record(Record('has_child', {'parent': 'barbara', 'child': 'john'}))
-db.assert_record(Record('has_child', {'parent': 'barbara', 'child': 'chuck'}))
-db.assert_record(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
-db.assert_record(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
-
-# qp => dp, detp?
-
 class TestQuantifier(unittest.TestCase):
    
     def test_quantifier(self):
+
+        db = MemoryDb()
+        db.assert_record(Record('has_child', {'parent': 'mary', 'child': 'lucy'}))
+        db.assert_record(Record('has_child', {'parent': 'mary', 'child': 'bonny'}))
+        db.assert_record(Record('has_child', {'parent': 'barbara', 'child': 'john'}))
+        db.assert_record(Record('has_child', {'parent': 'barbara', 'child': 'chuck'}))
+        db.assert_record(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
+        db.assert_record(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
 
         grammar = [
             { 
@@ -35,7 +33,7 @@ class TestQuantifier(unittest.TestCase):
                 "sem": lambda aux, qp, parent:
                         lambda sub: find(
                             (qp, parent),
-                            lambda obj: list(set(db.match(Record('has_child', {'parent': sub, 'child': obj})))))
+                            lambda obj: db.match(Record('has_child', {'parent': sub, 'child': obj})))
             },
             { 
                 "syn": "np -> qp nbar", 
@@ -56,8 +54,8 @@ class TestQuantifier(unittest.TestCase):
             },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "number -> 'three'", "sem": lambda: lambda: 3 },
-            { "syn": "noun -> 'parent'", "sem": lambda: lambda: list(set([r.values['parent'] for r in db.match(Record('has_child', {}))])) },
-            { "syn": "child -> 'children'", "sem": lambda: lambda: list(set([r.values['child'] for r in db.match(Record('has_child', {}))])) },
+            { "syn": "noun -> 'parent'", "sem": lambda: lambda: db.match(Record('has_child')).field('parent') },
+            { "syn": "child -> 'children'", "sem": lambda: lambda: db.match(Record('has_child')).field('child') },
             { "syn": "aux -> 'has'", "sem": lambda: lambda: None },
         ]
 

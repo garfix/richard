@@ -1,4 +1,5 @@
 from lib.entity.Record import Record
+from lib.entity.RecordSet import RecordSet
 
 
 class MemoryDb:
@@ -20,16 +21,16 @@ class MemoryDb:
         self.store[record.table].append(record)
 
 
-    def match(self, record: Record) -> list[Record]:
+    def match(self, record: Record) -> RecordSet:
         """
         returns all records from record's table that include record
         """
-        result = []
+        result = RecordSet()
 
         if record.table in self.store:
             for r in self.store[record.table]:
                 if record.subsetOf(r):
-                    result.append(r)
+                    result.add(r)
         
         return result
     
