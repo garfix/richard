@@ -1,14 +1,14 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='richard',
-    version='0.1.1',    
+    version='0.1.4',    
     description='A Natural Language Understanding and Execution library',
     url='https://github.com/garfix/richard',
     author='Patrick van Bergen',
     author_email='patrick.vanbergen@gmail.com',
     license='MIT',
-    packages=['richard'],
+    packages=find_packages(),
     install_requires=[],
 
     classifiers=[
