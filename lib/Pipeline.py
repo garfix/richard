@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from lib.entity.SentenceRequest import SentenceRequest
-from .interface.Processor import Processor
+from .interface.SomeProcessor import SomeProcessor
 
 
 @dataclass(frozen=True)
@@ -14,7 +14,7 @@ class Pipeline:
     Each processor has access to the active alternative interpretations of its predecessors.
     """
     
-    processors: list[Processor]
+    processors: list[SomeProcessor]
 
 
     def enter(self, request: SentenceRequest):

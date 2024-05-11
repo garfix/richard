@@ -1,20 +1,21 @@
-from lib.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from lib.entity.GrammarRules import GrammarRules
+from lib.entity.ParseTreeNode import ParseTreeNode
 from lib.entity.SentenceRequest import SentenceRequest
-from lib.interface.Processor import Processor
+from lib.interface.SomeParser import SomeParser
+from lib.interface.SomeTokenizer import SomeTokenizer
 from lib.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from lib.type.SimpleGrammar import SimpleGrammar
 from .earley.EarleyParser import EarleyParser
 
 
-class BasicParser(Processor):
+class BasicParser(SomeParser):
 
-    tokenizer: Processor
+    tokenizer: SomeTokenizer
     grammar: GrammarRules
     parser: EarleyParser
 
 
-    def __init__(self, grammar: SimpleGrammar, tokenizer: Processor) -> None:
+    def __init__(self, grammar: SimpleGrammar, tokenizer: SomeTokenizer) -> None:
 
         self.tokenizer = tokenizer
 
@@ -24,7 +25,11 @@ class BasicParser(Processor):
             
 
     def process(self, request: SentenceRequest):
-        tokens = request.get_current_product(self.tokenizer)
+        tokens = self.tokenizer.get_tokens(request)
         result = self.parser.parse(self.grammar, tokens)
         return result.trees
+    
+
+    def get_tree(self, request: SentenceRequest) -> ParseTreeNode:
+        return request.get_current_product(self)
     

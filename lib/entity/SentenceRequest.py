@@ -1,4 +1,4 @@
-from lib.interface.Processor import Processor
+from lib.interface.SomeProcessor import SomeProcessor
 
 
 class SentenceRequest:
@@ -11,29 +11,29 @@ class SentenceRequest:
     text: str
 
     # each processor creates one or more products; the pipeline considers these one by one; the current product is kept here
-    current_products: dict[Processor, any] = {}
+    current_products: dict[SomeProcessor, any] = {}
 
     # all alternative products (more than one product suggests ambiguity)
-    alternative_products: dict[Processor, list[any]] = {}
+    alternative_products: dict[SomeProcessor, list[any]] = {}
 
 
     def __init__(self, text: str) -> None:
         self.text = text
 
 
-    def set_alternative_products(self, processor: Processor, alternatives: list[any]):
+    def set_alternative_products(self, processor: SomeProcessor, alternatives: list[any]):
         self.alternative_products[processor] = alternatives
 
 
-    def get_alternative_products(self, processor: Processor) -> list[any]:
+    def get_alternative_products(self, processor: SomeProcessor) -> list[any]:
         return self.alternative_products[processor]
 
 
-    def set_current_product(self, processor: Processor, alternative: any):
+    def set_current_product(self, processor: SomeProcessor, alternative: any):
         self.current_products[processor] = alternative
 
 
-    def get_current_product(self, processor: Processor):
+    def get_current_product(self, processor: SomeProcessor):
         if processor in self.current_products:
             return self.current_products[processor]
         else:

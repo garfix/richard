@@ -6,7 +6,7 @@ from lib.entity.GrammarRules import GrammarRules
 from lib.entity.Log import Log
 from lib.entity.ParseResult import ParseResult
 from lib.entity.RuleConstituent import RuleConstituent
-from lib.interface.Loggable import Loggable
+from lib.interface.SomeLogger import SomeLogger
 from .entity.Chart import Chart
 from .entity.ChartState import ChartState
 from .tree_extract import extract_tree_roots
@@ -19,9 +19,9 @@ class EarleyParser:
     "Speech and Language Processing" (first edition) - Daniel Jurafsky & James H. Martin (Prentice Hall, 2000)
     """
 
-    log: Loggable
+    log: SomeLogger
 
-    def __init__(self, log: Loggable = Log(False)):
+    def __init__(self, log: SomeLogger = Log(False)):
         self.log = log
 
 

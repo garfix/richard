@@ -46,12 +46,12 @@ class TestMultilingual(unittest.TestCase):
         request = SentenceRequest("John loves Mary")
 
         pipeline.enter(request)
-        tree = request.get_current_product(parser)
+        tree = parser.get_product(request)
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
 
         request = SentenceRequest("Jan houdt van Marie")
 
         pipeline.enter(request)
-        tree = request.get_current_product(parser)
+        tree = parser.get_product(request)
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(jan 'Jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'Marie')))))")
         

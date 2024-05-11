@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-class Loggable(ABC):
+
+class SomeLogger(ABC):
     @abstractmethod
     def is_active(self):
         pass

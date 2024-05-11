@@ -73,10 +73,10 @@ class TestQuantifier(unittest.TestCase):
 
         request = SentenceRequest("Every parent has two children")
         pipeline.enter(request)
-        result = request.get_current_product(executor)
-        self.assertEqual(len(result), 3)
+        results = executor.get_results(request)
+        self.assertEqual(len(results), 3)
 
         request = SentenceRequest("Every parent has three children")
         pipeline.enter(request)
-        result = request.get_current_product(executor)
-        self.assertEqual(len(result), 0)
+        results = executor.get_results(request)
+        self.assertEqual(len(results), 0)

@@ -30,6 +30,6 @@ class TestParser(unittest.TestCase):
         request = SentenceRequest("John loves Mary")
         pipeline.enter(request)
 
-        tree = request.get_current_product(parser)
+        tree = parser.get_tree(request)
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
     

@@ -1,21 +1,26 @@
 from lib.entity.ParseTreeNode import ParseTreeNode
 from lib.entity.SentenceRequest import SentenceRequest
-from lib.interface.Processor import Processor
+from lib.interface.SomeProcessor import SomeProcessor
+from lib.interface.SomeSemanticComposer import SomeSemanticComposer
 
 
-class SemanticExecutor(Processor):
+class SemanticExecutor(SomeProcessor):
     """
     Executes the function that forms the meaning of the sentence, and produces its result
     """
-    composer: Processor
+    composer: SomeSemanticComposer
 
 
-    def __init__(self, composer: Processor) -> None:
+    def __init__(self, composer: SomeSemanticComposer) -> None:
         super().__init__()
         self.composer = composer    
 
     
     def process(self, request: SentenceRequest):
-        semantic_function = request.get_current_product(self.composer)
+        semantic_function = self.composer.get_semantic_function(request)
         results = [semantic_function()]
         return results
+
+
+    def get_results(self, request: SentenceRequest) -> list:
+        return request.get_current_product(self)

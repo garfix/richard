@@ -1,23 +1,24 @@
 from lib.entity.ParseTreeNode import ParseTreeNode
 from lib.entity.SentenceRequest import SentenceRequest
-from lib.interface.Processor import Processor
+from lib.interface.SomeParser import SomeParser
+from lib.interface.SomeSemanticComposer import SomeSemanticComposer
 
 
-class SemanticComposer(Processor):
+class SemanticComposer(SomeSemanticComposer):
     """
     Performs semantic composition on the product of the parser
     """
     
-    parser: Processor
+    parser: SomeParser
 
 
-    def __init__(self, parser: Processor) -> None:
+    def __init__(self, parser: SomeParser) -> None:
         super().__init__()
         self.parser = parser    
 
     
     def process(self, request: SentenceRequest):
-        parse_tree = request.get_current_product(self.parser)
+        parse_tree = self.parser.get_tree(request)
         semantic_function = self.compose_semantics(parse_tree)
         return [semantic_function]
     
@@ -28,8 +29,6 @@ class SemanticComposer(Processor):
         for child in node.children:
             if child.form == "":
                 param_count += 1
-
-        # print(node.rule.basic_form(), param_count, sem)
 
         if (param_count == 0):
             return node.rule.sem()
@@ -48,3 +47,6 @@ class SemanticComposer(Processor):
         else:
             raise Exception("Parameter count of " + param_count + " not yet implemented")
     
+
+    def get_semantic_function(self, request: SentenceRequest) -> callable:
+        return request.get_current_product(self)
