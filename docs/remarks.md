@@ -1,3 +1,26 @@
+## 2024-05-12
+
+Passing `node` to the semantic functions made the semantics code __much__ more verbose. And more complicated too, because now the user needed to choose between using a function or a node. The benefit would mainly be handling the np.
+
+When I found another way to handle the np I switched back to semantic composition. I don't execute the `qp` and `nbar` of the `np`, I just group them and pass the group as a value to the parent semantic. The semantics code is much shorter and readable for it.
+
+I created a proof of concept using the sentence "each parent has two children". I needed a database-like structure for the sentence so I created a little in-memory "database".
+
+This is now a typical parsing rule:
+
+    { 
+        "syn": "s -> np vp_no_sub", 
+        "sem": lambda np, vp_no_sub: lambda: find(np(), vp_no_sub) 
+    },
+
+The "syn" (for syntax) is the rewrite rule. "sem" is a plain Python function that takes the semantic functions of its (non-word) children as inputs and returns a function that acts on these child functions. The outer function declares the dependencies (the child semantics) and is executed by the composer to get to the inner function. The inner function then has access to the child semantics in its closure. It is the inner function that is passed as depenency to the parent semantic function.
+
+Seeing this proof-of-concept work made me so enthousiastic that I set up a documentation repository `richard-readthedocs` and website https://richard.readthedocs.io/. I also created a package on the official Python repository PyPi. So we're now on version 0.1.0.
+
+Note that I'm using a term like "vp_no_sub", rather than just "vp". I'm not sure about the wording, but creating variants of `vp` seems like a very good idea, if only because the semantic function of "vp" would take a different number of arguments than the "vp_no_sub", and use them differently.
+
+Now I need to write documentation and work on testing and error handling.
+
 ## 2024-05-09
 
 To handle quantification, have a look at this simplified representation

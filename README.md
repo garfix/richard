@@ -4,9 +4,10 @@ A Natural Language Understanding and Execution library for Python
 
 * Python 3.10 (or higher)
 
-## Test
+## Setup
 
-To run the unit tests:
+To add the project to your virtual environment, use
 
-    python3 -B -m unittest  tests/*.py
+    pip install richard
+
 
