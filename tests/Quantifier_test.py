@@ -30,10 +30,10 @@ class TestQuantifier(unittest.TestCase):
             },
             { 
                 "syn": "vp_no_sub -> aux qp child", 
-                "sem": lambda aux, qp, parent:
-                        lambda sub: find(
-                            (qp, parent),
-                            lambda obj: db.match(Record('has_child', {'parent': sub, 'child': obj})))
+                "sem": lambda aux, qp, child:
+                        lambda subject: find(
+                            (qp, child),
+                            lambda object: db.match(Record('has_child', {'parent': subject, 'child': object})))
             },
             { 
                 "syn": "np -> qp nbar", 
