@@ -24,28 +24,18 @@ class SemanticComposer(SomeSemanticComposer):
     
 
     def compose_semantics(self, node: ParseTreeNode) -> callable:
-
-        param_count = 0
+        # collect the semantic functions of the child nodes
+        child_semantics = []
         for child in node.children:
             if child.form == "":
-                param_count += 1
+                child_semantics.append(self.compose_semantics(child))
 
-        if (param_count == 0):
-            return node.rule.sem()
-        elif (param_count == 1):
-            child1_sem = self.compose_semantics(node.children[0])
-            return node.rule.sem(child1_sem)
-        elif (param_count == 2):
-            child1_sem = self.compose_semantics(node.children[0])
-            child2_sem = self.compose_semantics(node.children[1])
-            return node.rule.sem(child1_sem, child2_sem)
-        elif (param_count == 3):
-            child1_sem = self.compose_semantics(node.children[0])
-            child2_sem = self.compose_semantics(node.children[1])
-            child3_sem = self.compose_semantics(node.children[2])
-            return node.rule.sem(child1_sem, child2_sem, child3_sem)
-        else:
-            raise Exception("Parameter count of " + param_count + " not yet implemented")
+        # create the semantics of this node by executing its (outer) semantic function, passing the 
+        # functions of its children as arguments
+        #
+        # if you're porting this construct to a language that doesn't support list expansion, 
+        # create a switch with a case for each number of arguments (up to 10 or so)
+        return node.rule.sem(*child_semantics)
     
 
     def get_semantic_function(self, request: SentenceRequest) -> callable:
