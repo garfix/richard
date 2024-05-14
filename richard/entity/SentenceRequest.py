@@ -11,14 +11,19 @@ class SentenceRequest:
     text: str
 
     # each processor creates one or more products; the pipeline considers these one by one; the current product is kept here
-    current_products: dict[SomeProcessor, any] = {}
+    current_products: dict[SomeProcessor, any]
 
     # all alternative products (more than one product suggests ambiguity)
-    alternative_products: dict[SomeProcessor, list[any]] = {}
+    alternative_products: dict[SomeProcessor, list[any]]
 
+    # find all ambiguous alternatives (True) or stop at the first (False, default)
+    find_all: bool
 
-    def __init__(self, text: str) -> None:
+    def __init__(self, text: str, find_all: bool = False) -> None:
         self.text = text
+        self.find_all = find_all
+        self.current_products = {}
+        self.alternative_products = {}
 
 
     def set_alternative_products(self, processor: SomeProcessor, alternatives: list[any]):
@@ -26,7 +31,10 @@ class SentenceRequest:
 
 
     def get_alternative_products(self, processor: SomeProcessor) -> list[any]:
-        return self.alternative_products[processor]
+        if processor in self.alternative_products:
+            return self.alternative_products[processor]
+        else:
+            return []
 
 
     def set_current_product(self, processor: SomeProcessor, alternative: any):

@@ -8,6 +8,7 @@ class SemanticExecutor(SomeProcessor):
     """
     Executes the function that forms the meaning of the sentence, and produces its result
     """
+    
     composer: SomeSemanticComposer
 
 

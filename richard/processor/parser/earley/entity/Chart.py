@@ -9,7 +9,7 @@ class Chart:
     root_variables: list[str]
     words: list[str]
     states: list[list[ChartState]]
-    # all states that were completed, by dot position
+    # all states that were completed, indexed by end word index
     completed_states: dict[int, list[ChartState]]
 
 

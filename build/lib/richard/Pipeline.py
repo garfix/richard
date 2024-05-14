@@ -18,10 +18,13 @@ class Pipeline:
 
 
     def enter(self, request: SentenceRequest):
-        self.try_processor(0, request)
+        if request.find_all:
+            self.find_all(0, request)
+        else:
+            self.find_one(0, request)
 
     
-    def try_processor(self, process_index: int, request: SentenceRequest):
+    def find_one(self, process_index: int, request: SentenceRequest) -> bool:
         processor = self.processors[process_index]
         alternatives = processor.process(request)
         request.set_alternative_products(processor, alternatives)
@@ -29,7 +32,21 @@ class Pipeline:
             request.set_current_product(processor, alternative)
             if process_index+1 == len(self.processors):
                 return True
-            success = self.try_processor(process_index+1, request)
+            success = self.find_one(process_index+1, request)
             if success:
                 return True
+        return False
+
+
+    def find_all(self, process_index: int, request: SentenceRequest):
+        processor = self.processors[process_index]
+        alternatives = processor.process(request)
+
+        request.set_alternative_products(processor, 
+            request.get_alternative_products(processor) + alternatives)
+
+        for alternative in alternatives:
+            request.set_current_product(processor, alternative)
+            if process_index+1 < len(self.processors):
+                self.find_all(process_index+1, request)
         return False
