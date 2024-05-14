@@ -29,6 +29,9 @@ class SemanticComposer(SomeSemanticComposer):
         if node.rule.sem is None:
             raise Exception("Rule '" + node.rule.basic_form() + "' is missing key 'sem'")
 
+        if not callable(node.rule.sem):
+            raise Exception("Rule '" + node.rule.basic_form() + "' key 'sem' is not a function")
+
         # collect the semantic functions of the child nodes
         child_semantics = []
         for child in node.children:
