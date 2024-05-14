@@ -19,10 +19,10 @@ class TestExecutor(unittest.TestCase):
             "sem": lambda term1, operator, term2: 
                         lambda: operator(term1, term2) 
             },
-            { "syn": "operator -> 'plus'",  "sem": lambda:  lambda a, b: a() + b() },
-            { "syn": "operator -> 'minus'", "sem": lambda:  lambda a, b: a() - b() },
-            { "syn": "operator -> 'times'",  "sem": lambda:  lambda a, b: a() * b() },
-            { "syn": "operator -> 'divided' 'by'", "sem": lambda:  lambda a, b: a() / b() },
+            { "syn": "operator -> 'plus'",  "sem": lambda: lambda a, b: a() + b() },
+            { "syn": "operator -> 'minus'", "sem": lambda: lambda a, b: a() - b() },
+            { "syn": "operator -> 'times'",  "sem": lambda: lambda a, b: a() * b() },
+            { "syn": "operator -> 'divided' 'by'", "sem": lambda: lambda a, b: a() / b() },
             { "syn": "term -> 'one'", "sem": lambda: lambda: 1 },
             { "syn": "term -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "term -> 'three'", "sem": lambda: lambda: 3 },

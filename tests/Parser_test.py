@@ -33,3 +33,17 @@ class TestParser(unittest.TestCase):
         tree = parser.get_tree(request)
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
     
+
+    def test_syntax_error(self):
+        grammar = [
+            { "syn": "s => proper_noun verb" },
+            { "syn": "proper_noun -> 'mary'" },
+            { "syn": "verb -> 'walks'" },
+        ]
+
+        tokenizer = BasicTokenizer()
+
+        try:
+            parser = BasicParser(grammar, tokenizer)
+        except Exception as e:
+            self.assertEqual(str(e), "Could not parse 'syn' value: s => proper_noun verb")

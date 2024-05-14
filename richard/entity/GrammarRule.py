@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 from richard.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.RuleConstituent import RuleConstituent
-from richard.type.PositionType import PositionType
 
 
 @dataclass(frozen=True)
@@ -30,24 +29,24 @@ class GrammarRule:
 
     def basic_form(self):
 
-        s = self.antecedent.predicate + "("
-        sep2 = ""
-        for variable in self.antecedent.arguments:
-            s += sep2 + variable
-            sep2 = ", "
-        s += ")"
+        s = self.antecedent.predicate #+ "("
+        # sep2 = ""
+        # for variable in self.antecedent.arguments:
+        #     s += sep2 + variable
+        #     sep2 = ", "
+        # s += ")"
 
         s += " -> "
 
         sep = ""
         for i in range(len(self.consequents)):
             if self.consequents[i].position_type == POS_TYPE_RELATION:
-                s += sep + self.consequents[i].predicate + "("
-                sep2 = ""
-                for variable in self.consequents[i].arguments :
-                    s += sep2 + variable
-                    sep2 = ", "
-                s += ")"
+                s += sep + self.consequents[i].predicate # + "("
+                # sep2 = ""
+                # for variable in self.consequents[i].arguments :
+                #     s += sep2 + variable
+                #     sep2 = ", "
+                # s += ")"
             elif self.consequents[i].position_type == POS_TYPE_WORD_FORM:
                 s += sep + "'" + self.consequents[i].predicate + "'"
             else:
