@@ -33,7 +33,7 @@ class TestQuantifier(unittest.TestCase):
                 "sem": lambda aux, qp, child:
                         lambda subject: find(
                             (qp, child),
-                            lambda object: db.match(Record('has_child', {'parent': subject, 'child': object})))
+                            lambda object: db.select(Record('has_child', {'parent': subject, 'child': object})))
             },
             { 
                 "syn": "np -> qp nbar", 
@@ -54,8 +54,8 @@ class TestQuantifier(unittest.TestCase):
             },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "number -> 'three'", "sem": lambda: lambda: 3 },
-            { "syn": "noun -> 'parent'", "sem": lambda: lambda: db.match(Record('has_child')).field('parent') },
-            { "syn": "child -> 'children'", "sem": lambda: lambda: db.match(Record('has_child')).field('child') },
+            { "syn": "noun -> 'parent'", "sem": lambda: lambda: db.select(Record('has_child')).field('parent') },
+            { "syn": "child -> 'children'", "sem": lambda: lambda: db.select(Record('has_child')).field('child') },
             { "syn": "aux -> 'has'", "sem": lambda: lambda: None },
         ]
 

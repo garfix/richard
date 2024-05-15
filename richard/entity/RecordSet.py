@@ -14,6 +14,10 @@ class RecordSet:
         self._records = set()
 
 
+    def __len__(self) -> int:
+        return len(self._records)
+
+
     def add(self, record: Record):
         self._records.add(record)
 

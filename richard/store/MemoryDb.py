@@ -1,8 +1,9 @@
 from richard.entity.Record import Record
 from richard.entity.RecordSet import RecordSet
+from richard.interface.SomeDb import SomeDb
 
 
-class MemoryDb:
+class MemoryDb(SomeDb):
     """
     A simple volatile data store. It indexes Records per table.
     """
@@ -21,7 +22,18 @@ class MemoryDb:
         self.store[record.table].append(record)
 
 
-    def match(self, record: Record) -> RecordSet:
+    def retract_record(self, record: Record):
+        if not record.table in self.store:
+            return
+
+        records = []
+        for r in self.store[record.table]:
+            if not record.subsetOf(r):
+                records.add(r)
+        self.store[record.table] = records
+
+
+    def select(self, record: Record) -> RecordSet:
         """
         returns all records from record's table that include record
         """

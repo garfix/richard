@@ -23,6 +23,10 @@ class Record:
 
     def __str__(self):
         return self.table + " " + str(self.values)
+    
+
+    def is_empty(self) -> bool:
+        return len(self.values) == 0
 
 
     def __hash__(self) -> int:
