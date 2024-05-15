@@ -31,7 +31,7 @@ class PostgresDb(SomeDb):
         return self.connection.cursor()
 
 
-    def assert_record(self, record: Record):
+    def insert(self, record: Record):
         query = "INSERT INTO {} ({}) VALUES ({})".format(
             record.table,
             ",".join(record.values.keys()),
@@ -41,7 +41,7 @@ class PostgresDb(SomeDb):
         self.connection.commit()
 
 
-    def retract_record(self, record: Record):
+    def delete(self, record: Record):
         if record.is_empty():
             query = "DELETE FROM {}".format(record.table)
         else:

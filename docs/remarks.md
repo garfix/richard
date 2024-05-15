@@ -1,3 +1,29 @@
+## 2024-05-15
+
+I need a way to express a noun or adjective in a way that doesn't depend on a specific database or table, as in
+
+    db.select(Record('has_child'))
+
+It needs to be a separate level of abstraction, in order to
+
+- make the grammar more reusable
+
+I can add a new object Domain that accepts databases. One of the challenges is the mapping of knowledge level to db level. Most mappings are simple but here's a mapping that requires 2 relations:
+
+    dom:has_son(A, B) :- parent(B, A) gender(B, 'male');
+
+This code may be do the job:
+
+    domain = Domain()
+    domain.add(MemoryDb(), [
+        { "rel": "has_child", "map": lambda r: r },
+        
+        { "rel": "has_son", "map": lambda r, db: 
+            db.select(Record('parent', {'parent_id': r.values['parent'], 'child_id': r.values['child']})).
+            join(db.select(Record('gender', {'g': 'male'}), ['parent', 'person_id'])) }
+    ])
+
+
 ## 2024-05-12
 
 Passing `node` to the semantic functions made the semantics code __much__ more verbose. And more complicated too, because now the user needed to choose between using a function or a node. The benefit would mainly be handling the np.

@@ -15,14 +15,14 @@ class MemoryDb(SomeDb):
         self.store = {}
 
 
-    def assert_record(self, record: Record):
+    def insert(self, record: Record):
         if not record.table in self.store:
             self.store[record.table] = []
 
         self.store[record.table].append(record)
 
 
-    def retract_record(self, record: Record):
+    def delete(self, record: Record):
         if not record.table in self.store:
             return
 

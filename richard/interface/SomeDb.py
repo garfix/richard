@@ -10,9 +10,9 @@ class SomeDb(ABC):
         pass
 
     @abstractmethod
-    def assert_record(self, record: Record):
+    def insert(self, record: Record):
         pass
 
     @abstractmethod
-    def retract_record(self, record: Record):
+    def delete(self, record: Record):
         pass
