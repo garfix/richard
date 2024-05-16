@@ -1,17 +1,27 @@
 import unittest
 
 from richard.entity.Record import Record
+from richard.store.PostgresDb import PostgresDb
 
 
 class TestPostgresDB(unittest.TestCase):
    
     def test_postgres(self):
         try:
-            from richard.store.PostgresDb import PostgresDb
-            db = PostgresDb('richard', 'patrick', 'test123')
-        except:
-            # psycopg not installed, Postgres not installed, no database "richard" created or table "customer" not created: skip test
-            return
+            import psycopg2
+            from psycopg2.extras import RealDictCursor
+
+            connection = psycopg2.connect(
+                database='richard',
+                host='127.0.0.1',
+                user='patrick',
+                password='test123',
+                port=5432
+            )
+        except ImportError:
+            raise Exception("To use class PostgresDb import package psycopg")
+
+        db = PostgresDb(connection)
         
         # insert
         db.insert(Record('customer', {'id': 1, 'name': 'Jones'}))

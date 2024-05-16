@@ -2,33 +2,22 @@ from richard.entity.Record import Record
 from richard.entity.RecordSet import RecordSet
 from richard.interface.SomeDb import SomeDb
 
-try:
-    import psycopg2
-    from psycopg2.extras import RealDictCursor
-except ImportError:
-    raise Exception("To use class PostgresDb import package psycopg")
-
 
 class PostgresDb(SomeDb):
     """
     A record-based adapter to a PostgreSQL database
     """
 
-    connection: psycopg2.extensions.connection
+    connection: any
 
 
-    def __init__(self, database: str, user: str, password: str, host: str='127.0.0.1', port: int=5432) -> None:
-        self.connection = psycopg2.connect(
-            database=database,
-            host=host,
-            user=user,
-            password=password,
-            port=port,
-            cursor_factory=RealDictCursor
-        )
+    def __init__(self, connection) -> None:
+        self.connection = connection
 
-    def get_cursor(self) -> RealDictCursor:
-        return self.connection.cursor()
+
+    def get_cursor(self):
+        import psycopg2
+        return self.connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
 
     def insert(self, record: Record):
