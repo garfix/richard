@@ -1,6 +1,9 @@
 import unittest
 
+from richard.Domain import Domain
 from richard.Pipeline import Pipeline
+from richard.entity.EntityType import EntityType
+from richard.entity.Relation import Relation
 from richard.entity.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
@@ -23,6 +26,13 @@ class TestQuantifier(unittest.TestCase):
         db.insert(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
         db.insert(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
 
+        domain = Domain([
+            EntityType("parent", lambda: db.select(Record('has_child')).field('parent')),
+            EntityType("child", lambda: db.select(Record('has_child')).field('child')),
+        ], [
+            Relation("has_child", ['parent', 'child'], lambda parent, child: db.select(Record('has_child', {'parent': parent, 'child': child}))),
+        ])
+        
         grammar = [
             { 
                 "syn": "s -> np vp_no_sub", 
@@ -33,7 +43,7 @@ class TestQuantifier(unittest.TestCase):
                 "sem": lambda aux, qp, child:
                         lambda subject: find(
                             (qp, child),
-                            lambda object: db.select(Record('has_child', {'parent': subject, 'child': object})))
+                            lambda object: domain.relation_exists('has_child', [subject, object]))
             },
             { 
                 "syn": "np -> qp nbar", 
@@ -54,8 +64,8 @@ class TestQuantifier(unittest.TestCase):
             },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "number -> 'three'", "sem": lambda: lambda: 3 },
-            { "syn": "noun -> 'parent'", "sem": lambda: lambda: db.select(Record('has_child')).field('parent') },
-            { "syn": "child -> 'children'", "sem": lambda: lambda: db.select(Record('has_child')).field('child') },
+            { "syn": "noun -> 'parent'", "sem": lambda: lambda: domain.get_entity_ids('parent') },
+            { "syn": "child -> 'children'", "sem": lambda: lambda: domain.get_entity_ids('child') },
             { "syn": "aux -> 'has'", "sem": lambda: lambda: None },
         ]
 

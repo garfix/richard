@@ -1,3 +1,54 @@
+## 2024-06-16
+
+The database has an insert and a delete.
+The domain has a select, but not insert and delete.
+
+~~~python
+domain = MyDomain([
+    db1, db2
+])
+domain.select('has_child', {child=2}, 'parent')
+
+class MyDomain
+    def select(self, relation, where_clause, select_clause):
+        if (relation == 'has_child')
+            return self.db1.select()
+~~~            
+
+or
+
+~~~python
+domain = Domain([
+    { 'relation': 'has_child', fields: ['parent', 'child'], 'db': db1, 'map': "(parent, child) -> parent(parent, child) gender(child, 'male')"}
+])
+
+grammar = [
+    { "syn": "child -> 'children'", "sem": lambda: lambda: domain.select('has_child', ['child']) },
+    { 
+        "syn": "vp_no_sub -> aux qp child", 
+        "sem": lambda aux, qp, child:
+                lambda subject: find(
+                    (qp, child),
+                    lambda object: domain.select('has_child', [subject, object])))
+    },
+
+]
+~~~
+
+what about this:
+
+~~~python
+mem_db = MemoryDb()
+
+domain = Domain([
+    Relation("has_child", ['parent', 'child'], lambda parent, child: mem_db.fetch_column('select 1 from has_child where parent_id = %s and child_id = %s')),
+],
+[
+    EntityType("father", lambda: mem_db.fetch_column('select parent_id from has_child hc inner join gender g on ...')),
+])
+~~~
+
+
 ## 2024-05-15
 
 I need a way to express a noun or adjective in a way that doesn't depend on a specific database or table, as in
