@@ -6,7 +6,7 @@ try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
 except ImportError:
-    raise Exception("To use class PostgresDb import psycopg2: pip install psycopg2-binary")
+    raise Exception("To use class PostgresDb import package psycopg")
 
 
 class PostgresDb(SomeDb):

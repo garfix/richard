@@ -16,12 +16,12 @@ class TestQuantifier(unittest.TestCase):
     def test_quantifier(self):
 
         db = MemoryDb()
-        db.assert_record(Record('has_child', {'parent': 'mary', 'child': 'lucy'}))
-        db.assert_record(Record('has_child', {'parent': 'mary', 'child': 'bonny'}))
-        db.assert_record(Record('has_child', {'parent': 'barbara', 'child': 'john'}))
-        db.assert_record(Record('has_child', {'parent': 'barbara', 'child': 'chuck'}))
-        db.assert_record(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
-        db.assert_record(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
+        db.insert(Record('has_child', {'parent': 'mary', 'child': 'lucy'}))
+        db.insert(Record('has_child', {'parent': 'mary', 'child': 'bonny'}))
+        db.insert(Record('has_child', {'parent': 'barbara', 'child': 'john'}))
+        db.insert(Record('has_child', {'parent': 'barbara', 'child': 'chuck'}))
+        db.insert(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
+        db.insert(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
 
         grammar = [
             { 
@@ -33,7 +33,7 @@ class TestQuantifier(unittest.TestCase):
                 "sem": lambda aux, qp, child:
                         lambda subject: find(
                             (qp, child),
-                            lambda object: db.match(Record('has_child', {'parent': subject, 'child': object})))
+                            lambda object: db.select(Record('has_child', {'parent': subject, 'child': object})))
             },
             { 
                 "syn": "np -> qp nbar", 
@@ -54,8 +54,8 @@ class TestQuantifier(unittest.TestCase):
             },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "number -> 'three'", "sem": lambda: lambda: 3 },
-            { "syn": "noun -> 'parent'", "sem": lambda: lambda: db.match(Record('has_child')).field('parent') },
-            { "syn": "child -> 'children'", "sem": lambda: lambda: db.match(Record('has_child')).field('child') },
+            { "syn": "noun -> 'parent'", "sem": lambda: lambda: db.select(Record('has_child')).field('parent') },
+            { "syn": "child -> 'children'", "sem": lambda: lambda: db.select(Record('has_child')).field('child') },
             { "syn": "aux -> 'has'", "sem": lambda: lambda: None },
         ]
 
