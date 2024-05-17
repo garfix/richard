@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
 from richard.entity.Relation import Relation
-from richard.entity.EntityType import EntityType
-from richard.entity.Record import Record
+from richard.entity.Entity import Entity
 
 
 class Domain:
@@ -10,14 +9,14 @@ class Domain:
     This class represents the state of the world, and is the source of truth for the pipeline
     """
 
-    indexed_types: dict[str, EntityType]
+    indexed_entities: dict[str, Entity]
     indexed_relations: dict[str, Relation]
 
 
-    def __init__(self, entity_types: list[EntityType], relations: list[Relation]) -> None:
-        self.indexed_types = {}
-        for type in entity_types:
-            self.indexed_types[type.name] = type
+    def __init__(self, entities: list[Entity], relations: list[Relation]) -> None:
+        self.indexed_entities = {}
+        for type in entities:
+            self.indexed_entities[type.name] = type
 
         self.indexed_relations = {}
         for relation in relations:
@@ -25,10 +24,10 @@ class Domain:
 
 
     def get_entity_ids(self, type_name: str):
-        if not type_name in self.indexed_types:
+        if not type_name in self.indexed_entities:
             raise Exception('No type ' + type_name + " in domain")
         
-        type = self.indexed_types[type_name]
+        type = self.indexed_entities[type_name]
         return type.get_all_ids()
 
 

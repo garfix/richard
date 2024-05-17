@@ -2,7 +2,7 @@ import unittest
 
 from richard.Domain import Domain
 from richard.Pipeline import Pipeline
-from richard.entity.EntityType import EntityType
+from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.entity.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
@@ -27,12 +27,12 @@ class TestQuantifier(unittest.TestCase):
         db.insert(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
 
         domain = Domain([
-            EntityType("parent", lambda: db.select(Record('has_child')).field('parent')),
-            EntityType("child", lambda: db.select(Record('has_child')).field('child')),
+            Entity("parent", lambda: db.select(Record('has_child')).field('parent')),
+            Entity("child", lambda: db.select(Record('has_child')).field('child')),
         ], [
             Relation("has_child", ['parent', 'child'], lambda parent, child: db.select(Record('has_child', {'parent': parent, 'child': child}))),
         ])
-        
+
         grammar = [
             { 
                 "syn": "s -> np vp_no_sub", 

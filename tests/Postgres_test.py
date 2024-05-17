@@ -1,10 +1,14 @@
 import unittest
 
-from richard.entity.Record import Record
-from richard.store.PostgresDb import PostgresDb
+from richard.Domain import Domain
+from richard.entity.Entity import Entity
 
 
 class TestPostgresDB(unittest.TestCase):
+    """
+    To run this test, install psycopg2, set up a PostgreSQL database named "richard",
+    create a table "customer" (with columns id and name) and fill it with (1, 'John') (2, 'Jack')
+    """
    
     def test_postgres(self):
         try:
@@ -16,30 +20,21 @@ class TestPostgresDB(unittest.TestCase):
                 host='127.0.0.1',
                 user='patrick',
                 password='test123',
-                port=5432
+                port=5432,
+                cursor_factory=RealDictCursor
             )
         except ImportError:
-            raise Exception("To use class PostgresDb import package psycopg")
-
-        db = PostgresDb(connection)
+            raise Exception("To run this test, import psycopg")
         
-        # insert
-        db.insert(Record('customer', {'id': 1, 'name': 'Jones'}))
-        db.insert(Record('customer', {'id': 2, 'name': 'Jackson'}))
-        db.insert(Record('customer', {'id': 3, 'name': 'Dodge'}))
+        def get_all_ids(table: str):
+            cursor = connection.cursor()
+            cursor.execute("SELECT id FROM " + table)
+            return [row['id'] for row in cursor.fetchall()]
 
-        # select
-        for row in db.select(Record('customer', {'id': 1})):
-            self.assertEqual(row.values['name'], 'Jones')
+        domain = Domain([
+            Entity('customer', lambda: get_all_ids('customer'))
+        ], [])
 
-        for row in db.select(Record('customer', {'name': 'Jackson'})):
-            self.assertEqual(row.values['id'], 2)
-                         
-        # delete
-        db.delete(Record('customer', {'id': 1}))
-        self.assertEqual(len(db.select(Record('customer'))), 2)
+        self.assertEqual(domain.get_entity_ids('customer'), [1, 2])
 
-        db.delete(Record('customer'))
-        self.assertEqual(len(db.select(Record('customer'))), 0)
-
-
+        

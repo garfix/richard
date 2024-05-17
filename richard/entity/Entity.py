@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class EntityType:
+class Entity:
 
     name: str
     get_all_ids: callable
