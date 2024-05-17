@@ -4,7 +4,7 @@ from richard.Domain import Domain
 from richard.Pipeline import Pipeline
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
-from richard.entity.Record import Record
+from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer

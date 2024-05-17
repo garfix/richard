@@ -1,5 +1,5 @@
-from richard.entity.Record import Record
-from richard.entity.RecordSet import RecordSet
+from richard.store.Record import Record
+from richard.store.RecordSet import RecordSet
 from richard.interface.SomeDb import SomeDb
 
 

@@ -1,4 +1,4 @@
-from richard.entity.Record import Record
+from richard.store.Record import Record
 
 
 class RecordSet:
