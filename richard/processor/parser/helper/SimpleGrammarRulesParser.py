@@ -13,7 +13,7 @@ class SimpleGrammarRulesParser:
 
 
     def __init__(self) -> None:
-        self.re_rule = re.compile("\s*(\w+)\s*->((\s*[\w']+)+)")
+        self.re_rule = re.compile("\s*(\w+)\s*->((\s*[\S]+)+)")
         self.re_space = re.compile("\s+")
 
 
