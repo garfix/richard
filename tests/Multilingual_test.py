@@ -1,7 +1,7 @@
 import unittest
 
 from richard.Pipeline import Pipeline
-from richard.block.FindFirst import FindFirst
+from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.language_selector.LanguageSelector import LanguageSelector
 from richard.processor.language_selector.Multilingual import Multilingual
@@ -39,9 +39,9 @@ class TestMultilingual(unittest.TestCase):
         parser = Multilingual(parsers, language_selector)
 
         pipeline = Pipeline([
-            FindFirst(language_selector),
-            FindFirst(tokenizer),
-            FindFirst(parser)
+            FindOne(language_selector),
+            FindOne(tokenizer),
+            FindOne(parser)
         ])
 
         request = SentenceRequest("John loves Mary")

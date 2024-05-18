@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from richard.block.Succeed import Succeed
 from richard.entity.BlockResult import BlockResult
-from richard.entity.Block import Block
+from richard.entity.ControlBlock import ControlBlock
 from richard.entity.SentenceRequest import SentenceRequest
 
 
@@ -16,7 +16,7 @@ class Pipeline:
     Each processor has access to the active alternative interpretations of its predecessors.
     """
     
-    blocks: list[Block]
+    blocks: list[ControlBlock]
     block_index: int = -1
 
     def __post_init__(self):

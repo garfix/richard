@@ -1,9 +1,9 @@
 from richard.entity.BlockResult import BlockResult
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.entity.Block import Block
+from richard.entity.ControlBlock import ControlBlock
 
 
-class FindFirst(Block):
+class FindOne(ControlBlock):
     """
     This block goes through all alternative products until it finds one that gives no error.
     If no such product could be found, the first error is returned.

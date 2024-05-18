@@ -4,7 +4,8 @@ This library turns a question, statement or command from a ordinary human langua
 
 ## Features
 
-* Python code as semantic attachments to parse rules
+* Python code as semantic attachments to parsing rules
+* A configurable processing pipeline
 * Interaction with any type of database
 
 ## Requires

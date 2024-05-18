@@ -1,10 +1,10 @@
 from richard.constants import NO_RESULTS
 from richard.entity.BlockResult import BlockResult
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.entity.Block import Block
+from richard.entity.ControlBlock import ControlBlock
 
 
-class FindAll(Block):
+class FindAll(ControlBlock):
     """
     This block goes through all alternative products even after one was found that gives no error.
     If no product could be found, however, the first error is returned.

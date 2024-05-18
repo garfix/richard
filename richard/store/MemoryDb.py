@@ -1,9 +1,8 @@
 from richard.store.Record import Record
 from richard.store.RecordSet import RecordSet
-from richard.interface.SomeDb import SomeDb
 
 
-class MemoryDb(SomeDb):
+class MemoryDb:
     """
     A simple volatile data store. It indexes Records per table.
     """

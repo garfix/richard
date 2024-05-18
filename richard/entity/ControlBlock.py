@@ -5,10 +5,10 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
 
 
-class Block:
+class ControlBlock:
 
     processor: SomeProcessor
-    next_block: Block
+    next_block: ControlBlock
 
 
     def __init__(self, processor) -> None:

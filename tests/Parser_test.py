@@ -1,7 +1,7 @@
 import unittest
 
 from richard.Pipeline import Pipeline
-from richard.block.FindFirst import FindFirst
+from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
@@ -24,8 +24,8 @@ class TestParser(unittest.TestCase):
         parser = BasicParser(grammar, tokenizer)
 
         pipeline = Pipeline([
-            FindFirst(tokenizer),
-            FindFirst(parser)
+            FindOne(tokenizer),
+            FindOne(parser)
         ])
 
         request = SentenceRequest("John loves Mary")
