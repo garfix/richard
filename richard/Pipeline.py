@@ -27,30 +27,3 @@ class Pipeline:
     def enter(self, request: SentenceRequest) -> BlockResult:
         return self.blocks[0].process(request)
 
-    
-    # def process(self, block_index: int, request: SentenceRequest) -> bool:
-    #     block = self.blocks[block_index]
-    #     alternatives = block.process(request)
-    #     # request.set_alternative_products(block, alternatives)
-    #     for alternative in alternatives:
-    #         # request.set_current_product(block, alternative)
-    #         if block_index+1 == len(self.blocks):
-    #             return True
-    #         success = self.process(block_index+1, request)
-    #         if success:
-    #             return True
-    #     return False
-
-
-    # def find_all(self, process_index: int, request: SentenceRequest):
-    #     processor = self.blocks[process_index]
-    #     alternatives = processor.process(request)
-
-    #     request.set_alternative_products(processor, 
-    #         request.get_alternative_products(processor) + alternatives)
-
-    #     for alternative in alternatives:
-    #         request.set_current_product(processor, alternative)
-    #         if process_index+1 < len(self.blocks):
-    #             self.find_all(process_index+1, request)
-    #     return False

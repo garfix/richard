@@ -2,7 +2,7 @@ import unittest
 
 from richard.Domain import Domain
 from richard.Pipeline import Pipeline
-from richard.block.FirstSuccess import FirstSuccess
+from richard.block.FindFirst import FindFirst
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.store.Record import Record
@@ -76,10 +76,10 @@ class TestQuantifier(unittest.TestCase):
         executor = SemanticExecutor(composer)
 
         pipeline = Pipeline([
-            FirstSuccess(tokenizer),
-            FirstSuccess(parser),
-            FirstSuccess(composer),
-            FirstSuccess(executor)
+            FindFirst(tokenizer),
+            FindFirst(parser),
+            FindFirst(composer),
+            FindFirst(executor)
         ])
 
         request = SentenceRequest("Every parent has two children")

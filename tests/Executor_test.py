@@ -2,7 +2,7 @@ import unittest
 
 from richard.Pipeline import Pipeline
 from richard.block.FindAll import FindAll
-from richard.block.FirstSuccess import FirstSuccess
+from richard.block.FindFirst import FindFirst
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -37,10 +37,10 @@ class TestExecutor(unittest.TestCase):
         executor = SemanticExecutor(composer)
 
         pipeline = Pipeline([
-            FirstSuccess(tokenizer),
-            FirstSuccess(parser),
-            FirstSuccess(composer),
-            FirstSuccess(executor)
+            FindFirst(tokenizer),
+            FindFirst(parser),
+            FindFirst(composer),
+            FindFirst(executor)
         ])
 
         request = SentenceRequest("What is three plus four")
@@ -51,13 +51,12 @@ class TestExecutor(unittest.TestCase):
         # test ambiguous sentence with 2 readings (that exposed an error in the parser, now solved)
 
         pipeline = Pipeline([
-            FirstSuccess(tokenizer),
-            FirstSuccess(parser),
+            FindFirst(tokenizer),
+            FindAll(parser),
             FindAll(composer),
             FindAll(executor)
         ])
         request = SentenceRequest("Calculate three plus four times two")
-        result = pipeline.enter(request)
-        print(result.products)
+        pipeline.enter(request)
 
         self.assertEqual(request.get_alternative_products(executor), [14, 11])

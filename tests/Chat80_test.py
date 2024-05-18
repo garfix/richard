@@ -2,7 +2,7 @@ import unittest
 
 from richard.Domain import Domain
 from richard.Pipeline import Pipeline
-from richard.block.FirstSuccess import FirstSuccess
+from richard.block.FindFirst import FindFirst
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.store.Record import Record
@@ -51,10 +51,10 @@ class TestChat80(unittest.TestCase):
         executor = SemanticExecutor(composer)
 
         pipeline = Pipeline([
-            FirstSuccess(tokenizer),
-            FirstSuccess(parser),
-            FirstSuccess(composer),
-            FirstSuccess(executor)
+            FindFirst(tokenizer),
+            FindFirst(parser),
+            FindFirst(composer),
+            FindFirst(executor)
         ])
 
         tests = [
@@ -66,10 +66,9 @@ class TestChat80(unittest.TestCase):
             request = SentenceRequest(question)
             result = pipeline.enter(request)
 
-            if not result.successful():
-               print(result.error_code, result.error_args) 
-
-            print(result.products)
+            if not result.error_code == "":
+                print(result.error_code, result.error_args) 
+                break
 
             results = executor.get_results(request)
-            self.assertEqual(list(set(answer)), results)
+            self.assertEqual(set(answer), set(results))

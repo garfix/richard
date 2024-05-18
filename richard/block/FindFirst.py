@@ -4,10 +4,10 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Block import Block
 
 
-class FindAll(Block):
+class FindFirst(Block):
     """
-    This block goes through all alternative products even after one was found that gives no error.
-    If no product could be found, however, the first error is returned.
+    This block goes through all alternative products until it finds one that gives no error.
+    If no such product could be found, the first error is returned.
     """
 
     def process(self, request: SentenceRequest) -> BlockResult:
@@ -15,26 +15,27 @@ class FindAll(Block):
         if result.error_code != '':
             return BlockResult(result.error_code, result.error_args)
 
+        request.set_alternative_products(self.processor, result.products)
+
         error_code = ""
         error_args = []
 
-        request.set_alternative_products(self.processor, 
-            request.get_alternative_products(self.processor) + result.products)
-
-        success = False
         for product in result.products:
 
             request.set_current_product(self.processor, product)
-
+          
             if self.next_block:
                 next_block_result = self.next_block.process(request)
-                success = success or next_block_result.error_code == ""
+                success = next_block_result.error_code == ""
                 if next_block_result.error_code != "" and error_code == "":
                     error_code = next_block_result.error_code
                     error_args = next_block_result.error_args
-           
-        if success:
-            return BlockResult("", [])    
-        else:
-            return BlockResult(error_code, error_args)
+            else:
+                success = True
+
+            if success:
+                return BlockResult('', [])
+            
+        return BlockResult(error_code, error_args)
+
     

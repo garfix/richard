@@ -1,7 +1,7 @@
 import unittest
 
 from richard.Pipeline import Pipeline
-from richard.block.FirstSuccess import FirstSuccess
+from richard.block.FindFirst import FindFirst
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -21,9 +21,9 @@ class TestComposer(unittest.TestCase):
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FirstSuccess(tokenizer),
-            FirstSuccess(parser),
-            FirstSuccess(composer),
+            FindFirst(tokenizer),
+            FindFirst(parser),
+            FindFirst(composer),
         ])
 
         exception_occurred = False
@@ -48,9 +48,9 @@ class TestComposer(unittest.TestCase):
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FirstSuccess(tokenizer),
-            FirstSuccess(parser),
-            FirstSuccess(composer),
+            FindFirst(tokenizer),
+            FindFirst(parser),
+            FindFirst(composer),
         ])
 
         exception_occurred = False
@@ -75,9 +75,9 @@ class TestComposer(unittest.TestCase):
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FirstSuccess(tokenizer),
-            FirstSuccess(parser),
-            FirstSuccess(composer),
+            FindFirst(tokenizer),
+            FindFirst(parser),
+            FindFirst(composer),
         ])
 
         exception_occurred = False
