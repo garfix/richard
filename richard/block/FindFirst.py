@@ -1,4 +1,3 @@
-from richard.constants import NO_RESULTS
 from richard.entity.BlockResult import BlockResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Block import Block
@@ -9,6 +8,7 @@ class FindFirst(Block):
     This block goes through all alternative products until it finds one that gives no error.
     If no such product could be found, the first error is returned.
     """
+    
 
     def process(self, request: SentenceRequest) -> BlockResult:
         result = self.processor.process(request)
@@ -24,17 +24,13 @@ class FindFirst(Block):
 
             request.set_current_product(self.processor, product)
           
-            if self.next_block:
-                next_block_result = self.next_block.process(request)
-                success = next_block_result.error_code == ""
-                if next_block_result.error_code != "" and error_code == "":
-                    error_code = next_block_result.error_code
-                    error_args = next_block_result.error_args
+            next_block_result = self.next_block.process(request)
+            if next_block_result.error_code == "":
+               # first successful product found: quit
+               return BlockResult('', [])
             else:
-                success = True
-
-            if success:
-                return BlockResult('', [])
+                error_code = next_block_result.error_code
+                error_args = next_block_result.error_args
             
         return BlockResult(error_code, error_args)
 

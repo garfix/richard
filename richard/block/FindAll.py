@@ -18,6 +18,7 @@ class FindAll(Block):
         error_code = ""
         error_args = []
 
+        # the essence of this block: collect all products
         request.set_alternative_products(self.processor, 
             request.get_alternative_products(self.processor) + result.products)
 
@@ -26,12 +27,11 @@ class FindAll(Block):
 
             request.set_current_product(self.processor, product)
 
-            if self.next_block:
-                next_block_result = self.next_block.process(request)
-                success = success or next_block_result.error_code == ""
-                if next_block_result.error_code != "" and error_code == "":
-                    error_code = next_block_result.error_code
-                    error_args = next_block_result.error_args
+            next_block_result = self.next_block.process(request)
+            success = success or next_block_result.error_code == ""
+            if next_block_result.error_code != "" and error_code == "":
+                error_code = next_block_result.error_code
+                error_args = next_block_result.error_args
            
         if success:
             return BlockResult("", [])    

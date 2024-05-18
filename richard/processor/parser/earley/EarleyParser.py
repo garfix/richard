@@ -4,7 +4,6 @@ from richard.constants import TERMINAL, CATEGORY_PROPER_NOUN, NO_SENTENCE, NOT_U
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.Log import Log
-from richard.entity.ParseResult import ParseResult
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.RuleConstituent import RuleConstituent
 from richard.interface.SomeLogger import SomeLogger

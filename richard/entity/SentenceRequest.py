@@ -15,6 +15,7 @@ class SentenceRequest:
 
     # all alternative products (more than one product suggests ambiguity)
     alternative_products: dict[SomeProcessor, list[any]]
+    
 
     def __init__(self, text: str) -> None:
         self.text = text
