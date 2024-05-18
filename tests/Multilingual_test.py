@@ -1,6 +1,7 @@
 import unittest
 
 from richard.Pipeline import Pipeline
+from richard.block.FirstSuccess import FirstSuccess
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.language_selector.LanguageSelector import LanguageSelector
 from richard.processor.language_selector.Multilingual import Multilingual
@@ -38,9 +39,9 @@ class TestMultilingual(unittest.TestCase):
         parser = Multilingual(parsers, language_selector)
 
         pipeline = Pipeline([
-            language_selector,
-            tokenizer,
-            parser
+            FirstSuccess(language_selector),
+            FirstSuccess(tokenizer),
+            FirstSuccess(parser)
         ])
 
         request = SentenceRequest("John loves Mary")

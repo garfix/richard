@@ -1,4 +1,5 @@
 from richard.entity.ParseTreeNode import ParseTreeNode
+from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
@@ -17,10 +18,10 @@ class SemanticExecutor(SomeProcessor):
         self.composer = composer    
 
     
-    def process(self, request: SentenceRequest):
+    def process(self, request: SentenceRequest) -> ProcessResult:
         semantic_function = self.composer.get_semantic_function(request)
         results = [semantic_function()]
-        return results
+        return ProcessResult(results, "", [])
 
 
     def get_results(self, request: SentenceRequest) -> list:

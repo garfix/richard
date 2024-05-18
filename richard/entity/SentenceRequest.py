@@ -16,12 +16,8 @@ class SentenceRequest:
     # all alternative products (more than one product suggests ambiguity)
     alternative_products: dict[SomeProcessor, list[any]]
 
-    # find all ambiguous alternatives (True) or stop at the first (False, default)
-    find_all: bool
-
-    def __init__(self, text: str, find_all: bool = False) -> None:
+    def __init__(self, text: str) -> None:
         self.text = text
-        self.find_all = find_all
         self.current_products = {}
         self.alternative_products = {}
 

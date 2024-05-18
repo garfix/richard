@@ -1,5 +1,6 @@
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.ParseTreeNode import ParseTreeNode
+from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeParser import SomeParser
 from richard.interface.SomeTokenizer import SomeTokenizer
@@ -24,10 +25,9 @@ class BasicParser(SomeParser):
         self.parser = EarleyParser()
             
 
-    def process(self, request: SentenceRequest):
+    def process(self, request: SentenceRequest) -> ProcessResult:
         tokens = self.tokenizer.get_tokens(request)
-        result = self.parser.parse(self.grammar, tokens)
-        return result.trees
+        return self.parser.parse(self.grammar, tokens)
     
 
     def get_tree(self, request: SentenceRequest) -> ParseTreeNode:

@@ -1,3 +1,4 @@
+from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeLanguageSelector import SomeLanguageSelector
 from richard.interface.SomeProcessor import SomeProcessor
@@ -18,7 +19,7 @@ class Multilingual(SomeProcessor):
         self.language_selector = language_selector
 
         
-    def process(self, request: SentenceRequest):
+    def process(self, request: SentenceRequest) -> ProcessResult:
 
         locale = self.language_selector.get_locale(request)
 

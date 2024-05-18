@@ -1,4 +1,5 @@
 import re
+from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeTokenizer import SomeTokenizer
 
@@ -13,9 +14,9 @@ class BasicTokenizer(SomeTokenizer):
         super().__init__()
         self.token_expression = re.compile(self.BASIC_TOKEN_RE)
 
-    def process(self, request: SentenceRequest):
+    def process(self, request: SentenceRequest) -> ProcessResult:
         tokens = self.token_expression.findall(request.text)
-        return [tokens]
+        return ProcessResult([tokens], "", [])
 
 
     def get_tokens(self, request: SentenceRequest) -> list[str]:

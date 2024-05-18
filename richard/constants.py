@@ -7,6 +7,7 @@ WHICH_ONE = "Which one?"
 UNKNOWN_WORD = "Unknown word: %s"
 NO_SENTENCE = "No sentence given"
 NOT_UNDERSTOOD = "Sorry, I don't understand"
+NO_RESULTS = "No results"
 
 POS_TYPE_RELATION = "relation"
 POS_TYPE_WORD_FORM = "word-form"

@@ -5,6 +5,7 @@ from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.Log import Log
 from richard.entity.ParseResult import ParseResult
+from richard.entity.ProcessResult import ProcessResult
 from richard.entity.RuleConstituent import RuleConstituent
 from richard.interface.SomeLogger import SomeLogger
 from .entity.Chart import Chart
@@ -25,13 +26,13 @@ class EarleyParser:
         self.log = log
 
 
-    def parse(self, grammar_rules: GrammarRules, tokens: list[str]) -> ParseResult:
+    def parse(self, grammar_rules: GrammarRules, tokens: list[str]) -> ProcessResult:
 
         chart = self.buildChart(grammar_rules, tokens, "s", ["P"])
 
         rootNodes = extract_tree_roots(chart)
         error = ""
-        errorArg = ""
+        error_args = []
 
         if len(rootNodes) == 0:
 
@@ -39,18 +40,18 @@ class EarleyParser:
 
             if nextWord != "":
                 error = UNKNOWN_WORD
-                errorArg = nextWord
+                error_args = [nextWord]
             elif len(tokens) == 0:
                 error = NO_SENTENCE
-                errorArg = ""
+                error_args = []
             else:
                 error = NOT_UNDERSTOOD
-                errorArg = ""
+                error_args = []
 
-        return ParseResult(
-            trees=rootNodes,
-            error=error,
-            error_arg=errorArg,
+        return ProcessResult(
+            products=rootNodes,
+            error_code=error,
+            error_args=error_args,
         )
     
 

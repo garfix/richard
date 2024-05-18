@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from richard.entity.ProcessResult import ProcessResult
+
 
 """
 Every processor needs to have access to the current alternative interpretation of its predecessor.
@@ -8,5 +10,5 @@ To this end it must inject these processors as dependencies. The dependency serv
 """
 class SomeProcessor(ABC):
     @abstractmethod
-    def process(self, request): # sorry, can't annotate type, because of circular dependency
+    def process(self, request) -> ProcessResult: # sorry, can't annotate type, because of circular dependency
         pass
