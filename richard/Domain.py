@@ -34,6 +34,6 @@ class Domain:
     def relation_exists(self, type_name: str, field_values: list[any]):
         if not type_name in self.indexed_relations:
             raise Exception('No relation ' + type_name + " in domain")
-        
+   
         relation = self.indexed_relations[type_name]
         return relation.get(*field_values)

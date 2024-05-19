@@ -21,3 +21,6 @@ def find(np: tuple[callable, callable], vp: callable) -> list:
     else:
         return []
     
+
+def exists(result_count, range_count):
+    return result_count > 0
