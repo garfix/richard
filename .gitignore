@@ -1,4 +1,5 @@
 __pycache__
 venv
 richard.egg-info
+dist
 build
