@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='richard',
-    version='0.1.0',    
+    version='0.2.0',    
     description='A Natural Language Understanding and Execution library',
     url='https://github.com/garfix/richard',
     author='Patrick van Bergen',
