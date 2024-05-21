@@ -1,4 +1,29 @@
-## 2024-06-16
+## 2024-05-20
+
+    What is the capital of Greece?
+    Of which city is Athens the capitol?
+
+Relations between things. No good to iterate over all capitals.
+
+I need a query that can be modified based on the context:
+
+"capital of"
+
+    select country_id, capital_id from country cn inner join city ci on ci.country_id = cn.id [where cn.id = 15]
+
+"whose capital is"    
+
+    select country_id, capital_id from country cn inner join city ci on ci.country_id = cn.id [where ci.id = 15]
+
+A relation expressing a verb, used by `find`, will need both where clauses    
+
+Only the where-clause changes.
+
+## 2024-05-19
+
+I added control blocks and release version 0.2.0. I'm renaming the good old `quantifier phrase` to `determiner` (not `dp`, because this has a different connotation).
+
+## 2024-05-16
 
 The database has an insert and a delete.
 The domain has a select, but not insert and delete.
