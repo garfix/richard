@@ -19,7 +19,8 @@ class TestChat80(unittest.TestCase):
     """
     Mimics a Chat80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
     Topics:
-    - aggregation
+    - attributes ('capital of')
+    - aggregation ('largest')
     - extraposition (long distance despendencies)
     - relative clauses
     """

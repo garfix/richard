@@ -51,4 +51,7 @@ class Domain:
             for f in self.select(relation, values):
                 results.append(f[0])
 
-        return results
+        if dnp.determiner(len(results), len(elements)):
+            return results
+        else:
+            return []
