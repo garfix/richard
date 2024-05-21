@@ -91,7 +91,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
 
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
-            { "syn": "nbar -> attr np", "sem": lambda rel, np: lambda: domain.search_first(rel(), np()) },
+            { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
             { "syn": "det -> 'the'", "sem": lambda: exists },
 
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
@@ -101,7 +101,7 @@ class TestChat80(unittest.TestCase):
                     lambda object: 
                         domain.relation_exists('borders', [subject, object]) },
 
-            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda: 'capital_of' },
+            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: domain.search_first('capital_of', np()) },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: ['afghanistan'] },
