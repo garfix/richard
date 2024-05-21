@@ -11,7 +11,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import exists, find, dnp
+from richard.semantics.commands import exists, filter, dnp
 from richard.store.MemoryDb import MemoryDb
 
 
@@ -36,8 +36,6 @@ class TestChat80(unittest.TestCase):
         db.insert(Record('country', {'id': 'china'}))
         db.insert(Record('country', {'id': 'upper_volta', 'region': 'west_africa', 'lat': 12, 'long': 2, 'area': 105.869, 'population': 5.740, 'capital': 'ouagadougou', 'currency': 'cfa_franc'}))
 
-        db.insert(Record('city', {'id': 'ouagadougou', 'country': 'upper_volta'}))
-
         db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))
 
 
@@ -47,8 +45,8 @@ class TestChat80(unittest.TestCase):
                 table = "borders"
                 columns = ["country_id1", "country_id2"]
             elif relation.name == "capital_of":
-                table = "city"
-                columns = ["id", "country"]
+                table = "country"
+                columns = ["capital", "id"]
 
             where = {}
             for i, field in enumerate(values):
@@ -75,7 +73,7 @@ class TestChat80(unittest.TestCase):
         grammar = [
             { 
                 "syn": "s -> 'what' 'is' np '?'", 
-                "sem": lambda np: lambda: find(np())
+                "sem": lambda np: lambda: filter(np())
             },
             { 
                 "syn": "s -> 'what' nbar 'are' 'there' '?'", 
@@ -83,17 +81,17 @@ class TestChat80(unittest.TestCase):
             },
             { 
                 "syn": "s -> 'does' np vp_no_sub '?'", 
-                "sem": lambda np, vp_no_sub: lambda: find(np(), vp_no_sub)
+                "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub)
             },
             { 
                 "syn": "vp_no_sub -> tv np", 
-                "sem": lambda tv, np: lambda subject: find(np(), tv(subject))
+                "sem": lambda tv, np: lambda subject: filter(np(), tv(subject))
             },
             { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
 
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
-            { "syn": "nbar -> rel np", "sem": lambda rel, np: lambda: domain.search(rel(), np(), 1) },
+            { "syn": "nbar -> attr np", "sem": lambda rel, np: lambda: domain.search_first(rel(), np()) },
             { "syn": "det -> 'the'", "sem": lambda: exists },
 
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
@@ -103,7 +101,7 @@ class TestChat80(unittest.TestCase):
                     lambda object: 
                         domain.relation_exists('borders', [subject, object]) },
 
-            { "syn": "rel -> 'capital' 'of'", "sem": lambda: lambda: 'capital_of' },
+            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda: 'capital_of' },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: ['afghanistan'] },

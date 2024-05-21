@@ -11,7 +11,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import find, dnp
+from richard.semantics.commands import filter, dnp
 from richard.store.MemoryDb import MemoryDb
 
 
@@ -37,12 +37,12 @@ class TestFind(unittest.TestCase):
         grammar = [
             { 
                 "syn": "s -> np vp_no_sub", 
-                "sem": lambda np, vp_no_sub: lambda: find(np(), vp_no_sub) 
+                "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub) 
             },
             { 
                 "syn": "vp_no_sub -> aux det child", 
                 "sem": lambda aux, det, child:
-                        lambda subject: find(
+                        lambda subject: filter(
                             dnp(det, child),
                             lambda object: domain.relation_exists('has_child', [subject, object]))
             },

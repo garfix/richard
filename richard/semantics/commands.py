@@ -13,7 +13,7 @@ class dnp:
     nbar: callable
 
 
-def find(dnp: dnp, vp: callable = None) -> list:
+def filter(dnp: dnp, vp: callable = None) -> list:
     """
     Result consists of all elements in dnp.nbar that satisfy vp
     If the number of results agrees with dnp.determiner, results are returned. If not, an empty list

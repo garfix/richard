@@ -42,15 +42,13 @@ class Domain:
         relation = self.indexed_relations[type_name]
         return self.select(relation, field_values)
 
-    def search(self, relation_name: str, dnp: dnp, value_index: int):
+    def search_first(self, relation_name: str, dnp: dnp):
         elements = dnp.nbar()
         relation = self.indexed_relations[relation_name]
-        other_index = 0 if value_index == 1 else 0
         results = []
         for e in elements:
-            values = [None, None]
-            values[value_index] = e
+            values = [None, e]
             for f in self.select(relation, values):
-                results.append(f[other_index])
+                results.append(f[0])
 
         return results
