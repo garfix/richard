@@ -6,4 +6,3 @@ class Relation:
 
     name: str
     fields: list[str]
-    get: callable

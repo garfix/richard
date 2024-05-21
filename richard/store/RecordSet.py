@@ -37,3 +37,17 @@ class RecordSet:
             if field in record.values:
                 values.add(record.values[field])
         return list(values)
+
+
+    def fields(self, fields: list[str]) -> list:
+        """
+        Returns a list with all distinct values of field
+        """
+        result = []
+        for record in self._records:
+            values = []
+            for field in fields:
+                values.append(record.values[field])
+            result.append(values)
+        return result
+    

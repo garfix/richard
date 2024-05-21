@@ -11,13 +11,13 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import find
+from richard.semantics.commands import find, dnp
 from richard.store.MemoryDb import MemoryDb
 
 
-class TestQuantifier(unittest.TestCase):
+class TestFind(unittest.TestCase):
    
-    def test_quantifier(self):
+    def test_find(self):
 
         db = MemoryDb()
         db.insert(Record('has_child', {'parent': 'mary', 'child': 'lucy'}))
@@ -40,27 +40,27 @@ class TestQuantifier(unittest.TestCase):
                 "sem": lambda np, vp_no_sub: lambda: find(np(), vp_no_sub) 
             },
             { 
-                "syn": "vp_no_sub -> aux qp child", 
-                "sem": lambda aux, qp, child:
+                "syn": "vp_no_sub -> aux det child", 
+                "sem": lambda aux, det, child:
                         lambda subject: find(
-                            (qp, child),
+                            dnp(det, child),
                             lambda object: domain.relation_exists('has_child', [subject, object]))
             },
             { 
-                "syn": "np -> qp nbar", 
-                "sem": lambda qp, nbar:  lambda: (qp, nbar) 
+                "syn": "np -> det nbar", 
+                "sem": lambda det, nbar:  lambda: dnp(det, nbar) 
             },
             { 
-                "syn": "qp -> det", 
-                "sem": lambda det: lambda result, range: det(result, range) 
+                "syn": "det -> quantifier", 
+                "sem": lambda quantifier: lambda result, range: quantifier(result, range) 
             },
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { 
-                "syn": "det -> 'every'", 
+                "syn": "quantifier -> 'every'", 
                 "sem": lambda: lambda result, range: result == range 
             },
             { 
-                "syn": "det -> number", 
+                "syn": "quantifier -> number", 
                 "sem": lambda number: lambda result, range: result == number() 
             },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
