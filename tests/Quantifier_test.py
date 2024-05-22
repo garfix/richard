@@ -1,6 +1,6 @@
 import unittest
 
-from richard.Domain import Domain
+from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.entity.Entity import Entity
@@ -27,7 +27,7 @@ class TestFind(unittest.TestCase):
         db.insert(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
         db.insert(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
 
-        domain = Domain([
+        domain = Model([
             Entity("parent", lambda: db.select(Record('has_child')).field('parent')),
             Entity("child", lambda: db.select(Record('has_child')).field('child')),
         ], [

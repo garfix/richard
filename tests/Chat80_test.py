@@ -1,6 +1,6 @@
 import unittest
 
-from richard.Domain import Domain
+from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.entity.Entity import Entity
@@ -60,7 +60,7 @@ class TestChat80(unittest.TestCase):
 
         # domain
 
-        domain = Domain([
+        domain = Model([
             Entity("river", lambda: db.select(Record('river')).field('id')),
             Entity("country", lambda: db.select(Record('country')).field('id')),
             Entity("vity", lambda: db.select(Record('city')).field('id')),

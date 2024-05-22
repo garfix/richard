@@ -1,6 +1,6 @@
 import unittest
 
-from richard.Domain import Domain
+from richard.Model import Model
 from richard.entity.Entity import Entity
 
 
@@ -36,7 +36,7 @@ class TestPostgresDB(unittest.TestCase):
             cursor.execute("SELECT id FROM " + table)
             return [row['id'] for row in cursor.fetchall()]
 
-        domain = Domain([
+        domain = Model([
             Entity('customer', lambda: get_all_ids('customer'))
         ], [])
 
