@@ -58,9 +58,9 @@ class TestChat80(unittest.TestCase):
             return db.select(Record(table, where)).fields(columns)
 
 
-        # domain
+        # model
 
-        domain = Model([
+        model = Model([
             Entity("river", lambda: db.select(Record('river')).field('id')),
             Entity("country", lambda: db.select(Record('country')).field('id')),
             Entity("vity", lambda: db.select(Record('city')).field('id')),
@@ -96,13 +96,13 @@ class TestChat80(unittest.TestCase):
             { "syn": "det -> 'the'", "sem": lambda: exists },
 
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
-            { "syn": "noun -> 'rivers'", "sem": lambda: lambda: domain.get_entity_ids('river') },
+            { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_ids('river') },
             { "syn": "tv -> 'border'", "sem": lambda: 
                 lambda subject: 
                     lambda object: 
-                        domain.relation_exists('borders', [subject, object]) },
+                        model.relation_exists('borders', [subject, object]) },
 
-            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: domain.search_first('capital_of', np()) },
+            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.search_first('capital_of', np()) },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: ['afghanistan'] },

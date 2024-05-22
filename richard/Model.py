@@ -29,7 +29,7 @@ class Model:
 
     def get_entity_ids(self, type_name: str):
         if not type_name in self.entities:
-            raise Exception('No type ' + type_name + " in domain")
+            raise Exception('No type ' + type_name + " in model")
         
         type = self.entities[type_name]
         return type.get_all_ids()
@@ -37,14 +37,14 @@ class Model:
 
     def relation_exists(self, relation_name: str, field_values: list[any]):
         if not relation_name in self.relations:
-            raise Exception('No relation ' + relation_name + " in domain")
+            raise Exception('No relation ' + relation_name + " in model")
           
         relation = self.relations[relation_name]
         return self.select(relation, field_values)
 
     def search_first(self, relation_name: str, dnp: dnp):
         if not relation_name in self.relations:
-            raise Exception('No relation ' + relation_name + " in domain")
+            raise Exception('No relation ' + relation_name + " in model")
 
         elements = dnp.nbar()
         relation = self.relations[relation_name]

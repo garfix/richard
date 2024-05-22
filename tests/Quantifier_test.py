@@ -27,7 +27,7 @@ class TestFind(unittest.TestCase):
         db.insert(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
         db.insert(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
 
-        domain = Model([
+        model = Model([
             Entity("parent", lambda: db.select(Record('has_child')).field('parent')),
             Entity("child", lambda: db.select(Record('has_child')).field('child')),
         ], [
@@ -44,7 +44,7 @@ class TestFind(unittest.TestCase):
                 "sem": lambda aux, det, child:
                         lambda subject: filter(
                             dnp(det, child),
-                            lambda object: domain.relation_exists('has_child', [subject, object]))
+                            lambda object: model.relation_exists('has_child', [subject, object]))
             },
             { 
                 "syn": "np -> det nbar", 
@@ -65,8 +65,8 @@ class TestFind(unittest.TestCase):
             },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "number -> 'three'", "sem": lambda: lambda: 3 },
-            { "syn": "noun -> 'parent'", "sem": lambda: lambda: domain.get_entity_ids('parent') },
-            { "syn": "child -> 'children'", "sem": lambda: lambda: domain.get_entity_ids('child') },
+            { "syn": "noun -> 'parent'", "sem": lambda: lambda: model.get_entity_ids('parent') },
+            { "syn": "child -> 'children'", "sem": lambda: lambda: model.get_entity_ids('child') },
             { "syn": "aux -> 'has'", "sem": lambda: lambda: None },
         ]
 

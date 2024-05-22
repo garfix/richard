@@ -36,10 +36,10 @@ class TestPostgresDB(unittest.TestCase):
             cursor.execute("SELECT id FROM " + table)
             return [row['id'] for row in cursor.fetchall()]
 
-        domain = Model([
+        model = Model([
             Entity('customer', lambda: get_all_ids('customer'))
         ], [])
 
-        self.assertEqual(domain.get_entity_ids('customer'), [1, 2])
+        self.assertEqual(model.get_entity_ids('customer'), [1, 2])
 
         
