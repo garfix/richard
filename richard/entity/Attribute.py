@@ -2,9 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Entity:
+class Attribute:
 
     name: str
-    attributes: list[str]
-    modifiers: list[str]
 

@@ -1,5 +1,9 @@
 from dataclasses import dataclass
 
+from richard.ModelAdapter import ModelAdapter
+from richard.entity.Range import Range
+from richard.entity.Attribute import Attribute
+from richard.entity.Modifier import Modifier
 from richard.entity.Relation import Relation
 from richard.entity.Entity import Entity
 from richard.semantics.commands import dnp
@@ -7,54 +11,45 @@ from richard.semantics.commands import dnp
 
 class Model:
     """
-    This class represents the state of the world, and is the source of truth for the pipeline
+    This class represents the generic part of the model. Do not extend it. In stead, extend the adapter.
     """
 
-    entities: dict[str, Entity]
-    relations: dict[str, Relation]
-    select: callable
+    adapter: ModelAdapter
 
 
-    def __init__(self, entities: list[Entity], relations: list[Relation], select: callable) -> None:
-        self.entities = {}
-        for type in entities:
-            self.entities[type.name] = type
-
-        self.relations = {}
-        for relation in relations:
-            self.relations[relation.name] = relation
-
-        self.select = select
+    def __init__(
+            self, 
+            adapter: ModelAdapter
+    ) -> None:
+        self.adapter = adapter
 
 
-    def get_entity_ids(self, type_name: str):
-        if not type_name in self.entities:
-            raise Exception('No type ' + type_name + " in model")
+    def get_range(self, entity_name: str) -> Range:
+        if not entity_name in self.adapter.entities:
+            raise Exception('No entity ' + entity_name + " in model")
         
-        type = self.entities[type_name]
-        return type.get_all_ids()
+        return self.adapter.interpret_entity(entity_name)
 
 
     def relation_exists(self, relation_name: str, field_values: list[any]):
-        if not relation_name in self.relations:
+        if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
           
-        relation = self.relations[relation_name]
-        return self.select(relation, field_values)
+        return self.adapter.interpret_relation(relation_name, field_values)
 
-    def search_first(self, relation_name: str, dnp: dnp):
-        if not relation_name in self.relations:
-            raise Exception('No relation ' + relation_name + " in model")
+    def search_attribute(self, attribute_name: str, dnp: dnp):
+        if not attribute_name in self.adapter.attributes:
+            raise Exception('No attribute ' + attribute_name + " in model")
 
         elements = dnp.nbar()
-        relation = self.relations[relation_name]
         results = []
         for e in elements:
             values = [None, e]
-            for f in self.select(relation, values):
+            for f in self.adapter.interpret_attribute(elements.entity, attribute_name, values): # todo untyped
                 results.append(f[0])
 
         if dnp.determiner(len(results), len(elements)):
             return results
         else:
             return []
+        

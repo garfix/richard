@@ -1,7 +1,54 @@
+## 2024-05-23
+
+A relation is a combination of two or more entities of equivalent status. An attribute is a combination of two entities with subordinate status.
+
+===
+
+It _is_ possible to define a relation "of" without asserting an _attr_ category. And this involves en emphasis on the entities of the arguments:
+
+    of(capital, country)
+
+But going through all capitals just to find the capital of Greece is very inefficient, since it can be done with a simple lookup.
+
+===
+
+When looking for a relation, we can use the known entities as a retriction:
+
+    capital of => of(capital, country)
+    capital of => of(capital, state)
+
+If `country` is known, this restricts the relations.
+
+===
+
+I think I'll introduce Range
+
+    class Range:
+        entity: str
+        ids: list[str]
+
+a combination of the entity ids with the name of the entity. I can use the entity to restrict things.
+
+## 2024-05-22
+
+I need to start thinking about events.
+
+At some time you want to be able the question
+
+    What was the capital of Greece in 1830?
+
+===
+
+I think I will leave events for the advanced section. Many projects can be done without events, and would complicate them. If you do events, you must do them everywhere, so this is something to consider at the start of a project. If will name this in the hints.
+
+===
+
+Think of deictic centers as contexts. If I could inject the current contexts (of time, place etc) into the dialog context, then I can inject it into the interpretation function as well. The advantage is that the grammar can stay simple, does not have to deal with time. Only the interpretation function then add time to the db query. Would that work?
+
 ## 2024-05-20
 
     What is the capital of Greece?
-    Of which city is Athens the capitol?
+    Of which city is Athens the capital?
 
 Relations between things. No good to iterate over all capitals.
 
