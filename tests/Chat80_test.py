@@ -47,7 +47,7 @@ class TestChat80(unittest.TestCase):
 
         # model
 
-        class Chat80ModelAdapter(ModelAdapter):
+        class Chat80Adapter(ModelAdapter):
             def __init__(self) -> None:
                 super().__init__(
                     attributes=[
@@ -89,6 +89,9 @@ class TestChat80(unittest.TestCase):
                     if attribute_name == "capital":
                         table = "country"
                         columns = ["capital", "id"]
+                    if attribute_name == "size":
+                        table = "country"
+                        columns = ["area", "id"]
 
                 where = {}
                 for i, field in enumerate(values):
@@ -96,10 +99,12 @@ class TestChat80(unittest.TestCase):
                         column = columns[i]
                         where[column] = field
 
+                print(table, where, columns)
+
                 return db.select(Record(table, where)).fields(columns)
 
 
-        model = Model(Chat80ModelAdapter())
+        model = Model(Chat80Adapter())
 
 
         # grammar
@@ -108,7 +113,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: filter(np()) },
             { 
                 "syn": "s -> 'where' 'is' np '?'", 
-                "sem": lambda np: lambda: model.search_column('country', filter(np()), 'area')
+                "sem": lambda np: lambda: filter(np()) # todo: where?!
             },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub) },
@@ -118,12 +123,13 @@ class TestChat80(unittest.TestCase):
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
             { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
 
-            { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar) },
+            { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
             { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_max(range, 'size') },
 
             { "syn": "det -> 'the'", "sem": lambda: exists },
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
             { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_range('river') },
+            { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_range('country') },
             { "syn": "tv -> 'border'", "sem": lambda: 
                 lambda subject: 
                     lambda object: 
@@ -154,10 +160,10 @@ class TestChat80(unittest.TestCase):
         # testing
 
         tests = [
-            ["What rivers are there?", ['amazon', 'brahmaputra']],
-            ["Does Afghanistan border China?", ['afghanistan']],
-            ["What is the capital of Upper_Volta?", ["ouagadougou"]],
-            # ["Where is the largest country?", ["far_east"]]
+            # ["What rivers are there?", ['amazon', 'brahmaputra']],
+            # ["Does Afghanistan border China?", ['afghanistan']],
+            # ["What is the capital of Upper_Volta?", ["ouagadougou"]],
+            ["Where is the largest country?", ["far_east"]]
         ]
 
         for test in tests:

@@ -2,10 +2,6 @@ from dataclasses import dataclass
 
 from richard.ModelAdapter import ModelAdapter
 from richard.entity.Range import Range
-from richard.entity.Attribute import Attribute
-from richard.entity.Modifier import Modifier
-from richard.entity.Relation import Relation
-from richard.entity.Entity import Entity
 from richard.semantics.commands import dnp
 
 
@@ -36,20 +32,34 @@ class Model:
             raise Exception('No relation ' + relation_name + " in model")
           
         return self.adapter.interpret_relation(relation_name, field_values)
+    
 
     def search_attribute(self, attribute_name: str, dnp: dnp):
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
 
-        elements = dnp.nbar()
+        range = dnp.nbar()
         results = []
-        for e in elements:
-            values = [None, e]
-            for f in self.adapter.interpret_attribute(elements.entity, attribute_name, values): # todo untyped
+        for id in range:
+            values = [None, id]
+            for f in self.adapter.interpret_attribute(range.entity, attribute_name, values): # todo untyped
                 results.append(f[0])
 
-        if dnp.determiner(len(results), len(elements)):
+        if dnp.determiner(len(results), len(range)):
             return results
         else:
             return []
         
+
+    def find_max(self, range: Range, attribute_name: str):
+        max_id = None
+        max_result = None
+        for id in range:
+            values = [None, id]
+            results = self.adapter.interpret_attribute(range.entity, attribute_name, values)
+            for r in results:
+                if max_id == None or max_result < r:
+                    max_id = id
+                    max_result = r
+        return Range(range.entity, [max_id])
+    
