@@ -52,11 +52,12 @@ class TestChat80(unittest.TestCase):
                 super().__init__(
                     attributes=[
                         Attribute("size"),
-                        Attribute("capital")
+                        Attribute("capital"),
+                        Attribute("location")
                     ],
                     entities=[
                         Entity("river", [], ["big"]),
-                        Entity("country", ["size", "capital"], ["big"]),
+                        Entity("country", ["size", "capital", "location"], ["big"]),
                         Entity("city", ["size"], ["big"]),
                     ], 
                     relations=[
@@ -92,14 +93,15 @@ class TestChat80(unittest.TestCase):
                     if attribute_name == "size":
                         table = "country"
                         columns = ["area", "id"]
+                    if attribute_name == "location":
+                        table = "country"
+                        columns = ["region", "id"]
 
                 where = {}
                 for i, field in enumerate(values):
                     if field is not None:
                         column = columns[i]
                         where[column] = field
-
-                print(table, where, columns)
 
                 return db.select(Record(table, where)).fields(columns)
 
@@ -113,7 +115,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: filter(np()) },
             { 
                 "syn": "s -> 'where' 'is' np '?'", 
-                "sem": lambda np: lambda: filter(np()) # todo: where?!
+                "sem": lambda np: lambda: model.search_attribute('location', np())
             },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub) },

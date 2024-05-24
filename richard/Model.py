@@ -34,7 +34,7 @@ class Model:
         return self.adapter.interpret_relation(relation_name, field_values)
     
 
-    def search_attribute(self, attribute_name: str, dnp: dnp):
+    def search_attribute(self, attribute_name: str, dnp: dnp) -> Range:
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
 
@@ -48,10 +48,10 @@ class Model:
         if dnp.determiner(len(results), len(range)):
             return results
         else:
-            return []
+            return Range(range.entity, [])
         
 
-    def find_max(self, range: Range, attribute_name: str):
+    def find_max(self, range: Range, attribute_name: str) -> Range:
         max_id = None
         max_result = None
         for id in range:
