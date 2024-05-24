@@ -31,7 +31,7 @@ class TestChat80(unittest.TestCase):
    
     def test_chat80(self):
 
-        # an in-memory database
+        # fill an in-memory database
 
         db = MemoryDb()
         db.insert(Record('river', {'id': 'amazon'}))
@@ -43,7 +43,7 @@ class TestChat80(unittest.TestCase):
 
         db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
 
-        # data source adapter
+        # create an adapter for this data source
 
         ds = MemoryDbDataSource(db)
 
@@ -74,17 +74,11 @@ class TestChat80(unittest.TestCase):
                     table = "borders"
                     columns = ["country_id1", "country_id2"]
 
-                where = {}
-                for i, field in enumerate(values):
-                    if field is not None:
-                        column = columns[i]
-                        where[column] = field
-
-                return ds.select(table, columns, where)
+                return ds.select(table, columns, values)
             
 
             def interpret_entity(self, entity_name: str) -> list[any]:
-                return [row[0] for row in ds.select(entity_name, ['id'], {})]
+                return [row[0] for row in ds.select(entity_name, ['id'], [None])]
             
 
             def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[any]) -> list[any]:
@@ -99,13 +93,7 @@ class TestChat80(unittest.TestCase):
                         table = "country"
                         columns = ["region", "id"]
 
-                where = {}
-                for i, field in enumerate(values):
-                    if field is not None:
-                        column = columns[i]
-                        where[column] = field
-
-                return ds.select(table, columns, where)
+                return ds.select(table, columns, values)
 
 
         model = Model(Chat80Adapter())
@@ -164,9 +152,9 @@ class TestChat80(unittest.TestCase):
         # testing
 
         tests = [
-            # ["What rivers are there?", ['amazon', 'brahmaputra']],
-            # ["Does Afghanistan border China?", ['afghanistan']],
-            # ["What is the capital of Upper_Volta?", ["ouagadougou"]],
+            ["What rivers are there?", ['amazon', 'brahmaputra']],
+            ["Does Afghanistan border China?", ['afghanistan']],
+            ["What is the capital of Upper_Volta?", ["ouagadougou"]],
             ["Where is the largest country?", ["far_east"]]
         ]
 
