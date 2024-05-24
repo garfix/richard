@@ -65,8 +65,8 @@ class TestFind(unittest.TestCase):
             },
             { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
             { "syn": "number -> 'three'", "sem": lambda: lambda: 3 },
-            { "syn": "noun -> 'parent'", "sem": lambda: lambda: model.get_range('parent') },
-            { "syn": "child -> 'children'", "sem": lambda: lambda: model.get_range('child') },
+            { "syn": "noun -> 'parent'", "sem": lambda: lambda: model.get_entity_range('parent') },
+            { "syn": "child -> 'children'", "sem": lambda: lambda: model.get_entity_range('child') },
             { "syn": "aux -> 'has'", "sem": lambda: lambda: None },
         ]
 

@@ -17,3 +17,8 @@ class SomeDataSource(ABC):
             Note that if a value is None, it must be omitted from the "where"
         """
         pass
+
+
+    def select_column(self, table: str, columns: list[str], values: list[any]) -> list[any]:
+        return [row[0] for row in self.select(table, columns, values)]
+    

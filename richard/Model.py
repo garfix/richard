@@ -20,7 +20,7 @@ class Model:
         self.adapter = adapter
 
 
-    def get_range(self, entity_name: str) -> Range:
+    def get_entity_range(self, entity_name: str) -> Range:
         if not entity_name in self.adapter.entities:
             raise Exception('No entity ' + entity_name + " in model")
         
@@ -34,7 +34,7 @@ class Model:
         return self.adapter.interpret_relation(relation_name, field_values)
     
 
-    def search_attribute(self, attribute_name: str, dnp: dnp) -> Range:
+    def get_attribute_range(self, attribute_name: str, dnp: dnp) -> Range:
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
 
@@ -51,7 +51,7 @@ class Model:
             return Range(range.entity, [])
         
 
-    def find_max(self, range: Range, attribute_name: str) -> Range:
+    def find_range_attribute_max(self, range: Range, attribute_name: str) -> Range:
         max_id = None
         max_result = None
         for id in range:

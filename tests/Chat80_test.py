@@ -8,7 +8,7 @@ from richard.entity.Attribute import Attribute
 from richard.entity.Range import Range
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
-from richard.store.MemoryDbDataSource import MemoryDbDataSource
+from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
@@ -78,7 +78,7 @@ class TestChat80(unittest.TestCase):
             
 
             def interpret_entity(self, entity_name: str) -> list[any]:
-                return [row[0] for row in ds.select(entity_name, ['id'], [None])]
+                return ds.select_column(entity_name, ['id'], [None])
             
 
             def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[any]) -> list[any]:
@@ -105,7 +105,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: filter(np()) },
             { 
                 "syn": "s -> 'where' 'is' np '?'", 
-                "sem": lambda np: lambda: model.search_attribute('location', np())
+                "sem": lambda np: lambda: model.get_attribute_range('location', np())
             },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub) },
@@ -114,20 +114,15 @@ class TestChat80(unittest.TestCase):
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
             { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
-
             { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
-            { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_max(range, 'size') },
-
+            { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_range_attribute_max(range, 'size') },
             { "syn": "det -> 'the'", "sem": lambda: exists },
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
-            { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_range('river') },
-            { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_range('country') },
+            { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
+            { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
             { "syn": "tv -> 'border'", "sem": lambda: 
-                lambda subject: 
-                    lambda object: 
-                        model.relation_exists('borders', [subject, object]) },
-
-            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.search_attribute('capital', np()) },
+                lambda subject: lambda object: model.relation_exists('borders', [subject, object]) },
+            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.get_attribute_range('capital', np()) },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: Range('country', ['afghanistan']) },
