@@ -46,7 +46,7 @@ class ModelAdapter:
         return []
 
 
-    def interpret_entity(self, entity_name: str) -> Range:
+    def interpret_entity(self, entity_name: str) -> list[any]:
         return Range(entity_name, [])
     
 

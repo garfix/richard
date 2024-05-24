@@ -24,7 +24,7 @@ class Model:
         if not entity_name in self.adapter.entities:
             raise Exception('No entity ' + entity_name + " in model")
         
-        return self.adapter.interpret_entity(entity_name)
+        return Range(entity_name, self.adapter.interpret_entity(entity_name))
 
 
     def relation_exists(self, relation_name: str, field_values: list[any]):

@@ -8,6 +8,7 @@ from richard.entity.Attribute import Attribute
 from richard.entity.Range import Range
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
+from richard.store.MemoryDbDataSource import MemoryDbDataSource
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
@@ -42,8 +43,9 @@ class TestChat80(unittest.TestCase):
 
         db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
 
-        # data store adapter
-        # todo
+        # data source adapter
+
+        ds = MemoryDbDataSource(db)
 
         # model
 
@@ -66,7 +68,7 @@ class TestChat80(unittest.TestCase):
                 )
 
 
-            def interpret_relation(self, relation_name: str, values: list[any]):
+            def interpret_relation(self, relation_name: str, values: list[any]) -> list[list[any]]:
                 columns = []
                 if relation_name == "borders":
                     table = "borders"
@@ -78,14 +80,14 @@ class TestChat80(unittest.TestCase):
                         column = columns[i]
                         where[column] = field
 
-                return db.select(Record(table, where)).fields(columns)
+                return ds.select(table, columns, where)
             
 
-            def interpret_entity(self, entity_name: str):
-                return Range(entity_name, db.select(Record(entity_name)).field('id'))
+            def interpret_entity(self, entity_name: str) -> list[any]:
+                return [row[0] for row in ds.select(entity_name, ['id'], {})]
             
 
-            def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[any]):
+            def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[any]) -> list[any]:
                 if entity_name == "country":
                     if attribute_name == "capital":
                         table = "country"
@@ -103,7 +105,7 @@ class TestChat80(unittest.TestCase):
                         column = columns[i]
                         where[column] = field
 
-                return db.select(Record(table, where)).fields(columns)
+                return ds.select(table, columns, where)
 
 
         model = Model(Chat80Adapter())
