@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from richard.entity import Range
+from richard.type.Simple import Simple
 
 
 class SomeDataSource(ABC):
@@ -8,7 +9,7 @@ class SomeDataSource(ABC):
     Implement this interface to give the library access to any type of data source be it an SQL database, NoSQL database, in-memory array or even CSV file.
     """
     @abstractmethod
-    def select(self, table: str, columns: list[str], values: list[any]) -> list[list[any]]:
+    def select(self, table: str, columns: list[str], values: list[Simple]) -> list[list[Simple]]:
         """
             This method treats datasource access as were it a simple SQL SELECT statement:
             SELECT <columns>+ FROM <table> WHERE <column>=<value>*
@@ -19,6 +20,6 @@ class SomeDataSource(ABC):
         pass
 
 
-    def select_column(self, table: str, columns: list[str], values: list[any]) -> list[any]:
+    def select_column(self, table: str, columns: list[str], values: list[Simple]) -> list[Simple]:
         return [row[0] for row in self.select(table, columns, values)]
     

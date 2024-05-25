@@ -5,6 +5,7 @@ from richard.entity.Attribute import Attribute
 from richard.entity.Modifier import Modifier
 from richard.entity.Relation import Relation
 from richard.entity.Entity import Entity
+from richard.type.Simple import Simple
 
 
 class ModelAdapter:
@@ -42,14 +43,14 @@ class ModelAdapter:
             self.modifiers[modifier.name] = modifier
 
 
-    def interpret_relation(self, relation_name: str, values: list[any]) -> list[list[any]]:
+    def interpret_relation(self, relation_name: str, values: list[Simple]) -> list[list[Simple]]:
         return []
 
 
-    def interpret_entity(self, entity_name: str) -> list[any]:
+    def interpret_entity(self, entity_name: str) -> list[Simple]:
         return Range(entity_name, [])
     
 
-    def interpret_attribute(self, entity_name: str, attribute: str, values: list[any]) -> list[any]:
+    def interpret_attribute(self, entity_name: str, attribute: str, values: list[Simple]) -> list[Simple]:
         return []
     

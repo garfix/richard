@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from richard.ModelAdapter import ModelAdapter
 from richard.entity.Range import Range
 from richard.semantics.commands import dnp
+from richard.type.Simple import Simple
 
 
 class Model:
@@ -27,14 +28,14 @@ class Model:
         return Range(entity_name, self.adapter.interpret_entity(entity_name))
 
 
-    def relation_exists(self, relation_name: str, field_values: list[any]):
+    def relation_exists(self, relation_name: str, field_values: list[Simple]):
         if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
           
         return self.adapter.interpret_relation(relation_name, field_values)
     
 
-    def get_attribute_range(self, attribute_name: str, dnp: dnp) -> Range:
+    def get_matching_attribute_range(self, attribute_name: str, dnp: dnp) -> Range:
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
 

@@ -17,6 +17,7 @@ from richard.processor.semantic_executor.SemanticExecutor import SemanticExecuto
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.semantics.commands import exists, filter, dnp
 from richard.store.MemoryDb import MemoryDb
+from richard.type.Simple import Simple
 
 
 class TestChat80(unittest.TestCase):
@@ -40,7 +41,8 @@ class TestChat80(unittest.TestCase):
         db.insert(Record('country', {'id': 'afghanistan', 'region': 'indian_subcontinent', 'lat': 33, 'long': -65, 'area': 254.861, 'population': 18.290, 'capital': 'kabul', 'currency': 'afghani'}))
         db.insert(Record('country', {'id': 'china', 'region': 'far_east', 'lat': 30, 'long': -110, 'area': 3691.502, 'population': 840.0, 'capital': 'peking', 'currency': 'yuan'}))
         db.insert(Record('country', {'id': 'upper_volta', 'region': 'west_africa', 'lat': 12, 'long': 2, 'area': 105.869, 'population': 5.740, 'capital': 'ouagadougou', 'currency': 'cfa_franc'}))
-
+        db.insert(Record('country', {'id': 'albania', 'region': 'southern_europe', 'lat': 41, 'long': -20, 'area': 11.100, 'population': 2.350, 'capital': 'tirana', 'currency': 'lek'}))
+        
         db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
 
         # create an adapter for this data source
@@ -53,14 +55,14 @@ class TestChat80(unittest.TestCase):
             def __init__(self) -> None:
                 super().__init__(
                     attributes=[
-                        Attribute("size"),
-                        Attribute("capital"),
-                        Attribute("location")
+                        Attribute("size-of"),
+                        Attribute("capital-of"),
+                        Attribute("location-of")
                     ],
                     entities=[
-                        Entity("river", [], ["big"]),
-                        Entity("country", ["size", "capital", "location"], ["big"]),
-                        Entity("city", ["size"], ["big"]),
+                        Entity("river", [], []),
+                        Entity("country", ["size-of", "capital-of", "location-of"], []),
+                        Entity("city", ["size-of"], []),
                     ], 
                     relations=[
                         Relation("borders", ['country', 'country']),
@@ -68,7 +70,7 @@ class TestChat80(unittest.TestCase):
                 )
 
 
-            def interpret_relation(self, relation_name: str, values: list[any]) -> list[list[any]]:
+            def interpret_relation(self, relation_name: str, values: list[Simple]) -> list[list[Simple]]:
                 columns = []
                 if relation_name == "borders":
                     table = "borders"
@@ -77,24 +79,24 @@ class TestChat80(unittest.TestCase):
                 return ds.select(table, columns, values)
             
 
-            def interpret_entity(self, entity_name: str) -> list[any]:
+            def interpret_entity(self, entity_name: str) -> list[Simple]:
                 return ds.select_column(entity_name, ['id'], [None])
             
 
-            def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[any]) -> list[any]:
+            def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
                 if entity_name == "country":
-                    if attribute_name == "capital":
+                    if attribute_name == "capital-of":
                         table = "country"
                         columns = ["capital", "id"]
-                    if attribute_name == "size":
+                    if attribute_name == "size-of":
                         table = "country"
                         columns = ["area", "id"]
-                    if attribute_name == "location":
+                    if attribute_name == "location-of":
                         table = "country"
                         columns = ["region", "id"]
 
                 return ds.select(table, columns, values)
-
+            
 
         model = Model(Chat80Adapter())
 
@@ -105,9 +107,10 @@ class TestChat80(unittest.TestCase):
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: filter(np()) },
             { 
                 "syn": "s -> 'where' 'is' np '?'", 
-                "sem": lambda np: lambda: model.get_attribute_range('location', np())
+                "sem": lambda np: lambda: model.get_matching_attribute_range('location-of', np())
             },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
+            { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) }, # todo
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub) },
             { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: filter(np(), tv(subject)) },
             { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
@@ -115,14 +118,16 @@ class TestChat80(unittest.TestCase):
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
             { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
             { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
-            { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_range_attribute_max(range, 'size') },
+            { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_range_attribute_max(range, 'size-of') },
             { "syn": "det -> 'the'", "sem": lambda: exists },
+            { "syn": "adjp -> adj", "sem": lambda adj: lambda range: filter(dnp(exists, range), adj) },
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
             { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
             { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
+            { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_entity_range('country') },
             { "syn": "tv -> 'border'", "sem": lambda: 
                 lambda subject: lambda object: model.relation_exists('borders', [subject, object]) },
-            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.get_attribute_range('capital', np()) },
+            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.get_matching_attribute_range('capital-of', np()) },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: Range('country', ['afghanistan']) },
@@ -150,7 +155,8 @@ class TestChat80(unittest.TestCase):
             ["What rivers are there?", ['amazon', 'brahmaputra']],
             ["Does Afghanistan border China?", ['afghanistan']],
             ["What is the capital of Upper_Volta?", ["ouagadougou"]],
-            ["Where is the largest country?", ["far_east"]]
+            ["Where is the largest country?", ["far_east"]],
+            # ["Which countries are European?", [""]]
         ]
 
         for test in tests:

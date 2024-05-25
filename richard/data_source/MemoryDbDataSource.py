@@ -1,6 +1,7 @@
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.store.MemoryDb import MemoryDb
 from richard.store.Record import Record
+from richard.type.Simple import Simple
 
 
 class MemoryDbDataSource(SomeDataSource):
@@ -11,7 +12,7 @@ class MemoryDbDataSource(SomeDataSource):
         self.db = db
 
 
-    def select(self, table: str, columns: list[str], values: list[any]) -> list[list[any]]:
+    def select(self, table: str, columns: list[str], values: list[Simple]) -> list[list[Simple]]:
         where = {}
         for i, field in enumerate(values):
             if field is not None:
