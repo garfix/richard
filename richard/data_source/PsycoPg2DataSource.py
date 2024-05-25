@@ -16,14 +16,13 @@ class PsycoPg2DataSource(SomeDataSource):
 
         where = "TRUE"
         variables = []
-        for i, value in enumerate(values):
+        for column, value in zip(columns, values):
             if value is not None:
-                column = columns[i]
                 where += f" AND {column}=%s"
                 variables.append(value)
 
         cursor = self.connection.cursor(cursor_factory=psycopg2.extensions.cursor)
-        select = ",".join(columns)
+        select = ','.join(columns)
         cursor.execute(f"SELECT {select} FROM {table} WHERE {where}", variables)
         return [list(row) for row in (cursor.fetchall())]
     
