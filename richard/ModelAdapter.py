@@ -51,6 +51,9 @@ class ModelAdapter:
         return Range(entity_name, [])
     
 
-    def interpret_attribute(self, entity_name: str, attribute: str, values: list[Simple]) -> list[Simple]:
+    def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
         return []
     
+    
+    def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
+        return []

@@ -64,3 +64,17 @@ class Model:
                     max_result = r
         return Range(range.entity, [max_id])
     
+
+    def filter_by_modifier(self, range: Range, modifier_name: str) -> Range:
+        if not modifier_name in self.adapter.modifiers:
+            raise Exception('No modifier ' + modifier_name + " in model")
+        
+        results = []
+        for id in range:
+            for f in self.adapter.interpret_modifier(range.entity, modifier_name, id):
+                results.append(f)
+
+        print(results, range.entity, modifier_name)
+
+
+        return Range(range.entity, results)

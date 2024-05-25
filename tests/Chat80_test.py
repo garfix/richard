@@ -4,6 +4,7 @@ from richard.ModelAdapter import ModelAdapter
 from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
+from richard.entity.Modifier import Modifier
 from richard.entity.Attribute import Attribute
 from richard.entity.Range import Range
 from richard.entity.Entity import Entity
@@ -54,6 +55,9 @@ class TestChat80(unittest.TestCase):
         class Chat80Adapter(ModelAdapter):
             def __init__(self) -> None:
                 super().__init__(
+                    modifiers=[
+                        Modifier("european")
+                    ],
                     attributes=[
                         Attribute("size-of"),
                         Attribute("capital-of"),
@@ -61,7 +65,7 @@ class TestChat80(unittest.TestCase):
                     ],
                     entities=[
                         Entity("river", [], []),
-                        Entity("country", ["size-of", "capital-of", "location-of"], []),
+                        Entity("country", ["size-of", "capital-of", "location-of"], ["european"]),
                         Entity("city", ["size-of"], []),
                     ], 
                     relations=[
@@ -98,6 +102,26 @@ class TestChat80(unittest.TestCase):
                 return ds.select(table, columns, values)
             
 
+            def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
+                if entity_name == "country":
+                    if modifier_name in ["european", "asian"] :
+                        table = "country"
+                        columns = ["id", "region"]
+                        regions = {
+                            "european": ['southern_europe', 'western_europe', 'eastern_europe', 'scandinavia'],
+                            "asian": ['middle_east', 'indian_subcontinent', 'southeast_east', 'far_east', 'northern_asia'],
+                            "american": ['north_america', 'central_america', 'caribbean', 'south_america'],
+                            "african": ['north_africa', 'west_africa', 'central_africa', 'east_africa', 'southern_africa']
+                        }
+
+                        ids = []
+                        for region in regions[modifier_name]:
+                            ids += ds.select_column(table, columns, [value, region])
+                        return ids
+
+                return ds.select_column(table, columns, [value])
+                      
+
         model = Model(Chat80Adapter())
 
 
@@ -110,7 +134,7 @@ class TestChat80(unittest.TestCase):
                 "sem": lambda np: lambda: model.get_matching_attribute_range('location-of', np())
             },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
-            { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) }, # todo
+            { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) },
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub) },
             { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: filter(np(), tv(subject)) },
             { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
@@ -120,7 +144,8 @@ class TestChat80(unittest.TestCase):
             { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
             { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_range_attribute_max(range, 'size-of') },
             { "syn": "det -> 'the'", "sem": lambda: exists },
-            { "syn": "adjp -> adj", "sem": lambda adj: lambda range: filter(dnp(exists, range), adj) },
+            { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
+            { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'european') },
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
             { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
             { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
@@ -156,7 +181,7 @@ class TestChat80(unittest.TestCase):
             ["Does Afghanistan border China?", ['afghanistan']],
             ["What is the capital of Upper_Volta?", ["ouagadougou"]],
             ["Where is the largest country?", ["far_east"]],
-            # ["Which countries are European?", [""]]
+            ["Which countries are European?", ["albania"]]
         ]
 
         for test in tests:
