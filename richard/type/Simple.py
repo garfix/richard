@@ -1,1 +1,1 @@
-Simple = float | int | str | bool
+Simple = float | int | str | bool | None

@@ -1,7 +1,6 @@
 import unittest
 
-from richard.Model import Model
-from richard.entity.Entity import Entity
+from richard.data_source.PsycoPg2DataSource import PsycoPg2DataSource
 
 
 class TestPostgresDB(unittest.TestCase):
@@ -10,11 +9,11 @@ class TestPostgresDB(unittest.TestCase):
     create a table "customer" (with columns id and name) and fill it with (1, 'John') (2, 'Jack')
     """
    
-    def test_postgres(self):
+    def test_psycopg2(self):
 
 
         # skip for now
-        return
+        # return
 
         try:
             import psycopg2
@@ -26,20 +25,15 @@ class TestPostgresDB(unittest.TestCase):
                 user='patrick',
                 password='test123',
                 port=5432,
+                # note: we won't use this cursor: the test is that it needs to be overridden by the default cursor
                 cursor_factory=RealDictCursor
             )
         except ImportError:
             raise Exception("To run this test, import psycopg")
         
-        def get_all_ids(table: str):
-            cursor = connection.cursor()
-            cursor.execute("SELECT id FROM " + table)
-            return [row['id'] for row in cursor.fetchall()]
+        ds = PsycoPg2DataSource(connection)
 
-        model = Model([
-            Entity('customer', lambda: get_all_ids('customer'))
-        ], [])
-
-        self.assertEqual(model.get_entity_ids('customer'), [1, 2])
+        self.assertEqual(ds.select_column('customer', ['id', 'name'], [None, None]), [1, 2])
+        self.assertEqual(ds.select('customer', ['id', 'name'], [1, None]), [[1, 'John']])
 
         
