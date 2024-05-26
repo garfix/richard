@@ -52,6 +52,23 @@ class Model:
             return Range(range.entity, [])
         
 
+    def get_matching_attribute_object_range(self, attribute_name: str, dnp: dnp) -> Range:
+        if not attribute_name in self.adapter.attributes:
+            raise Exception('No attribute ' + attribute_name + " in model")
+
+        range = dnp.nbar()
+        results = []
+        for id in range:
+            values = [id, None]
+            for f in self.adapter.interpret_attribute(range.entity, attribute_name, values): # todo untyped
+                results.append(f[1])
+
+        if dnp.determiner(len(results), len(range)):
+            return results
+        else:
+            return Range(range.entity, [])
+
+
     def find_range_attribute_max(self, range: Range, attribute_name: str) -> Range:
         max_id = None
         max_result = None
@@ -74,7 +91,30 @@ class Model:
             for f in self.adapter.interpret_modifier(range.entity, modifier_name, id):
                 results.append(f)
 
-        print(results, range.entity, modifier_name)
-
-
         return Range(range.entity, results)
+
+
+
+    def filter(self, dnp: dnp, vp: callable = None) -> list:
+        """
+        Result consists of all elements in dnp.nbar that satisfy vp
+        If the number of results agrees with dnp.determiner, results are returned. If not, an empty list
+        """
+        elements = dnp.nbar()
+        range_count = len(elements)
+
+        result = []
+        if vp:
+            for element in elements:
+                for e2 in vp(element):
+                    result.append(element)
+        else:
+            result = elements
+
+        result = list(set(result))
+        result_count = len(result)
+        
+        if dnp.determiner(result_count, range_count):
+            return result
+        else:
+            return []

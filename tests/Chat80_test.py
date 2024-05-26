@@ -16,7 +16,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import exists, filter, dnp
+from richard.semantics.commands import exists, dnp
 from richard.store.MemoryDb import MemoryDb
 from richard.type.Simple import Simple
 
@@ -41,8 +41,10 @@ class TestChat80(unittest.TestCase):
        
         db.insert(Record('country', {'id': 'afghanistan', 'region': 'indian_subcontinent', 'lat': 33, 'long': -65, 'area': 254.861, 'population': 18.290, 'capital': 'kabul', 'currency': 'afghani'}))
         db.insert(Record('country', {'id': 'china', 'region': 'far_east', 'lat': 30, 'long': -110, 'area': 3691.502, 'population': 840.0, 'capital': 'peking', 'currency': 'yuan'}))
-        db.insert(Record('country', {'id': 'upper_volta', 'region': 'west_africa', 'lat': 12, 'long': 2, 'area': 105.869, 'population': 5.740, 'capital': 'ouagadougou', 'currency': 'cfa_franc'}))
+        db.insert(Record('country', {'id': 'upper_volta', 'region': 'west_africa', 'lat': 12, 'long': 2, 'area': 105.869, 'population': 5.740, 'capital': 'ouagadougou', 'currency': 'cfa_franc'}))       
+        db.insert(Record('country', {'id': 'rwanda', 'region': 'central_africa', 'lat': -2, 'long':-30, 'area': 10.169, 'population': 3.980, 'capital': 'kigali', 'currency': 'rwanda_franc'}))       
         db.insert(Record('country', {'id': 'albania', 'region': 'southern_europe', 'lat': 41, 'long': -20, 'area': 11.100, 'population': 2.350, 'capital': 'tirana', 'currency': 'lek'}))
+        db.insert(Record('country', {'id': 'united_kingdom', 'region': 'western_europe', 'lat': 54, 'long': 2, 'area': 94.209, 'population': 55.930, 'capital': 'london', 'currency': 'pound'}))
         
         db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
 
@@ -56,7 +58,10 @@ class TestChat80(unittest.TestCase):
             def __init__(self) -> None:
                 super().__init__(
                     modifiers=[
-                        Modifier("european")
+                        Modifier("european"),
+                        Modifier("asian"),
+                        Modifier("american"),
+                        Modifier("african"),
                     ],
                     attributes=[
                         Attribute("size-of"),
@@ -65,7 +70,7 @@ class TestChat80(unittest.TestCase):
                     ],
                     entities=[
                         Entity("river", [], []),
-                        Entity("country", ["size-of", "capital-of", "location-of"], ["european"]),
+                        Entity("country", ["size-of", "capital-of", "location-of"], ["european", "asian", "american", "african"]),
                         Entity("city", ["size-of"], []),
                     ], 
                     relations=[
@@ -88,23 +93,22 @@ class TestChat80(unittest.TestCase):
             
 
             def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
-                if entity_name == "country":
-                    if attribute_name == "capital-of":
-                        table = "country"
-                        columns = ["capital", "id"]
-                    if attribute_name == "size-of":
-                        table = "country"
-                        columns = ["area", "id"]
-                    if attribute_name == "location-of":
-                        table = "country"
-                        columns = ["region", "id"]
+                if attribute_name == "capital-of":
+                    table = "country"
+                    columns = ["capital", "id"]
+                if attribute_name == "size-of":
+                    table = "country"
+                    columns = ["area", "id"]
+                if attribute_name == "location-of":
+                    table = "country"
+                    columns = ["region", "id"]
 
                 return ds.select(table, columns, values)
             
 
             def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
                 if entity_name == "country":
-                    if modifier_name in ["european", "asian"] :
+                    if modifier_name in ["european", "asian", "african", "american"] :
                         table = "country"
                         columns = ["id", "region"]
                         regions = {
@@ -128,36 +132,54 @@ class TestChat80(unittest.TestCase):
         # grammar
 
         grammar = [
-            { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: filter(np()) },
+            { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: model.filter(np()) },
             { 
                 "syn": "s -> 'where' 'is' np '?'", 
                 "sem": lambda np: lambda: model.get_matching_attribute_range('location-of', np())
             },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) },
-            { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: filter(np(), vp_no_sub) },
-            { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: filter(np(), tv(subject)) },
+            { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: model.filter(np()) },
+            { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' nbar '?'", "sem": lambda nbar: 
+                lambda: model.get_matching_attribute_object_range('capital-of', dnp(exists, nbar)) },
+            { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: model.filter(np(), vp_no_sub) },
+
+            { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: model.filter(np(), tv(subject)) },
+
+            { "syn": "tv -> 'border'", "sem": lambda: 
+                lambda subject: lambda object: model.relation_exists('borders', [subject, object]) },
+
             { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
-            { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
+
+            { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
+            { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun()) },
             { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
             { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
+            
             { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_range_attribute_max(range, 'size-of') },
+
             { "syn": "det -> 'the'", "sem": lambda: exists },
+
             { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
+
             { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'european') },
+            { "syn": "adj -> 'african'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'african') },
+            { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'american') },
+            { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'asian') },
+
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
             { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
             { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
             { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_entity_range('country') },
-            { "syn": "tv -> 'border'", "sem": lambda: 
-                lambda subject: lambda object: model.relation_exists('borders', [subject, object]) },
+
             { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.get_matching_attribute_range('capital-of', np()) },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: Range('country', ['afghanistan']) },
             { "syn": "proper_noun -> 'china'", "sem": lambda: lambda: Range('country', ['china']) },
             { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda: Range('country', ['upper_volta']) },
+            { "syn": "proper_noun -> 'london'", "sem": lambda: lambda: Range('city', ['london']) },
         ]
 
         # pipeline
@@ -181,7 +203,9 @@ class TestChat80(unittest.TestCase):
             ["Does Afghanistan border China?", ['afghanistan']],
             ["What is the capital of Upper_Volta?", ["ouagadougou"]],
             ["Where is the largest country?", ["far_east"]],
-            ["Which countries are European?", ["albania"]]
+            ["Which countries are European?", ["albania", "united_kingdom"]],
+            ["Which country's capital is London?", ["united_kingdom"]],
+            ["Which is the largest african country?", ['upper_volta']],
         ]
 
         for test in tests:
