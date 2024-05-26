@@ -132,22 +132,22 @@ class TestChat80(unittest.TestCase):
         # grammar
 
         grammar = [
-            { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: model.filter(np()) },
+            { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: model.filter_entities(np()) },
+            { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { 
                 "syn": "s -> 'where' 'is' np '?'", 
-                "sem": lambda np: lambda: model.get_matching_attribute_range('location-of', np())
+                "sem": lambda np: lambda: model.find_attribute_values('location-of', np())
             },
-            { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) },
-            { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: model.filter(np()) },
+            { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: model.filter_entities(np()) },
             { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' nbar '?'", "sem": lambda nbar: 
-                lambda: model.get_matching_attribute_object_range('capital-of', dnp(exists, nbar)) },
-            { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: model.filter(np(), vp_no_sub) },
+                lambda: model.find_attribute_objects('capital-of', dnp(exists, nbar)) },
+            { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: model.filter_entities(np(), vp_no_sub) },
 
-            { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: model.filter(np(), tv(subject)) },
+            { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: model.filter_entities(np(), tv(subject)) },
 
             { "syn": "tv -> 'border'", "sem": lambda: 
-                lambda subject: lambda object: model.relation_exists('borders', [subject, object]) },
+                lambda subject: lambda object: model.find_relation_values('borders', [subject, object]) },
 
             { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
@@ -156,24 +156,24 @@ class TestChat80(unittest.TestCase):
             { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun()) },
             { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
             { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
-            
-            { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_range_attribute_max(range, 'size-of') },
+
+            { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_entity_with_highest_attribute_value(range, 'size-of') },
 
             { "syn": "det -> 'the'", "sem": lambda: exists },
 
             { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
 
-            { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'european') },
-            { "syn": "adj -> 'african'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'african') },
-            { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'american') },
-            { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'asian') },
+            { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'european') },
+            { "syn": "adj -> 'african'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'african') },
+            { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'american') },
+            { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'asian') },
 
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
             { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
             { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
             { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_entity_range('country') },
 
-            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.get_matching_attribute_range('capital-of', np()) },
+            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.find_attribute_values('capital-of', np()) },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: Range('country', ['afghanistan']) },
@@ -206,6 +206,7 @@ class TestChat80(unittest.TestCase):
             ["Which countries are European?", ["albania", "united_kingdom"]],
             ["Which country's capital is London?", ["united_kingdom"]],
             ["Which is the largest african country?", ['upper_volta']],
+            ["How large is the smallest american country?", []]
         ]
 
         for test in tests:

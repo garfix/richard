@@ -28,74 +28,7 @@ class Model:
         return Range(entity_name, self.adapter.interpret_entity(entity_name))
 
 
-    def relation_exists(self, relation_name: str, field_values: list[Simple]):
-        if not relation_name in self.adapter.relations:
-            raise Exception('No relation ' + relation_name + " in model")
-          
-        return self.adapter.interpret_relation(relation_name, field_values)
-    
-
-    def get_matching_attribute_range(self, attribute_name: str, dnp: dnp) -> Range:
-        if not attribute_name in self.adapter.attributes:
-            raise Exception('No attribute ' + attribute_name + " in model")
-
-        range = dnp.nbar()
-        results = []
-        for id in range:
-            values = [None, id]
-            for f in self.adapter.interpret_attribute(range.entity, attribute_name, values): # todo untyped
-                results.append(f[0])
-
-        if dnp.determiner(len(results), len(range)):
-            return results
-        else:
-            return Range(range.entity, [])
-        
-
-    def get_matching_attribute_object_range(self, attribute_name: str, dnp: dnp) -> Range:
-        if not attribute_name in self.adapter.attributes:
-            raise Exception('No attribute ' + attribute_name + " in model")
-
-        range = dnp.nbar()
-        results = []
-        for id in range:
-            values = [id, None]
-            for f in self.adapter.interpret_attribute(range.entity, attribute_name, values): # todo untyped
-                results.append(f[1])
-
-        if dnp.determiner(len(results), len(range)):
-            return results
-        else:
-            return Range(range.entity, [])
-
-
-    def find_range_attribute_max(self, range: Range, attribute_name: str) -> Range:
-        max_id = None
-        max_result = None
-        for id in range:
-            values = [None, id]
-            results = self.adapter.interpret_attribute(range.entity, attribute_name, values)
-            for r in results:
-                if max_id == None or max_result < r:
-                    max_id = id
-                    max_result = r
-        return Range(range.entity, [max_id])
-    
-
-    def filter_by_modifier(self, range: Range, modifier_name: str) -> Range:
-        if not modifier_name in self.adapter.modifiers:
-            raise Exception('No modifier ' + modifier_name + " in model")
-        
-        results = []
-        for id in range:
-            for f in self.adapter.interpret_modifier(range.entity, modifier_name, id):
-                results.append(f)
-
-        return Range(range.entity, results)
-
-
-
-    def filter(self, dnp: dnp, vp: callable = None) -> list:
+    def filter_entities(self, dnp: dnp, vp: callable = None) -> list:
         """
         Result consists of all elements in dnp.nbar that satisfy vp
         If the number of results agrees with dnp.determiner, results are returned. If not, an empty list
@@ -118,3 +51,77 @@ class Model:
             return result
         else:
             return []
+
+
+    def find_relation_values(self, relation_name: str, field_values: list[Simple]):
+        if not relation_name in self.adapter.relations:
+            raise Exception('No relation ' + relation_name + " in model")
+          
+        return self.adapter.interpret_relation(relation_name, field_values)
+    
+
+    def find_attribute_values(self, attribute_name: str, dnp: dnp) -> Range:
+        if not attribute_name in self.adapter.attributes:
+            raise Exception('No attribute ' + attribute_name + " in model")
+
+        range = dnp.nbar()
+        results = []
+        for id in range:
+            values = [None, id]
+            for f in self.adapter.interpret_attribute(range.entity, attribute_name, values): # todo untyped
+                results.append(f[0])
+
+        if dnp.determiner(len(results), len(range)):
+            return results
+        else:
+            return Range(range.entity, [])
+        
+
+    def find_attribute_objects(self, attribute_name: str, dnp: dnp) -> Range:
+        if not attribute_name in self.adapter.attributes:
+            raise Exception('No attribute ' + attribute_name + " in model")
+
+        range = dnp.nbar()
+        results = []
+        for id in range:
+            values = [id, None]
+            for f in self.adapter.interpret_attribute(range.entity, attribute_name, values): # todo untyped
+                results.append(f[1])
+
+        if dnp.determiner(len(results), len(range)):
+            return results
+        else:
+            return Range(range.entity, [])
+
+
+    def find_entity_with_highest_attribute_value(self, range: Range, attribute_name: str) -> Range:
+        """
+        Returns a range with a single id from range, which is the id with the highest attribute value
+        """
+        max_id = None
+        max_result = None
+        for id in range:
+            values = [None, id]
+            results = self.adapter.interpret_attribute(range.entity, attribute_name, values)
+            for r in results:
+                if max_id == None or max_result < r:
+                    max_id = id
+                    max_result = r
+        return Range(range.entity, [max_id])
+    
+
+    def filter_entities_by_modifier(self, range: Range, modifier_name: str) -> Range:
+        """
+        Returns the ids in range that match modifier
+        """
+        if not modifier_name in self.adapter.modifiers:
+            raise Exception('No modifier ' + modifier_name + " in model")
+        
+        results = []
+        for id in range:
+            for f in self.adapter.interpret_modifier(range.entity, modifier_name, id):
+                results.append(f)
+
+        return Range(range.entity, results)
+
+

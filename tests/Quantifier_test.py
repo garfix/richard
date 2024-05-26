@@ -44,7 +44,7 @@ class TestFind(unittest.TestCase):
                 "sem": lambda aux, det, child:
                         lambda subject: filter(
                             dnp(det, child),
-                            lambda object: model.relation_exists('has_child', [subject, object]))
+                            lambda object: model.find_relation_values('has_child', [subject, object]))
             },
             { 
                 "syn": "np -> det nbar", 
