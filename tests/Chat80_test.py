@@ -45,7 +45,10 @@ class TestChat80(unittest.TestCase):
         db.insert(Record('country', {'id': 'rwanda', 'region': 'central_africa', 'lat': -2, 'long':-30, 'area': 10.169, 'population': 3.980, 'capital': 'kigali', 'currency': 'rwanda_franc'}))       
         db.insert(Record('country', {'id': 'albania', 'region': 'southern_europe', 'lat': 41, 'long': -20, 'area': 11.100, 'population': 2.350, 'capital': 'tirana', 'currency': 'lek'}))
         db.insert(Record('country', {'id': 'united_kingdom', 'region': 'western_europe', 'lat': 54, 'long': 2, 'area': 94.209, 'population': 55.930, 'capital': 'london', 'currency': 'pound'}))
-        
+
+        db.insert(Record('country', {'id': 'united_states', 'region': 'north_america', 'lat': 37, 'long': 96, 'area': 3615.122, 'population': 211.210, 'capital': 'washington', 'currency': 'dollar'}))
+        db.insert(Record('country', {'id': 'paraguay', 'region': 'south_america', 'lat': -23, 'long': 57, 'area': 157.47, 'population': 2.670, 'capital': 'asuncion', 'currency': 'guarani'}))
+
         db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
 
         # create an adapter for this data source
@@ -143,6 +146,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' nbar '?'", "sem": lambda nbar: 
                 lambda: model.find_attribute_objects('capital-of', dnp(exists, nbar)) },
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: model.filter_entities(np(), vp_no_sub) },
+            { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values('size-of', np()) },
 
             { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: model.filter_entities(np(), tv(subject)) },
 
@@ -156,8 +160,10 @@ class TestChat80(unittest.TestCase):
             { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun()) },
             { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
             { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
+            { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
 
             { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_entity_with_highest_attribute_value(range, 'size-of') },
+            { "syn": "superlative -> 'smallest'", "sem": lambda: lambda range: model.find_entity_with_lowest_attribute_value(range, 'size-of') },
 
             { "syn": "det -> 'the'", "sem": lambda: exists },
 
@@ -168,7 +174,6 @@ class TestChat80(unittest.TestCase):
             { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'american') },
             { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'asian') },
 
-            { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
             { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
             { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
             { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_entity_range('country') },
@@ -206,7 +211,7 @@ class TestChat80(unittest.TestCase):
             ["Which countries are European?", ["albania", "united_kingdom"]],
             ["Which country's capital is London?", ["united_kingdom"]],
             ["Which is the largest african country?", ['upper_volta']],
-            ["How large is the smallest american country?", []]
+            ["How large is the smallest american country?", [157.47]]
         ]
 
         for test in tests:

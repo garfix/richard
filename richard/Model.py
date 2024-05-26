@@ -110,6 +110,22 @@ class Model:
         return Range(range.entity, [max_id])
     
 
+    def find_entity_with_lowest_attribute_value(self, range: Range, attribute_name: str) -> Range:
+        """
+        Returns a range with a single id from range, which is the id with the highest attribute value
+        """
+        max_id = None
+        max_result = None
+        for id in range:
+            values = [None, id]
+            results = self.adapter.interpret_attribute(range.entity, attribute_name, values)
+            for r in results:
+                if max_id == None or max_result > r:
+                    max_id = id
+                    max_result = r
+        return Range(range.entity, [max_id])
+
+
     def filter_entities_by_modifier(self, range: Range, modifier_name: str) -> Range:
         """
         Returns the ids in range that match modifier
