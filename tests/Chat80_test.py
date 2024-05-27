@@ -1,3 +1,4 @@
+from typing import Callable
 import unittest
 
 from richard.ModelAdapter import ModelAdapter
@@ -16,9 +17,10 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import exists, dnp
+from richard.semantics.commands import accept, exists, dnp, range_and
 from richard.store.MemoryDb import MemoryDb
 from richard.type.Simple import Simple
+from richard.type.functions import Binary, Nonary, Unary
 
 
 class TestChat80(unittest.TestCase):
@@ -46,10 +48,24 @@ class TestChat80(unittest.TestCase):
         db.insert(Record('country', {'id': 'albania', 'region': 'southern_europe', 'lat': 41, 'long': -20, 'area': 11.100, 'population': 2.350, 'capital': 'tirana', 'currency': 'lek'}))
         db.insert(Record('country', {'id': 'united_kingdom', 'region': 'western_europe', 'lat': 54, 'long': 2, 'area': 94.209, 'population': 55.930, 'capital': 'london', 'currency': 'pound'}))
 
+        db.insert(Record('country', {'id': 'mozambique', 'region': 'southern_africa', 'lat': -19, 'long': -35, 'area': 303.373, 'population': 8.820, 'capital': 'maputo', 'currency': '?'}))
+        db.insert(Record('country', {'id': 'thailand', 'region': 'southeast_east', 'lat': 16, 'long': -102, 'area': 198.455, 'population': 39.950, 'capital': 'bangkok', 'currency': 'baht'}))
+        db.insert(Record('country', {'id': 'congo', 'region': 'central_africa', 'lat': -1, 'long': -16, 'area': 132.46, 'population': 1.1, 'capital': 'brazzaville', 'currency': 'cfa_franc'}))
+
         db.insert(Record('country', {'id': 'united_states', 'region': 'north_america', 'lat': 37, 'long': 96, 'area': 3615.122, 'population': 211.210, 'capital': 'washington', 'currency': 'dollar'}))
         db.insert(Record('country', {'id': 'paraguay', 'region': 'south_america', 'lat': -23, 'long': 57, 'area': 157.47, 'population': 2.670, 'capital': 'asuncion', 'currency': 'guarani'}))
 
+        db.insert(Record('ocean', {'id': 'indian_ocean'}))    
+        db.insert(Record('ocean', {'id': 'atlantic'}))    
+        db.insert(Record('ocean', {'id': 'pacific'}))            
+        db.insert(Record('ocean', {'id': 'southern_ocean'}))    
+        db.insert(Record('ocean', {'id': 'arctic_ocean'}))    
+
         db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
+        db.insert(Record('borders', {'country_id1': 'mozambique', 'country_id2': 'indian_ocean'}))    
+        db.insert(Record('borders', {'country_id1': 'china', 'country_id2': 'indian_ocean'}))    
+        db.insert(Record('borders', {'country_id1': 'thailand', 'country_id2': 'indian_ocean'}))    
+        db.insert(Record('borders', {'country_id1': 'congo', 'country_id2': 'atlantic'}))    
 
         # create an adapter for this data source
 
@@ -75,6 +91,7 @@ class TestChat80(unittest.TestCase):
                         Entity("river", [], []),
                         Entity("country", ["size-of", "capital-of", "location-of"], ["european", "asian", "american", "african"]),
                         Entity("city", ["size-of"], []),
+                        Entity("ocean", [], []),
                     ], 
                     relations=[
                         Relation("borders", ['country', 'country']),
@@ -83,12 +100,19 @@ class TestChat80(unittest.TestCase):
 
 
             def interpret_relation(self, relation_name: str, values: list[Simple]) -> list[list[Simple]]:
+                table = None
                 columns = []
                 if relation_name == "borders":
                     table = "borders"
                     columns = ["country_id1", "country_id2"]
 
-                return ds.select(table, columns, values)
+                if not table:
+                    raise Exception("No table found for " + relation_name)
+                
+                r =  ds.select(table, columns, values)
+                # print(table, columns, values, r)
+                return r
+
             
 
             def interpret_entity(self, entity_name: str) -> list[Simple]:
@@ -96,6 +120,7 @@ class TestChat80(unittest.TestCase):
             
 
             def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
+                table = None
                 if attribute_name == "capital-of":
                     table = "country"
                     columns = ["capital", "id"]
@@ -106,10 +131,14 @@ class TestChat80(unittest.TestCase):
                     table = "country"
                     columns = ["region", "id"]
 
+                if not table:
+                    raise Exception("No table found for " + attribute_name)
+
                 return ds.select(table, columns, values)
             
 
             def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
+                table = None
                 if entity_name == "country":
                     if modifier_name in ["european", "asian", "african", "american"] :
                         table = "country"
@@ -125,6 +154,9 @@ class TestChat80(unittest.TestCase):
                         for region in regions[modifier_name]:
                             ids += ds.select_column(table, columns, [value, region])
                         return ids
+                    
+                if not table:
+                    raise Exception("No table found for " + entity_name + ":" + modifier_name)
 
                 return ds.select_column(table, columns, [value])
                       
@@ -134,7 +166,34 @@ class TestChat80(unittest.TestCase):
 
         # grammar
 
+        def do_np_relative_clause(np: Nonary, relative_clause: Unary) -> Callable[[], dnp]:
+            return lambda: dnp(np().determiner, lambda: model.filter_entities(np(), relative_clause))
+        
+
+        def do_relative_clause_relative_clause(np: callable, relative_clause1: Unary, relative_clause2: Unary) -> Callable[[Simple], list[list[Simple]]]:
+            return lambda: dnp(
+                                np().determiner, 
+                                lambda: range_and(
+                                    model.filter_entities(np(), relative_clause1), 
+                                    model.filter_entities(np(), relative_clause2)))
+        
+
+        def do_that_vp_no_sub(vp_no_sub: callable) -> Unary:
+            return lambda subject: vp_no_sub(subject)
+        
+
+        # stappenplan
+        # 1 create function
+        # 2 create lambda function that calls funciton #1 with the simplest of parameters (no ())
+        # 3 implement #1
+
         grammar = [
+
+            { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: do_np_relative_clause(np, relative_clause) },
+            { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: do_relative_clause_relative_clause(np, rc1, rc2) },
+            { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: do_that_vp_no_sub(vp_no_sub) },
+
+
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: model.filter_entities(np()) },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { 
@@ -151,7 +210,9 @@ class TestChat80(unittest.TestCase):
             { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: model.filter_entities(np(), tv(subject)) },
 
             { "syn": "tv -> 'border'", "sem": lambda: 
-                lambda subject: lambda object: model.find_relation_values('borders', [subject, object]) },
+                lambda subject: lambda object: model.find_relation_values('borders', [subject, object]) + model.find_relation_values('borders', [object, subject])},
+            { "syn": "tv -> 'borders'", "sem": lambda: 
+                lambda subject: lambda object: model.find_relation_values('borders', [subject, object]) + model.find_relation_values('borders', [object, subject]) },
 
             { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
@@ -177,6 +238,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
             { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
             { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_entity_range('country') },
+            { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_entity_range('ocean') },
 
             { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.find_attribute_values('capital-of', np()) },
 
@@ -210,8 +272,10 @@ class TestChat80(unittest.TestCase):
             ["Where is the largest country?", ["far_east"]],
             ["Which countries are European?", ["albania", "united_kingdom"]],
             ["Which country's capital is London?", ["united_kingdom"]],
-            ["Which is the largest african country?", ['upper_volta']],
-            ["How large is the smallest american country?", [157.47]]
+            ["Which is the largest african country?", ['mozambique']],
+            ["How large is the smallest american country?", [157.47]],
+            ["What is the ocean that borders African countries?", ['indian_ocean', 'atlantic']],
+            ["What is the ocean that borders African countries and that borders Asian countries?", ['indian_ocean']],
         ]
 
         for test in tests:

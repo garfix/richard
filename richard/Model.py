@@ -33,12 +33,14 @@ class Model:
         Result consists of all elements in dnp.nbar that satisfy vp
         If the number of results agrees with dnp.determiner, results are returned. If not, an empty list
         """
-        elements = dnp.nbar()
+
+        elements = dnp.range()
         range_count = len(elements)
 
         result = []
         if vp:
             for element in elements:
+                # print(element)
                 for e2 in vp(element):
                     result.append(element)
         else:
@@ -48,23 +50,28 @@ class Model:
         result_count = len(result)
         
         if dnp.determiner(result_count, range_count):
-            return result
+            # print(dnp.range(), result)
+            return Range(elements.entity, result)
         else:
-            return []
+            # print(dnp.range(), result)
+            return Range(elements.entity, [])
 
 
-    def find_relation_values(self, relation_name: str, field_values: list[Simple]):
+    def find_relation_values(self, relation_name: str, field_values: list[list[Simple]]):
         if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
           
-        return self.adapter.interpret_relation(relation_name, field_values)
+        v=self.adapter.interpret_relation(relation_name, field_values)
+        # print('v', v)
+        return v
+
     
 
     def find_attribute_values(self, attribute_name: str, dnp: dnp) -> Range:
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
 
-        range = dnp.nbar()
+        range = dnp.range()
         results = []
         for id in range:
             values = [None, id]
@@ -72,7 +79,7 @@ class Model:
                 results.append(f[0])
 
         if dnp.determiner(len(results), len(range)):
-            return results
+            return Range(range.entity, results)
         else:
             return Range(range.entity, [])
         
@@ -81,7 +88,7 @@ class Model:
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
 
-        range = dnp.nbar()
+        range = dnp.range()
         results = []
         for id in range:
             values = [id, None]

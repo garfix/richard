@@ -18,7 +18,7 @@ class Record:
             if not name.isidentifier():
                 raise ValueError("The record key '" + name + "' is not an identier")
             if not isinstance(value, float) and not isinstance(value, str) and not isinstance(value, int):
-                raise ValueError("A record must be int, float or string")
+                raise ValueError("A record must be int, float or string: " + str(value))
     
 
     def __str__(self):
