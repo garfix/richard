@@ -12,7 +12,7 @@ class dnp:
     # determiner
     determiner: callable
     # nbar phrase
-    range: Range
+    range: callable
    
 
 def exists(result_count, range_count):
