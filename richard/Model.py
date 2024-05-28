@@ -57,13 +57,15 @@ class Model:
             return Range(elements.entity, [])
 
 
-    def find_relation_values(self, relation_name: str, field_values: list[list[Simple]]):
+    def find_relation_values(self, relation_name: str, field_values: list[list[Simple]], two_ways: bool = False):
         if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
           
-        v=self.adapter.interpret_relation(relation_name, field_values)
-        # print('v', v)
-        return v
+        if two_ways:
+            return self.adapter.interpret_relation(relation_name, field_values) + \
+            self.adapter.interpret_relation(relation_name, reversed(field_values))
+        else:
+            return self.adapter.interpret_relation(relation_name, field_values)
 
     
 

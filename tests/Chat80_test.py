@@ -167,12 +167,11 @@ class TestChat80(unittest.TestCase):
         # grammar
 
         def do_np_relative_clause(np: Nonary, relative_clause: Unary) -> Callable[[], dnp]:
-            return lambda: dnp(np().determiner, lambda: model.filter_entities(np(), relative_clause))
+            return lambda: dnp(exists, lambda: model.filter_entities(np(), relative_clause))
         
 
         def do_relative_clause_relative_clause(np: callable, relative_clause1: Unary, relative_clause2: Unary) -> Callable[[Simple], list[list[Simple]]]:
-            return lambda: dnp(
-                                np().determiner, 
+            return lambda: dnp(exists, 
                                 lambda: range_and(
                                     model.filter_entities(np(), relative_clause1), 
                                     model.filter_entities(np(), relative_clause2)))
@@ -210,9 +209,9 @@ class TestChat80(unittest.TestCase):
             { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: model.filter_entities(np(), tv(subject)) },
 
             { "syn": "tv -> 'border'", "sem": lambda: 
-                lambda subject: lambda object: model.find_relation_values('borders', [subject, object]) + model.find_relation_values('borders', [object, subject])},
+                lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
             { "syn": "tv -> 'borders'", "sem": lambda: 
-                lambda subject: lambda object: model.find_relation_values('borders', [subject, object]) + model.find_relation_values('borders', [object, subject]) },
+                lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
 
             { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
