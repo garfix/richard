@@ -202,8 +202,8 @@ class TestChat80(unittest.TestCase):
             },
             { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) },
             { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: model.filter_entities(np()) },
-            { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' nbar '?'", "sem": lambda nbar: 
-                lambda: model.find_attribute_objects('capital-of', dnp(exists, nbar)) },
+            { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' np '?'", "sem": lambda np: 
+                lambda: model.find_attribute_objects('capital-of', np()) },
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: model.filter_entities(np(), vp_no_sub) },
             { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values('size-of', np()) },
 
