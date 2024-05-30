@@ -2,8 +2,6 @@ from dataclasses import dataclass
 
 from richard.ModelAdapter import ModelAdapter
 from richard.entity.Instance import Instance
-from richard.entity.Range import Range
-from richard.semantics.commands import dnp
 from richard.type.Simple import Simple
 
 
@@ -22,7 +20,7 @@ class Model:
         self.adapter = adapter
 
 
-    def get_entity_range(self, entity_name: str) -> Range:
+    def get_instances(self, entity_name: str) -> list[Instance]:
         if not entity_name in self.adapter.entities:
             raise Exception('No entity ' + entity_name + " in model")
         
@@ -30,7 +28,7 @@ class Model:
         return self.hydrate_entities(results, entity_name)
 
 
-    def find_relation_values(self, relation_name: str, field_values: list[list[Simple]], two_ways: bool = False):
+    def find_relation_values(self, relation_name: str, field_values: list[Simple], two_ways: bool = False):
         if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
           
@@ -43,13 +41,13 @@ class Model:
         return self.hydrate_relations(results, relation_name)
 
     
-    def find_attribute_values(self, attribute_name: str, np: callable) -> Range:
+    def find_attribute_values(self, attribute_name: str, range: callable) -> list[Simple]:
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
         attribute = self.adapter.attributes[attribute_name]
         
         results = []
-        for instance in np():
+        for instance in range():
             values = [None, instance.id]
             for f in self.adapter.interpret_attribute(instance.entity, attribute_name, values): 
                 results.append(self.hydrate_attribute_value(f[0], attribute.entities[0], attribute_name))
@@ -57,13 +55,13 @@ class Model:
         return results
 
 
-    def find_attribute_objects(self, attribute_name: str, np: callable) -> Range:
+    def find_attribute_objects(self, attribute_name: str, range: callable) -> list[Simple]:
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
         attribute = self.adapter.attributes[attribute_name]
 
         results = []
-        for instance in np():
+        for instance in range():
             values = [instance.id, None]
             for f in self.adapter.interpret_attribute(instance.entity, attribute_name, values):
                 results.append(self.hydrate_attribute_object(f[1], attribute.entities[1], attribute_name))
@@ -71,9 +69,9 @@ class Model:
         return results
     
 
-    def find_entity_with_highest_attribute_value(self, range: list, attribute_name: str) -> Range:
+    def find_entity_with_highest_attribute_value(self, range: callable, attribute_name: str) -> list[Instance]:
         """
-        Returns a range with a single id from range, which is the id with the highest attribute value
+        Returns a list with a single id from range, which is the id with the highest attribute value
         """
         max_instance = None
         max_result = None
@@ -87,7 +85,7 @@ class Model:
         return [max_instance]
     
 
-    def find_entity_with_lowest_attribute_value(self, range: list, attribute_name: str) -> Range:
+    def find_entity_with_lowest_attribute_value(self, range: callable, attribute_name: str) -> list[Instance]:
         """
         Returns a range with a single id from range, which is the id with the highest attribute value
         """
@@ -103,9 +101,9 @@ class Model:
         return [max_instance]
 
 
-    def filter_entities_by_modifier(self, range: Range, modifier_name: str) -> Range:
+    def filter_by_modifier(self, range: callable, modifier_name: str) -> list[Instance]:
         """
-        Returns the ids in range that match modifier
+        Returns the instances in range that match modifier
         """
         if not modifier_name in self.adapter.modifiers:
             raise Exception('No modifier ' + modifier_name + " in model")
@@ -118,8 +116,8 @@ class Model:
         return results
 
 
-    def hydrate_entities(self, values: list[list[Simple]], entity_name: str) -> list[list[Instance]]:
-        return [Instance(entity_name, element) for element in values]
+    def hydrate_entities(self, ids: list[Simple], entity_name: str) -> list[Instance]:
+        return [Instance(entity_name, id) for id in ids]
             
 
     def hydrate_relations(self, values: list[list[Simple]], relation_name: str) -> list[list[Instance]]:

@@ -1,3 +1,14 @@
+## 2024-05-30
+
+The big question was:
+
+    np or np()
+
+When creating grammar rules, should one use `np` (use the function) or `np()` (use the result of the function). I came up with the following rule:
+
+1. If it is returned directly, use `np()`
+2. If it is passed as an argument to a function, use `np`
+
 ## 2024-05-23
 
 A relation is a combination of two or more entities of equivalent status. An attribute is a combination of two entities with subordinate status.

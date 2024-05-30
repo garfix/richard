@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from richard.entity.Instance import Instance
-from richard.entity.Range import Range
 from richard.entity.Attribute import Attribute
 from richard.entity.Modifier import Modifier
 from richard.entity.Relation import Relation
@@ -64,17 +62,17 @@ class ModelAdapter:
         
 
 
-    def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:
+    def interpret_relation(self, relation_name: str, values: list[Simple]) -> list[list[Simple]]:
         return []
 
 
-    def interpret_entity(self, entity: str) -> list[Simple]:
-        return Range(entity, [])
+    def interpret_entity(self, entity_name: str) -> list[Simple]:
+        return []
     
 
-    def interpret_attribute(self, entity: str, attribute: str, values: list[Simple]) -> list[Simple]:
+    def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
         return []
     
     
-    def interpret_modifier(self, entity: str, modifier: str, value: Simple) -> list[Simple]:
+    def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
         return []

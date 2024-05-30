@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-from richard.entity import Range
 from richard.type.Simple import Simple
 
 

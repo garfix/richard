@@ -1,4 +1,3 @@
-from typing import Callable
 import unittest
 
 from richard.ModelAdapter import ModelAdapter
@@ -8,7 +7,6 @@ from richard.block.FindOne import FindOne
 from richard.entity.Instance import Instance
 from richard.entity.Modifier import Modifier
 from richard.entity.Attribute import Attribute
-from richard.entity.Range import Range
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
@@ -210,15 +208,15 @@ class TestChat80(unittest.TestCase):
 
             { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
 
-            { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'european') },
-            { "syn": "adj -> 'african'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'african') },
-            { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'american') },
-            { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_entities_by_modifier(range, 'asian') },
+            { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'european') },
+            { "syn": "adj -> 'african'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'african') },
+            { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'american') },
+            { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'asian') },
 
-            { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_entity_range('river') },
-            { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_entity_range('country') },
-            { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_entity_range('country') },
-            { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_entity_range('ocean') },
+            { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_instances('river') },
+            { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_instances('country') },
+            { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_instances('country') },
+            { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_instances('ocean') },
 
             { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.find_attribute_values('capital-of', np) },
 
