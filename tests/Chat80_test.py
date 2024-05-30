@@ -83,11 +83,12 @@ class TestChat80(unittest.TestCase):
                         Modifier("american"),
                         Modifier("african"),
                     ],
-                    # todo(?): include attributes with entities, because their argument entities may be different per entity
+                    # todo(?): include attributes with entities, because their argument types may be different
+                    # todo: multiple attributes with the same name but different argument types
                     attributes=[
-                        Attribute("size-of", None),
-                        Attribute("capital-of", "city"),
-                        Attribute("location-of", "place")
+                        Attribute("size-of", [None, "country"]),
+                        Attribute("capital-of", ["city", "country"]),
+                        Attribute("location-of", ["place", "country"])
                     ],
                     entities=[
                         Entity("place", [], []),
@@ -262,8 +263,7 @@ class TestChat80(unittest.TestCase):
             ["What is the capital of Upper_Volta?", [Instance(entity='city', id='ouagadougou')]],
             ["Where is the largest country?", [Instance(entity='place', id='far_east')]],
             ["Which countries are European?", [Instance(entity='country', id='united_kingdom'), Instance(entity='country', id='albania')]],
-            # err
-            ["Which country's capital is London?", [Instance(entity='city', id='united_kingdom')]],
+            ["Which country's capital is London?", [Instance(entity='country', id='united_kingdom')]],
             ["Which is the largest african country?", [Instance(entity='country', id='mozambique')]],
             ["How large is the smallest american country?", [157.47]],
             ["What is the ocean that borders African countries?", [Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')]],

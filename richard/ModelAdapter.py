@@ -48,8 +48,8 @@ class ModelAdapter:
 
     def do_consistency_check(self):
         for attribute in self.attributes.values():
-            if attribute.entity:
-                if not attribute.entity in self.entities:
+            for entity in attribute.entities:
+                if entity and entity not in self.entities:
                     raise Exception("Attribute entity '" + attribute.entity + "' was not defined in the adapter")
                 
         for entity in self.entities.values():

@@ -5,6 +5,6 @@ from dataclasses import dataclass
 class Attribute:
 
     name: str
-    entity: str|None
-    
+    entities: list[str|None]
+
 
