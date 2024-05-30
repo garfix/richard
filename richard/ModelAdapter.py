@@ -14,8 +14,8 @@ class ModelAdapter:
     This class represents the domain-specific part of the model. Extend it to fit your needs.
     """
 
-    modifiers = dict[str, Modifier]
-    attributes = dict[str, Attribute]
+    modifiers: dict[str, Modifier]
+    attributes: dict[str, Attribute]
     entities: dict[str, Entity]
     relations: dict[str, Relation]
 
@@ -42,6 +42,26 @@ class ModelAdapter:
         self.modifiers = {}
         for modifier in modifiers:
             self.modifiers[modifier.name] = modifier
+
+        self.do_consistency_check()
+
+
+    def do_consistency_check(self):
+        for attribute in self.attributes.values():
+            if attribute.entity:
+                if not attribute.entity in self.entities:
+                    raise Exception("Attribute entity '" + attribute.entity + "' was not defined in the adapter")
+                
+        for entity in self.entities.values():
+            for attribute in entity.attributes:
+                if not attribute in self.attributes:
+                    raise Exception("Entity attribute '" + attribute + "' was not defined in the adapter")
+                
+        for entity in self.entities.values():
+            for modifier in entity.modifiers:
+                if not modifier in self.modifiers:
+                    raise Exception("Entity modifier '" + modifier + "' was not defined in the adapter")
+        
 
 
     def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:

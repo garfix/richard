@@ -83,13 +83,14 @@ class TestChat80(unittest.TestCase):
                         Modifier("american"),
                         Modifier("african"),
                     ],
-                    # todo: include attributes with entities, because their argument entities may be different per entity
+                    # todo(?): include attributes with entities, because their argument entities may be different per entity
                     attributes=[
                         Attribute("size-of", None),
                         Attribute("capital-of", "city"),
                         Attribute("location-of", "place")
                     ],
                     entities=[
+                        Entity("place", [], []),
                         Entity("river", [], []),
                         Entity("country", ["size-of", "capital-of", "location-of"], ["european", "asian", "american", "african"]),
                         Entity("city", ["size-of"], []),
@@ -259,7 +260,6 @@ class TestChat80(unittest.TestCase):
             ["What rivers are there?", [Instance(entity='river', id='amazon'), Instance(entity='river', id='brahmaputra')]],
             ["Does Afghanistan border China?", [Instance(entity='country', id='afghanistan')]],
             ["What is the capital of Upper_Volta?", [Instance(entity='city', id='ouagadougou')]],
-            # missing
             ["Where is the largest country?", [Instance(entity='place', id='far_east')]],
             ["Which countries are European?", [Instance(entity='country', id='united_kingdom'), Instance(entity='country', id='albania')]],
             # err
