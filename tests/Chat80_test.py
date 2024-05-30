@@ -167,18 +167,6 @@ class TestChat80(unittest.TestCase):
 
         # grammar
 
-        def do_np_relative_clause(np: Nonary, relative_clause: Unary):
-            return create_np(exists, lambda: np(relative_clause))
-        
-
-        def do_relative_clause_relative_clause(np: callable, relative_clause1: Unary, relative_clause2: Unary):
-            return create_np(exists, lambda: range_and(np(relative_clause1), np(relative_clause2)))
-        
-
-        def do_that_vp_no_sub(vp_no_sub: callable):
-            return vp_no_sub
-        
-
         # stappenplan
         # 1 create function
         # 2 create lambda function that calls funciton #1 with the simplest of parameters (no ())
@@ -188,7 +176,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values('location-of', np) },
-            { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) },
+            { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar) },
             { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' np '?'", "sem": lambda np: 
                 lambda: model.find_attribute_objects('capital-of', np) },
@@ -204,15 +192,15 @@ class TestChat80(unittest.TestCase):
 
             { "syn": "np -> nbar", "sem": lambda nbar: create_np(exists, nbar) },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
-            { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: do_np_relative_clause(np, relative_clause) },
-            { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: do_relative_clause_relative_clause(np, rc1, rc2) },
+            { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: create_np(exists, lambda: np(relative_clause)) },
+            { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: create_np(exists, lambda: range_and(np(rc1), np(rc2))) },
 
-            { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: do_that_vp_no_sub(vp_no_sub) },
+            { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: vp_no_sub },
 
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
-            { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun()) },
+            { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun) },
             { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
-            { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar()) },
+            { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar) },
             { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
 
             { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_entity_with_highest_attribute_value(range, 'size-of') },

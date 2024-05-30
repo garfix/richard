@@ -77,7 +77,7 @@ class Model:
         """
         max_instance = None
         max_result = None
-        for instance in range:
+        for instance in range():
             values = [None, instance.id]
             results = self.adapter.interpret_attribute(instance.entity, attribute_name, values)
             for r in results:
@@ -93,7 +93,7 @@ class Model:
         """
         max_instance = None
         max_result = None
-        for instance in range:
+        for instance in range():
             values = [None, instance.id]
             results = self.adapter.interpret_attribute(instance.entity, attribute_name, values)
             for r in results:
@@ -111,7 +111,7 @@ class Model:
             raise Exception('No modifier ' + modifier_name + " in model")
 
         results = []
-        for instance in range:
+        for instance in range():
             for f in self.adapter.interpret_modifier(instance.entity, modifier_name, instance.id):
                 results.append(Instance(instance.entity, f))
 
