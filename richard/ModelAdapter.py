@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from richard.entity.Instance import Instance
 from richard.entity.Range import Range
 from richard.entity.Attribute import Attribute
 from richard.entity.Modifier import Modifier

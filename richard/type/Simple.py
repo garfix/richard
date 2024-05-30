@@ -1,1 +1,4 @@
-Simple = float | int | str | bool | None
+from richard.entity.Instance import Instance
+
+
+Simple = float | int | str | bool | None | Instance

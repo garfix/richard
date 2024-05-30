@@ -5,6 +5,7 @@ from richard.ModelAdapter import ModelAdapter
 from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
+from richard.entity.Instance import Instance
 from richard.entity.Modifier import Modifier
 from richard.entity.Attribute import Attribute
 from richard.entity.Range import Range
@@ -17,7 +18,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import accept, exists, dnp, range_and
+from richard.semantics.commands import accept, create_np, exists, range_and
 from richard.store.MemoryDb import MemoryDb
 from richard.type.Simple import Simple
 from richard.type.functions import Binary, Nonary, Unary
@@ -82,10 +83,11 @@ class TestChat80(unittest.TestCase):
                         Modifier("american"),
                         Modifier("african"),
                     ],
+                    # todo: include attributes with entities, because their argument entities may be different per entity
                     attributes=[
-                        Attribute("size-of"),
-                        Attribute("capital-of"),
-                        Attribute("location-of")
+                        Attribute("size-of", None),
+                        Attribute("capital-of", "city"),
+                        Attribute("location-of", "place")
                     ],
                     entities=[
                         Entity("river", [], []),
@@ -109,10 +111,7 @@ class TestChat80(unittest.TestCase):
                 if not table:
                     raise Exception("No table found for " + relation_name)
                 
-                r =  ds.select(table, columns, values)
-                # print(table, columns, values, r)
-                return r
-
+                return ds.select(table, columns, values)
             
 
             def interpret_entity(self, entity_name: str) -> list[Simple]:
@@ -166,19 +165,16 @@ class TestChat80(unittest.TestCase):
 
         # grammar
 
-        def do_np_relative_clause(np: Nonary, relative_clause: Unary) -> Callable[[], dnp]:
-            return lambda: dnp(exists, lambda: model.filter_entities(np(), relative_clause))
+        def do_np_relative_clause(np: Nonary, relative_clause: Unary):
+            return create_np(exists, lambda: np(relative_clause))
         
 
-        def do_relative_clause_relative_clause(np: callable, relative_clause1: Unary, relative_clause2: Unary) -> Callable[[Simple], list[list[Simple]]]:
-            return lambda: dnp(exists, 
-                                lambda: range_and(
-                                    model.filter_entities(np(), relative_clause1), 
-                                    model.filter_entities(np(), relative_clause2)))
+        def do_relative_clause_relative_clause(np: callable, relative_clause1: Unary, relative_clause2: Unary):
+            return create_np(exists, lambda: range_and(np(relative_clause1), np(relative_clause2)))
         
 
-        def do_that_vp_no_sub(vp_no_sub: callable) -> Unary:
-            return lambda subject: vp_no_sub(subject)
+        def do_that_vp_no_sub(vp_no_sub: callable):
+            return vp_no_sub
         
 
         # stappenplan
@@ -193,28 +189,28 @@ class TestChat80(unittest.TestCase):
             { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: do_that_vp_no_sub(vp_no_sub) },
 
 
-            { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: model.filter_entities(np()) },
+            { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { 
                 "syn": "s -> 'where' 'is' np '?'", 
-                "sem": lambda np: lambda: model.find_attribute_values('location-of', np())
+                "sem": lambda np: lambda: model.find_attribute_values('location-of', np)
             },
             { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) },
-            { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: model.filter_entities(np()) },
+            { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' np '?'", "sem": lambda np: 
-                lambda: model.find_attribute_objects('capital-of', np()) },
-            { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: model.filter_entities(np(), vp_no_sub) },
-            { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values('size-of', np()) },
+                lambda: model.find_attribute_objects('capital-of', np) },
+            { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: np(vp_no_sub) },
+            { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values('size-of', np) },
 
-            { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: model.filter_entities(np(), tv(subject)) },
+            { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: np(tv(subject)) },
 
             { "syn": "tv -> 'border'", "sem": lambda: 
                 lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
             { "syn": "tv -> 'borders'", "sem": lambda: 
                 lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
 
-            { "syn": "np -> nbar", "sem": lambda nbar: lambda: dnp(exists, nbar) },
-            { "syn": "np -> det nbar", "sem": lambda det, nbar: lambda: dnp(det, nbar) },
+            { "syn": "np -> nbar", "sem": lambda nbar: create_np(exists, nbar) },
+            { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
 
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun()) },
@@ -239,13 +235,13 @@ class TestChat80(unittest.TestCase):
             { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_entity_range('country') },
             { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_entity_range('ocean') },
 
-            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.find_attribute_values('capital-of', np()) },
+            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.find_attribute_values('capital-of', np) },
 
             # todo
-            { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: Range('country', ['afghanistan']) },
-            { "syn": "proper_noun -> 'china'", "sem": lambda: lambda: Range('country', ['china']) },
-            { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda: Range('country', ['upper_volta']) },
-            { "syn": "proper_noun -> 'london'", "sem": lambda: lambda: Range('city', ['london']) },
+            { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: [Instance('country', 'afghanistan')] },
+            { "syn": "proper_noun -> 'china'", "sem": lambda: lambda:  [Instance('country', 'china')] },
+            { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda:  [Instance('country', 'upper_volta')] },
+            { "syn": "proper_noun -> 'london'", "sem": lambda: lambda:  [Instance('city', 'london')]  },
         ]
 
         # pipeline
@@ -286,5 +282,12 @@ class TestChat80(unittest.TestCase):
                 print(result.error_code, result.error_args) 
                 break
 
-            results = executor.get_results(request)
+            raw_results = executor.get_results(request)
+            results = []
+            for r in raw_results:
+                if isinstance(r,  Instance):
+                    results.append(r.id)
+                else:
+                    results.append(r)
+
             self.assertEqual(set(answer), set(results))

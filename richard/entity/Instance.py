@@ -2,9 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Attribute:
-
-    name: str
-    entity: str|None
+class Instance:
+    entity_name: str
+    id: str
     
-
