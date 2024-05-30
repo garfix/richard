@@ -44,17 +44,17 @@ class ModelAdapter:
             self.modifiers[modifier.name] = modifier
 
 
-    def interpret_relation(self, relation_name: str, values: list[Simple]) -> list[list[Simple]]:
+    def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:
         return []
 
 
-    def interpret_entity(self, entity_name: str) -> list[Simple]:
-        return Range(entity_name, [])
+    def interpret_entity(self, entity: str) -> list[Simple]:
+        return Range(entity, [])
     
 
-    def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
+    def interpret_attribute(self, entity: str, attribute: str, values: list[Simple]) -> list[Simple]:
         return []
     
     
-    def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
+    def interpret_modifier(self, entity: str, modifier: str, value: Simple) -> list[Simple]:
         return []

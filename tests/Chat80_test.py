@@ -101,45 +101,45 @@ class TestChat80(unittest.TestCase):
                 )
 
 
-            def interpret_relation(self, relation_name: str, values: list[Simple]) -> list[list[Simple]]:
+            def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:
                 table = None
                 columns = []
-                if relation_name == "borders":
+                if relation == "borders":
                     table = "borders"
                     columns = ["country_id1", "country_id2"]
 
                 if not table:
-                    raise Exception("No table found for " + relation_name)
+                    raise Exception("No table found for " + relation)
                 
                 return ds.select(table, columns, values)
             
 
-            def interpret_entity(self, entity_name: str) -> list[Simple]:
-                return ds.select_column(entity_name, ['id'], [None])
+            def interpret_entity(self, entity: str) -> list[Simple]:
+                return ds.select_column(entity, ['id'], [None])
             
 
-            def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
+            def interpret_attribute(self, entity: str, attribute: str, values: list[Simple]) -> list[Simple]:
                 table = None
-                if attribute_name == "capital-of":
+                if attribute == "capital-of":
                     table = "country"
                     columns = ["capital", "id"]
-                if attribute_name == "size-of":
+                if attribute == "size-of":
                     table = "country"
                     columns = ["area", "id"]
-                if attribute_name == "location-of":
+                if attribute == "location-of":
                     table = "country"
                     columns = ["region", "id"]
 
                 if not table:
-                    raise Exception("No table found for " + attribute_name)
+                    raise Exception("No table found for " + attribute)
 
                 return ds.select(table, columns, values)
             
 
-            def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
+            def interpret_modifier(self, entity: str, modifier: str, value: Simple) -> list[Simple]:
                 table = None
-                if entity_name == "country":
-                    if modifier_name in ["european", "asian", "african", "american"] :
+                if entity == "country":
+                    if modifier in ["european", "asian", "african", "american"] :
                         table = "country"
                         columns = ["id", "region"]
                         regions = {
@@ -150,12 +150,12 @@ class TestChat80(unittest.TestCase):
                         }
 
                         ids = []
-                        for region in regions[modifier_name]:
+                        for region in regions[modifier]:
                             ids += ds.select_column(table, columns, [value, region])
                         return ids
                     
                 if not table:
-                    raise Exception("No table found for " + entity_name + ":" + modifier_name)
+                    raise Exception("No table found for " + entity + ":" + modifier)
 
                 return ds.select_column(table, columns, [value])
                       
@@ -183,18 +183,9 @@ class TestChat80(unittest.TestCase):
         # 3 implement #1
 
         grammar = [
-
-            { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: do_np_relative_clause(np, relative_clause) },
-            { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: do_relative_clause_relative_clause(np, rc1, rc2) },
-            { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: do_that_vp_no_sub(vp_no_sub) },
-
-
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
-            { 
-                "syn": "s -> 'where' 'is' np '?'", 
-                "sem": lambda np: lambda: model.find_attribute_values('location-of', np)
-            },
+            { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values('location-of', np) },
             { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar()) },
             { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' np '?'", "sem": lambda np: 
@@ -211,6 +202,10 @@ class TestChat80(unittest.TestCase):
 
             { "syn": "np -> nbar", "sem": lambda nbar: create_np(exists, nbar) },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
+            { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: do_np_relative_clause(np, relative_clause) },
+            { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: do_relative_clause_relative_clause(np, rc1, rc2) },
+
+            { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: do_that_vp_no_sub(vp_no_sub) },
 
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun()) },
@@ -261,16 +256,18 @@ class TestChat80(unittest.TestCase):
         # testing
 
         tests = [
-            ["What rivers are there?", ['amazon', 'brahmaputra']],
-            ["Does Afghanistan border China?", ['afghanistan']],
-            ["What is the capital of Upper_Volta?", ["ouagadougou"]],
-            ["Where is the largest country?", ["far_east"]],
-            ["Which countries are European?", ["albania", "united_kingdom"]],
-            ["Which country's capital is London?", ["united_kingdom"]],
-            ["Which is the largest african country?", ['mozambique']],
+            ["What rivers are there?", [Instance(entity='river', id='amazon'), Instance(entity='river', id='brahmaputra')]],
+            ["Does Afghanistan border China?", [Instance(entity='country', id='afghanistan')]],
+            ["What is the capital of Upper_Volta?", [Instance(entity='city', id='ouagadougou')]],
+            # missing
+            ["Where is the largest country?", [Instance(entity='place', id='far_east')]],
+            ["Which countries are European?", [Instance(entity='country', id='united_kingdom'), Instance(entity='country', id='albania')]],
+            # err
+            ["Which country's capital is London?", [Instance(entity='city', id='united_kingdom')]],
+            ["Which is the largest african country?", [Instance(entity='country', id='mozambique')]],
             ["How large is the smallest american country?", [157.47]],
-            ["What is the ocean that borders African countries?", ['indian_ocean', 'atlantic']],
-            ["What is the ocean that borders African countries and that borders Asian countries?", ['indian_ocean']],
+            ["What is the ocean that borders African countries?", [Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')]],
+            ["What is the ocean that borders African countries and that borders Asian countries?", [Instance(entity='ocean', id='indian_ocean')]],
         ]
 
         for test in tests:
@@ -282,12 +279,6 @@ class TestChat80(unittest.TestCase):
                 print(result.error_code, result.error_args) 
                 break
 
-            raw_results = executor.get_results(request)
-            results = []
-            for r in raw_results:
-                if isinstance(r,  Instance):
-                    results.append(r.id)
-                else:
-                    results.append(r)
-
+            results = executor.get_results(request)
             self.assertEqual(set(answer), set(results))
+            
