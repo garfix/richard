@@ -5,11 +5,7 @@ def exists(result_count, range_count):
 
 def accept(result_count, range_count):
     return True
-
-
-def range_and(range1: list, range2: list) -> list:  
-    return list(set(range1) & set(range2))
-    
+ 
 
 def create_np(determiner: callable, range: callable):
 
@@ -17,15 +13,14 @@ def create_np(determiner: callable, range: callable):
         elements = range()
         range_count = len(elements)
 
-        result = []
         if vp:
+            result = set()
             for element in elements:
-                for e2 in vp(element.id):
-                    result.append(element)
+                for _ in vp(element.id):
+                    result.add(element)
         else:
             result = elements
 
-        result = list(set(result))
         result_count = len(result)
 
         if determiner(result_count, range_count):

@@ -1,3 +1,29 @@
+## 2024-05-31
+
+The executionable meaning of the sentence "What is the ocean that borders African countries and that borders Asian countries?"
+
+~~~python
+lambda np: lambda: np()
+    lambda det, nbar: create_np(det, nbar)
+        lambda: exists
+        lambda np, rc1, rc2: create_np(exists, lambda: range_and(np(rc1), np(rc2)))
+            lambda: lambda: model.get_instances('ocean')
+            lambda vp_no_sub: lambda subject: vp_no_sub(subject)
+                lambda tv, np: lambda subject: np(tv(subject))
+                    lambda: lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True)
+                    lambda nbar: create_np(exists, nbar)
+                        lambda adj, noun: lambda: adj(noun)
+                            lambda: lambda range: model.filter_by_modifier(range, 'african')
+                            lambda: lambda: model.get_instances('country')
+            lambda vp_no_sub: vp_no_sub
+                lambda tv, np: lambda subject: np(tv(subject))
+                    lambda: lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True)
+                    lambda nbar: create_np(exists, nbar)
+                        lambda adj, noun: lambda: adj(noun)
+                            lambda: lambda range: model.filter_by_modifier(range, 'asian')
+                            lambda: lambda: model.get_instances('country')
+~~~
+
 ## 2024-05-30
 
 The big question was:

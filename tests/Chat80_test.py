@@ -16,10 +16,9 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import accept, create_np, exists, range_and
+from richard.semantics.commands import accept, create_np, exists
 from richard.store.MemoryDb import MemoryDb
 from richard.type.Simple import Simple
-from richard.type.functions import Binary, Nonary, Unary
 
 
 class TestChat80(unittest.TestCase):
@@ -191,9 +190,9 @@ class TestChat80(unittest.TestCase):
             { "syn": "np -> nbar", "sem": lambda nbar: create_np(exists, nbar) },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
             { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: create_np(exists, lambda: np(relative_clause)) },
-            { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: create_np(exists, lambda: range_and(np(rc1), np(rc2))) },
+            { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: create_np(exists, lambda: np(rc1) & np(rc2)) },
 
-            { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: vp_no_sub },
+            { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: lambda subject: vp_no_sub(subject) },
 
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun) },
@@ -221,10 +220,10 @@ class TestChat80(unittest.TestCase):
             { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.find_attribute_values('capital-of', np) },
 
             # todo
-            { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: [Instance('country', 'afghanistan')] },
-            { "syn": "proper_noun -> 'china'", "sem": lambda: lambda:  [Instance('country', 'china')] },
-            { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda:  [Instance('country', 'upper_volta')] },
-            { "syn": "proper_noun -> 'london'", "sem": lambda: lambda:  [Instance('city', 'london')]  },
+            { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: set([Instance('country', 'afghanistan')]) },
+            { "syn": "proper_noun -> 'china'", "sem": lambda: lambda:  set([Instance('country', 'china')]) },
+            { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda:  set([Instance('country', 'upper_volta')]) },
+            { "syn": "proper_noun -> 'london'", "sem": lambda: lambda:  set([Instance('city', 'london')])  },
         ]
 
         # pipeline

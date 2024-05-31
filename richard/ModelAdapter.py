@@ -48,7 +48,7 @@ class ModelAdapter:
         for attribute in self.attributes.values():
             for entity in attribute.entities:
                 if entity and entity not in self.entities:
-                    raise Exception("Attribute entity '" + attribute.entity + "' was not defined in the adapter")
+                    raise Exception("Attribute entity '" + entity + "' was not defined in the adapter")
                 
         for entity in self.entities.values():
             for attribute in entity.attributes:
