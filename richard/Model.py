@@ -41,7 +41,8 @@ class Model:
         return self.hydrate_relations(results, relation_name)
 
     
-    def find_attribute_values(self, attribute_name: str, range: callable) -> set[Simple]:
+    def find_attribute_values(self, attribute_name_func: callable, range: callable) -> set[Simple]:
+        attribute_name = attribute_name_func()
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
         attribute = self.adapter.attributes[attribute_name]
@@ -55,7 +56,8 @@ class Model:
         return results
 
 
-    def find_attribute_objects(self, attribute_name: str, range: callable) -> set[Simple]:
+    def find_attribute_objects(self, attribute_name_func: callable, range: callable) -> set[Simple]:
+        attribute_name = attribute_name_func()
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
         attribute = self.adapter.attributes[attribute_name]
@@ -116,7 +118,8 @@ class Model:
         return results
     
 
-    def create_attribute_map(self, range: callable, attribute_name: str) -> list[Instance, Simple]:
+    def create_attribute_map(self, range: callable, attribute_name_func: callable) -> list[Instance, Simple]:
+        attribute_name = attribute_name_func()
         map = []
 
         for instance in range():

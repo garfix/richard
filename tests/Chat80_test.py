@@ -24,17 +24,17 @@ class TestChat80(unittest.TestCase):
     def test_chat80(self):
 
         grammar = [
-            { "syn": "s -> 'what' 'are' 'the' 'capitals' 'of' np '?'", "sem": lambda np: lambda: model.create_attribute_map(np, 'capital-of') },
+            { "syn": "s -> 'what' 'are' 'the' attr 'of' np '?'", "sem": lambda attr, np: lambda: model.create_attribute_map(np, attr) },
 
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
-            { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values('location-of', np) },
+            { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values(lambda: 'location-of', np) },
             { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar) },
             { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
-            { "syn": "s -> 'which' 'country' \''\' 's' 'capital' 'is' np '?'", "sem": lambda np: 
-                lambda: model.find_attribute_objects('capital-of', np) },
+            { "syn": "s -> 'which' 'country' \''\' 's' attr 'is' np '?'", "sem": lambda attr, np: 
+                lambda: model.find_attribute_objects(attr, np) },
             { "syn": "s -> 'does' np vp_no_sub '?'",  "sem": lambda np, vp_no_sub: lambda: np(vp_no_sub) },
-            { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values('size-of', np) },
+            { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values(lambda: 'size-of', np) },
 
             { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: np(tv(subject)) },
 
@@ -55,7 +55,7 @@ class TestChat80(unittest.TestCase):
 
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun) },
-            { "syn": "nbar -> attr np", "sem": lambda attr, np: lambda: attr(np) },
+            { "syn": "nbar -> attr 'of' np", "sem": lambda attr, np: lambda: model.find_attribute_values(attr, np) },
             { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar) },
 
             { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_entity_with_highest_attribute_value(range, 'size-of') },
@@ -76,7 +76,8 @@ class TestChat80(unittest.TestCase):
             { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_instances('country') },
             { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_instances('ocean') },
 
-            { "syn": "attr -> 'capital' 'of'", "sem": lambda: lambda np: model.find_attribute_values('capital-of', np) },
+            { "syn": "attr -> 'capital'", "sem": lambda: lambda: 'capital-of' },
+            { "syn": "attr -> 'capitals'", "sem": lambda: lambda: 'capital-of' },
 
             # todo
             { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: set([Instance('country', 'afghanistan')]) },
