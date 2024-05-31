@@ -31,7 +31,7 @@ class Model:
     def find_relation_values(self, relation_name: str, field_values: set[Simple], two_ways: bool = False) -> list[list[Simple]]:
         if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
-          
+        
         if two_ways:
             results = self.adapter.interpret_relation(relation_name, field_values) + \
                 self.adapter.interpret_relation(relation_name, reversed(field_values))
@@ -114,6 +114,18 @@ class Model:
                 results.add(Instance(instance.entity, f))
 
         return results
+    
+
+    def create_attribute_map(self, range: callable, attribute_name: str) -> list[Instance, Simple]:
+        map = []
+
+        for instance in range():
+            values = [None, instance.id]
+            results = self.adapter.interpret_attribute(instance.entity, attribute_name, values)
+            for r in results:
+                map.append([instance, r[0]])
+
+        return map
 
 
     def hydrate_entities(self, ids: set[Simple], entity_name: str) -> set[Instance]:

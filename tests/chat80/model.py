@@ -31,6 +31,7 @@ class Chat80Adapter(ModelAdapter):
                 Entity("country", ["size-of", "capital-of", "location-of"], ["european", "asian", "american", "african"]),
                 Entity("city", ["size-of"], []),
                 Entity("ocean", [], []),
+                Entity("sea", [], []),
             ], 
             relations=[
                 Relation("borders", ['country', 'country']),
