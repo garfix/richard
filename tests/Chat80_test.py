@@ -1,25 +1,15 @@
 import unittest
 
-from richard.ModelAdapter import ModelAdapter
-from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.entity.Instance import Instance
-from richard.entity.Modifier import Modifier
-from richard.entity.Attribute import Attribute
-from richard.entity.Entity import Entity
-from richard.entity.Relation import Relation
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
-from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import accept, create_np, exists
-from richard.store.MemoryDb import MemoryDb
-from richard.type.Simple import Simple
-
+from richard.semantics.commands import create_np, exists
+from .chat80.model import model
 
 class TestChat80(unittest.TestCase):
     """
@@ -32,142 +22,6 @@ class TestChat80(unittest.TestCase):
     """
    
     def test_chat80(self):
-
-        # fill an in-memory database
-
-        db = MemoryDb()
-        db.insert(Record('river', {'id': 'amazon'}))
-        db.insert(Record('river', {'id': 'brahmaputra'}))
-       
-        db.insert(Record('country', {'id': 'afghanistan', 'region': 'indian_subcontinent', 'lat': 33, 'long': -65, 'area': 254.861, 'population': 18.290, 'capital': 'kabul', 'currency': 'afghani'}))
-        db.insert(Record('country', {'id': 'china', 'region': 'far_east', 'lat': 30, 'long': -110, 'area': 3691.502, 'population': 840.0, 'capital': 'peking', 'currency': 'yuan'}))
-        db.insert(Record('country', {'id': 'upper_volta', 'region': 'west_africa', 'lat': 12, 'long': 2, 'area': 105.869, 'population': 5.740, 'capital': 'ouagadougou', 'currency': 'cfa_franc'}))       
-        db.insert(Record('country', {'id': 'rwanda', 'region': 'central_africa', 'lat': -2, 'long':-30, 'area': 10.169, 'population': 3.980, 'capital': 'kigali', 'currency': 'rwanda_franc'}))       
-        db.insert(Record('country', {'id': 'albania', 'region': 'southern_europe', 'lat': 41, 'long': -20, 'area': 11.100, 'population': 2.350, 'capital': 'tirana', 'currency': 'lek'}))
-        db.insert(Record('country', {'id': 'united_kingdom', 'region': 'western_europe', 'lat': 54, 'long': 2, 'area': 94.209, 'population': 55.930, 'capital': 'london', 'currency': 'pound'}))
-
-        db.insert(Record('country', {'id': 'mozambique', 'region': 'southern_africa', 'lat': -19, 'long': -35, 'area': 303.373, 'population': 8.820, 'capital': 'maputo', 'currency': '?'}))
-        db.insert(Record('country', {'id': 'thailand', 'region': 'southeast_east', 'lat': 16, 'long': -102, 'area': 198.455, 'population': 39.950, 'capital': 'bangkok', 'currency': 'baht'}))
-        db.insert(Record('country', {'id': 'congo', 'region': 'central_africa', 'lat': -1, 'long': -16, 'area': 132.46, 'population': 1.1, 'capital': 'brazzaville', 'currency': 'cfa_franc'}))
-
-        db.insert(Record('country', {'id': 'united_states', 'region': 'north_america', 'lat': 37, 'long': 96, 'area': 3615.122, 'population': 211.210, 'capital': 'washington', 'currency': 'dollar'}))
-        db.insert(Record('country', {'id': 'paraguay', 'region': 'south_america', 'lat': -23, 'long': 57, 'area': 157.47, 'population': 2.670, 'capital': 'asuncion', 'currency': 'guarani'}))
-
-        db.insert(Record('ocean', {'id': 'indian_ocean'}))    
-        db.insert(Record('ocean', {'id': 'atlantic'}))    
-        db.insert(Record('ocean', {'id': 'pacific'}))            
-        db.insert(Record('ocean', {'id': 'southern_ocean'}))    
-        db.insert(Record('ocean', {'id': 'arctic_ocean'}))    
-
-        db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
-        db.insert(Record('borders', {'country_id1': 'mozambique', 'country_id2': 'indian_ocean'}))    
-        db.insert(Record('borders', {'country_id1': 'china', 'country_id2': 'indian_ocean'}))    
-        db.insert(Record('borders', {'country_id1': 'thailand', 'country_id2': 'indian_ocean'}))    
-        db.insert(Record('borders', {'country_id1': 'congo', 'country_id2': 'atlantic'}))    
-
-        # create an adapter for this data source
-
-        ds = MemoryDbDataSource(db)
-
-        # model
-
-        class Chat80Adapter(ModelAdapter):
-            def __init__(self) -> None:
-                super().__init__(
-                    modifiers=[
-                        Modifier("european"),
-                        Modifier("asian"),
-                        Modifier("american"),
-                        Modifier("african"),
-                    ],
-                    # todo(?): include attributes with entities, because their argument types may be different
-                    # todo: multiple attributes with the same name but different argument types
-                    attributes=[
-                        Attribute("size-of", [None, "country"]),
-                        Attribute("capital-of", ["city", "country"]),
-                        Attribute("location-of", ["place", "country"])
-                    ],
-                    entities=[
-                        Entity("place", [], []),
-                        Entity("river", [], []),
-                        Entity("country", ["size-of", "capital-of", "location-of"], ["european", "asian", "american", "african"]),
-                        Entity("city", ["size-of"], []),
-                        Entity("ocean", [], []),
-                    ], 
-                    relations=[
-                        Relation("borders", ['country', 'country']),
-                    ], 
-                )
-
-
-            def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:
-                table = None
-                columns = []
-                if relation == "borders":
-                    table = "borders"
-                    columns = ["country_id1", "country_id2"]
-
-                if not table:
-                    raise Exception("No table found for " + relation)
-                
-                return ds.select(table, columns, values)
-            
-
-            def interpret_entity(self, entity: str) -> list[Simple]:
-                return ds.select_column(entity, ['id'], [None])
-            
-
-            def interpret_attribute(self, entity: str, attribute: str, values: list[Simple]) -> list[Simple]:
-                table = None
-                if attribute == "capital-of":
-                    table = "country"
-                    columns = ["capital", "id"]
-                if attribute == "size-of":
-                    table = "country"
-                    columns = ["area", "id"]
-                if attribute == "location-of":
-                    table = "country"
-                    columns = ["region", "id"]
-
-                if not table:
-                    raise Exception("No table found for " + attribute)
-
-                return ds.select(table, columns, values)
-            
-
-            def interpret_modifier(self, entity: str, modifier: str, value: Simple) -> list[Simple]:
-                table = None
-                if entity == "country":
-                    if modifier in ["european", "asian", "african", "american"] :
-                        table = "country"
-                        columns = ["id", "region"]
-                        regions = {
-                            "european": ['southern_europe', 'western_europe', 'eastern_europe', 'scandinavia'],
-                            "asian": ['middle_east', 'indian_subcontinent', 'southeast_east', 'far_east', 'northern_asia'],
-                            "american": ['north_america', 'central_america', 'caribbean', 'south_america'],
-                            "african": ['north_africa', 'west_africa', 'central_africa', 'east_africa', 'southern_africa']
-                        }
-
-                        ids = []
-                        for region in regions[modifier]:
-                            ids += ds.select_column(table, columns, [value, region])
-                        return ids
-                    
-                if not table:
-                    raise Exception("No table found for " + entity + ":" + modifier)
-
-                return ds.select_column(table, columns, [value])
-                      
-
-        model = Model(Chat80Adapter())
-
-
-        # grammar
-
-        # stappenplan
-        # 1 create function
-        # 2 create lambda function that calls funciton #1 with the simplest of parameters (no ())
-        # 3 implement #1
 
         grammar = [
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
@@ -253,6 +107,7 @@ class TestChat80(unittest.TestCase):
             ["How large is the smallest american country?", [157.47]],
             ["What is the ocean that borders African countries?", [Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')]],
             ["What is the ocean that borders African countries and that borders Asian countries?", [Instance(entity='ocean', id='indian_ocean')]],
+            # ["What are the capitals of the countries bordering the Baltic?", []]
         ]
 
         for test in tests:
