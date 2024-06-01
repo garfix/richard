@@ -35,6 +35,7 @@ class Chat80Adapter(ModelAdapter):
             ], 
             relations=[
                 Relation("borders", ['country', 'country']),
+                Relation("flows-through", ['river', 'country']),
             ], 
         )
 
@@ -45,6 +46,9 @@ class Chat80Adapter(ModelAdapter):
         if relation == "borders":
             table = "borders"
             columns = ["country_id1", "country_id2"]
+        if relation == "flows-through":
+            table = "contains"
+            columns = ["part", "whole"]
 
         if not table:
             raise Exception("No table found for " + relation)

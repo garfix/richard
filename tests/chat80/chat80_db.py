@@ -7,6 +7,7 @@ from richard.store.MemoryDb import MemoryDb
 db = MemoryDb()
 db.insert(Record('river', {'id': 'amazon'}))
 db.insert(Record('river', {'id': 'brahmaputra'}))
+db.insert(Record('river', {'id': 'danube'}))
 
 db.insert(Record('country', {'id': 'afghanistan', 'region': 'indian_subcontinent', 'lat': 33, 'long': -65, 'area': 254.861, 'population': 18.290, 'capital': 'kabul', 'currency': 'afghani'}))
 db.insert(Record('country', {'id': 'china', 'region': 'far_east', 'lat': 30, 'long': -110, 'area': 3691.502, 'population': 840.0, 'capital': 'peking', 'currency': 'yuan'}))
@@ -19,7 +20,8 @@ db.insert(Record('country', {'id': 'thailand', 'region': 'southeast_east', 'lat'
 db.insert(Record('country', {'id': 'congo', 'region': 'central_africa', 'lat': -1, 'long': -16, 'area': 132.46, 'population': 1.1, 'capital': 'brazzaville', 'currency': 'cfa_franc'}))
 db.insert(Record('country', {'id': 'poland', 'region': 'eastern_europe', 'lat': 52, 'long': -20, 'area': 120.359, 'population': 33.360, 'capital': 'warsaw', 'currency': 'zloty'}))
 db.insert(Record('country', {'id': 'soviet_union', 'region': 'northern_asia', 'lat': 47, 'long': -80, 'area': 8347.250, 'population': 250.900, 'capital': 'moscow', 'currency': 'ruble'}))
-
+db.insert(Record('country', {'id': 'hungary', 'region': 'eastern_europe', 'lat': 47, 'long': -19, 'area': 35.919, 'population': 10.410, 'capital': 'budapest', 'currency': 'forint'}))
+db.insert(Record('country', {'id': 'czechoslovakia', 'region': 'eastern_europe', 'lat': 49, 'long': -17, 'area': 49.371, 'population': 14.580, 'capital': 'prague', 'currency': 'koruna'}))
 db.insert(Record('country', {'id': 'united_states', 'region': 'north_america', 'lat': 37, 'long': 96, 'area': 3615.122, 'population': 211.210, 'capital': 'washington', 'currency': 'dollar'}))
 db.insert(Record('country', {'id': 'paraguay', 'region': 'south_america', 'lat': -23, 'long': 57, 'area': 157.47, 'population': 2.670, 'capital': 'asuncion', 'currency': 'guarani'}))
 
@@ -41,6 +43,9 @@ db.insert(Record('borders', {'country_id1': 'congo', 'country_id2': 'atlantic'})
 db.insert(Record('borders', {'country_id1': 'poland', 'country_id2': 'baltic'}))    
 db.insert(Record('borders', {'country_id1': 'soviet_union', 'country_id2': 'caspian'}))    
 db.insert(Record('borders', {'country_id1': 'black_sea', 'country_id2': 'soviet_union'}))    
+
+db.insert(Record('contains', {'whole': 'hungary', 'part': 'danube'}))
+db.insert(Record('contains', {'whole': 'czechoslovakia', 'part': 'danube'}))
 
 # create an adapter for this data source
 
