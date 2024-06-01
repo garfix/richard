@@ -25,11 +25,11 @@ class TestChat80(unittest.TestCase):
 
         grammar = [
             { "syn": "s -> 'what' 'are' 'the' attr 'of' np '?'", "sem": lambda attr, np: lambda: model.create_attribute_map(np, attr) },
-
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
             { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values(lambda: 'location-of', np) },
             { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar) },
+            { "syn": "s -> 'which' nbar 'are' vp_no_obj '?'", "sem": lambda nbar, vp_no_obj: lambda: create_np(exists, nbar)(vp_no_obj) },
             { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'which' 'country' \''\' 's' attr 'is' np '?'", "sem": lambda attr, np: 
                 lambda: model.find_attribute_objects(attr, np) },
@@ -37,6 +37,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values(lambda: 'size-of', np) },
 
             { "syn": "vp_no_sub -> tv np", "sem": lambda tv, np: lambda subject: np(tv(subject)) },
+            { "syn": "vp_no_obj -> tv np", "sem": lambda tv, np: lambda object: np(tv(object)) },
 
             { "syn": "tv -> 'border'", "sem": lambda: 
                 lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
@@ -44,6 +45,8 @@ class TestChat80(unittest.TestCase):
                 lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
             { "syn": "tv -> 'bordering'", "sem": lambda: 
                 lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
+            { "syn": "tv -> 'bordered' 'by'", "sem": lambda: 
+                lambda object: lambda subject: model.find_relation_values('borders', [subject, object], two_ways = True) },
 
             { "syn": "np -> nbar", "sem": lambda nbar: create_np(exists, nbar) },
             { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
@@ -62,6 +65,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "superlative -> 'smallest'", "sem": lambda: lambda range: model.find_entity_with_lowest_attribute_value(range, 'size-of') },
 
             { "syn": "det -> 'the'", "sem": lambda: exists },
+            { "syn": "det -> 'two'", "sem": lambda: lambda result_count, range_count: result_count == 2 },
 
             { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
 
@@ -75,6 +79,7 @@ class TestChat80(unittest.TestCase):
             { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_instances('country') },
             { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_instances('country') },
             { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_instances('ocean') },
+            { "syn": "noun -> 'seas'", "sem": lambda: lambda: model.get_instances('sea') },
 
             { "syn": "attr -> 'capital'", "sem": lambda: lambda: 'capital-of' },
             { "syn": "attr -> 'capitals'", "sem": lambda: lambda: 'capital-of' },
@@ -107,7 +112,7 @@ class TestChat80(unittest.TestCase):
             ["What rivers are there?", set([Instance(entity='river', id='amazon'), Instance(entity='river', id='brahmaputra')])],
             ["Does Afghanistan border China?", set([Instance(entity='country', id='afghanistan')])],
             ["What is the capital of Upper_Volta?", set([Instance(entity='city', id='ouagadougou')])],
-            ["Where is the largest country?", set([Instance(entity='place', id='far_east')])],
+            ["Where is the largest country?", set([Instance(entity='place', id='northern_asia')])],
             ["Which countries are European?", set([Instance(entity='country', id='united_kingdom'), Instance(entity='country', id='albania'), Instance(entity='country', id='poland')])],
             ["Which country's capital is London?", set([Instance(entity='country', id='united_kingdom')])],
             ["Which is the largest african country?", set([Instance(entity='country', id='mozambique')])],
@@ -115,7 +120,7 @@ class TestChat80(unittest.TestCase):
             ["What is the ocean that borders African countries?", set([Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')])],
             ["What is the ocean that borders African countries and that borders Asian countries?", set([Instance(entity='ocean', id='indian_ocean')])],
             ["What are the capitals of the countries bordering the Baltic?", [[Instance(entity='country', id='poland'), 'warsaw']]],
-            ["Which countries are bordered by two seas?", []]
+            ["Which countries are bordered by two seas?", set([Instance(entity='country', id='soviet_union')])]
         ]
 
         for test in tests:
