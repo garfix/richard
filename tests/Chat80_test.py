@@ -9,7 +9,7 @@ from richard.processor.semantic_composer.SemanticComposer import SemanticCompose
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.semantics.commands import create_np, exists
-from .chat80.model import model
+from .chat80.chat80_model import model
 
 class TestChat80(unittest.TestCase):
     """
@@ -49,9 +49,9 @@ class TestChat80(unittest.TestCase):
             { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
             { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: create_np(exists, lambda: np(relative_clause)) },
             { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: create_np(exists, lambda: np(rc1) & np(rc2)) },
-            { "syn": "np -> np vp_no_sub", "sem": lambda np, vp_no_sub: lambda: np(vp_no_sub) },
 
             { "syn": "relative_clause -> 'that' vp_no_sub", "sem": lambda vp_no_sub: lambda subject: vp_no_sub(subject) },
+            { "syn": "relative_clause -> vp_no_sub", "sem": lambda vp_no_sub: lambda subject: vp_no_sub(subject) },
 
             { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
             { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun) },
@@ -114,7 +114,8 @@ class TestChat80(unittest.TestCase):
             ["How large is the smallest american country?", set([157.47])],
             ["What is the ocean that borders African countries?", set([Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')])],
             ["What is the ocean that borders African countries and that borders Asian countries?", set([Instance(entity='ocean', id='indian_ocean')])],
-            ["What are the capitals of the countries bordering the Baltic?", [[Instance(entity='country', id='poland'), 'warsaw']]]
+            ["What are the capitals of the countries bordering the Baltic?", [[Instance(entity='country', id='poland'), 'warsaw']]],
+            ["Which countries are bordered by two seas?", []]
         ]
 
         for test in tests:

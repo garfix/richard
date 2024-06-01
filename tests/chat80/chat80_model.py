@@ -5,7 +5,7 @@ from richard.entity.Attribute import Attribute
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.type.Simple import Simple
-from .db import ds
+from .chat80_db import ds
 
 # model
 
