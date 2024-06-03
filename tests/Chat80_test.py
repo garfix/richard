@@ -8,7 +8,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import create_np, exists
+from richard.semantics.commands import create_np, exists, negate
 from .chat80.chat80_model import model
 
 class TestChat80(unittest.TestCase):
@@ -24,6 +24,8 @@ class TestChat80(unittest.TestCase):
     def test_chat80(self):
 
         grammar = [
+            { "syn": "s -> 'what' 'is' 'the' 'total' 'area' 'of' np '?'", "sem": lambda np: lambda: sum(model.find_attribute_values(lambda: 'size-of', np)) },
+            { "syn": "s -> 'what' 'are' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'what' 'are' 'the' attr 'of' np '?'", "sem": lambda attr, np: lambda: model.create_attribute_map(np, attr) },
             { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
             { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
@@ -59,6 +61,16 @@ class TestChat80(unittest.TestCase):
             { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
             { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: create_np(exists, lambda: np(relative_clause)) },
             { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: create_np(exists, lambda: np(rc1) & np(rc2)) },
+            { "syn": "np -> np pp", "sem": lambda np, pp: create_np(exists, lambda: np(pp)) },
+            { "syn": "np -> np pp 'and' pp", "sem": lambda np, pp1, pp2: create_np(exists, lambda: np(pp1) & np(pp2)) },
+
+            { "syn": "pp -> preposition np", "sem": lambda preposition, np: lambda subject: np(preposition(subject)) },
+            { "syn": "pp -> 'not' preposition np", "sem": lambda preposition, np: lambda subject: negate(np(preposition(subject))) },
+
+            { "syn": "preposition -> 'south' 'of'", "sem": lambda: 
+                lambda e1: lambda e2: model.find_relation_values('south-of', [e1, e2]) },
+            { "syn": "preposition -> 'in'", "sem": lambda: 
+                lambda e1: lambda e2: model.find_relation_values('in', [e1, e2]) },
 
             { "syn": "relative_clause -> 'that' tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },
             { "syn": "relative_clause -> tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },
@@ -98,6 +110,8 @@ class TestChat80(unittest.TestCase):
             { "syn": "proper_noun -> 'london'", "sem": lambda: lambda:  set([Instance('city', 'london')])  },
             { "syn": "proper_noun -> 'baltic'", "sem": lambda: lambda:  set([Instance('sea', 'baltic')])  },
             { "syn": "proper_noun -> 'danube'", "sem": lambda: lambda:  set([Instance('river', 'danube')])  },
+            { "syn": "proper_noun -> 'equator'", "sem": lambda: lambda:  set([Instance('circle_of_latitude', 'equator')])  },
+            { "syn": "proper_noun -> 'australasia'", "sem": lambda: lambda:  set([Instance('region', 'australasia')])  },
         ]
 
         # pipeline
@@ -129,7 +143,9 @@ class TestChat80(unittest.TestCase):
             ["What is the ocean that borders African countries and that borders Asian countries?", set([Instance(entity='ocean', id='indian_ocean')])],
             ["What are the capitals of the countries bordering the Baltic?", [[Instance(entity='country', id='poland'), 'warsaw']]],
             ["Which countries are bordered by two seas?", set([Instance(entity='country', id='soviet_union')])],
-            ["How many countries does the Danube flow through?", 2]
+            ["How many countries does the Danube flow through?", 2],
+            ["What are the countries south of the Equator and not in Australasia?", set([Instance(entity='country', id='congo'), Instance(entity='country', id='mozambique'), Instance(entity='country', id='paraguay'), Instance(entity='country', id='rwanda')])],
+            ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
         ]
 
         for test in tests:

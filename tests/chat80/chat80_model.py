@@ -32,25 +32,31 @@ class Chat80Adapter(ModelAdapter):
                 Entity("city", ["size-of"], []),
                 Entity("ocean", [], []),
                 Entity("sea", [], []),
+                Entity("circle_of_latitude", [], []),
+                Entity("region", [], [])
             ], 
             relations=[
                 Relation("borders", ['country', 'country']),
                 Relation("flows-through", ['river', 'country']),
+                Relation("south-of", ['place', 'place']),
+                Relation("in", ['place', 'place']),
             ], 
         )
 
 
     def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:
-        table = None
-        columns = []
         if relation == "borders":
             table = "borders"
             columns = ["country_id1", "country_id2"]
-        if relation == "flows-through":
+        elif relation == "flows-through":
             table = "contains"
             columns = ["part", "whole"]
-
-        if not table:
+        elif relation == "in":
+            table = "contains"
+            columns = ["part", "whole"]
+        elif relation == "south-of":
+            return self.south_of(values)
+        else:
             raise Exception("No table found for " + relation)
         
         return ds.select(table, columns, values)
@@ -100,6 +106,29 @@ class Chat80Adapter(ModelAdapter):
             raise Exception("No table found for " + entity + ":" + modifier)
 
         return ds.select_column(table, columns, [value])
+    
+
+    def south_of(self, values: list[Simple]):
+        # this implementation could be done in SQL like "SELECT id FROM country WHERE lat < (SELECT lat FROM country WHERE id = %s)"
+        id1 = values[0]
+        id2 = values[1]
+        lat1 = None
+        lat2 = None
+        latitudes = ds.select('country', ['id', 'lat'], [None, None])
+        latitudes.append(['equator', 0])
+        for id, lat in latitudes:
+            if id == id1:
+                lat1 = lat
+            if id == id2:
+                lat2 = lat
+        if id1 and id2:
+            if lat1 < lat2:
+                return [[id1, id2]]
+            else:
+                return []
+        if id2 and not id1:
+            return [[id, id2] for id, lat in latitudes if lat < lat2]
+        raise Exception("Unhandled case")
                 
 
 model = Model(Chat80Adapter())

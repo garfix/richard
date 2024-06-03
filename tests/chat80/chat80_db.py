@@ -24,6 +24,7 @@ db.insert(Record('country', {'id': 'hungary', 'region': 'eastern_europe', 'lat':
 db.insert(Record('country', {'id': 'czechoslovakia', 'region': 'eastern_europe', 'lat': 49, 'long': -17, 'area': 49.371, 'population': 14.580, 'capital': 'prague', 'currency': 'koruna'}))
 db.insert(Record('country', {'id': 'united_states', 'region': 'north_america', 'lat': 37, 'long': 96, 'area': 3615.122, 'population': 211.210, 'capital': 'washington', 'currency': 'dollar'}))
 db.insert(Record('country', {'id': 'paraguay', 'region': 'south_america', 'lat': -23, 'long': 57, 'area': 157.47, 'population': 2.670, 'capital': 'asuncion', 'currency': 'guarani'}))
+db.insert(Record('country', {'id': 'australia', 'region': 'australasia', 'lat': -23, 'long': -135, 'area': 2967.909, 'population': 13.268, 'capital': 'canberra', 'currency': 'australian_dollar'}))
 
 db.insert(Record('ocean', {'id': 'indian_ocean'}))    
 db.insert(Record('ocean', {'id': 'atlantic'}))    
@@ -46,6 +47,7 @@ db.insert(Record('borders', {'country_id1': 'black_sea', 'country_id2': 'soviet_
 
 db.insert(Record('contains', {'whole': 'hungary', 'part': 'danube'}))
 db.insert(Record('contains', {'whole': 'czechoslovakia', 'part': 'danube'}))
+db.insert(Record('contains', {'whole': 'australasia', 'part': 'australia'}))
 
 # create an adapter for this data source
 

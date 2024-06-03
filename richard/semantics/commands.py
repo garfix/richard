@@ -29,3 +29,11 @@ def create_np(determiner: callable, range: callable):
             return []
 
     return np
+
+
+def negate(range: callable) -> callable:
+    elements = range
+    if len(elements) > 0:
+        return []
+    else:
+        return [True]
