@@ -1,3 +1,35 @@
+## 2024-06-04
+
+An interesting sentence in Chat-80's dialog: 
+
+> What is the average area of the countries in each continent?
+
+It expects an answer like
+
+    Europe: 500.000
+    North America: 700.000
+    Australia: 400.000
+
+It is what would be a GROUP BY in SQL: `SELECT continent.name, AVG(country.area) OF country JOIN continent GROUP BY continent.id`. 
+
+What does take to process it?
+
+- in each continent
+- collect the areas of the countries
+- take the average of these areas
+
+or
+
+- collect all countries
+- look up each country's area
+- group by continent and average
+
+Chat-80 does this:
+
+- collect the continents
+- collect the area per country
+- average over the countries per continent
+
 ## 2024-05-31
 
 The executionable meaning of the sentence "What is the ocean that borders African countries and that borders Asian countries?"

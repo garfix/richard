@@ -5,6 +5,7 @@ from richard.entity.Attribute import Attribute
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.type.Simple import Simple
+from tests.chat80.chat80_relations import continental, south_of
 from .chat80_db import ds
 
 # model
@@ -46,20 +47,15 @@ class Chat80Adapter(ModelAdapter):
 
     def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:
         if relation == "borders":
-            table = "borders"
-            columns = ["country_id1", "country_id2"]
+            return ds.select("borders", ["country_id1", "country_id2"], values)
         elif relation == "flows-through":
-            table = "contains"
-            columns = ["part", "whole"]
+            return ds.select("contains", ["part", "whole"], values)
         elif relation == "in":
-            table = "contains"
-            columns = ["part", "whole"]
+            return ds.select("contains", ["part", "whole"], values)
         elif relation == "south-of":
-            return self.south_of(values)
+            return south_of(ds, values)
         else:
             raise Exception("No table found for " + relation)
-        
-        return ds.select(table, columns, values)
     
 
     def interpret_entity(self, entity: str) -> list[Simple]:
@@ -67,68 +63,23 @@ class Chat80Adapter(ModelAdapter):
     
 
     def interpret_attribute(self, entity: str, attribute: str, values: list[Simple]) -> list[Simple]:
-        table = None
         if attribute == "capital-of":
-            table = "country"
-            columns = ["capital", "id"]
-        if attribute == "size-of":
-            table = "country"
-            columns = ["area", "id"]
-        if attribute == "location-of":
-            table = "country"
-            columns = ["region", "id"]
-
-        if not table:
-            raise Exception("No table found for " + attribute)
-
-        return ds.select(table, columns, values)
+            return ds.select("country", ["capital", "id"], values)
+        elif attribute == "size-of":
+            return ds.select("country", ["area", "id"], values)
+        elif attribute == "location-of":
+            return ds.select("country", ["region", "id"], values)
+        else:
+            raise Exception("No table found for " + entity)
     
 
     def interpret_modifier(self, entity: str, modifier: str, value: Simple) -> list[Simple]:
-        table = None
         if entity == "country":
             if modifier in ["european", "asian", "african", "american"] :
-                table = "country"
-                columns = ["id", "region"]
-                regions = {
-                    "european": ['southern_europe', 'western_europe', 'eastern_europe', 'scandinavia'],
-                    "asian": ['middle_east', 'indian_subcontinent', 'southeast_east', 'far_east', 'northern_asia'],
-                    "american": ['north_america', 'central_america', 'caribbean', 'south_america'],
-                    "african": ['north_africa', 'west_africa', 'central_africa', 'east_africa', 'southern_africa']
-                }
-
-                ids = []
-                for region in regions[modifier]:
-                    ids += ds.select_column(table, columns, [value, region])
-                return ids
-            
-        if not table:
+                return continental(ds, modifier, value)     
+        else:
             raise Exception("No table found for " + entity + ":" + modifier)
-
-        return ds.select_column(table, columns, [value])
     
 
-    def south_of(self, values: list[Simple]):
-        # this implementation could be done in SQL like "SELECT id FROM country WHERE lat < (SELECT lat FROM country WHERE id = %s)"
-        id1 = values[0]
-        id2 = values[1]
-        lat1 = None
-        lat2 = None
-        latitudes = ds.select('country', ['id', 'lat'], [None, None])
-        latitudes.append(['equator', 0])
-        for id, lat in latitudes:
-            if id == id1:
-                lat1 = lat
-            if id == id2:
-                lat2 = lat
-        if id1 and id2:
-            if lat1 < lat2:
-                return [[id1, id2]]
-            else:
-                return []
-        if id2 and not id1:
-            return [[id, id2] for id, lat in latitudes if lat < lat2]
-        raise Exception("Unhandled case")
-                
 
 model = Model(Chat80Adapter())
