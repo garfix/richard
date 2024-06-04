@@ -1,15 +1,18 @@
 import unittest
 
+from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
+from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Instance import Instance
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from .chat80.chat80_model import model
+from tests.chat80.Chat80Adapter import Chat80Adapter
 from .chat80.chat80_grammar import get_grammar
+from .chat80.chat80_db import db
 
 class TestChat80(unittest.TestCase):
     """
@@ -23,8 +26,12 @@ class TestChat80(unittest.TestCase):
    
     def test_chat80(self):
 
+        data_source = MemoryDbDataSource(db)
+        model = Model(Chat80Adapter(data_source))
+        grammar = get_grammar(model)
+
         tokenizer = BasicTokenizer()
-        parser = BasicParser(get_grammar(model), tokenizer)
+        parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
         executor = SemanticExecutor(composer)
 

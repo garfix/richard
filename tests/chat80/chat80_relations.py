@@ -1,4 +1,3 @@
-
 from richard.type.Simple import Simple
 
 

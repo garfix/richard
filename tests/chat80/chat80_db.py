@@ -1,4 +1,3 @@
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.store.Record import Record
 from richard.store.MemoryDb import MemoryDb
 
@@ -49,7 +48,4 @@ db.insert(Record('contains', {'whole': 'hungary', 'part': 'danube'}))
 db.insert(Record('contains', {'whole': 'czechoslovakia', 'part': 'danube'}))
 db.insert(Record('contains', {'whole': 'australasia', 'part': 'australia'}))
 
-# create an adapter for this data source
-
-ds = MemoryDbDataSource(db)
 
