@@ -1,9 +1,16 @@
+from richard.Model import Model
 from richard.entity.Instance import Instance
-from richard.semantics.commands import create_np, exists, negate
+from richard.semantics.commands import avg, create_np, exists, negate
 
 
-def get_grammar(model):
+def get_grammar(model: Model):
     return [
+
+        { "syn": "s -> 'what' 'is' 'the' 'average' 'area' 'of' np preposition 'each' nbar '?'", "sem": lambda np, preposition, nbar: 
+            lambda: model.group_by(nbar, 
+                                   lambda e1: avg(model.find_attribute_values(lambda: 'size-of', 
+                                                                                lambda: np(lambda e2: preposition(e2)(e1.id))))) 
+        },
         { "syn": "s -> 'what' 'is' 'the' 'total' 'area' 'of' np '?'", "sem": lambda np: lambda: sum(model.find_attribute_values(lambda: 'size-of', np)) },
         { "syn": "s -> 'what' 'are' np '?'", "sem": lambda np: lambda: np() },
         { "syn": "s -> 'what' 'are' 'the' attr 'of' np '?'", "sem": lambda attr, np: lambda: model.create_attribute_map(np, attr) },
@@ -79,6 +86,7 @@ def get_grammar(model):
         { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_instances('country') },
         { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_instances('ocean') },
         { "syn": "noun -> 'seas'", "sem": lambda: lambda: model.get_instances('sea') },
+        { "syn": "noun -> 'continent'", "sem": lambda: lambda: model.get_instances('continent') },
 
         { "syn": "attr -> 'capital'", "sem": lambda: lambda: 'capital-of' },
         { "syn": "attr -> 'capitals'", "sem": lambda: lambda: 'capital-of' },

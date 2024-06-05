@@ -4,9 +4,13 @@ from richard.store.MemoryDb import MemoryDb
 # fill an in-memory database
 
 db = MemoryDb()
-db.insert(Record('river', {'id': 'amazon'}))
-db.insert(Record('river', {'id': 'brahmaputra'}))
-db.insert(Record('river', {'id': 'danube'}))
+
+db.insert(Record('continent', {'id': 'africa'}))   
+db.insert(Record('continent', {'id': 'america'}))   
+db.insert(Record('continent', {'id': 'antarctica'}))   
+db.insert(Record('continent', {'id': 'asia'}))   
+db.insert(Record('continent', {'id': 'australasia'}))   
+db.insert(Record('continent', {'id': 'europe'}))   
 
 db.insert(Record('country', {'id': 'afghanistan', 'region': 'indian_subcontinent', 'lat': 33, 'long': -65, 'area': 254.861, 'population': 18.290, 'capital': 'kabul', 'currency': 'afghani'}))
 db.insert(Record('country', {'id': 'china', 'region': 'far_east', 'lat': 30, 'long': -110, 'area': 3691.502, 'population': 840.0, 'capital': 'peking', 'currency': 'yuan'}))
@@ -35,6 +39,10 @@ db.insert(Record('sea', {'id': 'baltic'}))
 db.insert(Record('sea', {'id': 'black_sea'}))   
 db.insert(Record('sea', {'id': 'caspian'}))   
 
+db.insert(Record('river', {'id': 'amazon'}))
+db.insert(Record('river', {'id': 'brahmaputra'}))
+db.insert(Record('river', {'id': 'danube'}))
+
 db.insert(Record('borders', {'country_id1': 'afghanistan', 'country_id2': 'china'}))    
 db.insert(Record('borders', {'country_id1': 'mozambique', 'country_id2': 'indian_ocean'}))    
 db.insert(Record('borders', {'country_id1': 'china', 'country_id2': 'indian_ocean'}))    
@@ -44,8 +52,8 @@ db.insert(Record('borders', {'country_id1': 'poland', 'country_id2': 'baltic'}))
 db.insert(Record('borders', {'country_id1': 'soviet_union', 'country_id2': 'caspian'}))    
 db.insert(Record('borders', {'country_id1': 'black_sea', 'country_id2': 'soviet_union'}))    
 
-db.insert(Record('contains', {'whole': 'hungary', 'part': 'danube'}))
-db.insert(Record('contains', {'whole': 'czechoslovakia', 'part': 'danube'}))
-db.insert(Record('contains', {'whole': 'australasia', 'part': 'australia'}))
-
+db.insert(Record('contains', {'part': 'danube', 'whole': 'hungary'}))
+db.insert(Record('contains', {'part': 'danube', 'whole': 'czechoslovakia'}))
+db.insert(Record('contains', {'part': 'australia', 'whole': 'australasia'}))
+db.insert(Record('contains', {'part': 'upper_volta', 'whole': 'africa'}))
 
