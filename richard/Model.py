@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from richard.ModelAdapter import ModelAdapter
 from richard.entity.Instance import Instance
+from richard.type.OrderedSet import OrderedSet
 from richard.type.Simple import Simple
 
 
@@ -47,7 +48,7 @@ class Model:
             raise Exception('No attribute ' + attribute_name + " in model")
         attribute = self.adapter.attributes[attribute_name]
         
-        results = set()
+        results = OrderedSet()
         for instance in range():
             values = [None, instance.id]
             for f in self.adapter.interpret_attribute(instance.entity, attribute_name, values): 
@@ -62,7 +63,7 @@ class Model:
             raise Exception('No attribute ' + attribute_name + " in model")
         attribute = self.adapter.attributes[attribute_name]
 
-        results = set()
+        results = OrderedSet()
         for instance in range():
             values = [instance.id, None]
             for f in self.adapter.interpret_attribute(instance.entity, attribute_name, values):
@@ -84,7 +85,7 @@ class Model:
                 if max_instance == None or max_result < r[0]:
                     max_instance = instance
                     max_result = r[0]
-        return set([max_instance])
+        return OrderedSet([max_instance])
     
 
     def find_entity_with_lowest_attribute_value(self, range: callable, attribute_name: str) -> set[Instance]:
@@ -100,7 +101,7 @@ class Model:
                 if max_instance == None or max_result > r[0]:
                     max_instance = instance
                     max_result = r[0]
-        return set([max_instance])
+        return OrderedSet([max_instance])
 
 
     def filter_by_modifier(self, range: callable, modifier_name: str) -> set[Instance]:
@@ -110,7 +111,7 @@ class Model:
         if not modifier_name in self.adapter.modifiers:
             raise Exception('No modifier ' + modifier_name + " in model")
 
-        results = set()
+        results = OrderedSet()
         for instance in range():
             for f in self.adapter.interpret_modifier(instance.entity, modifier_name, instance.id):
                 results.add(Instance(instance.entity, f))
@@ -129,10 +130,18 @@ class Model:
                 map.append([instance, r[0]])
 
         return map
+    
+
+    def group_by(self, range: callable, func: callable):
+        map = []
+        for instance in range():
+            result = func(instance)
+            map.append([instance, result])
+        return map
 
 
     def hydrate_entities(self, ids: set[Simple], entity_name: str) -> set[Instance]:
-        return set([Instance(entity_name, id) for id in ids])
+        return OrderedSet([Instance(entity_name, id) for id in ids])
             
 
     def hydrate_relations(self, values: set[list[Simple]], relation_name: str) -> list[list[Instance]]:

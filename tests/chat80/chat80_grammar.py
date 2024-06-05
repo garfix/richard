@@ -1,6 +1,7 @@
 from richard.Model import Model
 from richard.entity.Instance import Instance
 from richard.semantics.commands import avg, create_np, exists, negate
+from richard.type.OrderedSet import OrderedSet
 
 
 def get_grammar(model: Model):
@@ -92,12 +93,12 @@ def get_grammar(model: Model):
         { "syn": "attr -> 'capitals'", "sem": lambda: lambda: 'capital-of' },
 
         # todo
-        { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: set([Instance('country', 'afghanistan')]) },
-        { "syn": "proper_noun -> 'china'", "sem": lambda: lambda:  set([Instance('country', 'china')]) },
-        { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda:  set([Instance('country', 'upper_volta')]) },
-        { "syn": "proper_noun -> 'london'", "sem": lambda: lambda:  set([Instance('city', 'london')])  },
-        { "syn": "proper_noun -> 'baltic'", "sem": lambda: lambda:  set([Instance('sea', 'baltic')])  },
-        { "syn": "proper_noun -> 'danube'", "sem": lambda: lambda:  set([Instance('river', 'danube')])  },
-        { "syn": "proper_noun -> 'equator'", "sem": lambda: lambda:  set([Instance('circle_of_latitude', 'equator')])  },
-        { "syn": "proper_noun -> 'australasia'", "sem": lambda: lambda:  set([Instance('region', 'australasia')])  },
+        { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: OrderedSet([Instance('country', 'afghanistan')]) },
+        { "syn": "proper_noun -> 'china'", "sem": lambda: lambda:  OrderedSet([Instance('country', 'china')]) },
+        { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda:  OrderedSet([Instance('country', 'upper_volta')]) },
+        { "syn": "proper_noun -> 'london'", "sem": lambda: lambda:  OrderedSet([Instance('city', 'london')])  },
+        { "syn": "proper_noun -> 'baltic'", "sem": lambda: lambda:  OrderedSet([Instance('sea', 'baltic')])  },
+        { "syn": "proper_noun -> 'danube'", "sem": lambda: lambda:  OrderedSet([Instance('river', 'danube')])  },
+        { "syn": "proper_noun -> 'equator'", "sem": lambda: lambda:  OrderedSet([Instance('circle_of_latitude', 'equator')])  },
+        { "syn": "proper_noun -> 'australasia'", "sem": lambda: lambda:  OrderedSet([Instance('region', 'australasia')])  },
     ]

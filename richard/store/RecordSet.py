@@ -1,3 +1,4 @@
+from richard.type.OrderedSet import OrderedSet
 from richard.store.Record import Record
 
 
@@ -11,7 +12,7 @@ class RecordSet:
 
 
     def __init__(self) -> None:
-        self._records = set()
+        self._records = OrderedSet()
 
 
     def __len__(self) -> int:
@@ -32,7 +33,7 @@ class RecordSet:
         """
         Returns a list with all distinct values of field
         """
-        values = set()
+        values = OrderedSet()
         for record in self._records:
             if field in record.values:
                 values.add(record.values[field])

@@ -1,3 +1,6 @@
+from richard.type.OrderedSet import OrderedSet
+from richard.type.Simple import Simple
+
 
 def exists(result_count, range_count):
     return result_count > 0
@@ -14,7 +17,7 @@ def create_np(determiner: callable, range: callable):
         range_count = len(elements)
 
         if vp:
-            result = set()
+            result = OrderedSet()
             for element in elements:
                 for _ in vp(element.id):
                     result.add(element)
@@ -31,9 +34,18 @@ def create_np(determiner: callable, range: callable):
     return np
 
 
-def negate(range: callable) -> callable:
+def negate(range: list[Simple]) -> list[Simple]:
     elements = range
     if len(elements) > 0:
         return []
     else:
         return [True]
+
+
+def avg(range: list[Simple]) -> Simple:
+    elements = range
+    if len(elements) > 0:
+        return sum(elements) / len(elements)
+    else:
+        return -1
+        # raise Exception('Cannot average over zero elements')
