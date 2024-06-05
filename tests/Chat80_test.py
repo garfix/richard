@@ -59,8 +59,14 @@ class TestChat80(unittest.TestCase):
             ["How many countries does the Danube flow through?", 2],
             ["What are the countries south of the Equator and not in Australasia?", OrderedSet([Instance(entity='country', id='congo'), Instance(entity='country', id='mozambique'), Instance(entity='country', id='paraguay'), Instance(entity='country', id='rwanda')])],
             ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
-            ["What is the average area of the countries in each continent?", []]
-        ]
+            ["What is the average area of the countries in each continent?", [
+                [Instance(entity='continent', id='africa'), 105.869],
+                [Instance(entity='continent', id='america'), -1],
+                [Instance(entity='continent', id='antarctica'), -1],
+                [Instance(entity='continent', id='asia'), -1],
+                [Instance(entity='continent', id='australasia'), 2967.909],
+                [Instance(entity='continent', id='europe'), -1]]]
+            ]
 
         for test in tests:
             question, answer = test
