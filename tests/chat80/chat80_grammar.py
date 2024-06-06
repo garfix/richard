@@ -8,19 +8,18 @@ def get_grammar(model: Model):
     return [
 
         # Is there more than one country in each continent?
-        # fix needing to use e1.id
         { 
             "syn": "s -> 'is' 'there' np preposition 'each' nbar '?'", 
             "sem": lambda np, preposition, nbar: 
                         lambda: model.test_all(nbar, 
-                                   lambda e1: count(np(lambda e2: preposition(e2)(e1.id))))
+                                   lambda e1: count(np(lambda e2: preposition(e2)(e1))))
         },
         { 
             "syn": "s -> 'what' 'is' 'the' 'average' 'area' 'of' np preposition 'each' nbar '?'", 
             "sem": lambda np, preposition, nbar: 
                         lambda: model.group_by(nbar, 
                                    lambda e1: avg(model.find_attribute_values(lambda: 'size-of', 
-                                                                                lambda: np(lambda e2: preposition(e2)(e1.id))))) 
+                                                                                lambda: np(lambda e2: preposition(e2)(e1))))) 
         },
         { "syn": "s -> 'what' 'is' 'the' 'total' 'area' 'of' np '?'", "sem": lambda np: lambda: sum(model.find_attribute_values(lambda: 'size-of', np)) },
         { "syn": "s -> 'what' 'are' np '?'", "sem": lambda np: lambda: np() },

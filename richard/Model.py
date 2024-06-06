@@ -21,7 +21,7 @@ class Model:
         self.adapter = adapter
 
 
-    def get_instances(self, entity_name: str) -> set[Instance]:
+    def get_instances(self, entity_name: str) -> OrderedSet[Instance]:
         if not entity_name in self.adapter.entities:
             raise Exception('No entity ' + entity_name + " in model")
         
@@ -29,9 +29,11 @@ class Model:
         return self.hydrate_entities(results, entity_name)
 
 
-    def find_relation_values(self, relation_name: str, field_values: set[Simple], two_ways: bool = False) -> list[list[Simple]]:
+    def find_relation_values(self, relation_name: str, field_values: list[Simple], two_ways: bool = False) -> list[list[Simple]]:
         if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
+        
+        field_values = self.dehydrate_values(field_values)
         
         if two_ways:
             results = self.adapter.interpret_relation(relation_name, field_values) + \
@@ -42,7 +44,7 @@ class Model:
         return self.hydrate_relations(results, relation_name)
 
     
-    def find_attribute_values(self, attribute_name_func: callable, range: callable) -> set[Simple]:
+    def find_attribute_values(self, attribute_name_func: callable, range: callable) -> OrderedSet[Simple]:
         attribute_name = attribute_name_func()
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
@@ -57,7 +59,7 @@ class Model:
         return results
 
 
-    def find_attribute_objects(self, attribute_name_func: callable, range: callable) -> set[Simple]:
+    def find_attribute_objects(self, attribute_name_func: callable, range: callable) -> OrderedSet[Simple]:
         attribute_name = attribute_name_func()
         if not attribute_name in self.adapter.attributes:
             raise Exception('No attribute ' + attribute_name + " in model")
@@ -72,9 +74,9 @@ class Model:
         return results
     
 
-    def find_entity_with_highest_attribute_value(self, range: callable, attribute_name: str) -> set[Instance]:
+    def find_entity_with_highest_attribute_value(self, range: callable, attribute_name: str) -> OrderedSet[Instance]:
         """
-        Returns a set with a single id from range, which is the id with the highest attribute value
+        Returns an ordered set with a single id from range, which is the id with the highest attribute value
         """
         max_instance = None
         max_result = None
@@ -88,7 +90,7 @@ class Model:
         return OrderedSet([max_instance])
     
 
-    def find_entity_with_lowest_attribute_value(self, range: callable, attribute_name: str) -> set[Instance]:
+    def find_entity_with_lowest_attribute_value(self, range: callable, attribute_name: str) -> OrderedSet[Instance]:
         """
         Returns a range with a single id from range, which is the id with the highest attribute value
         """
@@ -104,7 +106,7 @@ class Model:
         return OrderedSet([max_instance])
 
 
-    def filter_by_modifier(self, range: callable, modifier_name: str) -> set[Instance]:
+    def filter_by_modifier(self, range: callable, modifier_name: str) -> OrderedSet[Instance]:
         """
         Returns the instances in range that match modifier
         """
@@ -151,7 +153,17 @@ class Model:
         return success
 
 
-    def hydrate_entities(self, ids: set[Simple], entity_name: str) -> set[Instance]:
+    def dehydrate_values(self, values: list[Simple]) -> list[Instance]:
+        dehydrated = []
+        for value in values:
+            if isinstance(value, Instance):
+                dehydrated.append(value.id)
+            else:
+                dehydrated.append(value)
+        return dehydrated
+
+
+    def hydrate_entities(self, ids: OrderedSet[Simple], entity_name: str) -> OrderedSet[Instance]:
         return OrderedSet([Instance(entity_name, id) for id in ids])
             
 
