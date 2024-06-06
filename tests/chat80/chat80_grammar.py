@@ -1,14 +1,24 @@
 from richard.Model import Model
 from richard.entity.Instance import Instance
-from richard.semantics.commands import avg, create_np, exists, negate
+from richard.semantics.commands import avg, count, create_np, exists, negate
 from richard.type.OrderedSet import OrderedSet
 
 
 def get_grammar(model: Model):
     return [
 
-        { "syn": "s -> 'what' 'is' 'the' 'average' 'area' 'of' np preposition 'each' nbar '?'", "sem": lambda np, preposition, nbar: 
-            lambda: model.group_by(nbar, 
+        # Is there more than one country in each continent?
+        # fix needing to use e1.id
+        { 
+            "syn": "s -> 'is' 'there' np preposition 'each' nbar '?'", 
+            "sem": lambda np, preposition, nbar: 
+                        lambda: model.test_all(nbar, 
+                                   lambda e1: count(np(lambda e2: preposition(e2)(e1.id))))
+        },
+        { 
+            "syn": "s -> 'what' 'is' 'the' 'average' 'area' 'of' np preposition 'each' nbar '?'", 
+            "sem": lambda np, preposition, nbar: 
+                        lambda: model.group_by(nbar, 
                                    lambda e1: avg(model.find_attribute_values(lambda: 'size-of', 
                                                                                 lambda: np(lambda e2: preposition(e2)(e1.id))))) 
         },
@@ -72,7 +82,11 @@ def get_grammar(model: Model):
         { "syn": "superlative -> 'smallest'", "sem": lambda: lambda range: model.find_entity_with_lowest_attribute_value(range, 'size-of') },
 
         { "syn": "det -> 'the'", "sem": lambda: exists },
-        { "syn": "det -> 'two'", "sem": lambda: lambda result_count, range_count: result_count == 2 },
+        { "syn": "det -> number", "sem": lambda number: lambda result_count, range_count: result_count == number() },
+        { "syn": "det -> 'more' 'than' number", "sem": lambda number: lambda result_count, range_count: result_count > number() },
+
+        { "syn": "number -> 'one'", "sem": lambda: lambda: 1 },
+        { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
 
         { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
 

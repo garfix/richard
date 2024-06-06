@@ -28,6 +28,7 @@ db.insert(Record('country', {'id': 'czechoslovakia', 'region': 'eastern_europe',
 db.insert(Record('country', {'id': 'united_states', 'region': 'north_america', 'lat': 37, 'long': 96, 'area': 3615.122, 'population': 211.210, 'capital': 'washington', 'currency': 'dollar'}))
 db.insert(Record('country', {'id': 'paraguay', 'region': 'south_america', 'lat': -23, 'long': 57, 'area': 157.47, 'population': 2.670, 'capital': 'asuncion', 'currency': 'guarani'}))
 db.insert(Record('country', {'id': 'australia', 'region': 'australasia', 'lat': -23, 'long': -135, 'area': 2967.909, 'population': 13.268, 'capital': 'canberra', 'currency': 'australian_dollar'}))
+db.insert(Record('country', {'id': 'united_states', 'region': 'north_america', 'lat': 37, 'long': 96, 'area': 3615.122, 'population': 211.210, 'capital': 'washington', 'currency': 'dollar'}))
 
 db.insert(Record('ocean', {'id': 'indian_ocean'}))    
 db.insert(Record('ocean', {'id': 'atlantic'}))    
@@ -56,4 +57,9 @@ db.insert(Record('contains', {'part': 'danube', 'whole': 'hungary'}))
 db.insert(Record('contains', {'part': 'danube', 'whole': 'czechoslovakia'}))
 db.insert(Record('contains', {'part': 'australia', 'whole': 'australasia'}))
 db.insert(Record('contains', {'part': 'upper_volta', 'whole': 'africa'}))
+db.insert(Record('contains', {'part': 'afghanistan', 'whole': 'asia'}))
+db.insert(Record('contains', {'part': 'china', 'whole': 'asia'}))
+db.insert(Record('contains', {'part': 'poland', 'whole': 'europe'}))
+db.insert(Record('contains', {'part': 'united_states', 'whole': 'america'}))
+
 

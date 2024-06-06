@@ -1,3 +1,31 @@
+## 2024-06-5
+
+Wow @ 
+
+> Is there more than one country in each continent?
+
+- per continent
+    - find the countries in the continent
+    - count them
+    - more than one? yes / no
+- are all of them yes?
+
+The latter clause makes this sentence essentially different from the previous one. In stead of answering:
+
+    Europe: yes
+    America: yes
+    Antartica: no
+
+The expected answer is simply:
+
+    No
+
+===
+
+These questions can benefit from the technique that an aggregate that fails is left out of the group by. In the previous question "Antarctica" was left out of Chat-80's results as it has no countries. If I leave don't add the continents to the group by that have no countries, I can answer the question by comparing the number of group-by elements with the number of continents. Not equal => "no".
+
+The custom aggregation function could return `False` if it failed, or produced no results.
+
 ## 2024-06-04
 
 An interesting sentence in Chat-80's dialog: 

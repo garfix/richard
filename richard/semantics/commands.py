@@ -42,10 +42,15 @@ def negate(range: list[Simple]) -> list[Simple]:
         return [True]
 
 
-def avg(range: list[Simple]) -> Simple:
-    elements = range
+def avg(elements: list[Simple]) -> Simple:
     if len(elements) > 0:
         return sum(elements) / len(elements)
     else:
-        return -1
-        # raise Exception('Cannot average over zero elements')
+        return False
+
+
+def count(elements: list[Simple]) -> Simple:
+    if len(elements) > 0:
+        return len(elements)
+    else:
+        return False

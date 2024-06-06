@@ -61,12 +61,12 @@ class TestChat80(unittest.TestCase):
             ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
             ["What is the average area of the countries in each continent?", [
                 [Instance(entity='continent', id='africa'), 105.869],
-                [Instance(entity='continent', id='america'), -1],
-                [Instance(entity='continent', id='antarctica'), -1],
-                [Instance(entity='continent', id='asia'), -1],
+                [Instance(entity='continent', id='america'), 3615.122],
+                [Instance(entity='continent', id='asia'), 1973.1815],
                 [Instance(entity='continent', id='australasia'), 2967.909],
-                [Instance(entity='continent', id='europe'), -1]]]
-            ]
+                [Instance(entity='continent', id='europe'), 120.359]]],
+            ["Is there more than one country in each continent?", False]
+        ]
 
         for test in tests:
             question, answer = test

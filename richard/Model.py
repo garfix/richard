@@ -136,8 +136,19 @@ class Model:
         map = []
         for instance in range():
             result = func(instance)
-            map.append([instance, result])
+            if result is not False:
+                map.append([instance, result])
         return map
+
+
+    def test_all(self, range: callable, func: callable):
+        success = True
+        for instance in range():
+            result = func(instance)
+            if result is not False:
+                success = False
+                break
+        return success
 
 
     def hydrate_entities(self, ids: set[Simple], entity_name: str) -> set[Instance]:
