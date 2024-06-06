@@ -65,7 +65,8 @@ class TestChat80(unittest.TestCase):
                 [Instance(entity='continent', id='asia'), 1973.1815],
                 [Instance(entity='continent', id='australasia'), 2967.909],
                 [Instance(entity='continent', id='europe'), 120.359]]],
-            ["Is there more than one country in each continent?", False]
+            ["Is there more than one country in each continent?", False],
+            ["Is there some ocean that does not border any country?", OrderedSet([Instance(entity='ocean', id='southern_ocean'), Instance(entity='ocean', id='arctic_ocean')])]
         ]
 
         for test in tests:
@@ -79,5 +80,6 @@ class TestChat80(unittest.TestCase):
                 break
 
             results = executor.get_results(request)
+            # print(results)
             self.assertEqual(answer, results)
             

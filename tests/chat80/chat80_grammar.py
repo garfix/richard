@@ -7,7 +7,7 @@ from richard.type.OrderedSet import OrderedSet
 def get_grammar(model: Model):
     return [
 
-        # Is there more than one country in each continent?
+        # Is there some ocean that does not border any country?
         { 
             "syn": "s -> 'is' 'there' np preposition 'each' nbar '?'", 
             "sem": lambda np, preposition, nbar: 
@@ -27,6 +27,7 @@ def get_grammar(model: Model):
         { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
         { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
         { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values(lambda: 'location-of', np) },
+        { "syn": "s -> 'is' 'there' np '?'", "sem": lambda np: lambda: np() },
         { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar) },
         { "syn": "s -> 'which' nbar 'are' tv_no_obj '?'", "sem": lambda nbar, tv_no_obj: lambda: create_np(exists, nbar)(tv_no_obj) },
         { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
@@ -40,6 +41,7 @@ def get_grammar(model: Model):
 
         { "syn": "tv_no_sub -> tv np", "sem": lambda tv, np: lambda subject: np(tv(subject)) },
         { "syn": "tv_no_obj -> tv_passive 'by' np", "sem": lambda tv_passive, np: lambda object: np(tv_passive(object)) },
+        { "syn": "tv_no_sub -> 'does' 'not' tv np", "sem": lambda tv, np: lambda subject: negate(np(tv(subject))) },
 
         { "syn": "tv_passive -> tv", "sem": lambda tv: lambda object: lambda subject: tv(subject)(object) },
 
@@ -81,6 +83,8 @@ def get_grammar(model: Model):
         { "syn": "superlative -> 'smallest'", "sem": lambda: lambda range: model.find_entity_with_lowest_attribute_value(range, 'size-of') },
 
         { "syn": "det -> 'the'", "sem": lambda: exists },
+        { "syn": "det -> 'some'", "sem": lambda: exists },
+        { "syn": "det -> 'any'", "sem": lambda: exists },
         { "syn": "det -> number", "sem": lambda number: lambda result_count, range_count: result_count == number() },
         { "syn": "det -> 'more' 'than' number", "sem": lambda number: lambda result_count, range_count: result_count > number() },
 
