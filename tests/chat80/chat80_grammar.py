@@ -29,21 +29,33 @@ def get_grammar(model: Model):
         { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values(lambda: 'location-of', np) },
         { "syn": "s -> 'is' 'there' np '?'", "sem": lambda np: lambda: np() },
         { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar) },
-        { "syn": "s -> 'which' nbar 'are' tv_no_obj '?'", "sem": lambda nbar, tv_no_obj: lambda: create_np(exists, nbar)(tv_no_obj) },
         { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
         { "syn": "s -> 'which' 'country' \''\' 's' attr 'is' np '?'", "sem": lambda attr, np: 
             lambda: model.find_attribute_objects(attr, np) },
-        { "syn": "s -> 'does' np tv_no_sub '?'",  "sem": lambda np, tv_no_sub: lambda: np(tv_no_sub) },
+        { "syn": "s -> 'does' np vp_nosub_obj '?'",  "sem": lambda np, vp_nosub_obj: lambda: np(vp_nosub_obj) },
         { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values(lambda: 'size-of', np) },
-        { "syn": "s -> 'how' 'many' nbar 'does' np tv_passive '?'", "sem": lambda nbar, np, tv_passive:
-            lambda: len(create_np(exists, nbar)(lambda object: np(tv_passive(object))))
+        { "syn": "s -> 'how' 'many' nbar 'does' np vp_noobj_nosub '?'", "sem": lambda nbar, np, vp_noobj_nosub:
+            lambda: len(create_np(exists, nbar)(lambda object: np(vp_noobj_nosub(object))))
         },
 
-        { "syn": "tv_no_sub -> tv np", "sem": lambda tv, np: lambda subject: np(tv(subject)) },
-        { "syn": "tv_no_obj -> tv_passive 'by' np", "sem": lambda tv_passive, np: lambda object: np(tv_passive(object)) },
-        { "syn": "tv_no_sub -> 'does' 'not' tv np", "sem": lambda tv, np: lambda subject: negate(np(tv(subject))) },
+        # active transitive
+        { "syn": "vp_nosub_obj -> tv np", "sem": lambda tv, np: lambda subject: np(tv(subject)) },
+        { "syn": "vp_nosub_obj -> 'does' 'not' tv np", "sem": lambda tv, np: lambda subject: negate(np(tv(subject))) },
 
-        { "syn": "tv_passive -> tv", "sem": lambda tv: lambda object: lambda subject: tv(subject)(object) },
+        # Which countries are bordered by two seas?
+
+        { "syn": "s -> 'which' nbar 'are' vp_noobj_sub '?'", "sem": lambda nbar, vp_noobj_sub: lambda: create_np(exists, nbar)(vp_noobj_sub) },
+        # paasive transitive
+        { "syn": "vp_noobj_sub -> vp_noobj_nosub 'by' np", "sem": lambda vp_noobj_nosub, np: lambda object: np(vp_noobj_nosub(object)) },
+        { "syn": "vp_noobj_nosub -> tv", "sem": lambda tv: lambda object: lambda subject: tv(subject)(object) },
+
+        { "syn": "s -> 'what' 'are' np vp_noobj_sub_iob '?'", "sem": lambda np, vp_noobj_sub_iob: lambda: np(vp_noobj_sub_iob) },
+        # paasive ditransitive passivization
+        { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
+        { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
+        { "syn": "vp_noobj_nosub_noiob -> dtv", "sem": lambda dtv: lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob) },
+        { "syn": "dtv -> 'flows' 'into'", "sem": lambda: 
+            lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
 
         { "syn": "tv -> 'flow' 'through'", "sem": lambda: 
             lambda subject: lambda object: model.find_relation_values('flows-through', [subject, object]) },
@@ -71,15 +83,8 @@ def get_grammar(model: Model):
         { "syn": "preposition -> 'in'", "sem": lambda: 
             lambda e1: lambda e2: model.find_relation_values('in', [e1, e2]) },
 
-        { "syn": "s -> 'what' 'are' np vp_noobj_sub_iob '?'", "sem": lambda np, vp_noobj_sub_iob: lambda: np(vp_noobj_sub_iob) },
-        { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
-        { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
-        { "syn": "vp_noobj_nosub_noiob -> dtv", "sem": lambda dtv: lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob) },
-        { "syn": "dtv -> 'flows' 'into'", "sem": lambda: 
-            lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
-
-        { "syn": "relative_clause -> 'that' tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },
-        { "syn": "relative_clause -> tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },
+        { "syn": "relative_clause -> 'that' vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda subject: vp_nosub_obj(subject) },
+        { "syn": "relative_clause -> vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda subject: vp_nosub_obj(subject) },
 
         { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
         { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun) },
