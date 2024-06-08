@@ -71,17 +71,12 @@ def get_grammar(model: Model):
         { "syn": "preposition -> 'in'", "sem": lambda: 
             lambda e1: lambda e2: model.find_relation_values('in', [e1, e2]) },
 
-        # the order now is obj sub iobj, must be changed before calling dtv
-        # like passivization?
-        # extend dtv_no_sub_obj with passive dtv_passive_no_sub_obj? (!) simpler?
         { "syn": "s -> 'what' 'are' np vp_noobj_sub_iob '?'", "sem": lambda np, vp_noobj_sub_iob: lambda: np(vp_noobj_sub_iob) },
         { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
         { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
-        { "syn": "vp_noobj_nosub_noiob -> dunno", "sem": lambda dunno: lambda obj: lambda sub: lambda iob: dunno(obj)(sub)(iob) },
-        { "syn": "dunno -> dtv", "sem": lambda dtv: 
-                                                            lambda obj: lambda sub: lambda iob: dtv(sub)(obj)(iob) },
+        { "syn": "vp_noobj_nosub_noiob -> dtv", "sem": lambda dtv: lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob) },
         { "syn": "dtv -> 'flows' 'into'", "sem": lambda: 
-            lambda sub: lambda obj: lambda iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
+            lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
 
         { "syn": "relative_clause -> 'that' tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },
         { "syn": "relative_clause -> tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },

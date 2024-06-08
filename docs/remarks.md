@@ -1,3 +1,29 @@
+## 2024-08-06
+
+What are the countries from which a river flows into the Black_Sea?
+
+This is a ditransitive verb phrase with subject and object reversed. I created a notation for the verb phrase that expresses both the order of the arguments and which ones are missing.
+
+~~~python
+    { "syn": "s -> 'what' 'are' np vp_noobj_sub_iob '?'", "sem": lambda np, vp_noobj_sub_iob: lambda: np(vp_noobj_sub_iob) },
+    { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
+    { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
+    { "syn": "vp_noobj_nosub_noiob -> dtv", "sem": lambda dtv: lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob) },
+    { "syn": "dtv -> 'flows' 'into'", "sem": lambda: lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
+~~~
+
+To resume the semantics:
+
+~~~python
+lambda: np(vp_noobj_sub_iob)
+lambda obj: np(vp_noobj_nosub_iob(obj))
+lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub))
+lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob)
+lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob])
+~~~
+
+There's beauty in this.
+
 ## 2024-06-5
 
 Wow @ 
