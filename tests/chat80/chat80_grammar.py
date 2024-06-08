@@ -7,7 +7,7 @@ from richard.type.OrderedSet import OrderedSet
 def get_grammar(model: Model):
     return [
 
-        # Is there some ocean that does not border any country?
+        # What are the countries from which a river flows into the Black_Sea?
         { 
             "syn": "s -> 'is' 'there' np preposition 'each' nbar '?'", 
             "sem": lambda np, preposition, nbar: 
@@ -71,6 +71,18 @@ def get_grammar(model: Model):
         { "syn": "preposition -> 'in'", "sem": lambda: 
             lambda e1: lambda e2: model.find_relation_values('in', [e1, e2]) },
 
+        # the order now is obj sub iobj, must be changed before calling dtv
+        # like passivization?
+        # extend dtv_no_sub_obj with passive dtv_passive_no_sub_obj? (!) simpler?
+        { "syn": "s -> 'what' 'are' np vp_noobj_sub_iob '?'", "sem": lambda np, vp_noobj_sub_iob: lambda: np(vp_noobj_sub_iob) },
+        { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
+        { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
+        { "syn": "vp_noobj_nosub_noiob -> dunno", "sem": lambda dunno: lambda obj: lambda sub: lambda iob: dunno(obj)(sub)(iob) },
+        { "syn": "dunno -> dtv", "sem": lambda dtv: 
+                                                            lambda obj: lambda sub: lambda iob: dtv(sub)(obj)(iob) },
+        { "syn": "dtv -> 'flows' 'into'", "sem": lambda: 
+            lambda sub: lambda obj: lambda iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
+
         { "syn": "relative_clause -> 'that' tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },
         { "syn": "relative_clause -> tv_no_sub", "sem": lambda tv_no_sub: lambda subject: tv_no_sub(subject) },
 
@@ -82,6 +94,7 @@ def get_grammar(model: Model):
         { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_entity_with_highest_attribute_value(range, 'size-of') },
         { "syn": "superlative -> 'smallest'", "sem": lambda: lambda range: model.find_entity_with_lowest_attribute_value(range, 'size-of') },
 
+        { "syn": "det -> 'a'", "sem": lambda: exists },
         { "syn": "det -> 'the'", "sem": lambda: exists },
         { "syn": "det -> 'some'", "sem": lambda: exists },
         { "syn": "det -> 'any'", "sem": lambda: exists },
@@ -99,6 +112,7 @@ def get_grammar(model: Model):
         { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'asian') },
 
         { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
+        { "syn": "noun -> 'river'", "sem": lambda: lambda: model.get_instances('river') },
         { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_instances('river') },
         { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_instances('country') },
         { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_instances('country') },
@@ -118,4 +132,5 @@ def get_grammar(model: Model):
         { "syn": "proper_noun -> 'danube'", "sem": lambda: lambda:  OrderedSet([Instance('river', 'danube')])  },
         { "syn": "proper_noun -> 'equator'", "sem": lambda: lambda:  OrderedSet([Instance('circle_of_latitude', 'equator')])  },
         { "syn": "proper_noun -> 'australasia'", "sem": lambda: lambda:  OrderedSet([Instance('region', 'australasia')])  },
+        { "syn": "proper_noun -> 'black_sea'", "sem": lambda: lambda:  OrderedSet([Instance('sea', 'black_sea')]) },
     ]

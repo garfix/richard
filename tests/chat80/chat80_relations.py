@@ -24,6 +24,24 @@ def south_of(ds, values: list[Simple]):
     raise Exception("Unhandled case")
 
 
+def flows_from_to(ds, values: list[Simple]):
+    query_river = values[0]
+    query_from = values[1]
+    query_to = values[2]
+    flows = ds.select('river', ['id', 'flows_through'], [None, None])
+    results = []
+    for id, flows_through in flows:
+        db_to = flows_through[0]
+        db_from = flows_through[1:]
+        if not id or id == query_river:
+            if not query_to or query_to == db_to:
+                if not query_from or query_from in db_from:
+                    for f in db_from:
+                        results.append([id, f, db_to])
+
+    return results
+
+    
 def continental(ds, modifier, country_id: int):
     table = "country"
     columns = ["id", "region"]

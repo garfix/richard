@@ -17,7 +17,7 @@ class Record:
         for name, value in self.values.items():
             if not name.isidentifier():
                 raise ValueError("The record key '" + name + "' is not an identier")
-            if not isinstance(value, float) and not isinstance(value, str) and not isinstance(value, int):
+            if not isinstance(value, float) and not isinstance(value, str) and not isinstance(value, int) and not isinstance(value, list):
                 raise ValueError("A record must be int, float or string: " + str(value))
     
 
@@ -30,8 +30,8 @@ class Record:
 
 
     def __hash__(self) -> int:
-        # see https://stackoverflow.com/a/5884123
-        return hash(self.table) + hash(frozenset(self.values.items()))
+        # todo: this is a very inefficient hash, but hash(frozenset(self.values.items())) doesn't work anymore since the values can be lists
+        return hash(self.table) #+ hash(frozenset(self.values.items()))
 
 
     def subsetOf(self, other: Record):

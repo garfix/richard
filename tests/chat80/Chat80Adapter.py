@@ -5,7 +5,7 @@ from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.type.Simple import Simple
-from tests.chat80.chat80_relations import continental, south_of
+from tests.chat80.chat80_relations import continental, flows_from_to, south_of
 
 # model
 
@@ -45,6 +45,7 @@ class Chat80Adapter(ModelAdapter):
             relations=[
                 Relation("borders", ['country', 'country']),
                 Relation("flows-through", ['river', 'country']),
+                Relation("flows-from-to", ['river', 'country', 'sea']),
                 Relation("south-of", ['place', 'place']),
                 Relation("in", ['place', 'place']),
             ], 
@@ -60,6 +61,8 @@ class Chat80Adapter(ModelAdapter):
             return self.ds.select("contains", ["part", "whole"], values)
         elif relation == "south-of":
             return south_of(self.ds, values)
+        elif relation == "flows-from-to":
+            return flows_from_to(self.ds, values)
         else:
             raise Exception("No table found for " + relation)
     
