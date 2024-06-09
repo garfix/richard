@@ -7,7 +7,8 @@ from richard.type.OrderedSet import OrderedSet
 def get_grammar(model: Model):
     return [
 
-        # What are the countries from which a river flows into the Black_Sea?
+        # sentences
+
         { 
             "syn": "s -> 'is' 'there' np preposition 'each' nbar '?'", 
             "sem": lambda np, preposition, nbar: 
@@ -35,39 +36,47 @@ def get_grammar(model: Model):
         { "syn": "s -> 'does' np vp_nosub_obj '?'",  "sem": lambda np, vp_nosub_obj: lambda: np(vp_nosub_obj) },
         { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values(lambda: 'size-of', np) },
         { "syn": "s -> 'how' 'many' nbar 'does' np vp_noobj_nosub '?'", "sem": lambda nbar, np, vp_noobj_nosub:
-            lambda: len(create_np(exists, nbar)(lambda object: np(vp_noobj_nosub(object))))
+            lambda: len(create_np(exists, nbar)(lambda obj: np(vp_noobj_nosub(obj))))
         },
 
-        # active transitive
-        { "syn": "vp_nosub_obj -> tv np", "sem": lambda tv, np: lambda subject: np(tv(subject)) },
-        { "syn": "vp_nosub_obj -> 'does' 'not' tv np", "sem": lambda tv, np: lambda subject: negate(np(tv(subject))) },
-
-        # Which countries are bordered by two seas?
-
         { "syn": "s -> 'which' nbar 'are' vp_noobj_sub '?'", "sem": lambda nbar, vp_noobj_sub: lambda: create_np(exists, nbar)(vp_noobj_sub) },
-        # paasive transitive
-        { "syn": "vp_noobj_sub -> vp_noobj_nosub 'by' np", "sem": lambda vp_noobj_nosub, np: lambda object: np(vp_noobj_nosub(object)) },
-        { "syn": "vp_noobj_nosub -> tv", "sem": lambda tv: lambda object: lambda subject: tv(subject)(object) },
-
         { "syn": "s -> 'what' 'are' np vp_noobj_sub_iob '?'", "sem": lambda np, vp_noobj_sub_iob: lambda: np(vp_noobj_sub_iob) },
-        # paasive ditransitive passivization
+
+        # vp
+
+        # active transitive: sub obj
+        { "syn": "vp_nosub_obj -> vp_nosub_noobj np", "sem": lambda tv, np: lambda sub: np(tv(sub)) },
+        { "syn": "vp_nosub_obj -> 'does' 'not' vp_nosub_noobj np", "sem": lambda tv, np: lambda sub: negate(np(tv(sub))) },
+        { "syn": "vp_nosub_noobj -> tv", "sem": lambda tv: lambda sub: lambda obj: tv(sub, obj) },
+
+        # passive transitive: obj sub
+        { "syn": "vp_noobj_sub -> vp_noobj_nosub 'by' np", "sem": lambda vp_noobj_nosub, np: lambda obj: np(vp_noobj_nosub(obj)) },
+        { "syn": "vp_noobj_nosub -> tv", "sem": lambda tv: lambda obj: lambda sub: tv(sub, obj) },
+
+        # passive ditransitive: obj sub iob
         { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
         { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
         { "syn": "vp_noobj_nosub_noiob -> dtv", "sem": lambda dtv: lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob) },
+
+        # transitive verbs
+        { "syn": "tv -> 'flow' 'through'", "sem": lambda: 
+            lambda sub, obj: model.find_relation_values('flows-through', [sub, obj]) },
+        { "syn": "tv -> 'border'", "sem": lambda: 
+            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
+        { "syn": "tv -> 'borders'", "sem": lambda: 
+            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
+        { "syn": "tv -> 'bordering'", "sem": lambda: 
+            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
+        { "syn": "tv -> 'bordered'", "sem": lambda: 
+            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
+
+        # ditransitive verbs
         { "syn": "dtv -> 'flows' 'into'", "sem": lambda: 
             lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
 
-        { "syn": "tv -> 'flow' 'through'", "sem": lambda: 
-            lambda subject: lambda object: model.find_relation_values('flows-through', [subject, object]) },
-        { "syn": "tv -> 'border'", "sem": lambda: 
-            lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
-        { "syn": "tv -> 'borders'", "sem": lambda: 
-            lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
-        { "syn": "tv -> 'bordering'", "sem": lambda: 
-            lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
-        { "syn": "tv -> 'bordered'", "sem": lambda: 
-            lambda subject: lambda object: model.find_relation_values('borders', [subject, object], two_ways = True) },
+        # np            
 
+        # noun phrases
         { "syn": "np -> nbar", "sem": lambda nbar: create_np(exists, nbar) },
         { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
         { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: create_np(exists, lambda: np(relative_clause)) },
@@ -75,25 +84,28 @@ def get_grammar(model: Model):
         { "syn": "np -> np pp", "sem": lambda np, pp: create_np(exists, lambda: np(pp)) },
         { "syn": "np -> np pp 'and' pp", "sem": lambda np, pp1, pp2: create_np(exists, lambda: np(pp1) & np(pp2)) },
 
-        { "syn": "pp -> preposition np", "sem": lambda preposition, np: lambda subject: np(preposition(subject)) },
-        { "syn": "pp -> 'not' preposition np", "sem": lambda preposition, np: lambda subject: negate(np(preposition(subject))) },
+        # prepositional phrases
+        { "syn": "pp -> preposition np", "sem": lambda preposition, np: lambda e1: np(preposition(e1)) },
+        { "syn": "pp -> 'not' preposition np", "sem": lambda preposition, np: lambda e1: negate(np(preposition(e1))) },
 
-        { "syn": "preposition -> 'south' 'of'", "sem": lambda: 
-            lambda e1: lambda e2: model.find_relation_values('south-of', [e1, e2]) },
-        { "syn": "preposition -> 'in'", "sem": lambda: 
-            lambda e1: lambda e2: model.find_relation_values('in', [e1, e2]) },
+        { "syn": "preposition -> 'south' 'of'", "sem": lambda: lambda e1: lambda e2: model.find_relation_values('south-of', [e1, e2]) },
+        { "syn": "preposition -> 'in'", "sem": lambda: lambda e1: lambda e2: model.find_relation_values('in', [e1, e2]) },
 
-        { "syn": "relative_clause -> 'that' vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda subject: vp_nosub_obj(subject) },
-        { "syn": "relative_clause -> vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda subject: vp_nosub_obj(subject) },
+        # relative clauses
+        { "syn": "relative_clause -> 'that' vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda e1: vp_nosub_obj(e1) },
+        { "syn": "relative_clause -> vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda e1: vp_nosub_obj(e1) },
 
+        # nbars
         { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
         { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun) },
         { "syn": "nbar -> attr 'of' np", "sem": lambda attr, np: lambda: model.find_attribute_values(attr, np) },
         { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar) },
 
+        # superlatives
         { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_entity_with_highest_attribute_value(range, 'size-of') },
         { "syn": "superlative -> 'smallest'", "sem": lambda: lambda range: model.find_entity_with_lowest_attribute_value(range, 'size-of') },
 
+        # determiners
         { "syn": "det -> 'a'", "sem": lambda: exists },
         { "syn": "det -> 'the'", "sem": lambda: exists },
         { "syn": "det -> 'some'", "sem": lambda: exists },
@@ -104,6 +116,7 @@ def get_grammar(model: Model):
         { "syn": "number -> 'one'", "sem": lambda: lambda: 1 },
         { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
 
+        # adjective phrases
         { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
 
         { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'european') },
@@ -111,6 +124,7 @@ def get_grammar(model: Model):
         { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'american') },
         { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'asian') },
 
+        # nouns
         { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
         { "syn": "noun -> 'river'", "sem": lambda: lambda: model.get_instances('river') },
         { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_instances('river') },
@@ -120,6 +134,7 @@ def get_grammar(model: Model):
         { "syn": "noun -> 'seas'", "sem": lambda: lambda: model.get_instances('sea') },
         { "syn": "noun -> 'continent'", "sem": lambda: lambda: model.get_instances('continent') },
 
+        # attributes
         { "syn": "attr -> 'capital'", "sem": lambda: lambda: 'capital-of' },
         { "syn": "attr -> 'capitals'", "sem": lambda: lambda: 'capital-of' },
 
