@@ -33,8 +33,6 @@ class Model:
         if not relation_name in self.adapter.relations:
             raise Exception('No relation ' + relation_name + " in model")
         
-        field_values = self.dehydrate_values(field_values)
-        
         if two_ways:
             results = self.adapter.interpret_relation(relation_name, field_values) + \
                 self.adapter.interpret_relation(relation_name, reversed(field_values))
@@ -53,7 +51,7 @@ class Model:
         results = OrderedSet()
         for instance in range():
             values = [None, instance.id]
-            for f in self.adapter.interpret_attribute(instance.entity, attribute_name, values): 
+            for f in self.adapter.interpret_attribute(attribute_name, values): 
                 results.add(self.hydrate_attribute_value(f[0], attribute.entities[0], attribute_name))
 
         return results
@@ -68,7 +66,7 @@ class Model:
         results = OrderedSet()
         for instance in range():
             values = [instance.id, None]
-            for f in self.adapter.interpret_attribute(instance.entity, attribute_name, values):
+            for f in self.adapter.interpret_attribute(attribute_name, values):
                 results.add(self.hydrate_attribute_object(f[1], attribute.entities[1], attribute_name))
 
         return results
@@ -82,7 +80,7 @@ class Model:
         max_result = None
         for instance in range():
             values = [None, instance.id]
-            results = self.adapter.interpret_attribute(instance.entity, attribute_name, values)
+            results = self.adapter.interpret_attribute(attribute_name, values)
             for r in results:
                 if max_instance == None or max_result < r[0]:
                     max_instance = instance
@@ -98,7 +96,7 @@ class Model:
         max_result = None
         for instance in range():
             values = [None, instance.id]
-            results = self.adapter.interpret_attribute(instance.entity, attribute_name, values)
+            results = self.adapter.interpret_attribute(attribute_name, values)
             for r in results:
                 if max_instance == None or max_result > r[0]:
                     max_instance = instance
@@ -115,7 +113,7 @@ class Model:
 
         results = OrderedSet()
         for instance in range():
-            for f in self.adapter.interpret_modifier(instance.entity, modifier_name, instance.id):
+            for f in self.adapter.interpret_modifier(modifier_name, instance):
                 results.add(Instance(instance.entity, f))
 
         return results
@@ -127,7 +125,7 @@ class Model:
 
         for instance in range():
             values = [None, instance.id]
-            results = self.adapter.interpret_attribute(instance.entity, attribute_name, values)
+            results = self.adapter.interpret_attribute(attribute_name, values)
             for r in results:
                 map.append([instance, r[0]])
 
@@ -151,16 +149,6 @@ class Model:
                 success = False
                 break
         return success
-
-
-    def dehydrate_values(self, values: list[Simple]) -> list[Instance]:
-        dehydrated = []
-        for value in values:
-            if isinstance(value, Instance):
-                dehydrated.append(value.id)
-            else:
-                dehydrated.append(value)
-        return dehydrated
 
 
     def hydrate_entities(self, ids: OrderedSet[Simple], entity_name: str) -> OrderedSet[Instance]:

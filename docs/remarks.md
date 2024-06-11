@@ -1,4 +1,88 @@
-## 2024-08-06
+## 2024-06-09
+
+What an impossible question ...
+
+What are the continents no country in which contains more than two cities whose population exceeds 1 million?
+
+What is the parse tree?
+
+Let's check what Chat-80 itself produces...
+
+~~~
+whq
+   B
+   s
+      np
+         3+plu
+         wh(B)
+         []
+      verb(be,active,pres+fin,[],pos)
+      arg
+         dir
+         np
+            3+plu
+            np_head
+               det(the(plu))
+               []
+               continent
+            rel
+               C
+               s
+                  np
+                     3+sin
+                     np_head
+                        det(no)
+                        []
+                        country
+                     pp
+                        prep(in)
+                        np
+                           3+plu
+                           wh(C)
+                           []
+                  verb(contain,active,pres+fin,[],pos)
+                  arg
+                     dir
+                     np
+                        3+plu
+                        np_head
+                           quant(more,nb(2))
+                           []
+                           city
+                        rel
+                           D
+                           s
+                              np
+                                 3+sin
+                                 np_head
+                                    det(the(sin))
+                                    []
+                                    population
+                                 pp
+                                    poss
+                                    np
+                                       3+plu
+                                       wh(D)
+                                       []
+                              verb(exceed,active,pres+fin,[],pos)
+                              arg
+                                 dir
+                                 np
+                                    3+sin
+                                    np_head
+                                       quant(same,nb(1))
+                                       []
+                                       million
+                                    []
+                              []
+                  []
+      []
+
+
+~~~
+
+
+## 2024-06-08
 
 What are the countries from which a river flows into the Black_Sea?
 
@@ -24,7 +108,7 @@ lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob
 
 There's beauty in this.
 
-## 2024-06-5
+## 2024-06-05
 
 Wow @ 
 

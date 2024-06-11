@@ -1,9 +1,11 @@
 from richard.ModelAdapter import ModelAdapter
+from richard.entity.Instance import Instance
 from richard.entity.Modifier import Modifier
 from richard.entity.Attribute import Attribute
 from richard.entity.Entity import Entity
 from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
+from richard.semantics.commands import dehydrate_value, dehydrate_values
 from richard.type.Simple import Simple
 from tests.chat80.chat80_relations import continental, flows_from_to, south_of
 
@@ -48,15 +50,24 @@ class Chat80Adapter(ModelAdapter):
                 Relation("flows-from-to", ['river', 'country', 'sea']),
                 Relation("south-of", ['place', 'place']),
                 Relation("in", ['place', 'place']),
+                Relation("contains", ['place', 'place']),
             ], 
         )
 
 
-    def interpret_relation(self, relation: str, values: list[Simple]) -> list[list[Simple]]:
+    def interpret_relation(self, relation: str, model_values: list[Simple]) -> list[list[Simple]]:
+
+        values = dehydrate_values(model_values)
+
         if relation == "borders":
             return self.ds.select("borders", ["country_id1", "country_id2"], values)
         elif relation == "flows-through":
             return self.ds.select("contains", ["part", "whole"], values)
+        elif relation == "contains":
+            if model_values[1].entity == "city":
+                return self.ds.select("city", ["country", "id"], values)
+            else:
+                return self.ds.select("contains", ["part", "whole"], values)
         elif relation == "in":
             return self.ds.select("contains", ["part", "whole"], values)
         elif relation == "south-of":
@@ -71,7 +82,10 @@ class Chat80Adapter(ModelAdapter):
         return self.ds.select_column(entity, ['id'], [None])
     
 
-    def interpret_attribute(self, entity: str, attribute: str, values: list[Simple]) -> list[Simple]:
+    def interpret_attribute(self, attribute: str, model_values: list[Simple]) -> list[Simple]:
+
+        values = dehydrate_values(model_values)
+
         if attribute == "capital-of":
             return self.ds.select("country", ["capital", "id"], values)
         elif attribute == "size-of":
@@ -79,13 +93,16 @@ class Chat80Adapter(ModelAdapter):
         elif attribute == "location-of":
             return self.ds.select("country", ["region", "id"], values)
         else:
-            raise Exception("No table found for " + entity)
+            raise Exception("No table found for " + attribute)
     
 
-    def interpret_modifier(self, entity: str, modifier: str, value: Simple) -> list[Simple]:
-        if entity == "country":
+    def interpret_modifier(self, modifier: str, model_value: Instance) -> list[Simple]:
+
+        value = dehydrate_value(model_value)
+
+        if model_value.entity == "country":
             if modifier in ["european", "asian", "african", "american"] :
                 return continental(self.ds, modifier, value)     
         else:
-            raise Exception("No table found for " + entity + ":" + modifier)
+            raise Exception("No table found for " + modifier)
 

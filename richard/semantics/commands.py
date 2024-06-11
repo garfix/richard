@@ -1,3 +1,4 @@
+from richard.entity.Instance import Instance
 from richard.type.OrderedSet import OrderedSet
 from richard.type.Simple import Simple
 
@@ -19,7 +20,7 @@ def create_np(determiner: callable, range: callable):
         if vp:
             result = OrderedSet()
             for element in elements:
-                for _ in vp(element.id):
+                for _ in vp(element):
                     result.add(element)
         else:
             result = elements
@@ -54,3 +55,21 @@ def count(elements: list[Simple]) -> Simple:
         return len(elements)
     else:
         return False
+
+
+def dehydrate_values(values: list[Simple]) -> list[Simple]:
+    dehydrated = []
+    for value in values:
+        if isinstance(value, Instance):
+            dehydrated.append(value.id)
+        else:
+            dehydrated.append(value)
+    return dehydrated
+
+
+def dehydrate_value(value: Simple) -> Simple:
+    if isinstance(value, Instance):
+        return value.id
+    else:
+        return value
+  
