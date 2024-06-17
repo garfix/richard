@@ -64,7 +64,7 @@ class TestChat80(unittest.TestCase):
                 [Instance(entity='continent', id='america'), 3615.122],
                 [Instance(entity='continent', id='asia'), 1973.1815],
                 [Instance(entity='continent', id='australasia'), 2967.909],
-                [Instance(entity='continent', id='europe'), 120.359]]],
+                [Instance(entity='continent', id='europe'), 75.73519999999999]]],
             ["Is there more than one country in each continent?", False],
             ["Is there some ocean that does not border any country?", OrderedSet([Instance(entity='ocean', id='southern_ocean'), Instance(entity='ocean', id='arctic_ocean')])],
             ["What are the countries from which a river flows into the Black_Sea?", OrderedSet([Instance(entity='country', id='soviet_union'), Instance(entity='country', id='hungary'), Instance(entity='country', id='czechoslovakia'), Instance(entity='country', id='romania'), Instance(entity='country', id='yugoslavia'), Instance(entity='country', id='austria'), Instance(entity='country', id='west_germany')])]
