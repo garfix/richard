@@ -34,6 +34,20 @@ db.insert(Record('country', {'id': 'yugoslavia', 'region': 'southern_europe', 'l
 db.insert(Record('country', {'id': 'austria', 'region': 'western_europe', 'lat': 47, 'long': -14, 'area': 32.374, 'population': 7.520, 'capital': 'vienna', 'currency': 'schilling'}))
 db.insert(Record('country', {'id': 'west_germany', 'region': 'western_europe', 'lat': 52, 'long': -9, 'area': 95.815, 'population': 61.970, 'capital': 'bonn', 'currency': 'deutsche_mark'}))
 
+db.insert(Record('city', {'id': 'hamburg', 'country': 'west_germany', 'population': 1700}))    
+db.insert(Record('city', {'id': 'warsaw', 'country': 'poland', 'population': 965}))    
+db.insert(Record('city', {'id': 'budapest', 'country': 'hungary', 'population': 1757}))    
+db.insert(Record('city', {'id': 'vienna', 'country': 'austria', 'population': 1766}))    
+db.insert(Record('city', {'id': 'birmingham', 'country': 'united_kingdom', 'population': 1112}))    
+db.insert(Record('city', {'id': 'glasgow', 'country': 'united_kingdom', 'population': 1090}))    
+db.insert(Record('city', {'id': 'london', 'country': 'united_kingdom', 'population': 8346}))    
+
+# drie continenten met 3 steden met meer dan 1 millioen inwoners > 1000
+# 1 continent met 1 stad met meer dan 1 millioen inwoners
+# 1 continent zonder steden
+
+
+
 db.insert(Record('ocean', {'id': 'indian_ocean'}))    
 db.insert(Record('ocean', {'id': 'atlantic'}))    
 db.insert(Record('ocean', {'id': 'pacific'}))            
@@ -68,5 +82,8 @@ db.insert(Record('contains', {'part': 'afghanistan', 'whole': 'asia'}))
 db.insert(Record('contains', {'part': 'china', 'whole': 'asia'}))
 db.insert(Record('contains', {'part': 'poland', 'whole': 'europe'}))
 db.insert(Record('contains', {'part': 'united_states', 'whole': 'america'}))
-
+db.insert(Record('contains', {'part': 'west_germany', 'whole': 'europe'}))
+db.insert(Record('contains', {'part': 'hungary', 'whole': 'europe'}))
+db.insert(Record('contains', {'part': 'austria', 'whole': 'europe'}))
+db.insert(Record('contains', {'part': 'united_kingdom', 'whole': 'europe'}))
 

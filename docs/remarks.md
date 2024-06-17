@@ -1,3 +1,27 @@
+## 2024-06-15
+
+Looking for other semantics parsers, I checked Sippycup once more ( https://github.com/wcmac/sippycup ). I know I have seen this before, so it must have influenced this library, but it probably was in a time that I didn't program in Python yet.
+
+Anyway, seeing it again came as a huge shock. Not so much that its approach is largely similar to the one this library takes, but the fact that it presents multiple ways to deal with semantics. Each of its tutorial pages has a different semantic representation. 
+
+In its third unit that deals with geographic queries https://nbviewer.org/github/wcmac/sippycup/blob/master/sippycup-unit-3.ipynb it takes the approach I have used here as well. The semantics of a rule consists of lambda functions, and these are combined to create the complete semantics.  So far so good.
+
+The last few weeks I kept noticing how much easier it was to write semantics in NLI-GO, which uses a relational rather than a functional approach. And that previous approach had more advantages:
+
+- as it iss declarative, it is data (atoms) and can be manipulated
+- it can be used to store learned information. If the system has to learn a rule "all men are mortal", how is this knowledge to be persisted if it is in functional form?
+- the atoms can be used to do generation
+- the atoms can also be used to reorganize the semantics, as may be needed for scope resolution
+- the atoms can be used to optimize the semantics for performance
+
+At the same time I was rethinking my approach to database access. So far I worked with toy domains, and performance was not an issue. But one of the things I want the library to be able to do is answer questions like "How many customers have bought more than 2 products in the last month?" As this is about customers (let's say 10.000 and products (let's say 100.000), such a simple query would run my library to the ground immediately). The consequence is simple: I need my library to produce SQL / Sparql queries. It's the only way to reach any kind of performance. It's not all it should do, but it should be able to do it. And it should not produce SQL directly, it should do this based on the age old logical form: `(predicate arg arg)`, with nested arguments. It that possible?
+
+===
+
+It seems like that is very hard to do.
+
+There are means of optimization. In stead of 10.000 x 100.000 queries, it's possible to do one query that leaves the relevant id's open. So this line of thought may not be as hopeless as it seems.
+
 ## 2024-06-09
 
 What an impossible question ...
