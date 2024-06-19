@@ -5,7 +5,7 @@ from richard.interface.SomeParser import SomeParser
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
 
 
-class SemanticComposer(SomeSemanticComposer):
+class TupleComposer(SomeSemanticComposer):
     """
     Performs semantic composition on the product of the parser
     """
@@ -47,11 +47,8 @@ class SemanticComposer(SomeSemanticComposer):
         # create a switch with a case for each number of arguments (up to 10 or so)
         semantics = node.rule.sem(*child_semantics)
 
-        if not callable(semantics):
-            raise Exception("Rule '" + node.rule.basic_form() + "' key 'sem' does not return a function")
-
         return semantics
     
 
-    def get_tuples(self, request: SentenceRequest) -> callable:
+    def get_tuples(self, request: SentenceRequest) -> tuple:
         return request.get_current_product(self)
