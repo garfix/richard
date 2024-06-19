@@ -20,37 +20,38 @@ class Chat80Adapter(ModelAdapter):
         self.ds = data_source
 
         super().__init__(
-            modifiers=[
-                Modifier("european"),
-                Modifier("asian"),
-                Modifier("american"),
-                Modifier("african"),
-            ],
-            # todo(?): include attributes with entities, because their argument types may be different
-            # todo: multiple attributes with the same name but different argument types
-            attributes=[
-                Attribute("size-of", [None, "country"]),
-                Attribute("capital-of", ["city", "country"]),
-                Attribute("location-of", ["place", "country"])
-            ],
-            entities=[
-                Entity("place", [], []),
-                Entity("river", [], []),
-                Entity("country", ["size-of", "capital-of", "location-of"], ["european", "asian", "american", "african"]),
-                Entity("city", ["size-of"], []),
-                Entity("ocean", [], []),
-                Entity("sea", [], []),
-                Entity("circle_of_latitude", [], []),
-                Entity("region", [], []),
-                Entity("continent", [], []),
-            ], 
+            # modifiers=[
+            #     Modifier("european"),
+            #     Modifier("asian"),
+            #     Modifier("american"),
+            #     Modifier("african"),
+            # ],
+            # # todo(?): include attributes with entities, because their argument types may be different
+            # # todo: multiple attributes with the same name but different argument types
+            # attributes=[
+            #     Attribute("size-of", [None, "country"]),
+            #     Attribute("capital-of", ["city", "country"]),
+            #     Attribute("location-of", ["place", "country"])
+            # ],
+            # entities=[
+            #     Entity("place", [], []),
+            #     Entity("river", [], []),
+            #     Entity("country", ["size-of", "capital-of", "location-of"], ["european", "asian", "american", "african"]),
+            #     Entity("city", ["size-of"], []),
+            #     Entity("ocean", [], []),
+            #     Entity("sea", [], []),
+            #     Entity("circle_of_latitude", [], []),
+            #     Entity("region", [], []),
+            #     Entity("continent", [], []),
+            # ], 
             relations=[
-                Relation("borders", ['country', 'country']),
-                Relation("flows-through", ['river', 'country']),
-                Relation("flows-from-to", ['river', 'country', 'sea']),
-                Relation("south-of", ['place', 'place']),
-                Relation("in", ['place', 'place']),
-                Relation("contains", ['place', 'place']),
+                Relation("river", ['river']),
+                # Relation("borders", ['country', 'country']),
+                # Relation("flows-through", ['river', 'country']),
+                # Relation("flows-from-to", ['river', 'country', 'sea']),
+                # Relation("south-of", ['place', 'place']),
+                # Relation("in", ['place', 'place']),
+                # Relation("contains", ['place', 'place']),
             ], 
         )
 
@@ -59,22 +60,24 @@ class Chat80Adapter(ModelAdapter):
 
         values = dehydrate_values(model_values)
 
-        if relation == "borders":
-            return self.ds.select("borders", ["country_id1", "country_id2"], values)
-        elif relation == "flows-through":
-            return self.ds.select("contains", ["part", "whole"], values)
-        elif relation == "contains":
-            if model_values[1].entity == "city":
-                return self.ds.select("city", ["country", "id"], values)
-            else:
-                return self.ds.select("contains", ["part", "whole"], values)
-        elif relation == "in":
-            return self.ds.select("contains", ["part", "whole"], values)
-        elif relation == "south-of":
-            return south_of(self.ds, values)
-        elif relation == "flows-from-to":
-            return flows_from_to(self.ds, values)
-        else:
+        if relation == "river":
+            return self.ds.select("river", ["id"], values)
+        # if relation == "borders":
+        #     return self.ds.select("borders", ["country_id1", "country_id2"], values)
+        # elif relation == "flows-through":
+        #     return self.ds.select("contains", ["part", "whole"], values)
+        # elif relation == "contains":
+        #     if model_values[1].entity == "city":
+        #         return self.ds.select("city", ["country", "id"], values)
+        #     else:
+        #         return self.ds.select("contains", ["part", "whole"], values)
+        # elif relation == "in":
+        #     return self.ds.select("contains", ["part", "whole"], values)
+        # elif relation == "south-of":
+        #     return south_of(self.ds, values)
+        # elif relation == "flows-from-to":
+        #     return flows_from_to(self.ds, values)
+        # else:
             raise Exception("No table found for " + relation)
     
 

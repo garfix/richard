@@ -90,7 +90,10 @@ class TestSolver(unittest.TestCase):
                 [{'E1': Instance('country', 'brasil'), 'E2': Instance('river', 'amazon')}, 
                  {'E1': Instance('country', 'india'), 'E2': Instance('river', 'brahmaputra')}]
             ],
-            # contains(A, A)
+            [
+                [('contains', E1, E1)], 
+                []
+            ],
         ]
 
         for test in tests:

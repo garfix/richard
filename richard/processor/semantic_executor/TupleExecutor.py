@@ -1,9 +1,8 @@
-from richard.Model import Model
-from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
+from richard.processor.semantic_executor.Solver import Solver
 from richard.type.OrderedSet import OrderedSet
 
 
@@ -13,21 +12,21 @@ class TupleExecutor(SomeProcessor):
     """
     
     composer: SomeSemanticComposer
-    model: Model
+    solver: Solver
 
 
-    def __init__(self, composer: SomeSemanticComposer, model: Model) -> None:
+    def __init__(self, composer: SomeSemanticComposer, solver: Solver) -> None:
         super().__init__()
         self.composer = composer    
-        self.model = model
+        self.solver = solver
 
     
     def process(self, request: SentenceRequest) -> ProcessResult:
-        sentence_tuples = self.composer.get_tuples(request)
-        tuples = sentence_tuples()
-        bindngs = self.collect(tuples)
+        atoms = self.composer.get_tuples(request)
+        bindings = self.solver.solve(atoms)
+        print(bindings)
         
-        return ProcessResult(tuples, "", [])
+        return ProcessResult([bindings], "", [])
     
 
     def collect(self, tuples: list[tuple]) -> OrderedSet[dict]:

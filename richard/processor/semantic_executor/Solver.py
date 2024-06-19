@@ -27,26 +27,46 @@ class Solver:
 
         prepared = []
         for arg in arguments:
+            # variable
             if isinstance(arg, Variable):
+                # bound?
                 if arg.name in binding:
+                    # add variable value
                     prepared.append(binding[arg.name])   
                 else: 
+                    # add None
                     prepared.append(None)
             else:
+                # just add value
                 prepared.append(arg)
 
-        print(prepared)
+        # print(prepared)
 
         values = self.model.find_relation_values(relation, prepared)
 
-        print(values)
+        # print(values)
 
         results = []
         for v in values:
+            # extend the incoming binding
             result = binding.copy()
+            # check needed for a variable that occurs twice
+            conflict = False
+
+            # go through all arguments
             for i, arg in enumerate(arguments):
+                # variable?
                 if isinstance(arg, Variable):
+                    # check for conflict with previous same variable
+                    if arg.name in result and result[arg.name] != v[i]:
+                        conflict = True
+                    # extend the binding
                     result[arg.name] = v[i]
+
+            if conflict:
+                continue
+
             results.append(result)
+            
         return results
     

@@ -1,6 +1,7 @@
 import unittest
 
 from richard.processor.semantic_composer.TupleComposer import TupleComposer
+from richard.processor.semantic_executor.Solver import Solver
 from richard.processor.semantic_executor.TupleExecutor import TupleExecutor
 from richard.type.OrderedSet import OrderedSet
 from richard.Model import Model
@@ -29,12 +30,13 @@ class TestChat80(unittest.TestCase):
 
         data_source = MemoryDbDataSource(db)
         model = Model(Chat80Adapter(data_source))
+        solver = Solver(model)
         grammar = get_grammar(model)
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
         composer = TupleComposer(parser)
-        executor = TupleExecutor(composer, model)
+        executor = TupleExecutor(composer, solver)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -44,8 +46,8 @@ class TestChat80(unittest.TestCase):
         ])
 
         tests = [
-            ["What rivers are there?", OrderedSet([Instance(entity='river', id='amazon'), Instance(entity='river', id='brahmaputra'), Instance(entity='river', id='danube'), Instance(entity='river', id='don'), Instance(entity='river', id='volga')])],
-            # ["Does Afghanistan border China?", OrderedSet([Instance(entity='country', id='afghanistan')])],
+            ["What rivers are there?", [{'E1': Instance(entity='river', id='amazon')}, {'E1': Instance(entity='river', id='brahmaputra')}, {'E1': Instance(entity='river', id='danube')}, {'E1': Instance(entity='river', id='don')}, {'E1': Instance(entity='river', id='volga')}]],
+            ["Does Afghanistan border China?", OrderedSet([Instance(entity='country', id='afghanistan')])],
             # ["What is the capital of Upper_Volta?", OrderedSet([Instance(entity='city', id='ouagadougou')])],
             # ["Where is the largest country?", OrderedSet([Instance(entity='place', id='northern_asia')])],
             # ["Which countries are European?", OrderedSet([Instance(entity='country', id='united_kingdom'), Instance(entity='country', id='albania'), Instance(entity='country', id='poland'), Instance(entity='country', id='hungary'), Instance(entity='country', id='czechoslovakia'), Instance(entity='country', id='romania'), Instance(entity='country', id='yugoslavia'), Instance(entity='country', id='austria'), Instance(entity='country', id='west_germany')])],
@@ -81,6 +83,6 @@ class TestChat80(unittest.TestCase):
                 break
 
             results = executor.get_results(request)
-            # print(results)
+            print(results)
             self.assertEqual(answer, results)
             

@@ -8,12 +8,16 @@ def get_grammar(model: Model):
     return [
 
         # sentences
-        { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar },
+        { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: nbar },
+        { "syn": "s -> 'does' np vp_nosub_obj '?'",  "sem": lambda np, vp_nosub_obj: ('check', np, vp_nosub_obj) },
+
+        # nps
+        { "syn": "np -> nbar", "sem": lambda nbar: ('quant', E1, exists, nbar) },
 
         # nbars
         { "syn": "nbar -> noun", "sem": lambda noun: noun },
 
         # nouns
-        { "syn": "noun -> 'rivers'", "sem": lambda: (('river', E1)) },
+        { "syn": "noun -> 'rivers'", "sem": lambda: [('river', E1)] },
 
     ]
