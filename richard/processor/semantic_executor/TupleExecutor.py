@@ -23,7 +23,7 @@ class TupleExecutor(SomeProcessor):
     
     def process(self, request: SentenceRequest) -> ProcessResult:
         atoms = self.composer.get_tuples(request)
-        bindings = self.solver.solve(atoms)       
+        bindings = self.solver.solve(atoms, {})       
         return ProcessResult([bindings], "", [])
     
 

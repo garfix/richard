@@ -17,7 +17,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.TupleComposer import TupleComposer
 from richard.processor.semantic_executor.TupleExecutor import TupleExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import dehydrate_values
+from richard.semantics.commands import dehydrate_values, hydrate_values
 from richard.store.MemoryDb import MemoryDb
 from richard.type.Simple import Simple
 
@@ -48,17 +48,20 @@ class TestAdapter(ModelAdapter):
 
         values = dehydrate_values(model_values)
 
-        # print(model_values)
-
-        if relation == "has_child":
-            return self.ds.select("has_child", ["parent", "child"], values)
-        elif relation == "parent":
-            return self.ds.select("has_child", ["parent"], values)
+        if relation == "parent":
+            types = ["parent"]
+            results = self.ds.select("has_child", ["parent"], values)
         elif relation == "child":
-            return self.ds.select("has_child", ["child"], values)
-        if relation == "have" and model_values[0].entity == "parent" and model_values[1].entity == "child":
-            return self.ds.select("has_child", ["parent", "child"], values)
-        return []
+            types = ["child"]
+            results = self.ds.select("has_child", ["child"], values)
+        elif relation == "have" and model_values[0].entity == "parent" and model_values[1].entity == "child":
+            types = ["parent", "child"]
+            results = self.ds.select("has_child", ["parent", "child"], values)
+        else:
+            types = []
+            results = []
+      
+        return hydrate_values(results, types)
 
 
 class TestQuantification(unittest.TestCase):

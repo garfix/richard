@@ -5,14 +5,16 @@ from richard.interface.SomeSolver import SomeSolver
 
 
 class CoreModule(SomeModule):
-    def interpret_relation(self, relation_name: str, values: list, solver: SomeSolver) -> list[list]:
+    def interpret_relation(self, relation_name: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
         if relation_name == "check":
-            return self.check(values, solver)
+            return self.check(values, solver, binding)
+        elif relation_name == "==":
+            return self.equals(values, solver, binding)
         else:
             return []
 
 
-    def check(self, values: list, solver: SomeSolver):
+    def check(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
         quant, body = values
         predicate1, var, det, nbar = quant
         predicate2, result_var, range_var, check = det
@@ -21,26 +23,36 @@ class CoreModule(SomeModule):
 
         # ('determiner', Result, Range, [('==', Result, Range)])
 
-        entities = [binding[var.name] for binding in solver.solve(nbar)]
-        # print(entities)
+        entities = set([binding[var.name] for binding in solver.solve(nbar, binding)])
+        # print(nbar)
+        # print(binding)
+        # print(set(entities))
         range = len(entities)
         result = 0
         for entity in set(entities):
-            binding = {
+            b = binding | {
                 var.name: entity
             }
-            print(binding)
-            print(body)
-            bindings = solver.solve(body, binding)
+            bindings = solver.solve(body, b)
+            # print(body, b, bindings)
             if len(bindings) > 0:
                 result += 1
         
         binding = {
-            range_var: range,
-            result_var: result
+            range_var.name: range,
+            result_var.name: result
         }
-        ok_bindings = solver.solve([check], binding)
+        # print(binding, check, entities)
+        ok_bindings = solver.solve(check, binding)
+        print(ok_bindings)
         if len(ok_bindings) > 0:
-            return entities
+            return [[entity] for entity in entities]
         else:        
             return []
+
+
+    def equals(self, values: list, solver: SomeSolver, binding: dict):
+        # print('==', values)
+        if values[0] == values[1]:
+            return [values]
+        return []

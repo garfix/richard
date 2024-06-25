@@ -35,17 +35,19 @@ class Model:
     #     return self.hydrate_entities(results, entity_name)
 
 
-    def find_relation_values(self, relation_name: str, field_values: list, solver: SomeSolver) -> list[list[Simple]]:       
+    def find_relation_values(self, relation_name: str, field_values: list, solver: SomeSolver, binding: dict) -> list[list[Simple]]:       
         results = self.adapter.interpret_relation(relation_name, field_values, solver)
 
         for module in self.modules:
-            results.extend(module.interpret_relation(relation_name, field_values, solver))
+            results.extend(module.interpret_relation(relation_name, field_values, solver, binding))
 
-        if len(results) == 0:
-            if not relation_name in self.adapter.relations:
-                raise Exception('No relation ' + relation_name + " in model")
+        # todo do below check differently
 
-        return self.hydrate_relations(results, relation_name)
+        # if len(results) == 0:
+        #     if not relation_name in self.adapter.relations:
+        #         raise Exception('No relation ' + relation_name + " in model")
+
+        return results
 
     
     # def find_attribute_values(self, attribute_name_func: callable, range: callable) -> OrderedSet[Simple]:

@@ -11,7 +11,7 @@ class Solver(SomeSolver):
         self.model = model
 
 
-    def solve(self, tuples: list[tuple], binding: dict = {}) -> list[dict]:
+    def solve(self, tuples: list[tuple], binding: dict) -> list[dict]:
         if len(tuples) == 0:
             return [binding]
         
@@ -22,7 +22,7 @@ class Solver(SomeSolver):
         return result
 
 
-    def solve_single(self, tuple: tuple, binding: dict = {}):
+    def solve_single(self, tuple: tuple, binding: dict):
         relation = tuple[0]
         arguments = tuple[1:]
 
@@ -41,7 +41,8 @@ class Solver(SomeSolver):
                 # just add value
                 prepared.append(arg)
 
-        values = self.model.find_relation_values(relation, prepared, self)
+        values = self.model.find_relation_values(relation, prepared, self, binding)
+        # print(values)
 
         results = []
         for v in values:
