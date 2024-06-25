@@ -12,7 +12,7 @@ class TestComposer(unittest.TestCase):
    
     def test_missing_sem(self):
         grammar = [
-            { "syn": "s(E1) -> proper_noun(E1) verb(V)", "sem": lambda proper_noun, verb: "not a function" },
+            { "syn": "s(E1) -> proper_noun(E1) verb(V)", "sem": lambda proper_noun, verb: proper_noun + verb },
             { "syn": "proper_noun(E1) -> 'mary'" },
             { "syn": "verb(E1) -> 'walks'" },
         ]
@@ -68,3 +68,30 @@ class TestComposer(unittest.TestCase):
         sem = composer.get_tuples(request)
         self.assertEqual(str(sem), "[('check', [('quant', S1, [('exists', S2)], [('river', S1)])], [('check', [('quant', S3, [('exists', S4)], [('sea', S3)])], [('flow', S1, S3)])])]")
         
+
+    def test_special_category(self):
+
+        grammar = [
+            { "syn": "s(V) -> np(E1) 'sleeps'", "sem": lambda np: np },
+            { "syn": "np(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
+            { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+        ]
+
+        tokenizer = BasicTokenizer()
+        parser = BasicParser(grammar, tokenizer)
+        composer = TupleComposer(parser)
+
+        pipeline = Pipeline([
+            FindOne(tokenizer),
+            FindOne(parser),
+            FindOne(composer),
+        ])
+
+        request = SentenceRequest("John sleeps")
+        pipeline.enter(request)
+
+        tree = parser.get_tree(request)
+        self.assertEqual(tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
+        sem = composer.get_tuples(request)
+        self.assertEqual(str(sem), "John")
+

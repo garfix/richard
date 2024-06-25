@@ -54,14 +54,16 @@ class TupleComposer(SomeSemanticComposer):
         for child, consequent in zip(node.children, node.rule.consequents):
             if not child.is_leaf_node():
                 incoming_child_variables = [map[arg] for arg in consequent.arguments]
-                semantic_function = self.compose_semantics(child, incoming_child_variables, next_number)               
-                child_semantics.append(semantic_function)
+                child_semantic = self.compose_semantics(child, incoming_child_variables, next_number)               
+                child_semantics.append(child_semantic)
+            elif child.rule.sem:
+                child_semantics.append(child.rule.sem())
 
         # create the semantics of this node by executing its function, passing the values of its children as arguments
-        semantics = node.rule.sem(*child_semantics)
+        child_semantic = node.rule.sem(*child_semantics)
 
         # replace the formal parameters in the semantics with the unified variables
-        unified_semantics = self.unify_variables(semantics, map)
+        unified_semantics = self.unify_variables(child_semantic, map)
 
         return unified_semantics
     
@@ -80,17 +82,15 @@ class TupleComposer(SomeSemanticComposer):
         return map
     
 
-    def unify_variables(self, semantics: list[tuple], map: dict[str, str]) -> list[tuple]:
-        unified_semantics = []
-        for atom in semantics:
-            new_atom = []
-            for arg in atom:
-                if isinstance(arg, Variable) and arg.name in map:
-                    new_atom.append(Variable(map[arg.name]))
-                else:
-                    new_atom.append(arg)
-            unified_semantics.append(tuple(new_atom))
-        return unified_semantics
+    def unify_variables(self, semantics: any, map: dict[str, str]) -> any:
+        if isinstance(semantics, list):
+            return [self.unify_variables(atom, map) for atom in semantics]
+        elif isinstance(semantics, tuple):
+            return tuple([self.unify_variables(term, map) for term in semantics])
+        elif isinstance(semantics, Variable) and semantics.name in map:
+            return Variable(map[semantics.name])
+        else:
+            return semantics
 
 
     def get_tuples(self, request: SentenceRequest) -> tuple:

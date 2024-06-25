@@ -15,4 +15,4 @@ POS_TYPE_REG_EXP = "reg-exp"
 
 CATEGORY_TEXT = "text"
 CATEGORY_PROPER_NOUN = "proper_noun"
-CATEGORY_PROPER_NOUN_GROUP = "proper_noun_group"
+CATEGORY_TOKEN = "token"

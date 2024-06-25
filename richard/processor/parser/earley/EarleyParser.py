@@ -1,6 +1,6 @@
 
 import re
-from richard.constants import TERMINAL, CATEGORY_PROPER_NOUN, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_REG_EXP, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
+from richard.constants import CATEGORY_TOKEN, TERMINAL, CATEGORY_PROPER_NOUN, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_REG_EXP, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.Log import Log
@@ -128,18 +128,20 @@ class EarleyParser:
         end_word = chart.words[end_word_index]
         lex_item_found = False
         new_pos_type = POS_TYPE_RELATION
+        sem = None
 
         if self.log.is_active():
             self.log.add_debug("scan", state.to_string(chart))
 
-        if next_pos_type == POS_TYPE_REG_EXP:
-            if re.match(next_consequent, end_word):
-                lex_item_found = True
-                new_pos_type = POS_TYPE_REG_EXP
+        # if next_pos_type == POS_TYPE_REG_EXP:
+        #     if re.match(next_consequent.predicate, end_word):
+        #         lex_item_found = True
+        #         new_pos_type = POS_TYPE_REG_EXP
 
-        # proper noun
-        if not lex_item_found and next_consequent == CATEGORY_PROPER_NOUN:
+        # token category
+        if not lex_item_found and next_consequent.predicate == CATEGORY_TOKEN:
             lex_item_found = True
+            sem = lambda: end_word
 
         # literal word form
         if not lex_item_found:
@@ -151,7 +153,7 @@ class EarleyParser:
             rule = GrammarRule(
                 RuleConstituent(next_consequent.predicate, next_variables, new_pos_type),
                 [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
-                None
+                sem
             )
 
             scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)

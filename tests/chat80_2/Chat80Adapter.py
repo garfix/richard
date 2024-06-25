@@ -78,7 +78,8 @@ class Chat80Adapter(ModelAdapter):
         # elif relation == "flows-from-to":
         #     return flows_from_to(self.ds, values)
         # else:
-            raise Exception("No table found for " + relation)
+        #     raise Exception("No table found for " + relation)
+        return []
     
 
     def interpret_entity(self, entity: str) -> list[Simple]:

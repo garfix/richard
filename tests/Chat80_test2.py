@@ -1,7 +1,7 @@
 import unittest
 
 from richard.processor.semantic_composer.TupleComposer import TupleComposer
-from richard.processor.semantic_executor.Solver import Solver
+from richard.Solver import Solver
 from richard.processor.semantic_executor.TupleExecutor import TupleExecutor
 from richard.type.OrderedSet import OrderedSet
 from richard.Model import Model
@@ -29,24 +29,26 @@ class TestChat80(unittest.TestCase):
     def test_chat80(self):
 
         data_source = MemoryDbDataSource(db)
-        model = Model(Chat80Adapter(data_source))
+        model = Model(Chat80Adapter(data_source), [])
         solver = Solver(model)
         grammar = get_grammar(model)
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
+        # name_resolver = NameResolver(parser)
         composer = TupleComposer(parser)
         executor = TupleExecutor(composer, solver)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
             FindOne(parser),
+            # FindOne(name_resolver),
             FindOne(composer),
             FindOne(executor)
         ])
 
         tests = [
-            ["What rivers are there?", [{'E1': Instance(entity='river', id='amazon')}, {'E1': Instance(entity='river', id='brahmaputra')}, {'E1': Instance(entity='river', id='danube')}, {'E1': Instance(entity='river', id='don')}, {'E1': Instance(entity='river', id='volga')}]],
+            ["What rivers are there?", [{'S': Instance(entity='river', id='amazon')}, {'S': Instance(entity='river', id='brahmaputra')}, {'S': Instance(entity='river', id='danube')}, {'S': Instance(entity='river', id='don')}, {'S': Instance(entity='river', id='volga')}]],
             ["Does Afghanistan border China?", OrderedSet([Instance(entity='country', id='afghanistan')])],
             # ["What is the capital of Upper_Volta?", OrderedSet([Instance(entity='city', id='ouagadougou')])],
             # ["Where is the largest country?", OrderedSet([Instance(entity='place', id='northern_asia')])],

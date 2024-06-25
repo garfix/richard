@@ -1,8 +1,9 @@
 from richard.Model import Model
 from richard.entity.Variable import Variable
+from richard.interface.SomeSolver import SomeSolver
 
 
-class Solver:
+class Solver(SomeSolver):
 
     model: Model
 
@@ -40,11 +41,7 @@ class Solver:
                 # just add value
                 prepared.append(arg)
 
-        # print(prepared)
-
-        values = self.model.find_relation_values(relation, prepared)
-
-        # print(values)
+        values = self.model.find_relation_values(relation, prepared, self)
 
         results = []
         for v in values:

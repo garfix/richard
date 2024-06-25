@@ -7,7 +7,7 @@ from richard.entity.Instance import Instance
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
-from richard.processor.semantic_executor.Solver import Solver
+from richard.Solver import Solver
 from richard.semantics.commands import dehydrate_values
 from richard.store.MemoryDb import MemoryDb
 from richard.store.Record import Record

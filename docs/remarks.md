@@ -1,3 +1,9 @@
+## 2024-06-25
+
+Rewriting the functional execution approach to a relational (atom-sequence) approach.
+
+While I was implementing `has child` again, making an exception for this verb "has", which needed to be mapped to `has_child`, it occurred to me that I don't have to do this in the grammar any more. The adapter can detect that the relation "has" is about a parent and a child, from the input values, and from this select the `has_child` table to query from. That's a nice insight!
+
 ## 2024-06-15
 
 Looking for other semantics parsers, I checked Sippycup once more ( https://github.com/wcmac/sippycup ). I know I have seen this before, so it must have influenced this library, but it probably was in a time that I didn't program in Python yet.

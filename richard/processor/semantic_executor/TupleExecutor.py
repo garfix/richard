@@ -2,7 +2,7 @@ from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
-from richard.processor.semantic_executor.Solver import Solver
+from richard.Solver import Solver
 from richard.type.OrderedSet import OrderedSet
 
 
@@ -23,9 +23,7 @@ class TupleExecutor(SomeProcessor):
     
     def process(self, request: SentenceRequest) -> ProcessResult:
         atoms = self.composer.get_tuples(request)
-        bindings = self.solver.solve(atoms)
-        print(bindings)
-        
+        bindings = self.solver.solve(atoms)       
         return ProcessResult([bindings], "", [])
     
 

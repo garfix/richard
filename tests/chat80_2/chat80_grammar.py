@@ -11,25 +11,26 @@ def get_grammar(model: Model):
 
         # sentences
         { "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", "sem": lambda nbar: nbar },
-        { "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  "sem": lambda np, vp_nosub_obj: ('check', np, vp_nosub_obj) },
+        { "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  "sem": lambda np, vp_nosub_obj: [('check', np, vp_nosub_obj)] },
 
         # active transitive: sub obj
-        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: ('check', np, vp_nosub_noobj) },
-        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: ('check', np, vp_nosub_noobj) },
+        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', np, vp_nosub_noobj)] },
+        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', np, vp_nosub_noobj)] },
         { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
 
-        { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: ('border', E1, E2) },
+        { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('border', E1, E2)] },
 
         # nps
-        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, 'exists', nbar) },
+        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: [('quant', E1, 'exists', nbar)] },
 
         # nbars
         { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
 
         # nouns
         { "syn": "noun(E1) -> 'rivers'", "sem": lambda: [('river', E1)] },
-        { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
+        { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
 
-        # { "syn": "proper_noun(E1) -> 'afghanistan'", "sem": lambda: [Instance('country', 'afghanistan')] },
+        # { "syn": "proper_noun(E1) -> proper_noun_word", "sem": lambda: [Instance('country', 'afghanistan')] },
         # { "syn": "proper_noun(E1) -> 'china'", "sem": lambda:  [Instance('country', 'china')] },
     ]
