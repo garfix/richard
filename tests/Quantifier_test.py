@@ -1,15 +1,13 @@
 import unittest
 
 from richard.Solver import Solver
-from richard.ModelAdapter import ModelAdapter
 from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
-from richard.entity.Entity import Entity
-from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
+from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
@@ -19,7 +17,6 @@ from richard.processor.semantic_executor.TupleExecutor import TupleExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.semantics.commands import dehydrate_values, hydrate_values
 from richard.store.MemoryDb import MemoryDb
-from richard.type.Simple import Simple
 
 
 E1 = Variable('E1')
@@ -28,23 +25,14 @@ Result = Variable('Result')
 Range = Variable('Range')
 
 
-class TestAdapter(ModelAdapter):
+class TestModule(SomeModule):
     ds: SomeDataSource
 
     def __init__(self, data_source: SomeDataSource) -> None:
-
         self.ds = data_source
 
-        super().__init__(
-            relations=[
-                Relation("has_child", ['parent', 'child']),
-                Relation("parent", ['parent']),
-                Relation("child", ['child']),
-            ], 
-        )
 
-
-    def interpret_relation(self, relation: str, model_values: list, solver: SomeSolver) -> list[list]:
+    def interpret_relation(self, relation: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         values = dehydrate_values(model_values)
 
@@ -77,7 +65,7 @@ class TestQuantification(unittest.TestCase):
         db.insert(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
 
         data_source = MemoryDbDataSource(db)
-        model = Model(TestAdapter(data_source), [])
+        model = Model([TestModule(data_source)])
 
         grammar = [
             { 
@@ -85,8 +73,12 @@ class TestQuantification(unittest.TestCase):
                 "sem": lambda np, vp_no_sub: [('check', np, vp_no_sub)]
             },
             { 
-                "syn": "vp_no_sub(E1) -> 'has' np(E2)", 
-                "sem": lambda np: [('check', np, [('have', E1, E2)])] 
+                "syn": "vp_no_sub(E1) -> tv(E1, E2) np(E2)", 
+                "sem": lambda tv, np: [('check', np, tv)] 
+            },
+            { 
+                "syn": "tv(E1, E2) -> 'has'", 
+                "sem": lambda: [('have', E1, E2)] 
             },
             { 
                 "syn": "np(E1) -> det(D1) nbar(E1)", 
@@ -108,7 +100,6 @@ class TestQuantification(unittest.TestCase):
             { "syn": "number(D1) -> 'three'", "sem": lambda: 3 },
             { "syn": "noun(E1) -> 'parent'", "sem": lambda: [('parent', E1)] },
             { "syn": "noun(E1) -> 'children'", "sem": lambda: [('child', E1)] },
-            { "syn": "aux(V1) -> 'has'", "sem": lambda: None },
         ]
 
         solver = Solver(model)
@@ -125,9 +116,7 @@ class TestQuantification(unittest.TestCase):
         ])
 
         request = SentenceRequest("Every parent has two children")
-        result = pipeline.enter(request)
-        # if not result.error_code == "":
-        #         print(result.error_code, result.error_args) 
+        pipeline.enter(request)
         results = executor.get_results(request)
         self.assertEqual(len(results), 3)
 

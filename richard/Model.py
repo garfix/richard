@@ -19,10 +19,10 @@ class Model:
 
     def __init__(
             self, 
-            adapter: ModelAdapter,
+            # adapter: ModelAdapter,
             modules: list[SomeModule]
     ) -> None:
-        self.adapter = adapter
+        # self.adapter = adapter
         self.modules = modules
         self.modules.append(CoreModule())
 
@@ -36,7 +36,7 @@ class Model:
 
 
     def find_relation_values(self, relation_name: str, field_values: list, solver: SomeSolver, binding: dict) -> list[list[Simple]]:       
-        results = self.adapter.interpret_relation(relation_name, field_values, solver)
+        results = []#self.adapter.interpret_relation(relation_name, field_values, solver)
 
         for module in self.modules:
             results.extend(module.interpret_relation(relation_name, field_values, solver, binding))
@@ -163,18 +163,18 @@ class Model:
     #     return OrderedSet([Instance(entity_name, id) for id in ids])
             
 
-    def hydrate_relations(self, values: set[list[Simple]], relation_name: str) -> list[list[Instance]]:
-        hydrated = []
-        relation = self.adapter.relations[relation_name]
+    # def hydrate_relations(self, values: set[list[Simple]], relation_name: str) -> list[list[Instance]]:
+    #     hydrated = []
+    #     relation = self.adapter.relations[relation_name]
 
-        for row in values:
-            h_row = []
-            for i, element in enumerate(row):
-                entity = relation.fields[i]
-                h_row.append(Instance(entity, element))
-            hydrated.append(h_row)
+    #     for row in values:
+    #         h_row = []
+    #         for i, element in enumerate(row):
+    #             entity = relation.fields[i]
+    #             h_row.append(Instance(entity, element))
+    #         hydrated.append(h_row)
 
-        return hydrated
+    #     return hydrated
     
 
     # def hydrate_attribute_object(self, value: Simple, entity_name: str, attribute_name: str) -> Simple:
