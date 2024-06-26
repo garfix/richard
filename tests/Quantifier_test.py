@@ -15,7 +15,6 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.TupleComposer import TupleComposer
 from richard.processor.semantic_executor.TupleExecutor import TupleExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from richard.semantics.commands import dehydrate_values, hydrate_values
 from richard.store.MemoryDb import MemoryDb
 
 
@@ -32,24 +31,30 @@ class TestModule(SomeModule):
         self.ds = data_source
 
 
-    def interpret_relation(self, relation: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def get_relations(self):
+        return [
+            "parent", 
+            "child",
+            "have",
+        ]
 
-        values = dehydrate_values(model_values)
+
+    def interpret_relation(self, relation: str, db_values: list, in_types: list[str], solver: SomeSolver, binding: dict) -> list[list]:
 
         if relation == "parent":
-            types = ["parent"]
-            results = self.ds.select("has_child", ["parent"], values)
+            out_types = ["parent"]
+            db_values = self.ds.select("has_child", ["parent"], db_values)
         elif relation == "child":
-            types = ["child"]
-            results = self.ds.select("has_child", ["child"], values)
-        elif relation == "have" and model_values[0].entity == "parent" and model_values[1].entity == "child":
-            types = ["parent", "child"]
-            results = self.ds.select("has_child", ["parent", "child"], values)
+            out_types = ["child"]
+            db_values = self.ds.select("has_child", ["child"], db_values)
+        elif relation == "have" and in_types[0] == "parent" and in_types[1] == "child":
+            out_types = ["parent", "child"]
+            db_values = self.ds.select("has_child", ["parent", "child"], db_values)
         else:
-            types = []
-            results = []
+            out_types = []
+            db_values = []
       
-        return hydrate_values(results, types)
+        return db_values, out_types
 
 
 class TestQuantification(unittest.TestCase):

@@ -5,13 +5,24 @@ from richard.interface.SomeSolver import SomeSolver
 
 
 class CoreModule(SomeModule):
-    def interpret_relation(self, relation_name: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+    def get_relations(self):
+        return [
+            "check", 
+            "==",
+        ]
+
+    def interpret_relation(self, relation_name: str, db_values: list, in_types: list[str], solver: SomeSolver, binding: dict) -> list[list]:
         if relation_name == "check":
-            return self.check(values, solver, binding)
+            out_types = [None, None]
+            db_values = self.check(db_values, solver, binding)
         elif relation_name == "==":
-            return self.equals(values, solver, binding)
+            out_types = [None, None]
+            db_values = self.equals(db_values, solver, binding)
         else:
-            return []
+            db_values = []
+
+        return db_values, out_types
 
 
     def check(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
@@ -24,9 +35,9 @@ class CoreModule(SomeModule):
         # ('determiner', Result, Range, [('==', Result, Range)])
 
         entities = set([binding[var.name] for binding in solver.solve(nbar, binding)])
-        # print(nbar)
+        print(nbar)
         # print(binding)
-        # print(set(entities))
+        print(set(entities))
         range = len(entities)
         result = 0
         for entity in set(entities):
@@ -44,7 +55,7 @@ class CoreModule(SomeModule):
         }
         # print(binding, check, entities)
         ok_bindings = solver.solve(check, binding)
-        print(ok_bindings)
+        # print(ok_bindings)
         if len(ok_bindings) > 0:
             return [[entity] for entity in entities]
         else:        

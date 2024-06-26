@@ -57,28 +57,6 @@ def count(elements: list[Simple]) -> Simple:
         return False
 
 
-def dehydrate_values(values: list[Simple]) -> list[Simple]:
-    dehydrated = []
-    for value in values:
-        if isinstance(value, Instance):
-            dehydrated.append(value.id)
-        else:
-            dehydrated.append(value)
-    return dehydrated
-
-
-def hydrate_values(rows: list[list[Simple]], types: list[str]) -> list[Simple]:
-    hydrated = []
-    for values in rows:
-        new_row = []
-        for value, type in zip(values, types):
-            if type is not None:
-                new_row.append(Instance(type, value))
-            else:
-                new_row.append(value)
-        hydrated.append(new_row)
-    return hydrated
-
 
 def dehydrate_value(value: Simple) -> Simple:
     if isinstance(value, Instance):
