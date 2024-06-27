@@ -1,7 +1,8 @@
 from richard.Model import Model
 from richard.entity.Instance import Instance
 from richard.entity.Variable import Variable
-from richard.semantics.commands import exists
+from richard.module.CoreModule import EXISTS
+
 
 E1 = Variable('E1')
 E2 = Variable('E2')
@@ -21,7 +22,7 @@ def get_grammar(model: Model):
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('border', E1, E2)] },
 
         # nps
-        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: [('quant', E1, 'exists', nbar)] },
+        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },
 
         # nbars
         { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
@@ -30,7 +31,4 @@ def get_grammar(model: Model):
         { "syn": "noun(E1) -> 'rivers'", "sem": lambda: [('river', E1)] },
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
         { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
-
-        # { "syn": "proper_noun(E1) -> proper_noun_word", "sem": lambda: [Instance('country', 'afghanistan')] },
-        # { "syn": "proper_noun(E1) -> 'china'", "sem": lambda:  [Instance('country', 'china')] },
     ]

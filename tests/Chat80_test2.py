@@ -12,7 +12,7 @@ from richard.entity.Instance import Instance
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from .chat80_2.Chat80Adapter import Chat80Adapter
+from tests.chat80_2.Chat80Module import Chat80Module
 from .chat80_2.chat80_grammar import get_grammar
 from .chat80_2.chat80_db import db
 
@@ -29,20 +29,18 @@ class TestChat80(unittest.TestCase):
     def test_chat80(self):
 
         data_source = MemoryDbDataSource(db)
-        model = Model(Chat80Adapter(data_source), [])
+        model = Model([Chat80Module(data_source)])
         solver = Solver(model)
         grammar = get_grammar(model)
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        # name_resolver = NameResolver(parser)
         composer = TupleComposer(parser)
         executor = TupleExecutor(composer, solver)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
             FindOne(parser),
-            # FindOne(name_resolver),
             FindOne(composer),
             FindOne(executor)
         ])
