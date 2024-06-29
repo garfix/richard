@@ -54,8 +54,9 @@ def find_state_sequences(chart: Chart, parent_state: ChartState, end_word_positi
     sequences = []
     for state in chart.completed_states[end_word_position]:
         if state.rule.antecedent.equals(parent_state.rule.consequents[consequent_index]):
-            if consequent_index == 0 and state.start_word_index == parent_state.start_word_index:
-                sequences.append([state])
+            if consequent_index == 0:
+                if state.start_word_index == parent_state.start_word_index:
+                    sequences.append([state])
             else:
                 # find one or more preceding sequences of this state
                 for previous_sequence in find_state_sequences(chart, parent_state, state.start_word_index, consequent_index-1):
