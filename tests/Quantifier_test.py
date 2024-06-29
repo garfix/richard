@@ -4,6 +4,7 @@ from richard.Solver import Solver
 from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
+from richard.constants import E1, E2, Range, Result
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
@@ -12,16 +13,10 @@ from richard.interface.SomeSolver import SomeSolver
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
-from richard.processor.semantic_composer.TupleComposer import TupleComposer
-from richard.processor.semantic_executor.TupleExecutor import TupleExecutor
+from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
+from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.store.MemoryDb import MemoryDb
-
-
-E1 = Variable('E1')
-E2 = Variable('E2')
-Result = Variable('Result')
-Range = Variable('Range')
 
 
 class TestModule(SomeModule):
@@ -39,9 +34,9 @@ class TestModule(SomeModule):
         ]
 
 
-    def interpret_relation(self, relation: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
-        db_values = self.dehydrate_values(model_values)
+        db_values = self.dehydrate_values(values)
 
         if relation == "parent":
             out_types = ["parent"]
@@ -49,16 +44,14 @@ class TestModule(SomeModule):
         elif relation == "child":
             out_types = ["child"]
             out_values = self.ds.select("has_child", ["child"], db_values)
-        elif relation == "have" and model_values[0].entity == "parent" and model_values[1].entity == "child":
+        elif relation == "have" and values[0].entity == "parent" and values[1].entity == "child":
             out_types = ["parent", "child"]
             out_values = self.ds.select("has_child", ["parent", "child"], db_values)
         else:
             out_types = []
             out_values = []
 
-        model_values = self.hydrate_values(out_values, out_types)
-      
-        return model_values
+        return self.hydrate_values(out_values, out_types)
 
 
 class TestQuantification(unittest.TestCase):
@@ -114,8 +107,8 @@ class TestQuantification(unittest.TestCase):
         solver = Solver(model)
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = TupleComposer(parser)
-        executor = TupleExecutor(composer, solver)
+        composer = SemanticComposer(parser)
+        executor = AtomExecutor(composer, solver)
 
         pipeline = Pipeline([
             FindOne(tokenizer),

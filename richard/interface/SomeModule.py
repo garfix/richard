@@ -6,15 +6,15 @@ from richard.interface import SomeSolver
 
 class SomeModule(ABC):
     @abstractmethod
-    def interpret_relation(self, relation_name: str, db_values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        pass
-    
-    
-    @abstractmethod
     def get_relations(self) -> list[str]:
         pass
 
         
+    @abstractmethod
+    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+        pass
+    
+    
     def dehydrate_values(self, values: list) -> list:
         dehydrated = []
         for value in values:

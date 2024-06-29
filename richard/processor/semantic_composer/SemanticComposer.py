@@ -6,7 +6,7 @@ from richard.interface.SomeParser import SomeParser
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
 
 
-class TupleComposer(SomeSemanticComposer):
+class SemanticComposer(SomeSemanticComposer):
     """
     Performs semantic composition on the product of the parser
     """

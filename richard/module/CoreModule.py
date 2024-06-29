@@ -1,9 +1,9 @@
 
 
+from richard.constants import EXISTS
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
 
-EXISTS = 'exists'
 
 class CoreModule(SomeModule):
 
@@ -14,15 +14,15 @@ class CoreModule(SomeModule):
         ]
     
 
-    def interpret_relation(self, relation_name: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        if relation_name == "check":
-            model_values = self.check(model_values, solver, binding)
-        elif relation_name == "==":
-            model_values = self.equals(model_values, solver, binding)
+    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+        if relation == "check":
+            out_values = self.check(values, solver, binding)
+        elif relation == "==":
+            out_values = self.equals(values, solver, binding)
         else:
-            model_values = []
+            out_values = []
 
-        return model_values
+        return out_values
 
 
     def check(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:

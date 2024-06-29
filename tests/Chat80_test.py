@@ -9,13 +9,11 @@ from richard.entity.Instance import Instance
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.processor.semantic_executor.SemanticExecutor import SemanticExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from tests.chat80.Chat80Adapter import Chat80Adapter
 from .chat80.chat80_grammar import get_grammar
 from .chat80.chat80_db import db
 
-class TestChat80(unittest.TestCase):
+class TestChat80:
     """
     Mimics a Chat80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
     Topics:

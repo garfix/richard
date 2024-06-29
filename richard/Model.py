@@ -17,29 +17,24 @@ class Model:
             self, 
             modules: list[SomeModule]
     ) -> None:
-        self.modules = modules
-        self.modules.append(CoreModule())
+        self.modules = [CoreModule()]
+        self.modules.extend(modules)
 
 
-    def find_relation_values(self, relation_name: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list[Simple]]:       
+    def find_relation_values(self, relation: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list[Simple]]:       
 
-        # db_values = self.dehydrate_values(model_values)
-        # db_values = model_values
-        # in_types = self.get_types(model_values)
-
-        model_results = []
+        rows = []
         handled = False
         for module in self.modules:
-            if (relation_name in module.get_relations()):
-                out_values = module.interpret_relation(relation_name, model_values, solver, binding)
-                # model_values = self.hydrate_values(db_values, out_types)
-                model_results.extend(out_values)
+            if relation in module.get_relations():
+                out_values = module.interpret_relation(relation, model_values, solver, binding)
+                rows.extend(out_values)
                 handled = True
 
         if not handled:
-            raise Exception('No relation ' + relation_name + " in model")
+            raise Exception('No relation ' + relation + " in model")
         
-        return model_results
+        return rows
     
 
     def get_types(self, model_values: list):

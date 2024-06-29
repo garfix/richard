@@ -1,11 +1,6 @@
 from richard.Model import Model
-from richard.entity.Instance import Instance
-from richard.entity.Variable import Variable
-from richard.module.CoreModule import EXISTS
+from richard.constants import E1, E2, EXISTS
 
-
-E1 = Variable('E1')
-E2 = Variable('E2')
 
 def get_grammar(model: Model):
     return [

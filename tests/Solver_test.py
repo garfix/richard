@@ -1,62 +1,45 @@
 import unittest
 
 from richard.Model import Model
-from richard.ModelAdapter import ModelAdapter
+from richard.constants import E1, E2
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Instance import Instance
-from richard.entity.Relation import Relation
-from richard.entity.Variable import Variable
+from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.Solver import Solver
-from richard.semantics.commands import dehydrate_values
+from richard.interface.SomeModule import SomeModule
 from richard.store.MemoryDb import MemoryDb
 from richard.store.Record import Record
 from richard.type.Simple import Simple
 
-E1 = Variable('E1')
-E2 = Variable('E2')
-E3 = Variable('E3')
-E4 = Variable('E4')
 
-
-class TestAdapter(ModelAdapter):
+class TestModule(SomeModule):
     def __init__(self, data_source: SomeDataSource) -> None:
 
         self.ds = data_source
 
-        super().__init__(
-            relations=[
-                Relation("river", ["river"]),
-                Relation("country", ["country"]),
-                Relation("contains", ["country", "river"]),
-            ], 
-        )
+    def get_relations(self):
+        return [
+            "river",
+            "country",
+            "contains",
+        ]
 
-
-    def interpret_relation(self, relation_name: str, model_values: list[Simple]) -> list[list[Simple]]:
-        values = dehydrate_values(model_values)
-        if relation_name == "river":
-            out_values = self.ds.select("river", ['id'], values)
-        elif relation_name == "country":
-            out_values = self.ds.select("country", ['id'], values)
-        elif relation_name == "contains":
-            out_values = self.ds.select("contains", ['country', 'river'], values)
+    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+        db_values = self.dehydrate_values(values)
+        if relation == "river":
+            out_types = ["river"]
+            out_values = self.ds.select("river", ['id'], db_values)
+        elif relation == "country":
+            out_types = ["country"]
+            out_values = self.ds.select("country", ['id'], db_values)
+        elif relation == "contains":
+            out_types = ["country", "river"]
+            out_values = self.ds.select("contains", ['country', 'river'], db_values)
         else:
             out_values = []
 
-        # return self.hydrate
-
-
-    def interpret_entity(self, entity_name: str) -> list[Simple]:
-        return []
-    
-
-    def interpret_attribute(self, entity_name: str, attribute_name: str, values: list[Simple]) -> list[Simple]:
-        return []
-    
-    
-    def interpret_modifier(self, entity_name: str, modifier_name: str, value: Simple) -> list[Simple]:
-        return []
+        return self.hydrate_values(out_values, out_types)
 
 
 class TestSolver(unittest.TestCase):
@@ -74,7 +57,7 @@ class TestSolver(unittest.TestCase):
         db.insert(Record('contains', {'country': 'india', 'river': 'brahmaputra'}))   
 
         data_source = MemoryDbDataSource(db)
-        model = Model(TestAdapter(data_source))
+        model = Model([TestModule(data_source)])
         solver = Solver(model)
 
 
@@ -102,7 +85,7 @@ class TestSolver(unittest.TestCase):
             question, answer = test
             print()
             print(question)
-            result = solver.solve(question)
+            result = solver.solve(question, {})
             print(result)
             self.assertEqual(answer, result)
             

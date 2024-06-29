@@ -6,7 +6,7 @@ from richard.Solver import Solver
 from richard.type.OrderedSet import OrderedSet
 
 
-class TupleExecutor(SomeProcessor):
+class AtomExecutor(SomeProcessor):
     """
     Executes the function that forms the meaning of the sentence, and produces its result
     """

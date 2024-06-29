@@ -12,22 +12,26 @@ class Solver(SomeSolver):
         self.model = model
 
 
-    def solve(self, tuples: list[tuple], binding: dict) -> list[dict]:
+    def solve(self, atoms: list[tuple], binding: dict) -> list[dict]:
+
+        if not isinstance(atoms, list):
+            raise Exception("Solver can only solve lists of atoms, this is not a list: " + str(atoms))
+
         # global d
         # print("   " * d, "s", tuples, binding)
-        if len(tuples) == 0:
+        if len(atoms) == 0:
             result = [binding]
         else:
             # d += 1
 
             result = []
-            bindings = self.solve_single(tuples[0], binding)
-            if len(tuples) == 1:
+            bindings = self.solve_single(atoms[0], binding)
+            if len(atoms) == 1:
                 result = bindings
                 # print("bindings", bindings)
             else:
                 for b in bindings:
-                    result.extend(self.solve(tuples[1:], b))
+                    result.extend(self.solve(atoms[1:], b))
                     # print("   " * d, tuples[1:], b, result)
 
             # d -= 1  

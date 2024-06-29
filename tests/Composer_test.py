@@ -5,7 +5,7 @@ from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
 from richard.processor.parser.BasicParser import BasicParser
-from richard.processor.semantic_composer.TupleComposer import TupleComposer
+from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestComposer(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestComposer(unittest.TestCase):
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = TupleComposer(parser)
+        composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -43,9 +43,9 @@ class TestComposer(unittest.TestCase):
         E2 = Variable('E2')
 
         grammar = [
-            { "syn": "s(V) -> np(E1) vp(V, E1)", "sem": lambda np, vp: [('check', np, vp)]},
-            { "syn": "vp(V, E1) -> verb(V, E1, E2), np(E2)", "sem": lambda verb, np: [('check', np, verb)] },
-            { "syn": "verb(V, E1, E2) -> 'flows' 'to'", "sem": lambda: [('flow', E1, E2)] },
+            { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: [('check', E1, np, vp)]},
+            { "syn": "vp(E1) -> verb(E1, E2), np(E2)", "sem": lambda verb, np: [('check', E2, np, verb)] },
+            { "syn": "verb(E1, E2) -> 'flows' 'to'", "sem": lambda: [('flow', E1, E2)] },
             { "syn": "np(E1) -> det(D1) nbar(E1)", "sem": lambda det, nbar: [('quant', E1, det, nbar)] },
             { "syn": "det(E1) -> 'the'", "sem": lambda: [('exists', E1)] },
             { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
@@ -55,7 +55,7 @@ class TestComposer(unittest.TestCase):
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = TupleComposer(parser)
+        composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -66,7 +66,8 @@ class TestComposer(unittest.TestCase):
         request = SentenceRequest("The river flows to the sea")
         pipeline.enter(request)
         sem = composer.get_tuples(request)
-        self.assertEqual(str(sem), "[('check', [('quant', S1, [('exists', S2)], [('river', S1)])], [('check', [('quant', S3, [('exists', S4)], [('sea', S3)])], [('flow', S1, S3)])])]")
+        print(str(sem))
+        self.assertEqual(str(sem), "[('check', S1, [('quant', S1, [('exists', S2)], [('river', S1)])], [('check', S3, [('quant', S3, [('exists', S4)], [('sea', S3)])], [('flow', S1, S3)])])]")
         
 
     def test_special_category(self):
@@ -79,7 +80,7 @@ class TestComposer(unittest.TestCase):
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = TupleComposer(parser)
+        composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
             FindOne(tokenizer),

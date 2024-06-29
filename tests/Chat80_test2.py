@@ -1,8 +1,8 @@
 import unittest
 
-from richard.processor.semantic_composer.TupleComposer import TupleComposer
+from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.Solver import Solver
-from richard.processor.semantic_executor.TupleExecutor import TupleExecutor
+from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.type.OrderedSet import OrderedSet
 from richard.Model import Model
 from richard.Pipeline import Pipeline
@@ -35,8 +35,8 @@ class TestChat80(unittest.TestCase):
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = TupleComposer(parser)
-        executor = TupleExecutor(composer, solver)
+        composer = SemanticComposer(parser)
+        executor = AtomExecutor(composer, solver)
 
         pipeline = Pipeline([
             FindOne(tokenizer),

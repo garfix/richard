@@ -24,19 +24,19 @@ class Chat80Module(SomeModule):
         ]
 
 
-    def interpret_relation(self, relation_name: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
-        db_values = self.dehydrate_values(model_values)
+        db_values = self.dehydrate_values(values)
     
-        if relation_name == "river":
+        if relation == "river":
             out_types = ["river"]
-            db_values = self.ds.select("river", ["id"], db_values)
-        elif relation_name == "borders":
+            out_values = self.ds.select("river", ["id"], db_values)
+        elif relation == "borders":
             out_types = ["country", "country"]
-            db_values = self.ds.select("borders", ["country_id1", "country_id2"], db_values)
-        elif relation_name == "resolve_name":
+            out_values = self.ds.select("borders", ["country_id1", "country_id2"], db_values)
+        elif relation == "resolve_name":
             out_types = [None, "country"]
-            db_values = resolve_name(self.ds, db_values)
+            out_values = resolve_name(self.ds, db_values)
         # elif relation == "flows-through":
         #     return self.ds.select("contains", ["part", "whole"], values)
         # elif relation == "contains":
@@ -54,7 +54,7 @@ class Chat80Module(SomeModule):
         #     raise Exception("No table found for " + relation)
         else:
             out_types = []
-            db_values = []
+            out_values = []
       
-        return self.hydrate_values(db_values, out_types)
+        return self.hydrate_values(out_values, out_types)
     
