@@ -46,8 +46,8 @@ class TestChat80(unittest.TestCase):
         ])
 
         tests = [
-            ["What rivers are there?", [{'S': Instance(entity='river', id='amazon')}, {'S': Instance(entity='river', id='brahmaputra')}, {'S': Instance(entity='river', id='danube')}, {'S': Instance(entity='river', id='don')}, {'S': Instance(entity='river', id='volga')}]],
-            ["Does Afghanistan border China?", OrderedSet([Instance(entity='country', id='afghanistan')])],
+            ["What rivers are there?", [{'S1': Instance(entity='river', id='amazon')}, {'S1': Instance(entity='river', id='brahmaputra')}, {'S1': Instance(entity='river', id='danube')}, {'S1': Instance(entity='river', id='don')}, {'S1': Instance(entity='river', id='volga')}]],
+            ["Does Afghanistan border China?", [{'S1': Instance(entity='country', id='afghanistan')}]],
             # ["What is the capital of Upper_Volta?", OrderedSet([Instance(entity='city', id='ouagadougou')])],
             # ["Where is the largest country?", OrderedSet([Instance(entity='place', id='northern_asia')])],
             # ["Which countries are European?", OrderedSet([Instance(entity='country', id='united_kingdom'), Instance(entity='country', id='albania'), Instance(entity='country', id='poland'), Instance(entity='country', id='hungary'), Instance(entity='country', id='czechoslovakia'), Instance(entity='country', id='romania'), Instance(entity='country', id='yugoslavia'), Instance(entity='country', id='austria'), Instance(entity='country', id='west_germany')])],
@@ -74,6 +74,7 @@ class TestChat80(unittest.TestCase):
 
         for test in tests:
             question, answer = test
+            print()
             print(question)
             request = SentenceRequest(question)
             result = pipeline.enter(request)
@@ -84,5 +85,8 @@ class TestChat80(unittest.TestCase):
 
             results = executor.get_results(request)
             print(results)
+            if results != answer:
+                print(parser.get_tree(request))
+                print(composer.format_tuples(request))
             self.assertEqual(answer, results)
             

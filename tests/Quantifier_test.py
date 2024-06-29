@@ -39,22 +39,26 @@ class TestModule(SomeModule):
         ]
 
 
-    def interpret_relation(self, relation: str, db_values: list, in_types: list[str], solver: SomeSolver, binding: dict) -> list[list]:
+    def interpret_relation(self, relation: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        db_values = self.dehydrate_values(model_values)
 
         if relation == "parent":
             out_types = ["parent"]
-            db_values = self.ds.select("has_child", ["parent"], db_values)
+            out_values = self.ds.select("has_child", ["parent"], db_values)
         elif relation == "child":
             out_types = ["child"]
-            db_values = self.ds.select("has_child", ["child"], db_values)
-        elif relation == "have" and in_types[0] == "parent" and in_types[1] == "child":
+            out_values = self.ds.select("has_child", ["child"], db_values)
+        elif relation == "have" and model_values[0].entity == "parent" and model_values[1].entity == "child":
             out_types = ["parent", "child"]
-            db_values = self.ds.select("has_child", ["parent", "child"], db_values)
+            out_values = self.ds.select("has_child", ["parent", "child"], db_values)
         else:
             out_types = []
-            db_values = []
+            out_values = []
+
+        model_values = self.hydrate_values(out_values, out_types)
       
-        return db_values, out_types
+        return model_values
 
 
 class TestQuantification(unittest.TestCase):
@@ -75,11 +79,11 @@ class TestQuantification(unittest.TestCase):
         grammar = [
             { 
                 "syn": "s(V1) -> np(E1) vp_no_sub(E1)", 
-                "sem": lambda np, vp_no_sub: [('check', np, vp_no_sub)]
+                "sem": lambda np, vp_no_sub: [('check', E1, np, vp_no_sub)]
             },
             { 
                 "syn": "vp_no_sub(E1) -> tv(E1, E2) np(E2)", 
-                "sem": lambda tv, np: [('check', np, tv)] 
+                "sem": lambda tv, np: [('check', E2, np, tv)] 
             },
             { 
                 "syn": "tv(E1, E2) -> 'has'", 

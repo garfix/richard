@@ -3,6 +3,7 @@ from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.type.Simple import Simple
 from tests.chat80.chat80_relations import continental, flows_from_to, south_of
+from tests.chat80_2.chat80_relations import resolve_name
 
 # model
 
@@ -19,10 +20,13 @@ class Chat80Module(SomeModule):
         return [
             "river", 
             "borders",
+            'resolve_name',
         ]
 
 
-    def interpret_relation(self, relation_name: str, db_values: list, in_types: list[str], solver: SomeSolver, binding: dict) -> list[list]:
+    def interpret_relation(self, relation_name: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        db_values = self.dehydrate_values(model_values)
     
         if relation_name == "river":
             out_types = ["river"]
@@ -30,6 +34,9 @@ class Chat80Module(SomeModule):
         elif relation_name == "borders":
             out_types = ["country", "country"]
             db_values = self.ds.select("borders", ["country_id1", "country_id2"], db_values)
+        elif relation_name == "resolve_name":
+            out_types = [None, "country"]
+            db_values = resolve_name(self.ds, db_values)
         # elif relation == "flows-through":
         #     return self.ds.select("contains", ["part", "whole"], values)
         # elif relation == "contains":
@@ -49,6 +56,5 @@ class Chat80Module(SomeModule):
             out_types = []
             db_values = []
       
-        return db_values, out_types
+        return self.hydrate_values(db_values, out_types)
     
-

@@ -36,13 +36,15 @@ class TestAdapter(ModelAdapter):
     def interpret_relation(self, relation_name: str, model_values: list[Simple]) -> list[list[Simple]]:
         values = dehydrate_values(model_values)
         if relation_name == "river":
-            return self.ds.select("river", ['id'], values)
+            out_values = self.ds.select("river", ['id'], values)
         elif relation_name == "country":
-            return self.ds.select("country", ['id'], values)
+            out_values = self.ds.select("country", ['id'], values)
         elif relation_name == "contains":
-            return self.ds.select("contains", ['country', 'river'], values)
+            out_values = self.ds.select("contains", ['country', 'river'], values)
         else:
-            raise Exception("Not implemented yet: " + relation_name)
+            out_values = []
+
+        # return self.hydrate
 
 
     def interpret_entity(self, entity_name: str) -> list[Simple]:

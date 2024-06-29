@@ -21,7 +21,7 @@ class TupleComposer(SomeSemanticComposer):
     
     def process(self, request: SentenceRequest) -> ProcessResult:
 
-        number = 0
+        number = 1
 
         def next_number():
             nonlocal number
@@ -32,7 +32,7 @@ class TupleComposer(SomeSemanticComposer):
 
         self.check_for_sem(root)
         
-        semantics = self.compose_semantics(root, ["S"], next_number)
+        semantics = self.compose_semantics(root, ["S1"], next_number)
         return ProcessResult([semantics], "", [])    
 
 
@@ -95,3 +95,30 @@ class TupleComposer(SomeSemanticComposer):
 
     def get_tuples(self, request: SentenceRequest) -> tuple:
         return request.get_current_product(self)
+    
+
+    def format_tuples(self, request: SentenceRequest) -> str:
+        return self.format_value(request.get_current_product(self))
+    
+
+    def format_value(self, value: any, indent: str = "") -> str:
+        text = ""
+        if isinstance(value, tuple):
+            indent += "    "
+            text = "\n" + indent + "("
+            sep = ""
+            for element in value:
+                text += sep + self.format_value(element, indent)
+                sep = ", "
+            text += ")"
+        elif isinstance(value, list):
+            text = "["
+            for element in value:
+                text += self.format_value(element, indent)
+            text += "]"
+        elif isinstance(value, str):
+            text = "'" + value + "'"
+        else:
+            text = str(value)
+        return text
+    

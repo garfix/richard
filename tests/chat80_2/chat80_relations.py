@@ -1,3 +1,4 @@
+from richard.interface.SomeDataSource import SomeDataSource
 from richard.type.Simple import Simple
 
 
@@ -56,3 +57,10 @@ def continental(ds, modifier, country_id: int):
     for region in regions[modifier]:
         ids += ds.select_column(table, columns, [country_id, region])
     return ids       
+
+
+def resolve_name(ds: SomeDataSource, values: list) -> list[list]:
+    # todo many other entities
+    name = values[0].lower()
+    db_values = ds.select("country", ["id", "id"], [name, None])
+    return db_values
