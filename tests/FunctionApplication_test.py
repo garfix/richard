@@ -12,6 +12,7 @@ from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 class TestFunctionApplication(unittest.TestCase):
     """
     This simple method of semantics by function application is only useful for mathematical expressions.
+    The example was found here: https://github.com/percyliang/sempre/blob/master/TUTORIAL.md
     """
 
     def test_find_all(self):

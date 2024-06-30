@@ -2,6 +2,7 @@ import unittest
 
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
+from richard.constants import E1, E2, EXISTS
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
 from richard.processor.parser.BasicParser import BasicParser
@@ -39,15 +40,12 @@ class TestComposer(unittest.TestCase):
 
     def test_variable_unification(self):
 
-        E1 = Variable('E1')
-        E2 = Variable('E2')
-
         grammar = [
             { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: [('check', E1, np, vp)]},
             { "syn": "vp(E1) -> verb(E1, E2), np(E2)", "sem": lambda verb, np: [('check', E2, np, verb)] },
             { "syn": "verb(E1, E2) -> 'flows' 'to'", "sem": lambda: [('flow', E1, E2)] },
-            { "syn": "np(E1) -> det(D1) nbar(E1)", "sem": lambda det, nbar: [('quant', E1, det, nbar)] },
-            { "syn": "det(E1) -> 'the'", "sem": lambda: [('exists', E1)] },
+            { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: [('quant', E1, det, nbar)] },
+            { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
             { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
             { "syn": "noun(E1) -> 'river'", "sem": lambda: [('river', E1)] },
             { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
@@ -66,8 +64,8 @@ class TestComposer(unittest.TestCase):
         request = SentenceRequest("The river flows to the sea")
         pipeline.enter(request)
         sem = composer.get_tuples(request)
-        print(str(sem))
-        self.assertEqual(str(sem), "[('check', S1, [('quant', S1, [('exists', S2)], [('river', S1)])], [('check', S3, [('quant', S3, [('exists', S4)], [('sea', S3)])], [('flow', S1, S3)])])]")
+        print(composer.format_tuples(request))
+        self.assertEqual(str(sem), "[('check', S1, [('quant', S1, 'exists', [('river', S1)])], [('check', S2, [('quant', S2, 'exists', [('sea', S2)])], [('flow', S1, S2)])])]")
         
 
     def test_special_category(self):
