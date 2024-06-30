@@ -19,10 +19,13 @@ class Chat80Module(SomeModule):
     def get_relations(self) -> list[str]:
         return [
             "river", 
+            "country", 
             "capital", 
             "borders",
             "resolve_name",
             "of",
+            "size-of",
+            "where",
         ]
 
 
@@ -33,6 +36,9 @@ class Chat80Module(SomeModule):
         if relation == "river":
             out_types = ["river"]
             out_values = self.ds.select("river", ["id"], db_values)
+        elif relation == "country":
+            out_types = ["country"]
+            out_values = self.ds.select("country", ["id"], db_values)
         elif relation == "capital":
             out_types = ["city"]
             out_values = self.ds.select("country", ["capital"], db_values)
@@ -42,6 +48,13 @@ class Chat80Module(SomeModule):
         elif relation == "of":
             out_types = ["city", "country"]
             out_values = self.ds.select("country", ["capital", "id"], db_values)
+        elif relation == "size-of":
+            out_types = ["country", None]
+            out_values = self.ds.select("country", ["id", "area"], db_values)
+        elif relation == "where":
+            out_types = ["country", "place"]
+            out_values = self.ds.select("country", ["id", "region"], db_values)
+            print(values, out_values)
         elif relation == "resolve_name":
             out_types = [None, "country"]
             out_values = resolve_name(self.ds, db_values)

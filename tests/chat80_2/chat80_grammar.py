@@ -9,6 +9,7 @@ def get_grammar(model: Model):
         { "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", "sem": lambda nbar: nbar },
         { "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  "sem": lambda np, vp_nosub_obj: [('check', E1, np, vp_nosub_obj)] },
         { "syn": "s(E1) -> 'what' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, [])] },
+        { "syn": "s(E2) -> 'where' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, []), ('where', E1, E2)] },
 
         # active transitive: sub obj
         { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', E2, np, vp_nosub_noobj)] },
@@ -24,6 +25,7 @@ def get_grammar(model: Model):
         # nbar
         { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
         { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
+        { "syn": "nbar(E1) -> superlative(E1, E2) nbar(E1)", "sem": lambda superlative, nbar: [('aggregate', nbar, superlative, E1)] },
 
         # det
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
@@ -31,9 +33,16 @@ def get_grammar(model: Model):
         # pp
         { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('check', E2, np, [('of', E1, E2)])] },
 
+        # superlatives
+        { "syn": "superlative(E1, E2) -> 'largest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'max') },
+        { "syn": "superlative(E1, E2) -> 'smallest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'min') },
+
         # noun
         { "syn": "noun(E1) -> 'rivers'", "sem": lambda: [('river', E1)] },
         { "syn": "noun(E1) -> 'capital'", "sem": lambda: [('capital', E1)] },
+        { "syn": "noun(E1) -> 'country'", "sem": lambda: [('country', E1)] },
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
+
+        # proper noun
         { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
     ]

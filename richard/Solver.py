@@ -12,6 +12,10 @@ class Solver(SomeSolver):
         self.model = model
 
 
+    def solve_for(self, atoms: list[tuple], binding: dict, variable: str) -> list[dict]:
+        return [binding[variable] for binding in self.solve(atoms, binding)]
+
+
     def solve(self, atoms: list[tuple], binding: dict) -> list[dict]:
 
         if not isinstance(atoms, list):

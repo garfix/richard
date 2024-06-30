@@ -32,7 +32,7 @@ class Model:
                 handled = True
 
         if not handled:
-            raise Exception('No relation ' + relation + " in model")
+            raise Exception("No relation called '" + relation + "' available in the model")
         
         return rows
     
