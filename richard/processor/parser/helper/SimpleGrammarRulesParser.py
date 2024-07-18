@@ -58,11 +58,11 @@ class SimpleGrammarRulesParser:
             if 'inf' in simple_rule:
                 inferences = simple_rule['inf']
 
-            intent = []
-            if 'intent' in simple_rule:
-                intent = simple_rule['intent']
+            intents = []
+            if 'intents' in simple_rule:
+                intents = simple_rule['intents']
 
-            rules.append(GrammarRule(antecedent, consequents, sem, inferences, intent))
+            rules.append(GrammarRule(antecedent, consequents, sem, inferences, intents))
 
         return GrammarRules(rules)
     

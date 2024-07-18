@@ -7,15 +7,15 @@ def get_grammar(model: Model):
 
         # sentence
         { "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", "sem": lambda nbar: nbar, 
-            "intent": ["what"] },
+            "intents": ["what"] },
         { "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  "sem": lambda np, vp_nosub_obj: [('check', E1, np, vp_nosub_obj)], 
-            "intent": ["y/n"] },
+            "intents": ["y/n"] },
         { "syn": "s(E1) -> 'what' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, [])], 
-            "intent": ["what"] },
+            "intents": ["what"] },
         { "syn": "s(E2) -> 'where' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, []), ('where', E1, E2)], 
-            "intent": ["where"] },
+            "intents": ["where"] },
         { "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", "sem": lambda nbar, adjp: nbar + adjp, 
-            "intent": ["which"] },
+            "intents": ["which"] },
 
         # active transitive: sub obj
         { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', E2, np, vp_nosub_noobj)] },
