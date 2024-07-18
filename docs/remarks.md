@@ -1,3 +1,9 @@
+## 2024-07-03
+
+Next to "syn" and "sem", introduce "imp": the atoms that are implied by the sentence. May contain variables that should be turned into sentence variables. These implications can be used to deduce the intent of the sentence, but it can later also be used for other things. Their scope is currently sentence, but may later become dialog.
+
+The implications need to be stored somewhere and be queryable just like other facts. Problem: you can assert atoms with free variables in the database. Answer: reification, turn a variable into a value (Instance("type": "variable, "value: "E1")). `category($E1, 'definiteness', 'definite')`, where `$` means: `reify`.
+
 ## 2024-06-25
 
 Rewriting the functional execution approach to a relational (atom-sequence) approach.

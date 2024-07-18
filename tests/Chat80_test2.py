@@ -1,9 +1,9 @@
 import unittest
 
+from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.Solver import Solver
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
-from richard.type.OrderedSet import OrderedSet
 from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
@@ -12,9 +12,10 @@ from richard.entity.Instance import Instance
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from tests.chat80_2.Chat80Responder import Chat80Responder
 from tests.chat80_2.Chat80Module import Chat80Module
-from .chat80_2.chat80_grammar import get_grammar
-from .chat80_2.chat80_db import db
+from tests.chat80_2.chat80_grammar import get_grammar
+from tests.chat80_2.chat80_db import db
 
 class TestChat80(unittest.TestCase):
     """
@@ -37,20 +38,24 @@ class TestChat80(unittest.TestCase):
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, solver)
+        responder = SimpleResponder(composer, executor, handler=Chat80Responder())
 
         pipeline = Pipeline([
             FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
-            FindOne(executor)
+            FindOne(executor),
+            FindOne(responder)
         ])
 
         tests = [
-            ["What rivers are there?", [{'S1': Instance(entity='river', id='amazon')}, {'S1': Instance(entity='river', id='brahmaputra')}, {'S1': Instance(entity='river', id='danube')}, {'S1': Instance(entity='river', id='don')}, {'S1': Instance(entity='river', id='volga')}]],
-            ["Does Afghanistan border China?", [{'S1': Instance(entity='country', id='afghanistan')}]],
-            ["What is the capital of Upper_Volta?", [{'S1':Instance(entity='city', id='ouagadougou')}]],
-            ["Where is the largest country?", [{'S2': Instance(entity='country', id='soviet_union'), 'S1': Instance(entity='place', id='northern_asia')}]],
-            # ["Which countries are European?", OrderedSet([Instance(entity='country', id='united_kingdom'), Instance(entity='country', id='albania'), Instance(entity='country', id='poland'), Instance(entity='country', id='hungary'), Instance(entity='country', id='czechoslovakia'), Instance(entity='country', id='romania'), Instance(entity='country', id='yugoslavia'), Instance(entity='country', id='austria'), Instance(entity='country', id='west_germany')])],
+            ["What rivers are there?", "amazon, brahmaputra, danube, don, volga"],
+            ["Does Afghanistan border China?", "yes"],
+            ["What is the capital of Upper_Volta?", "ouagadougou"],
+            ["Where is the largest country?", "northern_asia"],
+            ["Which countries are European?", "albania, united_kingdom, poland, hungary, czechoslovakia, romania, yugoslavia, austria, west_germany"],
+
+
             # ["Which country's capital is London?", OrderedSet([Instance(entity='country', id='united_kingdom')])],
             # ["Which is the largest african country?", OrderedSet([Instance(entity='country', id='mozambique')])],
             # ["How large is the smallest american country?", OrderedSet([157.47])],
@@ -83,10 +88,11 @@ class TestChat80(unittest.TestCase):
                 print(result.error_code, result.error_args) 
                 break
 
-            results = executor.get_results(request)
+            results = responder.get_response(request)
             print(results)
             if results != answer:
                 print(parser.get_tree(request))
                 print(composer.format_tuples(request))
+                print(responder.get_response(request))
             self.assertEqual(answer, results)
             

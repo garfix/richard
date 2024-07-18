@@ -27,6 +27,8 @@ class Chart:
                 RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
                 [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
                 None,
+                [],
+                []
             ),
             1, 0, 0)
 
@@ -37,6 +39,8 @@ class Chart:
                 RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
                 [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
                 None,
+                [],
+                []
             ),
             2, 0, len(chart.words))
 

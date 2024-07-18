@@ -22,8 +22,8 @@ class AtomExecutor(SomeProcessor):
 
     
     def process(self, request: SentenceRequest) -> ProcessResult:
-        atoms = self.composer.get_tuples(request)
-        bindings = self.solver.solve(atoms, {})       
+        composition = self.composer.get_composition(request)
+        bindings = self.solver.solve(composition.semantics, {})       
         return ProcessResult([bindings], "", [])
     
 

@@ -6,10 +6,16 @@ def get_grammar(model: Model):
     return [
 
         # sentence
-        { "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", "sem": lambda nbar: nbar },
-        { "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  "sem": lambda np, vp_nosub_obj: [('check', E1, np, vp_nosub_obj)] },
-        { "syn": "s(E1) -> 'what' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, [])] },
-        { "syn": "s(E2) -> 'where' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, []), ('where', E1, E2)] },
+        { "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", "sem": lambda nbar: nbar, 
+            "intent": ["what"] },
+        { "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  "sem": lambda np, vp_nosub_obj: [('check', E1, np, vp_nosub_obj)], 
+            "intent": ["y/n"] },
+        { "syn": "s(E1) -> 'what' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, [])], 
+            "intent": ["what"] },
+        { "syn": "s(E2) -> 'where' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, []), ('where', E1, E2)], 
+            "intent": ["where"] },
+        { "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", "sem": lambda nbar, adjp: nbar + adjp, 
+            "intent": ["which"] },
 
         # active transitive: sub obj
         { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', E2, np, vp_nosub_noobj)] },
@@ -33,6 +39,14 @@ def get_grammar(model: Model):
         # pp
         { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('check', E2, np, [('of', E1, E2)])] },
 
+        # adjective phrases
+        { "syn": "adjp(E1) -> adj(E1)", "sem": lambda adj: adj },
+
+        { "syn": "adj(E1) -> 'european'", "sem": lambda: [('european', E1)] },
+        { "syn": "adj(E1) -> 'african'", "sem": lambda: [('african', E1)] },
+        { "syn": "adj(E1) -> 'american'", "sem": lambda: [('american', E1)] },
+        { "syn": "adj(E1) -> 'asian'", "sem": lambda: [('asian', E1)] },
+
         # superlatives
         { "syn": "superlative(E1, E2) -> 'largest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'max') },
         { "syn": "superlative(E1, E2) -> 'smallest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'min') },
@@ -41,6 +55,7 @@ def get_grammar(model: Model):
         { "syn": "noun(E1) -> 'rivers'", "sem": lambda: [('river', E1)] },
         { "syn": "noun(E1) -> 'capital'", "sem": lambda: [('capital', E1)] },
         { "syn": "noun(E1) -> 'country'", "sem": lambda: [('country', E1)] },
+        { "syn": "noun(E1) -> 'countries'", "sem": lambda: [('country', E1)] },
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
         # proper noun

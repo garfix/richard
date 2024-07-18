@@ -2,7 +2,7 @@ from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.type.Simple import Simple
-from tests.chat80.chat80_relations import continental, flows_from_to, south_of
+from tests.chat80_2.chat80_relations import continental, flows_from_to, south_of
 from tests.chat80_2.chat80_relations import resolve_name
 
 # model
@@ -26,6 +26,7 @@ class Chat80Module(SomeModule):
             "of",
             "size-of",
             "where",
+            "european", "asian", "african", "american",
         ]
 
 
@@ -54,10 +55,13 @@ class Chat80Module(SomeModule):
         elif relation == "where":
             out_types = ["country", "place"]
             out_values = self.ds.select("country", ["id", "region"], db_values)
-            print(values, out_values)
         elif relation == "resolve_name":
             out_types = [None, "country"]
             out_values = resolve_name(self.ds, db_values)
+        elif relation in ["european", "asian", "african", "american"]:
+            out_types = ["country"]
+            out_values = continental(self.ds, relation, db_values)     
+
         # elif relation == "flows-through":
         #     return self.ds.select("contains", ["part", "whole"], values)
         # elif relation == "contains":

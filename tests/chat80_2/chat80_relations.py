@@ -43,7 +43,8 @@ def flows_from_to(ds, values: list[Simple]):
     return results
 
     
-def continental(ds, modifier, country_id: int):
+def continental(ds, relation, db_values: list):
+    country_id = db_values[0]
     table = "country"
     columns = ["id", "region"]
     regions = {
@@ -53,10 +54,12 @@ def continental(ds, modifier, country_id: int):
         "african": ['north_africa', 'west_africa', 'central_africa', 'east_africa', 'southern_africa']
     }
 
-    ids = []
-    for region in regions[modifier]:
-        ids += ds.select_column(table, columns, [country_id, region])
-    return ids       
+    rows = []
+    for region in regions[relation]:
+        ids = ds.select_column(table, columns, [country_id, region])
+        for id in ids:
+            rows.append([id])
+    return rows       
 
 
 def resolve_name(ds: SomeDataSource, values: list) -> list[list]:

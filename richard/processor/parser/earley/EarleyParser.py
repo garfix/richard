@@ -153,7 +153,9 @@ class EarleyParser:
             rule = GrammarRule(
                 RuleConstituent(next_consequent.predicate, next_variables, new_pos_type),
                 [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
-                sem
+                sem,
+                [],
+                []
             )
 
             scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)

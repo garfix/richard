@@ -10,6 +10,8 @@ class GrammarRule:
     antecedent: RuleConstituent
     consequents: list[RuleConstituent]
     sem: callable
+    inferences: list[tuple]
+    intents: list[str]
 
 
     def equals(self, other_rule) -> bool:

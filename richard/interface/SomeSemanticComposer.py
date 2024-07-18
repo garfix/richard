@@ -1,7 +1,8 @@
-from abc import abstractmethod
-
+from richard.entity.Composition import Composition
 from richard.interface.SomeProcessor import SomeProcessor
 
 
 class SomeSemanticComposer(SomeProcessor):
-    pass
+    def get_composition() -> Composition:
+        pass
+

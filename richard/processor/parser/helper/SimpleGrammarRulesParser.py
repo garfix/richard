@@ -53,7 +53,16 @@ class SimpleGrammarRulesParser:
             sem = None
             if 'sem' in simple_rule:
                 sem = simple_rule['sem']
-            rules.append(GrammarRule(antecedent, consequents, sem))
+
+            inferences = []
+            if 'inf' in simple_rule:
+                inferences = simple_rule['inf']
+
+            intent = []
+            if 'intent' in simple_rule:
+                intent = simple_rule['intent']
+
+            rules.append(GrammarRule(antecedent, consequents, sem, inferences, intent))
 
         return GrammarRules(rules)
     
