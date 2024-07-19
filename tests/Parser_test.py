@@ -35,6 +35,29 @@ class TestParser(unittest.TestCase):
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
     
 
+    def test_quote(self):
+
+        grammar = [
+            { "syn": "s(V) -> np(E1) '\\'' 's' np(E2)" },
+            { "syn": "np(E1) -> 'john'" },
+            { "syn": "np(E1) -> 'shoe'" },
+        ]
+
+        tokenizer = BasicTokenizer()
+        parser = BasicParser(grammar, tokenizer)
+
+        pipeline = Pipeline([
+            FindOne(tokenizer),
+            FindOne(parser)
+        ])
+
+        request = SentenceRequest("John's shoe")
+        pipeline.enter(request)
+
+        tree = parser.get_tree(request)
+        self.assertEqual(tree.inline_str(), "s(np(john 'John') ' ''' s 's' np(shoe 'shoe')")
+
+
     def test_syntax_error(self):
         grammar = [
             { "syn": "s(V) => proper_noun(E1) verb(V)" },

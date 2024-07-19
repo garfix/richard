@@ -15,7 +15,7 @@ class SimpleGrammarRulesParser:
 
 
     def __init__(self) -> None:
-        self.re_tokens = re.compile("(?:->|'[^']+'|\w[^\)]+\))")
+        self.re_tokens = re.compile("(?:->|'(?:\\\\'|[^'])+'|\w[^\)]+\))")
         self.re_comma = re.compile("\s*,\s*")
         self.re_atom = re.compile('([^\(]+)\(([^\)]+)\)')
 
@@ -43,6 +43,7 @@ class SimpleGrammarRulesParser:
             for raw_consequent in tokens[2:]:
                 if raw_consequent[0] == "'":
                     raw_consequent = raw_consequent[1:-1]
+                    raw_consequent = raw_consequent.replace("\\'", "'")
                     consequents.append(RuleConstituent(raw_consequent, [], POS_TYPE_WORD_FORM))
                 else:
                     consequent = self.parse_atom(raw_consequent)
