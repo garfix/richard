@@ -112,21 +112,25 @@ class SemanticComposer(SomeSemanticComposer):
         return self.format_value(request.get_current_product(self).semantics)
     
 
-    def format_value(self, value: any, indent: str = "") -> str:
-        text = ""
+    def format_value(self, value: any, indent: str = "\n") -> str:
         if isinstance(value, tuple):
-            indent += "    "
-            text = "\n" + indent + "("
+            text = indent + "("
             sep = ""
             for element in value:
-                text += sep + self.format_value(element, indent)
+                text += sep + self.format_value(element, indent + "    ")
                 sep = ", "
             text += ")"
         elif isinstance(value, list):
-            text = "["
-            for element in value:
-                text += self.format_value(element, indent)
-            text += "]"
+            if len(value) > 1:
+                text = indent + "["
+                for element in value:
+                    text += self.format_value(element, indent + "    ")
+                text += indent + "]"
+            else:
+                text = indent + "["
+                for element in value:
+                    text += self.format_value(element, "")
+                text += "]"            
         elif isinstance(value, str):
             text = "'" + value + "'"
         else:
