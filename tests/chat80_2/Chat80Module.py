@@ -56,8 +56,7 @@ class Chat80Module(SomeModule):
             out_types = ["country", "place"]
             out_values = self.ds.select("country", ["id", "region"], db_values)
         elif relation == "resolve_name":
-            out_types = [None, "country"]
-            out_values = resolve_name(self.ds, db_values)
+            out_values, out_types = resolve_name(self.ds, db_values)
         elif relation in ["european", "asian", "african", "american"]:
             out_types = ["country"]
             out_values = continental(self.ds, relation, db_values)     
@@ -80,6 +79,6 @@ class Chat80Module(SomeModule):
         else:
             out_types = []
             out_values = []
-      
+
         return self.hydrate_values(out_values, out_types)
     

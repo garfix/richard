@@ -40,7 +40,7 @@ class Solver(SomeSolver):
 
             # d -= 1  
 
-        # print("e", tuples, binding, result)
+        # print("e", atoms, binding, result)
         return result
 
 
@@ -88,6 +88,8 @@ class Solver(SomeSolver):
                 continue
 
             results.append(result)
+
+        # print(tuple, binding, results)
             
         return results
     

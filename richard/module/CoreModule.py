@@ -38,37 +38,39 @@ class CoreModule(SomeModule):
         # print('check', entities)
 
         range = len(entities)
-        result = 0
+        results = []
         for entity in set(entities):
             b = binding | {
                 quant_var.name: entity
             }
             bindings = solver.solve(body, b)
             if len(bindings) > 0:
-                result += 1        
+                results.append(entity)
+
+        result_count = len(results)
 
         if det == EXISTS:
-            success = result > 0   
+            success = result_count > 0   
         else:
             predicate2, result_var, range_var, check = det
 
             binding = {
                 range_var.name: range,
-                result_var.name: result
+                result_var.name: result_count
             }
             ok_bindings = solver.solve(check, binding)
             success = len(ok_bindings) > 0
 
-        # print('end check', success, [[entity, None, None] for entity in entities])
-
         if success:
-            return [[entity, None, None] for entity in entities]
+            # print('end check', result_count, [[result, None, None] for result in results])
+            return [[result, None, None] for result in results]
         else:        
             return []
 
 
-    # ('equals', E1, E2)
+    # ('==', E1, E2)
     def equals(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
         if values[0] == values[1]:
             return [values]
         return []

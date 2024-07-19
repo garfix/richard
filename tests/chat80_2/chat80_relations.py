@@ -62,8 +62,16 @@ def continental(ds, relation, db_values: list):
     return rows       
 
 
-def resolve_name(ds: SomeDataSource, values: list) -> list[list]:
+def resolve_name(ds: SomeDataSource, values: list) -> tuple[list[list], list[list]]:
     # todo many other entities
     name = values[0].lower()
+    types = []
     db_values = ds.select("country", ["id", "id"], [name, None])
-    return db_values
+    if len(db_values) > 0:
+        types = [None, 'country']
+        return db_values, types
+
+    db_values = ds.select("city", ["id", "id"], [name, None])
+    if len(db_values) > 0:
+        types = [None, 'city']
+        return db_values, types

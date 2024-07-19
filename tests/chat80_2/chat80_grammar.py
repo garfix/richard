@@ -1,5 +1,5 @@
 from richard.Model import Model
-from richard.constants import E1, E2, EXISTS
+from richard.constants import E1, E2, E3, EXISTS
 
 
 def get_grammar(model: Model):
@@ -16,6 +16,9 @@ def get_grammar(model: Model):
             "intents": ["where"] },
         { "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", "sem": lambda nbar, adjp: nbar + adjp, 
             "intents": ["which"] },
+        { "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", "sem": lambda nbar, np1, np2: 
+         nbar + [('check', E2, np1, [('of', E2, E1), ('check', E3, np2, [('==', E2, E3)])])],
+             "intents": ["which"] },
 
         # active transitive: sub obj
         { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', E2, np, vp_nosub_noobj)] },

@@ -54,9 +54,7 @@ class TestChat80(unittest.TestCase):
             ["What is the capital of Upper_Volta?", "ouagadougou"],
             ["Where is the largest country?", "northern_asia"],
             ["Which countries are European?", "albania, united_kingdom, poland, hungary, czechoslovakia, romania, yugoslavia, austria, west_germany"],
-
-
-            # ["Which country's capital is London?", OrderedSet([Instance(entity='country', id='united_kingdom')])],
+            ["Which country's capital is London?", "united_kingdom"],
             # ["Which is the largest african country?", OrderedSet([Instance(entity='country', id='mozambique')])],
             # ["How large is the smallest american country?", OrderedSet([157.47])],
             # ["What is the ocean that borders African countries?", OrderedSet([Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')])],
@@ -93,6 +91,7 @@ class TestChat80(unittest.TestCase):
             if results != answer:
                 print(parser.get_tree(request))
                 print(composer.format_tuples(request))
+                print(executor.get_results(request))
                 print(responder.get_response(request))
             self.assertEqual(answer, results)
             
