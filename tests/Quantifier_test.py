@@ -72,11 +72,11 @@ class TestQuantification(unittest.TestCase):
         grammar = [
             { 
                 "syn": "s(V1) -> np(E1) vp_no_sub(E1)", 
-                "sem": lambda np, vp_no_sub: [('check', E1, np, vp_no_sub)]
+                "sem": lambda np, vp_no_sub: [('find', E1, np, vp_no_sub)]
             },
             { 
                 "syn": "vp_no_sub(E1) -> tv(E1, E2) np(E2)", 
-                "sem": lambda tv, np: [('check', E2, np, tv)] 
+                "sem": lambda tv, np: [('find', E2, np, tv)] 
             },
             { 
                 "syn": "tv(E1, E2) -> 'has'", 

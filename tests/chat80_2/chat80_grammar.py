@@ -13,17 +13,17 @@ def get_grammar(model: Model):
         },
         { 
             "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
-            "sem": lambda np, vp_nosub_obj: [('check', E1, np, vp_nosub_obj)], 
+            "sem": lambda np, vp_nosub_obj: [('find', E1, np, vp_nosub_obj)], 
             "intents": ["y/n"] 
         },
         { 
             "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
-            "sem": lambda np: [('check', E1, np, [])], 
+            "sem": lambda np: [('find', E1, np, [])], 
             "intents": ["what"] 
         },
         { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
-            "sem": lambda np: [('check', E1, np, []), ('where', E1, E2)], 
+            "sem": lambda np: [('find', E1, np, []), ('where', E1, E2)], 
             "intents": ["where"] 
         },
         { 
@@ -33,18 +33,18 @@ def get_grammar(model: Model):
         },
         { 
             "syn": "s(E1) -> 'which' 'is' np(E1) '?'", 
-            "sem": lambda np: [('check', E1, np, [])], 
+            "sem": lambda np: [('find', E1, np, [])], 
             "intents": ["which"] 
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", 
-            "sem": lambda nbar, np1, np2: nbar + [('check', E2, np1, [('of', E2, E1), ('check', E3, np2, [('==', E2, E3)])])],
+            "sem": lambda nbar, np1, np2: nbar + [('find', E2, np1, [('of', E2, E1), ('find', E3, np2, [('==', E2, E3)])])],
             "intents": ["which"] 
         },
 
         # active transitive: sub obj
-        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', E2, np, vp_nosub_noobj)] },
-        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', E2, np, vp_nosub_noobj)] },
+        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },
+        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },
         { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
 
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
@@ -63,7 +63,7 @@ def get_grammar(model: Model):
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
 
         # pp
-        { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('check', E2, np, [('of', E1, E2)])] },
+        { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('of', E1, E2)])] },
 
         # adjective phrases
         { "syn": "adjp(E1) -> adj(E1)", "sem": lambda adj: adj },

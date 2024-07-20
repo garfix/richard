@@ -9,15 +9,15 @@ class CoreModule(SomeModule):
 
     def get_relations(self):
         return [
-            "check", 
+            "find", 
             "==",
             "aggregate",
         ]
     
 
     def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        if relation == "check":
-            out_values = self.check(values, solver, binding)
+        if relation == "find":
+            out_values = self.find(values, solver, binding)
         elif relation == "==":
             out_values = self.equals(values, solver, binding)
         elif relation == "aggregate":
@@ -27,15 +27,13 @@ class CoreModule(SomeModule):
 
         return out_values
 
-    # ('check', E1, np, vp_nosub_obj)
+    # ('find', E1, np, vp_nosub_obj)
     # ('quant', E1, det, nbar)
-    def check(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        check_var, quant, body = values
+    def find(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+        find_var, quant, body = values
         predicate1, quant_var, det, nbar = quant
 
         entities = set([binding[quant_var.name] for binding in solver.solve(nbar, binding)])
-
-        # print('check', entities)
 
         range = len(entities)
         results = []
@@ -52,17 +50,16 @@ class CoreModule(SomeModule):
         if det == EXISTS:
             success = result_count > 0   
         else:
-            predicate2, result_var, range_var, check = det
+            predicate2, result_var, range_var, find = det
 
             binding = {
                 range_var.name: range,
                 result_var.name: result_count
             }
-            ok_bindings = solver.solve(check, binding)
+            ok_bindings = solver.solve(find, binding)
             success = len(ok_bindings) > 0
 
         if success:
-            # print('end check', result_count, [[result, None, None] for result in results])
             return [[result, None, None] for result in results]
         else:        
             return []

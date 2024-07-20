@@ -41,8 +41,8 @@ class TestComposer(unittest.TestCase):
     def test_variable_unification(self):
 
         grammar = [
-            { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: [('check', E1, np, vp)]},
-            { "syn": "vp(E1) -> verb(E1, E2), np(E2)", "sem": lambda verb, np: [('check', E2, np, verb)] },
+            { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: [('find', E1, np, vp)]},
+            { "syn": "vp(E1) -> verb(E1, E2), np(E2)", "sem": lambda verb, np: [('find', E2, np, verb)] },
             { "syn": "verb(E1, E2) -> 'flows' 'to'", "sem": lambda: [('flow', E1, E2)] },
             { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: [('quant', E1, det, nbar)] },
             { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
@@ -63,9 +63,8 @@ class TestComposer(unittest.TestCase):
 
         request = SentenceRequest("The river flows to the sea")
         pipeline.enter(request)
-        sem = composer.get_tuples(request)
-        print(composer.format_tuples(request))
-        self.assertEqual(str(sem), "[('check', S1, [('quant', S1, 'exists', [('river', S1)])], [('check', S2, [('quant', S2, 'exists', [('sea', S2)])], [('flow', S1, S2)])])]")
+        composition = composer.get_composition(request)
+        self.assertEqual(str(composition.semantics), "[('find', S1, [('quant', S1, 'exists', [('river', S1)])], [('find', S2, [('quant', S2, 'exists', [('sea', S2)])], [('flow', S1, S2)])])]")
         
 
     def test_special_category(self):
@@ -91,6 +90,6 @@ class TestComposer(unittest.TestCase):
 
         tree = parser.get_tree(request)
         self.assertEqual(tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
-        sem = composer.get_tuples(request)
-        self.assertEqual(str(sem), "John")
+        composition = composer.get_composition(request)
+        self.assertEqual(str(composition.semantics), "John")
 

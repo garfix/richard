@@ -55,7 +55,7 @@ class TestParser(unittest.TestCase):
         pipeline.enter(request)
 
         tree = parser.get_tree(request)
-        self.assertEqual(tree.inline_str(), "s(np(john 'John') ' ''' s 's' np(shoe 'shoe')")
+        self.assertEqual(tree.inline_str(), "s(np(john 'John') ' ''' s 's' np(shoe 'shoe'))")
 
 
     def test_syntax_error(self):

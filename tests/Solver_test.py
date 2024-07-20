@@ -83,9 +83,6 @@ class TestSolver(unittest.TestCase):
 
         for test in tests:
             question, answer = test
-            print()
-            print(question)
             result = solver.solve(question, {})
-            print(result)
             self.assertEqual(answer, result)
             

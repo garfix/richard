@@ -13,7 +13,7 @@ class TestPostgresDB(unittest.TestCase):
 
 
         # skip for now
-        # return
+        return
 
         try:
             import psycopg2

@@ -46,8 +46,8 @@ class TestFunctionApplication(unittest.TestCase):
 
         request = SentenceRequest("What is three plus four")
         pipeline.enter(request)
-        results = composer.get_tuples(request)
-        self.assertEqual(results, 7)
+        composition = composer.get_composition(request)
+        self.assertEqual(composition.semantics, 7)
         
         # test find_all
         # test ambiguous sentence with 2 readings (that exposed an error in the parser, now solved)
@@ -60,4 +60,7 @@ class TestFunctionApplication(unittest.TestCase):
         request = SentenceRequest("Calculate three plus four times two")
         pipeline.enter(request)
 
-        self.assertEqual(request.get_alternative_products(composer), [14, 11])
+        compositions = request.get_alternative_products(composer)
+        self.assertEqual(compositions[0].semantics, 14)
+        self.assertEqual(compositions[1].semantics, 11)
+
