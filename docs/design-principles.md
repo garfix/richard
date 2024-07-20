@@ -6,4 +6,5 @@ Things to keep in mind when extending the framework
 * Annotate types
 * Don't use archaic terms
 * Explain things in a simple way
+* Provide simple techniques for simple problems and complex techniques for complex problems
 

@@ -6,19 +6,41 @@ def get_grammar(model: Model):
     return [
 
         # sentence
-        { "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", "sem": lambda nbar: nbar, 
-            "intents": ["what"] },
-        { "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  "sem": lambda np, vp_nosub_obj: [('check', E1, np, vp_nosub_obj)], 
-            "intents": ["y/n"] },
-        { "syn": "s(E1) -> 'what' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, [])], 
-            "intents": ["what"] },
-        { "syn": "s(E2) -> 'where' 'is' np(E1) '?'", "sem": lambda np: [('check', E1, np, []), ('where', E1, E2)], 
-            "intents": ["where"] },
-        { "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", "sem": lambda nbar, adjp: nbar + adjp, 
-            "intents": ["which"] },
-        { "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", "sem": lambda nbar, np1, np2: 
-         nbar + [('check', E2, np1, [('of', E2, E1), ('check', E3, np2, [('==', E2, E3)])])],
-             "intents": ["which"] },
+        { 
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", 
+            "sem": lambda nbar: nbar, 
+            "intents": ["what"] 
+        },
+        { 
+            "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
+            "sem": lambda np, vp_nosub_obj: [('check', E1, np, vp_nosub_obj)], 
+            "intents": ["y/n"] 
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
+            "sem": lambda np: [('check', E1, np, [])], 
+            "intents": ["what"] 
+        },
+        { 
+            "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
+            "sem": lambda np: [('check', E1, np, []), ('where', E1, E2)], 
+            "intents": ["where"] 
+        },
+        { 
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", 
+            "sem": lambda nbar, adjp: nbar + adjp, 
+            "intents": ["which"] 
+        },
+        { 
+            "syn": "s(E1) -> 'which' 'is' np(E1) '?'", 
+            "sem": lambda np: [('check', E1, np, [])], 
+            "intents": ["which"] 
+        },
+        { 
+            "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", 
+            "sem": lambda nbar, np1, np2: nbar + [('check', E2, np1, [('of', E2, E1), ('check', E3, np2, [('==', E2, E3)])])],
+            "intents": ["which"] 
+        },
 
         # active transitive: sub obj
         { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('check', E2, np, vp_nosub_noobj)] },
@@ -32,6 +54,7 @@ def get_grammar(model: Model):
         { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: ('quant', E1, det, nbar) },
 
         # nbar
+        { "syn": "nbar(E1) -> adj(E1) noun(E1)", "sem": lambda adj, noun: adj + noun },
         { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
         { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
         { "syn": "nbar(E1) -> superlative(E1, E2) nbar(E1)", "sem": lambda superlative, nbar: [('aggregate', nbar, superlative, E1)] },
