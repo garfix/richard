@@ -8,7 +8,6 @@ from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
-from richard.entity.Instance import Instance
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
@@ -56,7 +55,7 @@ class TestChat80(unittest.TestCase):
             ["Which countries are European?", "albania, united_kingdom, poland, hungary, czechoslovakia, romania, yugoslavia, austria, west_germany"],
             ["Which country's capital is London?", "united_kingdom"],
             ["Which is the largest african country?", "mozambique"],
-            # ["How large is the smallest american country?", OrderedSet([157.47])],
+            ["How large is the smallest american country?", 157.47],
             # ["What is the ocean that borders African countries?", OrderedSet([Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')])],
             # ["What is the ocean that borders African countries and that borders Asian countries?", OrderedSet([Instance(entity='ocean', id='indian_ocean')])],
             # ["What are the capitals of the countries bordering the Baltic?", [[Instance(entity='country', id='poland'), 'warsaw']]],

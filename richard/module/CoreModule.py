@@ -35,7 +35,7 @@ class CoreModule(SomeModule):
 
         entities = set([binding[quant_var.name] for binding in solver.solve(nbar, binding)])
 
-        range = len(entities)
+        range_count = len(entities)
         results = []
         for entity in set(entities):
             b = binding | {
@@ -53,7 +53,7 @@ class CoreModule(SomeModule):
             predicate2, result_var, range_var, find = det
 
             binding = {
-                range_var.name: range,
+                range_var.name: range_count,
                 result_var.name: result_count
             }
             ok_bindings = solver.solve(find, binding)

@@ -41,6 +41,12 @@ def get_grammar(model: Model):
             "sem": lambda nbar, np1, np2: nbar + [('find', E2, np1, [('of', E2, E1), ('find', E3, np2, [('==', E2, E3)])])],
             "intents": ["which"] 
         },
+        { 
+            "syn": "s(E1) -> 'how' 'large' 'is' np(E2) '?'",  
+            "sem": lambda np: [('find', E2, np, []), ('size-of', E2, E1)],
+            "intents": ["number"]
+        },
+
 
         # active transitive: sub obj
         { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },

@@ -12,6 +12,11 @@ class Chat80Responder(SomeResponseHandler):
                 response = "yes"
             else:
                 response = "no"
+        elif "number" in composition.intents:
+            if len(bindings) > 0:
+                response = bindings[0]['S1']
+            else:
+                response = "I dont't know"
         else:
             for binding in bindings:
                 response += sep + str(binding["S1"].id)
