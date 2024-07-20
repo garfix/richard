@@ -7,14 +7,14 @@ def get_grammar(model: Model):
 
         # sentence
         { 
-            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", 
-            "sem": lambda nbar: nbar, 
-            "intents": ["what"] 
-        },
-        { 
             "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
             "sem": lambda np, vp_nosub_obj: [('find', E1, np, vp_nosub_obj)], 
             "intents": ["y/n"] 
+        },
+        { 
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", 
+            "sem": lambda nbar: nbar, 
+            "intents": ["what"] 
         },
         { 
             "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
@@ -25,6 +25,11 @@ def get_grammar(model: Model):
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
             "sem": lambda np: [('find', E1, np, []), ('where', E1, E2)], 
             "intents": ["where"] 
+        },
+        { 
+            "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",  
+            "sem": lambda np: [('find', E1, np, []), ('size-of', E1, E2)],
+            "intents": ["number"]
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", 
@@ -40,11 +45,6 @@ def get_grammar(model: Model):
             "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", 
             "sem": lambda nbar, np1, np2: nbar + [('find', E2, np1, [('of', E2, E1), ('find', E3, np2, [('==', E2, E3)])])],
             "intents": ["which"] 
-        },
-        { 
-            "syn": "s(E1) -> 'how' 'large' 'is' np(E2) '?'",  
-            "sem": lambda np: [('find', E2, np, []), ('size-of', E2, E1)],
-            "intents": ["number"]
         },
 
 
