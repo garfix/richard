@@ -56,7 +56,7 @@ class TestChat80(unittest.TestCase):
             ["Which country's capital is London?", "united_kingdom"],
             ["Which is the largest african country?", "mozambique"],
             ["How large is the smallest american country?", 157.47],
-            # ["What is the ocean that borders African countries?", OrderedSet([Instance(entity='ocean', id='atlantic'), Instance(entity='ocean', id='indian_ocean')])],
+            ["What is the ocean that borders African countries?", "indian_ocean, atlantic"],
             # ["What is the ocean that borders African countries and that borders Asian countries?", OrderedSet([Instance(entity='ocean', id='indian_ocean')])],
             # ["What are the capitals of the countries bordering the Baltic?", [[Instance(entity='country', id='poland'), 'warsaw']]],
             # ["Which countries are bordered by two seas?", OrderedSet([Instance(entity='country', id='soviet_union')])],
@@ -83,7 +83,7 @@ class TestChat80(unittest.TestCase):
                 result = pipeline.enter(request)
             except:
                 print(parser.get_tree(request))
-                print(composer.format_tuples(request))
+                print(composer.format_semantics(request))
                 print(executor.get_results(request))
                 print(responder.get_response(request))
 
@@ -95,7 +95,7 @@ class TestChat80(unittest.TestCase):
             print(results)
             if results != answer:
                 print(parser.get_tree(request))
-                print(composer.format_tuples(request))
+                print(composer.format_semantics(request))
                 print(executor.get_results(request))
                 print(responder.get_response(request))
             self.assertEqual(answer, results)

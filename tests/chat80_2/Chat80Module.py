@@ -20,6 +20,7 @@ class Chat80Module(SomeModule):
         return [
             "river", 
             "country", 
+            "ocean",
             "capital", 
             "borders",
             "resolve_name",
@@ -40,12 +41,16 @@ class Chat80Module(SomeModule):
         elif relation == "country":
             out_types = ["country"]
             out_values = self.ds.select("country", ["id"], db_values)
+        elif relation == "ocean":
+            out_types = ["ocean"]
+            out_values = self.ds.select("ocean", ["id"], db_values)
         elif relation == "capital":
             out_types = ["city"]
             out_values = self.ds.select("country", ["capital"], db_values)
         elif relation == "borders":
             out_types = ["country", "country"]
             out_values = self.ds.select("borders", ["country_id1", "country_id2"], db_values)
+            out_values.extend(self.ds.select("borders", ["country_id2", "country_id1"], db_values))
         elif relation == "of":
             out_types = ["city", "country"]
             out_values = self.ds.select("country", ["capital", "id"], db_values)
@@ -79,6 +84,8 @@ class Chat80Module(SomeModule):
         else:
             out_types = []
             out_values = []
+
+        # print(relation, db_values, out_values)
 
         return self.hydrate_values(out_values, out_types)
     

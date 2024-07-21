@@ -108,7 +108,7 @@ class SemanticComposer(SomeSemanticComposer):
         return request.get_current_product(self)
     
 
-    def format_tuples(self, request: SentenceRequest) -> str:
+    def format_semantics(self, request: SentenceRequest) -> str:
         return self.format_value(request.get_current_product(self).semantics)
     
 
@@ -121,7 +121,7 @@ class SemanticComposer(SomeSemanticComposer):
                 sep = ", "
             text += ")"
         elif isinstance(value, list):
-            if len(value) > 1:
+            if True:
                 text = indent + "["
                 for element in value:
                     text += self.format_value(element, indent + "    ")

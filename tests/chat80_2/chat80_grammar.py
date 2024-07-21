@@ -54,16 +54,21 @@ def get_grammar(model: Model):
         { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
 
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },
         { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: ('quant', E1, det, nbar) },
 
         # nbar
-        { "syn": "nbar(E1) -> adj(E1) noun(E1)", "sem": lambda adj, noun: adj + noun },
+        { "syn": "nbar(E1) -> adj(E1) nbar(E1)", "sem": lambda adj, nbar: adj + nbar },
         { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
         { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
         { "syn": "nbar(E1) -> superlative(E1, E2) nbar(E1)", "sem": lambda superlative, nbar: [('aggregate', nbar, superlative, E1)] },
+        { "syn": "nbar(E1) -> nbar(E1) relative_clause(E1)", "sem": lambda nbar, relative_clause: nbar + relative_clause },
+
+        # relative clauses
+        { "syn": "relative_clause(E1) -> 'that' vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
 
         # det
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
@@ -86,6 +91,7 @@ def get_grammar(model: Model):
         # noun
         { "syn": "noun(E1) -> 'rivers'", "sem": lambda: [('river', E1)] },
         { "syn": "noun(E1) -> 'capital'", "sem": lambda: [('capital', E1)] },
+        { "syn": "noun(E1) -> 'ocean'", "sem": lambda: [('ocean', E1)] },
         { "syn": "noun(E1) -> 'country'", "sem": lambda: [('country', E1)] },
         { "syn": "noun(E1) -> 'countries'", "sem": lambda: [('country', E1)] },
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },

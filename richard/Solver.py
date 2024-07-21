@@ -64,7 +64,7 @@ class Solver(SomeSolver):
                 prepared.append(arg)
 
         values = self.model.find_relation_values(relation, prepared, self, binding)
-        # print("values", values, len(arguments))
+        # print("values", relation, len(values))
 
         results = []
         for v in values:
@@ -78,17 +78,22 @@ class Solver(SomeSolver):
                 # print('arg', arg)
                 # variable?
                 if isinstance(arg, Variable):
-                    # check for conflict with previous same variable
-                    if arg.name in result and result[arg.name] != v1:
-                        conflict = True
-                    # extend the binding
-                    result[arg.name] = v1
+                    # if the variable was bound already, no need to assign it
+                    # also no need to check for conflict, because the type may be different and that's ok
+                    if arg.name not in binding:
+                        # check for conflict with previous same variable
+                        if arg.name in result and result[arg.name] != v1:
+                            # print('conflict', arg.name, v1, result)
+                            conflict = True
+                        # extend the binding
+                        result[arg.name] = v1
 
             if conflict:
                 continue
 
             results.append(result)
 
+        # print("results", relation, len(results))
         # print(tuple, binding, results)
             
         return results

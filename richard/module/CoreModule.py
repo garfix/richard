@@ -33,15 +33,16 @@ class CoreModule(SomeModule):
         find_var, quant, body = values
         predicate1, quant_var, det, nbar = quant
 
-        entities = set([binding[quant_var.name] for binding in solver.solve(nbar, binding)])
+        entities = [binding[quant_var.name] for binding in solver.solve(nbar, binding)]
 
         range_count = len(entities)
         results = []
-        for entity in set(entities):
+        for entity in entities:
             b = binding | {
                 quant_var.name: entity
             }
             bindings = solver.solve(body, b)
+            # print(body, b, bindings)
             if len(bindings) > 0:
                 results.append(entity)
 
@@ -58,6 +59,8 @@ class CoreModule(SomeModule):
             }
             ok_bindings = solver.solve(find, binding)
             success = len(ok_bindings) > 0
+
+        # print(body, entities, success, results)
 
         if success:
             return [[result, None, None] for result in results]
