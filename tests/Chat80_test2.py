@@ -59,7 +59,7 @@ class TestChat80(unittest.TestCase):
             ["What is the ocean that borders African countries?", "indian_ocean, atlantic"],
             ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
             ["What are the capitals of the countries bordering the Baltic?", [["poland", "warsaw"]]],
-            # ["Which countries are bordered by two seas?", OrderedSet([Instance(entity='country', id='soviet_union')])],
+            ["Which countries are bordered by two seas?", "soviet_union"],
             # ["How many countries does the Danube flow through?", 2],
             # ["What are the countries south of the Equator and not in Australasia?", OrderedSet([Instance(entity='country', id='congo'), Instance(entity='country', id='mozambique'), Instance(entity='country', id='paraguay'), Instance(entity='country', id='rwanda')])],
             # ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],

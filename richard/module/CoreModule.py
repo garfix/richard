@@ -34,7 +34,9 @@ class CoreModule(SomeModule):
         find_var, quant, body = values
         predicate1, quant_var, det, nbar = quant
 
-        entities = [binding[quant_var.name] for binding in solver.solve(nbar, binding)]
+        entities = OrderedSet([binding[quant_var.name] for binding in solver.solve(nbar, binding)])
+
+        # print(entities)
 
         range_count = len(entities)
         results = OrderedSet()
@@ -61,7 +63,7 @@ class CoreModule(SomeModule):
             ok_bindings = solver.solve(find, binding)
             success = len(ok_bindings) > 0
 
-        # print(body, entities, success, results)
+            # print(body, success, result_count, find, binding)
 
         if success:
             return [[result, None, None] for result in results]

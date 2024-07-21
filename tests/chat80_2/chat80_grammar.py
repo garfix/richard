@@ -1,5 +1,5 @@
 from richard.Model import Model
-from richard.constants import E1, E2, E3, EXISTS
+from richard.constants import E1, E2, E3, EXISTS, Range, Result
 
 
 def get_grammar(model: Model):
@@ -42,6 +42,11 @@ def get_grammar(model: Model):
             "intents": ["list"] 
         },
         { 
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) '?'", 
+            "sem": lambda nbar, vp_noobj_sub: [('find', E1, ('quant', E1, EXISTS, nbar), vp_noobj_sub)],
+            "intents": ["list"] 
+        },
+        { 
             "syn": "s(E1) -> 'which' 'is' np(E1) '?'", 
             "sem": lambda np: [('find', E1, np, [])], 
             "intents": ["list"] 
@@ -58,9 +63,13 @@ def get_grammar(model: Model):
         { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },
         { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
 
+        # passive transitive
+        { "syn": "vp_noobj_sub(E1) -> tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
+
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },
@@ -80,6 +89,11 @@ def get_grammar(model: Model):
 
         # det
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('determiner', Result, Range, [('==', Result, number)]) },
+
+        # number
+        { "syn": "number(E1) -> 'one'", "sem": lambda: 1 },
+        { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
 
         # pp
         { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('of', E1, E2)])] },
@@ -105,6 +119,8 @@ def get_grammar(model: Model):
         { "syn": "noun(E1) -> 'oceans'", "sem": lambda: [('ocean', E1)] },
         { "syn": "noun(E1) -> 'country'", "sem": lambda: [('country', E1)] },
         { "syn": "noun(E1) -> 'countries'", "sem": lambda: [('country', E1)] },
+        { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
+        { "syn": "noun(E1) -> 'seas'", "sem": lambda: [('sea', E1)] },
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
         # proper noun
