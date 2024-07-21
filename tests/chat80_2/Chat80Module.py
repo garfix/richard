@@ -48,6 +48,7 @@ class Chat80Module(SomeModule):
             out_types = ["city"]
             out_values = self.ds.select("country", ["capital"], db_values)
         elif relation == "borders":
+            # todo may also be ocean
             out_types = ["country", "country"]
             out_values = self.ds.select("borders", ["country_id1", "country_id2"], db_values)
             out_values.extend(self.ds.select("borders", ["country_id2", "country_id1"], db_values))

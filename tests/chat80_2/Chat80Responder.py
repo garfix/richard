@@ -1,3 +1,4 @@
+from richard.entity.Instance import Instance
 from richard.interface.SomeResponseHandler import SomeResponseHandler
 from richard.entity.Composition import Composition
 
@@ -17,6 +18,10 @@ class Chat80Responder(SomeResponseHandler):
                 response = bindings[0]['S1']
             else:
                 response = "I dont't know"
+        elif "table" in composition.intents:
+            response = []
+            for binding in bindings:
+                response.append([value.id if isinstance(value, Instance) else value for value in binding.values()])
         else:
             for binding in bindings:
                 response += sep + str(binding["S1"].id)
