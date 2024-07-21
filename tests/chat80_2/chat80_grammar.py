@@ -69,6 +69,7 @@ def get_grammar(model: Model):
 
         # relative clauses
         { "syn": "relative_clause(E1) -> 'that' vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
+        { "syn": "relative_clause(E1) -> relative_clause(E1) 'and' relative_clause(E1)", "sem": lambda relative_clause1, relative_clause2: relative_clause1 + relative_clause2 },
 
         # det
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },

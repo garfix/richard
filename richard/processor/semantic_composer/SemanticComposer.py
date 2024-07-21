@@ -121,16 +121,10 @@ class SemanticComposer(SomeSemanticComposer):
                 sep = ", "
             text += ")"
         elif isinstance(value, list):
-            if True:
-                text = indent + "["
-                for element in value:
-                    text += self.format_value(element, indent + "    ")
-                text += indent + "]"
-            else:
-                text = indent + "["
-                for element in value:
-                    text += self.format_value(element, "")
-                text += "]"            
+            text = indent + "["
+            for element in value:
+                text += self.format_value(element, indent + "    ")
+            text += indent + "]"
         elif isinstance(value, str):
             text = "'" + value + "'"
         else:

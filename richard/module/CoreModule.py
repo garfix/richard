@@ -3,6 +3,7 @@
 from richard.constants import EXISTS
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
+from richard.type.OrderedSet import OrderedSet
 
 
 class CoreModule(SomeModule):
@@ -36,7 +37,7 @@ class CoreModule(SomeModule):
         entities = [binding[quant_var.name] for binding in solver.solve(nbar, binding)]
 
         range_count = len(entities)
-        results = []
+        results = OrderedSet()
         for entity in entities:
             b = binding | {
                 quant_var.name: entity
@@ -44,7 +45,7 @@ class CoreModule(SomeModule):
             bindings = solver.solve(body, b)
             # print(body, b, bindings)
             if len(bindings) > 0:
-                results.append(entity)
+                results.add(entity)
 
         result_count = len(results)
 
