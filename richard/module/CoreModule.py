@@ -13,6 +13,7 @@ class CoreModule(SomeModule):
             "find", 
             "==",
             "aggregate",
+            "count",
         ]
     
 
@@ -23,6 +24,8 @@ class CoreModule(SomeModule):
             out_values = self.equals(values, solver, binding)
         elif relation == "aggregate":
             out_values = self.aggregation(values, solver, binding)
+        elif relation == "count":
+            out_values = self.count(values, solver, binding)
         else:
             out_values = []
 
@@ -118,4 +121,17 @@ class CoreModule(SomeModule):
 
         return [
             [None, None, best_entity]
+        ]
+
+    # ('count', E1, [body-goals])
+    # returns the number of results of body-goals in E1
+    def count(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        count_var, body = values
+
+        results = solver.solve(body, binding)
+        count = len(results)
+
+        return [
+            [count, None]
         ]

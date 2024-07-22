@@ -56,6 +56,11 @@ def get_grammar(model: Model):
             "sem": lambda nbar, np1, np2: nbar + [('find', E2, np1, [('of', E2, E1), ('find', E3, np2, [('==', E2, E3)])])],
             "intents": ["list"] 
         },
+        { 
+            "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'", 
+            "sem": lambda nbar, vp_noobj_sub: [('count', E1, [('find', E2, ('quant', E2, EXISTS, nbar), vp_noobj_sub)])], 
+            "intents": ["number"]
+        },
 
 
         # active transitive: sub obj
@@ -65,11 +70,14 @@ def get_grammar(model: Model):
 
         # passive transitive
         { "syn": "vp_noobj_sub(E1) -> tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
+        { "syn": "vp_noobj_sub(E1) -> 'does' np(E2) tv(E2, E1)", "sem": lambda np, tv: [('find', E2, np, tv)] },
 
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
+
+        { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows-through', E1, E2)] },
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },

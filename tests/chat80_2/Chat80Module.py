@@ -29,6 +29,7 @@ class Chat80Module(SomeModule):
             "size-of",
             "where",
             "european", "asian", "african", "american",
+            "flows-through",
         ]
 
 
@@ -70,9 +71,9 @@ class Chat80Module(SomeModule):
         elif relation in ["european", "asian", "african", "american"]:
             out_types = ["country"]
             out_values = continental(self.ds, relation, db_values)     
-
-        # elif relation == "flows-through":
-        #     return self.ds.select("contains", ["part", "whole"], values)
+        elif relation == "flows-through":
+            out_types = ["river", "country"]
+            out_values = self.ds.select("contains", ["part", "whole"], db_values)
         # elif relation == "contains":
         #     if model_values[1].entity == "city":
         #         return self.ds.select("city", ["country", "id"], values)

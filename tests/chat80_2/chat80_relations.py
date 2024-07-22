@@ -80,3 +80,8 @@ def resolve_name(ds: SomeDataSource, values: list) -> tuple[list[list], list[lis
     if len(db_values) > 0:
         types = [None, 'sea']
         return db_values, types
+
+    db_values = ds.select("river", ["id", "id"], [name, None])
+    if len(db_values) > 0:
+        types = [None, 'river']
+        return db_values, types
