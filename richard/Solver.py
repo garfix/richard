@@ -57,8 +57,8 @@ class Solver(SomeSolver):
                     # add variable value
                     prepared.append(binding[arg.name])   
                 else: 
-                    # add None
-                    prepared.append(None)
+                    # add variable itself
+                    prepared.append(arg)
             else:
                 # just add value
                 prepared.append(arg)

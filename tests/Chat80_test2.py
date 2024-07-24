@@ -62,7 +62,7 @@ class TestChat80(unittest.TestCase):
             ["Which countries are bordered by two seas?", "soviet_union"],
             ["How many countries does the Danube flow through?", 2],
             ["What are the countries south of the Equator and not in Australasia?", "rwanda, mozambique, congo, paraguay"],
-            # ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
+            ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
             # ["What is the average area of the countries in each continent?", [
             #     [Instance(entity='continent', id='africa'), 105.869],
             #     [Instance(entity='continent', id='america'), 3615.122],

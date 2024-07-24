@@ -32,6 +32,11 @@ def get_grammar(model: Model):
             "intents": ["table"]
         },
         { 
+            "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
+            "sem": lambda np: [("sum", E1, E3, [('find', E2, np, []), ('size-of', E2, E3)])],
+            "intents": ["number"]
+        },
+        { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
             "sem": lambda np: [('find', E1, np, []), ('where', E1, E2)], 
             "intents": ["list"] 

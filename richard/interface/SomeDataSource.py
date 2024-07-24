@@ -14,7 +14,7 @@ class SomeDataSource(ABC):
             SELECT <columns>+ FROM <table> WHERE <column>=<value>*
             One or more columns (column1, column1, ...), zero or more where clauses (columns1=values1 AND columns1=values1, ...)
             Note that same columns are both used in the "select" and the "where"
-            Note that if a value is None, it must be omitted from the "where"
+            Note that if a value is None, or is a variable, it must be omitted from the "where"
         """
         pass
 

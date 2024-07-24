@@ -13,6 +13,7 @@ class CoreModule(SomeModule):
             "find", 
             "==",
             "aggregate",
+            "sum",
             "count",
             "not",
         ]
@@ -27,6 +28,8 @@ class CoreModule(SomeModule):
             out_values = self.aggregation(values, solver, binding)
         elif relation == "count":
             out_values = self.count(values, solver, binding)
+        elif relation == "sum":
+            out_values = self.sum(values, solver, binding)
         elif relation == "not":
             out_values = self.not_function(values, solver, binding)
         else:
@@ -137,6 +140,22 @@ class CoreModule(SomeModule):
 
         return [
             [count, None]
+        ]
+    
+
+    # ('sum', E1, E2, [body-goals])
+    # returns the sum of results of the values of E2 in body-goals in E1
+    def sum(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        sum_var, element_var, body = values
+
+        results = solver.solve(body, binding)
+        s = 0
+        for result in results:
+            s += result[element_var.name]
+
+        return [
+            [s, None, None]
         ]
 
 
