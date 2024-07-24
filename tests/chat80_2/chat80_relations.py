@@ -63,9 +63,8 @@ def continental(ds, relation, db_values: list):
 
 
 def resolve_name(ds: SomeDataSource, values: list) -> tuple[list[list], list[list]]:
-    # todo many other entities
     name = values[0].lower()
-    types = []
+    types = [None, None]
     db_values = ds.select("country", ["id", "id"], [name, None])
     if len(db_values) > 0:
         types = [None, 'country']
@@ -85,3 +84,13 @@ def resolve_name(ds: SomeDataSource, values: list) -> tuple[list[list], list[lis
     if len(db_values) > 0:
         types = [None, 'river']
         return db_values, types
+    
+    if name == 'equator':
+        types = [None, 'circle_of_latitude']
+        return [['equator', 'equator']], types
+
+    if name == 'australasia':
+        types = [None, 'region']
+        return [['australasia', 'australasia']], types
+
+    raise Exception("Name not found: " + name)

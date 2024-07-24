@@ -14,6 +14,7 @@ class CoreModule(SomeModule):
             "==",
             "aggregate",
             "count",
+            "not",
         ]
     
 
@@ -26,6 +27,8 @@ class CoreModule(SomeModule):
             out_values = self.aggregation(values, solver, binding)
         elif relation == "count":
             out_values = self.count(values, solver, binding)
+        elif relation == "not":
+            out_values = self.not_function(values, solver, binding)
         else:
             out_values = []
 
@@ -135,3 +138,21 @@ class CoreModule(SomeModule):
         return [
             [count, None]
         ]
+
+
+    # ('not',[body-goals])
+    # if body-goals returns values, not returns an empty list
+    # otherwise, it returns a list with a single value: True
+    def not_function(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        body = values[0]
+
+        results = solver.solve(body, binding)
+        count = len(results)
+
+        if count > 0:
+            return []
+        else:
+            return [
+                [True]
+            ]

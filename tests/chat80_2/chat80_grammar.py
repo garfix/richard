@@ -22,6 +22,11 @@ def get_grammar(model: Model):
             "intents": ["list"] 
         },
         { 
+            "syn": "s(E1) -> 'what' 'are' np(E1) '?'", 
+            "sem": lambda np: [('find', E1, np, [])], 
+            "intents": ["list"] 
+        },
+        { 
             "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
             "sem": lambda noun, np: [('find', E2, np, [])] + noun + [('of', E1, E2)],
             "intents": ["table"]
@@ -89,6 +94,7 @@ def get_grammar(model: Model):
         { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
         { "syn": "nbar(E1) -> superlative(E1, E2) nbar(E1)", "sem": lambda superlative, nbar: [('aggregate', nbar, superlative, E1)] },
         { "syn": "nbar(E1) -> nbar(E1) relative_clause(E1)", "sem": lambda nbar, relative_clause: nbar + relative_clause },
+        { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
 
         # relative clauses
         { "syn": "relative_clause(E1) -> 'that' vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
@@ -104,7 +110,11 @@ def get_grammar(model: Model):
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
 
         # pp
+        { "syn": "pp(E1) -> 'not' pp(E1)", "sem": lambda pp: [('not', pp)] },
         { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('of', E1, E2)])] },
+        { "syn": "pp(E1) -> 'in' np(E2)", "sem": lambda np: [('find', E2, np, [('in', E1, E2)])] },
+        { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('south-of', E1, E2)])] },
+        { "syn": "pp(E1) -> pp(E1) 'and' pp(E1)", "sem": lambda pp1, pp2: pp1 + pp2 },
 
         # adjective phrases
         { "syn": "adjp(E1) -> adj(E1)", "sem": lambda adj: adj },

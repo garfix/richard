@@ -30,6 +30,8 @@ class Chat80Module(SomeModule):
             "where",
             "european", "asian", "african", "american",
             "flows-through",
+            "south-of",
+            "in",
         ]
 
 
@@ -79,10 +81,12 @@ class Chat80Module(SomeModule):
         #         return self.ds.select("city", ["country", "id"], values)
         #     else:
         #         return self.ds.select("contains", ["part", "whole"], values)
-        # elif relation == "in":
-        #     return self.ds.select("contains", ["part", "whole"], values)
-        # elif relation == "south-of":
-        #     return south_of(self.ds, values)
+        elif relation == "in":
+             out_types = ["country", "region"]
+             out_values = self.ds.select("contains", ["part", "whole"], db_values)
+        elif relation == "south-of":
+             out_types = ["country", "place"]
+             out_values = south_of(self.ds, db_values)
         # elif relation == "flows-from-to":
         #     return flows_from_to(self.ds, values)
         # else:

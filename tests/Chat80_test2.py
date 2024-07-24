@@ -61,7 +61,7 @@ class TestChat80(unittest.TestCase):
             ["What are the capitals of the countries bordering the Baltic?", [["poland", "warsaw"]]],
             ["Which countries are bordered by two seas?", "soviet_union"],
             ["How many countries does the Danube flow through?", 2],
-            # ["What are the countries south of the Equator and not in Australasia?", OrderedSet([Instance(entity='country', id='congo'), Instance(entity='country', id='mozambique'), Instance(entity='country', id='paraguay'), Instance(entity='country', id='rwanda')])],
+            ["What are the countries south of the Equator and not in Australasia?", "rwanda, mozambique, congo, paraguay"],
             # ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
             # ["What is the average area of the countries in each continent?", [
             #     [Instance(entity='continent', id='africa'), 105.869],
