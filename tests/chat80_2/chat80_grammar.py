@@ -37,6 +37,11 @@ def get_grammar(model: Model):
             "intents": ["list"] 
         },
         { 
+            "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) '?'", 
+            "sem": lambda np, vp_noobj_sub_iob: [('find', E1, np, vp_noobj_sub_iob)],
+            "intents": ["list"] 
+        },
+        { 
             "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
             "sem": lambda noun, np: [('find', E2, np, [])] + noun + [('of', E1, E2)],
             "intents": ["table"]
@@ -97,12 +102,20 @@ def get_grammar(model: Model):
         { "syn": "vp_noobj_sub(E1) -> tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
         { "syn": "vp_noobj_sub(E1) -> 'does' np(E2) tv(E2, E1)", "sem": lambda np, tv: [('find', E2, np, tv)] },
 
+        # passive ditransitive: obj sub iob
+        { "syn": "vp_noobj_sub_iob(E1) -> 'from' 'which' np(E2) vp_noobj_nosub_iob(E1, E2)", "sem": lambda np, vp_noobj_nosub_iob: [('find', E2, np, vp_noobj_nosub_iob)] },
+        { "syn": "vp_noobj_nosub_iob(E1, E2) -> dtv(E2, E1, E3) np(E3)", "sem": lambda dtv, np: [('find', E3, np, dtv)] },
+
+        # transitive verbs
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
 
         { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows-through', E1, E2)] },
+
+        # ditransitive verbs
+        { "syn": "dtv(E1, E2, E3) -> 'flows' 'into'", "sem": lambda: [('flows-from-to', E1, E2, E3)] },
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },
@@ -122,6 +135,7 @@ def get_grammar(model: Model):
         { "syn": "relative_clause(E1) -> vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
 
         # det
+        { "syn": "det(E1) -> 'a'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> 'some'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> 'any'", "sem": lambda: EXISTS },

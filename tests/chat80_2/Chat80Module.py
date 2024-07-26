@@ -33,6 +33,7 @@ class Chat80Module(SomeModule):
             "flows-through",
             "south-of",
             "in",
+            "flows-from-to",
         ]
 
 
@@ -91,10 +92,9 @@ class Chat80Module(SomeModule):
         elif relation == "south-of":
              out_types = ["country", "place"]
              out_values = south_of(self.ds, db_values)
-        # elif relation == "flows-from-to":
-        #     return flows_from_to(self.ds, values)
-        # else:
-        #     raise Exception("No table found for " + relation)
+        elif relation == "flows-from-to":
+            out_types = ["river", "counry", "sea"]
+            out_values = flows_from_to(self.ds, db_values)
         else:
             out_types = []
             out_values = []
