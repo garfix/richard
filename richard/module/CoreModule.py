@@ -14,6 +14,7 @@ class CoreModule(SomeModule):
             "==",
             "aggregate",
             "sum",
+            "avg",
             "count",
             "not",
         ]
@@ -30,6 +31,8 @@ class CoreModule(SomeModule):
             out_values = self.count(values, solver, binding)
         elif relation == "sum":
             out_values = self.sum(values, solver, binding)
+        elif relation == "avg":
+            out_values = self.avg(values, solver, binding)
         elif relation == "not":
             out_values = self.not_function(values, solver, binding)
         else:
@@ -156,6 +159,30 @@ class CoreModule(SomeModule):
 
         return [
             [s, None, None]
+        ]
+
+
+    # ('avg', E1, E2, [body-goals])
+    # returns the average of results of the values of E2 in body-goals in E1
+    def avg(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        sum_var, element_var, body = values
+
+        results = solver.solve(body, binding)
+
+        if len(results) == 0:
+            return []
+
+        s = 0
+        n = 0
+        for result in results:
+            s += result[element_var.name]
+            n += 1
+
+        average = s / n
+
+        return [
+            [average, None, None]
         ]
 
 

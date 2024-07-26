@@ -23,6 +23,7 @@ class Chat80Module(SomeModule):
             "ocean",
             "sea",
             "capital", 
+            "continent", 
             "borders",
             "resolve_name",
             "of",
@@ -51,6 +52,9 @@ class Chat80Module(SomeModule):
         elif relation == "sea":
             out_types = ["sea"]
             out_values = self.ds.select("sea", ["id"], db_values)
+        elif relation == "continent":
+            out_types = ["continent"]
+            out_values = self.ds.select("continent", ["id"], db_values)
         elif relation == "capital":
             out_types = ["city"]
             out_values = self.ds.select("country", ["capital"], db_values)

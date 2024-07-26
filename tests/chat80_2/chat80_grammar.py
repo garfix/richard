@@ -1,5 +1,5 @@
 from richard.Model import Model
-from richard.constants import E1, E2, E3, EXISTS, Range, Result
+from richard.constants import E1, E2, E3, E4, EXISTS, Range, Result
 
 
 def get_grammar(model: Model):
@@ -35,6 +35,11 @@ def get_grammar(model: Model):
             "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
             "sem": lambda np: [("sum", E1, E3, [('find', E2, np, []), ('size-of', E2, E3)])],
             "intents": ["number"]
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
+            "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, [('find', E2, np, preposition), ('size-of', E2, E4)])],
+            "intents": ["table"]
         },
         { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
@@ -121,6 +126,9 @@ def get_grammar(model: Model):
         { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('south-of', E1, E2)])] },
         { "syn": "pp(E1) -> pp(E1) 'and' pp(E1)", "sem": lambda pp1, pp2: pp1 + pp2 },
 
+        { "syn": "preposition(E1, E2) -> 'in'", "sem": lambda: [("in", E1, E2)]},
+        { "syn": "preposition(E1, E2) -> 'of'", "sem": lambda: [("of", E1, E2)]},
+
         # adjective phrases
         { "syn": "adjp(E1) -> adj(E1)", "sem": lambda adj: adj },
 
@@ -144,6 +152,8 @@ def get_grammar(model: Model):
         { "syn": "noun(E1) -> 'countries'", "sem": lambda: [('country', E1)] },
         { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
         { "syn": "noun(E1) -> 'seas'", "sem": lambda: [('sea', E1)] },
+        { "syn": "noun(E1) -> 'continent'", "sem": lambda: [('continent', E1)] },
+        { "syn": "noun(E1) -> 'continents'", "sem": lambda: [('continent', E1)] },
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
         # proper noun

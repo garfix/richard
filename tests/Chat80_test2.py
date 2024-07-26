@@ -63,12 +63,12 @@ class TestChat80(unittest.TestCase):
             ["How many countries does the Danube flow through?", 2],
             ["What are the countries south of the Equator and not in Australasia?", "rwanda, mozambique, congo, paraguay"],
             ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
-            # ["What is the average area of the countries in each continent?", [
-            #     [Instance(entity='continent', id='africa'), 105.869],
-            #     [Instance(entity='continent', id='america'), 3615.122],
-            #     [Instance(entity='continent', id='asia'), 1973.1815],
-            #     [Instance(entity='continent', id='australasia'), 2967.909],
-            #     [Instance(entity='continent', id='europe'), 75.73519999999999]]],
+            ["What is the average area of the countries in each continent?", [
+                ["africa", 105.869, None],
+                ["america", 3615.122, None],
+                ["asia", 1973.1815, None],
+                ["australasia", 2967.909, None],
+                ["europe", 75.73519999999999, None]]],
             # ["Is there more than one country in each continent?", False],
             # ["Is there some ocean that does not border any country?", OrderedSet([Instance(entity='ocean', id='southern_ocean'), Instance(entity='ocean', id='arctic_ocean')])],
             # ["What are the countries from which a river flows into the Black_Sea?", OrderedSet([Instance(entity='country', id='soviet_union'), Instance(entity='country', id='hungary'), Instance(entity='country', id='czechoslovakia'), Instance(entity='country', id='romania'), Instance(entity='country', id='yugoslavia'), Instance(entity='country', id='austria'), Instance(entity='country', id='west_germany')])]
