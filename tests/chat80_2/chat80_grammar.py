@@ -12,8 +12,8 @@ def get_grammar(model: Model):
             "intents": ["y/n"] 
         },
         { 
-            "syn": "s(E1) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
-            "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), nbar + [('find', E1, np, preposition)])], 
+            "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+            "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), [('find', E1, np, preposition)])], 
             "intents": ["y/n"] 
         },
         { 
