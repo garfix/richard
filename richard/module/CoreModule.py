@@ -1,6 +1,6 @@
 
 
-from richard.constants import EXISTS
+from richard.constants import ALL, EXISTS
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
 from richard.type.OrderedSet import OrderedSet
@@ -12,6 +12,8 @@ class CoreModule(SomeModule):
         return [
             "find", 
             "==",
+            ">",
+            "<",
             "aggregate",
             "sum",
             "avg",
@@ -25,6 +27,10 @@ class CoreModule(SomeModule):
             out_values = self.find(values, solver, binding)
         elif relation == "==":
             out_values = self.equals(values, solver, binding)
+        elif relation == ">":
+            out_values = self.greater_than(values, solver, binding)
+        elif relation == "<":
+            out_values = self.less_than(values, solver, binding)
         elif relation == "aggregate":
             out_values = self.aggregation(values, solver, binding)
         elif relation == "count":
@@ -65,6 +71,8 @@ class CoreModule(SomeModule):
 
         if det == EXISTS:
             success = result_count > 0   
+        elif det == ALL:
+            success = result_count == range_count   
         else:
             predicate2, result_var, range_var, find = det
 
@@ -90,6 +98,22 @@ class CoreModule(SomeModule):
             return [values]
         return []
     
+
+    # ('>', E1, E2)
+    def greater_than(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        if values[0] > values[1]:
+            return [values]
+        return []
+
+
+    # ('<', E1, E2)
+    def less_than(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        if values[0] < values[1]:
+            return [values]
+        return []
+
 
     # ('aggregate', nbar, superlative, E1)
     # ('aggregation', E1, E2, [('size-of', E1, E2)], 'min')

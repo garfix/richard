@@ -1,5 +1,5 @@
 from richard.Model import Model
-from richard.constants import E1, E2, E3, E4, EXISTS, Range, Result
+from richard.constants import ALL, E1, E2, E3, E4, EXISTS, Range, Result
 
 
 def get_grammar(model: Model):
@@ -9,6 +9,11 @@ def get_grammar(model: Model):
         { 
             "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
             "sem": lambda np, vp_nosub_obj: [('find', E1, np, vp_nosub_obj)], 
+            "intents": ["y/n"] 
+        },
+        { 
+            "syn": "s(E1) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+            "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), nbar + [('find', E1, np, preposition)])], 
             "intents": ["y/n"] 
         },
         { 
@@ -114,6 +119,7 @@ def get_grammar(model: Model):
         # det
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('determiner', Result, Range, [('==', Result, number)]) },
+        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('determiner', Result, Range, [('>', Result, number)]) },
 
         # number
         { "syn": "number(E1) -> 'one'", "sem": lambda: 1 },

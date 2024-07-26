@@ -30,3 +30,4 @@ Result = Variable('Result')
 Range = Variable('Range')
 
 EXISTS = 'exists'
+ALL = 'all'
