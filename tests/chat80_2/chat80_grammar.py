@@ -12,6 +12,11 @@ def get_grammar(model: Model):
             "intents": ["y/n"] 
         },
         { 
+            "syn": "s(E1) -> 'is' 'there' np(E1) '?'",  
+            "sem": lambda np: [('find', E1, np, [])], 
+            "intents": ["y/n"] 
+        },
+        { 
             "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
             "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), [('find', E1, np, preposition)])], 
             "intents": ["y/n"] 
@@ -85,7 +90,7 @@ def get_grammar(model: Model):
 
         # active transitive: sub obj
         { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },
-        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },
+        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('not', [('find', E2, np, vp_nosub_noobj)])] },
         { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
 
         # passive transitive
@@ -118,6 +123,8 @@ def get_grammar(model: Model):
 
         # det
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> 'some'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> 'any'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('determiner', Result, Range, [('==', Result, number)]) },
         { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('determiner', Result, Range, [('>', Result, number)]) },
 

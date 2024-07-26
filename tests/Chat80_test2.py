@@ -70,7 +70,7 @@ class TestChat80(unittest.TestCase):
                 ["australasia", 2967.909, None],
                 ["europe", 75.73519999999999, None]]],
             ["Is there more than one country in each continent?", 'no'],
-            # ["Is there some ocean that does not border any country?", OrderedSet([Instance(entity='ocean', id='southern_ocean'), Instance(entity='ocean', id='arctic_ocean')])],
+            ["Is there some ocean that does not border any country?", "yes"],
             # ["What are the countries from which a river flows into the Black_Sea?", OrderedSet([Instance(entity='country', id='soviet_union'), Instance(entity='country', id='hungary'), Instance(entity='country', id='czechoslovakia'), Instance(entity='country', id='romania'), Instance(entity='country', id='yugoslavia'), Instance(entity='country', id='austria'), Instance(entity='country', id='west_germany')])]
         ]
 
