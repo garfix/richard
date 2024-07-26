@@ -72,6 +72,7 @@ class TestChat80(unittest.TestCase):
             ["Is there more than one country in each continent?", 'no'],
             ["Is there some ocean that does not border any country?", "yes"],
             ["What are the countries from which a river flows into the Black_Sea?", "soviet_union, hungary, czechoslovakia, romania, yugoslavia, austria, west_germany"]
+            ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", ""]
         ]
 
         for test in tests:
