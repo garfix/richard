@@ -1,3 +1,4 @@
+from richard.interface.SomeDataSource import SomeDataSource
 from richard.type.Simple import Simple
 
 
@@ -42,7 +43,8 @@ def flows_from_to(ds, values: list[Simple]):
     return results
 
     
-def continental(ds, modifier, country_id: int):
+def continental(ds, relation, db_values: list):
+    country_id = db_values[0]
     table = "country"
     columns = ["id", "region"]
     regions = {
@@ -52,7 +54,43 @@ def continental(ds, modifier, country_id: int):
         "african": ['north_africa', 'west_africa', 'central_africa', 'east_africa', 'southern_africa']
     }
 
-    ids = []
-    for region in regions[modifier]:
-        ids += ds.select_column(table, columns, [country_id, region])
-    return ids       
+    rows = []
+    for region in regions[relation]:
+        ids = ds.select_column(table, columns, [country_id, region])
+        for id in ids:
+            rows.append([id])
+    return rows       
+
+
+def resolve_name(ds: SomeDataSource, values: list) -> tuple[list[list], list[list]]:
+    name = values[0].lower()
+    types = [None, None]
+    db_values = ds.select("country", ["id", "id"], [name, None])
+    if len(db_values) > 0:
+        types = [None, 'country']
+        return db_values, types
+
+    db_values = ds.select("city", ["id", "id"], [name, None])
+    if len(db_values) > 0:
+        types = [None, 'city']
+        return db_values, types
+
+    db_values = ds.select("sea", ["id", "id"], [name, None])
+    if len(db_values) > 0:
+        types = [None, 'sea']
+        return db_values, types
+
+    db_values = ds.select("river", ["id", "id"], [name, None])
+    if len(db_values) > 0:
+        types = [None, 'river']
+        return db_values, types
+    
+    if name == 'equator':
+        types = [None, 'circle_of_latitude']
+        return [['equator', 'equator']], types
+
+    if name == 'australasia':
+        types = [None, 'region']
+        return [['australasia', 'australasia']], types
+
+    raise Exception("Name not found: " + name)

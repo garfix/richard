@@ -1,151 +1,200 @@
 from richard.Model import Model
-from richard.entity.Instance import Instance
-from richard.semantics.commands import avg, count, create_np, exists, negate
-from richard.type.OrderedSet import OrderedSet
+from richard.constants import ALL, E1, E2, E3, E4, EXISTS, NONE, Range, Result
 
 
 def get_grammar(model: Model):
     return [
 
-        # sentences
-
+        # sentence
         { 
-            "syn": "s -> 'is' 'there' np preposition 'each' nbar '?'", 
-            "sem": lambda np, preposition, nbar: 
-                        lambda: model.test_all(nbar, 
-                                   lambda e1: count(np(lambda e2: preposition(e2)(e1))))
+            "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
+            "sem": lambda np, vp_nosub_obj: [('find', E1, np, vp_nosub_obj)], 
+            "intents": ["y/n"] 
         },
         { 
-            "syn": "s -> 'what' 'is' 'the' 'average' 'area' 'of' np preposition 'each' nbar '?'", 
-            "sem": lambda np, preposition, nbar: 
-                        lambda: model.group_by(nbar, 
-                                   lambda e1: avg(model.find_attribute_values(lambda: 'size-of', 
-                                                                                lambda: np(lambda e2: preposition(e2)(e1))))) 
+            "syn": "s(E1) -> 'is' 'there' np(E1) '?'",  
+            "sem": lambda np: [('find', E1, np, [])], 
+            "intents": ["y/n"] 
         },
-        { "syn": "s -> 'what' 'is' 'the' 'total' 'area' 'of' np '?'", "sem": lambda np: lambda: sum(model.find_attribute_values(lambda: 'size-of', np)) },
-        { "syn": "s -> 'what' 'are' np '?'", "sem": lambda np: lambda: np() },
-        { "syn": "s -> 'what' 'are' 'the' attr 'of' np '?'", "sem": lambda attr, np: lambda: model.create_attribute_map(np, attr) },
-        { "syn": "s -> 'what' 'is' np '?'", "sem": lambda np: lambda: np() },
-        { "syn": "s -> 'what' nbar 'are' 'there' '?'", "sem": lambda nbar: lambda: nbar() },
-        { "syn": "s -> 'where' 'is' np '?'", "sem": lambda np: lambda: model.find_attribute_values(lambda: 'location-of', np) },
-        { "syn": "s -> 'is' 'there' np '?'", "sem": lambda np: lambda: np() },
-        { "syn": "s -> 'which' nbar 'are' adjp '?'", "sem": lambda nbar, adjp: lambda: adjp(nbar) },
-        { "syn": "s -> 'which' 'is' np '?'", "sem": lambda np: lambda: np() },
-        { "syn": "s -> 'which' 'country' \''\' 's' attr 'is' np '?'", "sem": lambda attr, np: 
-            lambda: model.find_attribute_objects(attr, np) },
-        { "syn": "s -> 'does' np vp_nosub_obj '?'",  "sem": lambda np, vp_nosub_obj: lambda: np(vp_nosub_obj) },
-        { "syn": "s -> 'how' 'large' 'is' np '?'",  "sem": lambda np: lambda: model.find_attribute_values(lambda: 'size-of', np) },
-        { "syn": "s -> 'how' 'many' nbar 'does' np vp_noobj_nosub '?'", "sem": lambda nbar, np, vp_noobj_nosub:
-            lambda: len(create_np(exists, nbar)(lambda obj: np(vp_noobj_nosub(obj))))
+        { 
+            "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+            "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), [('find', E1, np, preposition)])], 
+            "intents": ["y/n"] 
+        },
+        { 
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", 
+            "sem": lambda nbar: nbar, 
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
+            "sem": lambda np: [('find', E1, np, [])], 
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'are' np(E1) '?'", 
+            "sem": lambda np: [('find', E1, np, [])], 
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) '?'", 
+            "sem": lambda np, vp_noobj_sub_iob: [('find', E1, np, vp_noobj_sub_iob)],
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
+            "sem": lambda noun, np: [('find', E2, np, [])] + noun + [('of', E1, E2)],
+            "intents": ["table"]
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
+            "sem": lambda np: [("sum", E1, E3, [('find', E2, np, []), ('size-of', E2, E3)])],
+            "intents": ["number"]
+        },
+        { 
+            "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
+            "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, [('find', E2, np, preposition), ('size-of', E2, E4)])],
+            "intents": ["table"]
+        },
+        { 
+            "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
+            "sem": lambda np: [('find', E1, np, []), ('where', E1, E2)], 
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",  
+            "sem": lambda np: [('find', E1, np, []), ('size-of', E1, E2)],
+            "intents": ["number"]
+        },
+        { 
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", 
+            "sem": lambda nbar, adjp: nbar + adjp, 
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) '?'", 
+            "sem": lambda nbar, vp_noobj_sub: [('find', E1, ('quant', E1, EXISTS, nbar), vp_noobj_sub)],
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'which' 'is' np(E1) '?'", 
+            "sem": lambda np: [('find', E1, np, [])], 
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", 
+            "sem": lambda nbar, np1, np2: nbar + [('find', E2, np1, [('of', E2, E1), ('find', E3, np2, [('==', E2, E3)])])],
+            "intents": ["list"] 
+        },
+        { 
+            "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'", 
+            "sem": lambda nbar, vp_noobj_sub: [('count', E1, [('find', E2, ('quant', E2, EXISTS, nbar), vp_noobj_sub)])], 
+            "intents": ["number"]
         },
 
-        { "syn": "s -> 'which' nbar 'are' vp_noobj_sub '?'", "sem": lambda nbar, vp_noobj_sub: lambda: create_np(exists, nbar)(vp_noobj_sub) },
-        { "syn": "s -> 'what' 'are' np vp_noobj_sub_iob '?'", "sem": lambda np, vp_noobj_sub_iob: lambda: np(vp_noobj_sub_iob) },
-
-        # vp
 
         # active transitive: sub obj
-        { "syn": "vp_nosub_obj -> vp_nosub_noobj np", "sem": lambda tv, np: lambda sub: np(tv(sub)) },
-        { "syn": "vp_nosub_obj -> 'does' 'not' vp_nosub_noobj np", "sem": lambda tv, np: lambda sub: negate(np(tv(sub))) },
-        { "syn": "vp_nosub_noobj -> tv", "sem": lambda tv: lambda sub: lambda obj: tv(sub, obj) },
+        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },
+        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('not', [('find', E2, np, vp_nosub_noobj)])] },
+        { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
 
-        # passive transitive: obj sub
-        { "syn": "vp_noobj_sub -> vp_noobj_nosub 'by' np", "sem": lambda vp_noobj_nosub, np: lambda obj: np(vp_noobj_nosub(obj)) },
-        { "syn": "vp_noobj_nosub -> tv", "sem": lambda tv: lambda obj: lambda sub: tv(sub, obj) },
+        # passive transitive
+        { "syn": "vp_noobj_sub(E1) -> tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
+        { "syn": "vp_noobj_sub(E1) -> 'does' np(E2) tv(E2, E1)", "sem": lambda np, tv: [('find', E2, np, tv)] },
 
         # passive ditransitive: obj sub iob
-        { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
-        { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
-        { "syn": "vp_noobj_nosub_noiob -> dtv", "sem": lambda dtv: lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob) },
+        { "syn": "vp_noobj_sub_iob(E1) -> 'from' 'which' np(E2) vp_noobj_nosub_iob(E1, E2)", "sem": lambda np, vp_noobj_nosub_iob: [('find', E2, np, vp_noobj_nosub_iob)] },
+        { "syn": "vp_noobj_nosub_iob(E1, E2) -> dtv(E2, E1, E3) np(E3)", "sem": lambda dtv, np: [('find', E3, np, dtv)] },
 
         # transitive verbs
-        { "syn": "tv -> 'flow' 'through'", "sem": lambda: 
-            lambda sub, obj: model.find_relation_values('flows-through', [sub, obj]) },
-        { "syn": "tv -> 'border'", "sem": lambda: 
-            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
-        { "syn": "tv -> 'borders'", "sem": lambda: 
-            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
-        { "syn": "tv -> 'bordering'", "sem": lambda: 
-            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
-        { "syn": "tv -> 'bordered'", "sem": lambda: 
-            lambda sub, obj: model.find_relation_values('borders', [sub, obj], two_ways = True) },
+        { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'contains'", "sem": lambda: [('contains', E1, E2)] },
+
+        { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows-through', E1, E2)] },
 
         # ditransitive verbs
-        { "syn": "dtv -> 'flows' 'into'", "sem": lambda: 
-            lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
+        { "syn": "dtv(E1, E2, E3) -> 'flows' 'into'", "sem": lambda: [('flows-from-to', E1, E2, E3)] },
 
-        # np            
+        # np
+        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },
+        { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: ('quant', E1, det, nbar) },
 
-        # noun phrases
-        { "syn": "np -> nbar", "sem": lambda nbar: create_np(exists, nbar) },
-        { "syn": "np -> det nbar", "sem": lambda det, nbar: create_np(det, nbar) },
-        { "syn": "np -> np relative_clause", "sem": lambda np, relative_clause: create_np(exists, lambda: np(relative_clause)) },
-        { "syn": "np -> np relative_clause 'and' relative_clause", "sem": lambda np, rc1, rc2: create_np(exists, lambda: np(rc1) & np(rc2)) },
-        { "syn": "np -> np pp", "sem": lambda np, pp: create_np(exists, lambda: np(pp)) },
-        { "syn": "np -> np pp 'and' pp", "sem": lambda np, pp1, pp2: create_np(exists, lambda: np(pp1) & np(pp2)) },
-
-        # prepositional phrases
-        { "syn": "pp -> preposition np", "sem": lambda preposition, np: lambda e1: np(preposition(e1)) },
-        { "syn": "pp -> 'not' preposition np", "sem": lambda preposition, np: lambda e1: negate(np(preposition(e1))) },
-
-        { "syn": "preposition -> 'south' 'of'", "sem": lambda: lambda e1: lambda e2: model.find_relation_values('south-of', [e1, e2]) },
-        { "syn": "preposition -> 'in'", "sem": lambda: lambda e1: lambda e2: model.find_relation_values('in', [e1, e2]) },
+        # nbar
+        { "syn": "nbar(E1) -> adj(E1) nbar(E1)", "sem": lambda adj, nbar: adj + nbar },
+        { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
+        { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
+        { "syn": "nbar(E1) -> superlative(E1, E2) nbar(E1)", "sem": lambda superlative, nbar: [('aggregate', nbar, superlative, E1)] },
+        { "syn": "nbar(E1) -> nbar(E1) relative_clause(E1)", "sem": lambda nbar, relative_clause: nbar + relative_clause },
+        { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
 
         # relative clauses
-        { "syn": "relative_clause -> 'that' vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda e1: vp_nosub_obj(e1) },
-        { "syn": "relative_clause -> vp_nosub_obj", "sem": lambda vp_nosub_obj: lambda e1: vp_nosub_obj(e1) },
+        { "syn": "relative_clause(E1) -> 'that' vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
+        { "syn": "relative_clause(E1) -> relative_clause(E1) 'and' relative_clause(E1)", "sem": lambda relative_clause1, relative_clause2: relative_clause1 + relative_clause2 },
+        { "syn": "relative_clause(E1) -> vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
+        { "syn": "relative_clause(E1) -> np(E2) preposition(E2, E1) 'which' vp_nosub_obj(E2)", "sem": lambda np, preposition, vp_nosub_obj: [('find', E2, np, preposition + vp_nosub_obj)] },
+        { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) comparator(E2)", "sem": lambda attr, comparator: attr + comparator },
 
-        # nbars
-        { "syn": "nbar -> noun", "sem": lambda noun: lambda: noun() },
-        { "syn": "nbar -> adj noun", "sem": lambda adj, noun: lambda: adj(noun) },
-        { "syn": "nbar -> attr 'of' np", "sem": lambda attr, np: lambda: model.find_attribute_values(attr, np) },
-        { "syn": "nbar -> superlative nbar", "sem": lambda superlative, nbar: lambda: superlative(nbar) },
+        { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },
 
-        # superlatives
-        { "syn": "superlative -> 'largest'", "sem": lambda: lambda range: model.find_entity_with_highest_attribute_value(range, 'size-of') },
-        { "syn": "superlative -> 'smallest'", "sem": lambda: lambda range: model.find_entity_with_lowest_attribute_value(range, 'size-of') },
+        { "syn": "comparator(E1) -> 'exceeds' number(E2)", "sem": lambda number: [('>', E1, number)] },
 
-        # determiners
-        { "syn": "det -> 'a'", "sem": lambda: exists },
-        { "syn": "det -> 'the'", "sem": lambda: exists },
-        { "syn": "det -> 'some'", "sem": lambda: exists },
-        { "syn": "det -> 'any'", "sem": lambda: exists },
-        { "syn": "det -> number", "sem": lambda number: lambda result_count, range_count: result_count == number() },
-        { "syn": "det -> 'more' 'than' number", "sem": lambda number: lambda result_count, range_count: result_count > number() },
+        # det
+        { "syn": "det(E1) -> 'a'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> 'some'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> 'any'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> 'no'", "sem": lambda: NONE },
+        { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('determiner', Result, Range, [('==', Result, number)]) },
+        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('determiner', Result, Range, [('>', Result, number)]) },
 
-        { "syn": "number -> 'one'", "sem": lambda: lambda: 1 },
-        { "syn": "number -> 'two'", "sem": lambda: lambda: 2 },
+        # number
+        { "syn": "number(E1) -> '1'", "sem": lambda: 1 },
+        { "syn": "number(E1) -> 'one'", "sem": lambda: 1 },
+        { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
+        { "syn": "number(E1) -> number(E1) 'million'", "sem": lambda number: number * 1000000 },
+
+        # pp
+        { "syn": "pp(E1) -> 'not' pp(E1)", "sem": lambda pp: [('not', pp)] },
+        { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('of', E1, E2)])] },
+        { "syn": "pp(E1) -> 'in' np(E2)", "sem": lambda np: [('find', E2, np, [('in', E1, E2)])] },
+        { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('south-of', E1, E2)])] },
+        { "syn": "pp(E1) -> pp(E1) 'and' pp(E1)", "sem": lambda pp1, pp2: pp1 + pp2 },
+
+        { "syn": "preposition(E1, E2) -> 'in'", "sem": lambda: [("in", E1, E2)]},
+        { "syn": "preposition(E1, E2) -> 'of'", "sem": lambda: [("of", E1, E2)]},
 
         # adjective phrases
-        { "syn": "adjp -> adj", "sem": lambda adj: lambda range: adj(range) },
+        { "syn": "adjp(E1) -> adj(E1)", "sem": lambda adj: adj },
 
-        { "syn": "adj -> 'european'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'european') },
-        { "syn": "adj -> 'african'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'african') },
-        { "syn": "adj -> 'american'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'american') },
-        { "syn": "adj -> 'asian'", "sem": lambda: lambda range: model.filter_by_modifier(range, 'asian') },
+        { "syn": "adj(E1) -> 'european'", "sem": lambda: [('european', E1)] },
+        { "syn": "adj(E1) -> 'african'", "sem": lambda: [('african', E1)] },
+        { "syn": "adj(E1) -> 'american'", "sem": lambda: [('american', E1)] },
+        { "syn": "adj(E1) -> 'asian'", "sem": lambda: [('asian', E1)] },
 
-        # nouns
-        { "syn": "noun -> proper_noun", "sem": lambda proper_noun: lambda: proper_noun() },
-        { "syn": "noun -> 'river'", "sem": lambda: lambda: model.get_instances('river') },
-        { "syn": "noun -> 'rivers'", "sem": lambda: lambda: model.get_instances('river') },
-        { "syn": "noun -> 'country'", "sem": lambda: lambda: model.get_instances('country') },
-        { "syn": "noun -> 'countries'", "sem": lambda: lambda: model.get_instances('country') },
-        { "syn": "noun -> 'ocean'", "sem": lambda: lambda: model.get_instances('ocean') },
-        { "syn": "noun -> 'seas'", "sem": lambda: lambda: model.get_instances('sea') },
-        { "syn": "noun -> 'continent'", "sem": lambda: lambda: model.get_instances('continent') },
+        # superlatives
+        { "syn": "superlative(E1, E2) -> 'largest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'max') },
+        { "syn": "superlative(E1, E2) -> 'smallest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'min') },
 
-        # attributes
-        { "syn": "attr -> 'capital'", "sem": lambda: lambda: 'capital-of' },
-        { "syn": "attr -> 'capitals'", "sem": lambda: lambda: 'capital-of' },
+        # noun
+        { "syn": "noun(E1) -> 'river'", "sem": lambda: [('river', E1)] },
+        { "syn": "noun(E1) -> 'rivers'", "sem": lambda: [('river', E1)] },
+        { "syn": "noun(E1) -> 'capital'", "sem": lambda: [('capital', E1)] },
+        { "syn": "noun(E1) -> 'capitals'", "sem": lambda: [('capital', E1)] },
+        { "syn": "noun(E1) -> 'ocean'", "sem": lambda: [('ocean', E1)] },
+        { "syn": "noun(E1) -> 'oceans'", "sem": lambda: [('ocean', E1)] },
+        { "syn": "noun(E1) -> 'country'", "sem": lambda: [('country', E1)] },
+        { "syn": "noun(E1) -> 'countries'", "sem": lambda: [('country', E1)] },
+        { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
+        { "syn": "noun(E1) -> 'seas'", "sem": lambda: [('sea', E1)] },
+        { "syn": "noun(E1) -> 'city'", "sem": lambda: [('city', E1)] },
+        { "syn": "noun(E1) -> 'cities'", "sem": lambda: [('city', E1)] },
+        { "syn": "noun(E1) -> 'continent'", "sem": lambda: [('continent', E1)] },
+        { "syn": "noun(E1) -> 'continents'", "sem": lambda: [('continent', E1)] },
+        { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
-        # todo
-        { "syn": "proper_noun -> 'afghanistan'", "sem": lambda: lambda: OrderedSet([Instance('country', 'afghanistan')]) },
-        { "syn": "proper_noun -> 'china'", "sem": lambda: lambda:  OrderedSet([Instance('country', 'china')]) },
-        { "syn": "proper_noun -> 'upper_volta'", "sem": lambda: lambda:  OrderedSet([Instance('country', 'upper_volta')]) },
-        { "syn": "proper_noun -> 'london'", "sem": lambda: lambda:  OrderedSet([Instance('city', 'london')])  },
-        { "syn": "proper_noun -> 'baltic'", "sem": lambda: lambda:  OrderedSet([Instance('sea', 'baltic')])  },
-        { "syn": "proper_noun -> 'danube'", "sem": lambda: lambda:  OrderedSet([Instance('river', 'danube')])  },
-        { "syn": "proper_noun -> 'equator'", "sem": lambda: lambda:  OrderedSet([Instance('circle_of_latitude', 'equator')])  },
-        { "syn": "proper_noun -> 'australasia'", "sem": lambda: lambda:  OrderedSet([Instance('region', 'australasia')])  },
-        { "syn": "proper_noun -> 'black_sea'", "sem": lambda: lambda:  OrderedSet([Instance('sea', 'black_sea')]) },
+        # proper noun
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
     ]
