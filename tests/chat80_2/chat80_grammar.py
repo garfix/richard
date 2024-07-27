@@ -1,5 +1,5 @@
 from richard.Model import Model
-from richard.constants import ALL, E1, E2, E3, E4, EXISTS, Range, Result
+from richard.constants import ALL, E1, E2, E3, E4, EXISTS, NONE, Range, Result
 
 
 def get_grammar(model: Model):
@@ -111,6 +111,7 @@ def get_grammar(model: Model):
         { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'contains'", "sem": lambda: [('contains', E1, E2)] },
 
         { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows-through', E1, E2)] },
 
@@ -133,18 +134,27 @@ def get_grammar(model: Model):
         { "syn": "relative_clause(E1) -> 'that' vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
         { "syn": "relative_clause(E1) -> relative_clause(E1) 'and' relative_clause(E1)", "sem": lambda relative_clause1, relative_clause2: relative_clause1 + relative_clause2 },
         { "syn": "relative_clause(E1) -> vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
+        { "syn": "relative_clause(E1) -> np(E2) preposition(E2, E1) 'which' vp_nosub_obj(E2)", "sem": lambda np, preposition, vp_nosub_obj: [('find', E2, np, preposition + vp_nosub_obj)] },
+        { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) comparator(E2)", "sem": lambda attr, comparator: attr + comparator },
+
+        { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },
+
+        { "syn": "comparator(E1) -> 'exceeds' number(E2)", "sem": lambda number: [('>', E1, number)] },
 
         # det
         { "syn": "det(E1) -> 'a'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> 'some'", "sem": lambda: EXISTS },
         { "syn": "det(E1) -> 'any'", "sem": lambda: EXISTS },
+        { "syn": "det(E1) -> 'no'", "sem": lambda: NONE },
         { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('determiner', Result, Range, [('==', Result, number)]) },
         { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('determiner', Result, Range, [('>', Result, number)]) },
 
         # number
+        { "syn": "number(E1) -> '1'", "sem": lambda: 1 },
         { "syn": "number(E1) -> 'one'", "sem": lambda: 1 },
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
+        { "syn": "number(E1) -> number(E1) 'million'", "sem": lambda number: number * 1000000 },
 
         # pp
         { "syn": "pp(E1) -> 'not' pp(E1)", "sem": lambda pp: [('not', pp)] },
@@ -179,6 +189,8 @@ def get_grammar(model: Model):
         { "syn": "noun(E1) -> 'countries'", "sem": lambda: [('country', E1)] },
         { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
         { "syn": "noun(E1) -> 'seas'", "sem": lambda: [('sea', E1)] },
+        { "syn": "noun(E1) -> 'city'", "sem": lambda: [('city', E1)] },
+        { "syn": "noun(E1) -> 'cities'", "sem": lambda: [('city', E1)] },
         { "syn": "noun(E1) -> 'continent'", "sem": lambda: [('continent', E1)] },
         { "syn": "noun(E1) -> 'continents'", "sem": lambda: [('continent', E1)] },
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },

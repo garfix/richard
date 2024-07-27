@@ -1,6 +1,6 @@
 
 
-from richard.constants import ALL, EXISTS
+from richard.constants import ALL, EXISTS, NONE
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
 from richard.type.OrderedSet import OrderedSet
@@ -73,6 +73,9 @@ class CoreModule(SomeModule):
             success = result_count > 0   
         elif det == ALL:
             success = result_count == range_count   
+        elif det == NONE:
+            success = result_count == 0   
+            return [[True, None, None]]
         else:
             predicate2, result_var, range_var, find = det
 

@@ -23,6 +23,7 @@ class Chat80Module(SomeModule):
             "ocean",
             "sea",
             "capital", 
+            "city",
             "continent", 
             "borders",
             "resolve_name",
@@ -34,6 +35,8 @@ class Chat80Module(SomeModule):
             "south-of",
             "in",
             "flows-from-to",
+            "contains",
+            "has-population",
         ]
 
 
@@ -59,6 +62,9 @@ class Chat80Module(SomeModule):
         elif relation == "capital":
             out_types = ["city"]
             out_values = self.ds.select("country", ["capital"], db_values)
+        elif relation == "city":
+            out_types = ["city"]
+            out_values = self.ds.select("city", ["id"], db_values)
         elif relation == "borders":
             # todo may also be ocean
             out_types = ["country", "country"]
@@ -81,11 +87,9 @@ class Chat80Module(SomeModule):
         elif relation == "flows-through":
             out_types = ["river", "country"]
             out_values = self.ds.select("contains", ["part", "whole"], db_values)
-        # elif relation == "contains":
-        #     if model_values[1].entity == "city":
-        #         return self.ds.select("city", ["country", "id"], values)
-        #     else:
-        #         return self.ds.select("contains", ["part", "whole"], values)
+        elif relation == "contains":
+            out_types = ["country", "city"]
+            out_values = self.ds.select("contains", ["part", "whole"], db_values)
         elif relation == "in":
              out_types = ["country", "region"]
              out_values = self.ds.select("contains", ["part", "whole"], db_values)
@@ -95,6 +99,9 @@ class Chat80Module(SomeModule):
         elif relation == "flows-from-to":
             out_types = ["river", "counry", "sea"]
             out_values = flows_from_to(self.ds, db_values)
+        elif relation == "has-population":
+            out_types = ["country", None]
+            out_values = self.ds.select("city", ["id", "population"], db_values)
         else:
             out_types = []
             out_values = []

@@ -42,7 +42,11 @@ db.insert(Record('city', {'id': 'birmingham', 'country': 'united_kingdom', 'popu
 db.insert(Record('city', {'id': 'glasgow', 'country': 'united_kingdom', 'population': 1090}))    
 db.insert(Record('city', {'id': 'london', 'country': 'united_kingdom', 'population': 8346}))    
 
-# drie continenten met 3 steden met meer dan 1 millioen inwoners > 1000
+db.insert(Record('city', {'id': 'bangkok', 'country': 'thailand', 'population': 1178}))    
+db.insert(Record('city', {'id': 'canton', 'country': 'china', 'population': 1496}))    
+db.insert(Record('city', {'id': 'chungking', 'country': 'china', 'population': 1100}))    
+
+# drie continenten met > 2 steden met meer dan 1 millioen inwoners > 1000
 # 1 continent met 1 stad met meer dan 1 millioen inwoners
 # 1 continent zonder steden
 
