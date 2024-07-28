@@ -12,6 +12,7 @@ class GrammarRule:
     sem: callable
     inferences: list[tuple]
     intents: list[str]
+    boost: int
 
 
     def equals(self, other_rule) -> bool:

@@ -155,7 +155,8 @@ class EarleyParser:
                 [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
                 sem,
                 [],
-                []
+                [],
+                0
             )
 
             scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)

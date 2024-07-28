@@ -44,7 +44,8 @@ def get_grammar(model: Model):
         { 
             "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
             "sem": lambda noun, np: [('find', E2, np, [])] + noun + [('of', E1, E2)],
-            "intents": ["table"]
+            "intents": ["table"],
+            "boost": 1
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 

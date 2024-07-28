@@ -63,7 +63,10 @@ class SimpleGrammarRulesParser:
             if 'intents' in simple_rule:
                 intents = simple_rule['intents']
 
-            rules.append(GrammarRule(antecedent, consequents, sem, inferences, intents))
+            boost = 0
+            if 'boost' in simple_rule:
+                boost = simple_rule['boost']
+            rules.append(GrammarRule(antecedent, consequents, sem, inferences, intents, boost))
 
         return GrammarRules(rules)
     
