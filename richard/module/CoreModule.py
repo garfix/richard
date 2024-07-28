@@ -75,7 +75,10 @@ class CoreModule(SomeModule):
             success = result_count == range_count   
         elif det == NONE:
             success = result_count == 0   
-            return [[True, None, None]]
+            if success:
+                return [[True, None, None]]
+            else:
+                return []
         else:
             predicate2, result_var, range_var, find = det
 

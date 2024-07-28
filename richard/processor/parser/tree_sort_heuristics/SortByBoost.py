@@ -20,7 +20,6 @@ class SortByBoost:
 
 
     def get_boost(self, node: ParseTreeNode) -> int:
-        print(node.rule.boost)
         return -node.rule.boost
     
     

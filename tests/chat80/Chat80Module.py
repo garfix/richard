@@ -89,7 +89,7 @@ class Chat80Module(SomeModule):
             out_values = self.ds.select("contains", ["part", "whole"], db_values)
         elif relation == "contains":
             out_types = ["country", "city"]
-            out_values = self.ds.select("contains", ["part", "whole"], db_values)
+            out_values = self.ds.select("contains", ["whole", "part"], db_values)
         elif relation == "in":
              out_types = ["country", "region"]
              out_values = self.ds.select("contains", ["part", "whole"], db_values)
@@ -102,6 +102,7 @@ class Chat80Module(SomeModule):
         elif relation == "has-population":
             out_types = ["country", None]
             out_values = self.ds.select("city", ["id", "population"], db_values)
+            out_values = [[row[0], row[1] * 1000] for row in out_values]
         else:
             out_types = []
             out_values = []

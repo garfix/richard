@@ -45,11 +45,7 @@ db.insert(Record('city', {'id': 'london', 'country': 'united_kingdom', 'populati
 db.insert(Record('city', {'id': 'bangkok', 'country': 'thailand', 'population': 1178}))    
 db.insert(Record('city', {'id': 'canton', 'country': 'china', 'population': 1496}))    
 db.insert(Record('city', {'id': 'chungking', 'country': 'china', 'population': 1100}))    
-
-# drie continenten met > 2 steden met meer dan 1 millioen inwoners > 1000
-# 1 continent met 1 stad met meer dan 1 millioen inwoners
-# 1 continent zonder steden
-
+db.insert(Record('city', {'id': 'mukden', 'country': 'china', 'population': 1151}))    
 
 
 db.insert(Record('ocean', {'id': 'indian_ocean'}))    
@@ -91,3 +87,14 @@ db.insert(Record('contains', {'part': 'hungary', 'whole': 'europe'}))
 db.insert(Record('contains', {'part': 'austria', 'whole': 'europe'}))
 db.insert(Record('contains', {'part': 'united_kingdom', 'whole': 'europe'}))
 
+db.insert(Record('contains', {'part': 'hamburg', 'whole': 'west_germany'}))
+db.insert(Record('contains', {'part': 'warsaw', 'whole': 'poland'}))
+db.insert(Record('contains', {'part': 'budapest', 'whole': 'hungary'}))
+db.insert(Record('contains', {'part': 'vienna', 'whole': 'austria'}))
+db.insert(Record('contains', {'part': 'birmingham', 'whole': 'united_kingdom'}))
+db.insert(Record('contains', {'part': 'glasgow', 'whole': 'united_kingdom'}))
+db.insert(Record('contains', {'part': 'london', 'whole': 'united_kingdom'}))
+db.insert(Record('contains', {'part': 'bangkok', 'whole': 'thailand'}))
+db.insert(Record('contains', {'part': 'canton', 'whole': 'china'}))
+db.insert(Record('contains', {'part': 'chungking', 'whole': 'china'}))
+db.insert(Record('contains', {'part': 'mukden', 'whole': 'china'}))
