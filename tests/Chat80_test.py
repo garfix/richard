@@ -74,6 +74,7 @@ class TestChat80(unittest.TestCase):
             ["What are the countries from which a river flows into the Black_Sea?", "soviet_union, hungary, czechoslovakia, romania, yugoslavia, austria, west_germany"],
             ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, america, antarctica, australasia"],
             ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
+            ["Which countries have a population exceeding 10 million?", "afghanistan, china, united_kingdom, thailand, poland, soviet_union, hungary, czechoslovakia, united_states, australia, yugoslavia, west_germany, india, turkey"]
         ]
 
         for test in tests:

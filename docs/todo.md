@@ -4,3 +4,4 @@
 * document parse tree sort heuristics
 * in stead of 'vp_nosub_obj', 'vp_nosub' may be sufficient: you know that it starts with 'sub' but don't know what follows
 * maybe the variable in quant is superfluous
+* create numbers based on a token
