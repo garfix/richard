@@ -101,8 +101,12 @@ class Chat80Module(SomeModule):
             out_values = flows_from_to(self.ds, db_values)
         elif relation == "has-population":
             out_types = ["country", None]
-            out_values = self.ds.select("city", ["id", "population"], db_values)
-            out_values = [[row[0], row[1] * 1000] for row in out_values]
+            if values[0].entity == 'city':
+                out_values = self.ds.select("city", ["id", "population"], db_values)
+                out_values = [[row[0], row[1] * 1000] for row in out_values]
+            else:
+                out_values = self.ds.select("country", ["id", "population"], db_values)
+                out_values = [[row[0], row[1] * 1000000] for row in out_values]
         else:
             out_types = []
             out_values = []

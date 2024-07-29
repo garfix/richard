@@ -88,6 +88,11 @@ def get_grammar(model: Model):
             "intents": ["list"] 
         },
         { 
+            "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1) '?'", 
+            "sem": lambda np, vp_nosub_obj: [('find', E1, np, vp_nosub_obj)],
+            "intents": ["list"] 
+        },
+        { 
             "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'", 
             "sem": lambda nbar, vp_noobj_sub: [('count', E1, [('find', E2, ('quant', E2, EXISTS, nbar), vp_noobj_sub)])], 
             "intents": ["number"]
@@ -102,6 +107,10 @@ def get_grammar(model: Model):
         # passive transitive
         { "syn": "vp_noobj_sub(E1) -> tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
         { "syn": "vp_noobj_sub(E1) -> 'does' np(E2) tv(E2, E1)", "sem": lambda np, tv: [('find', E2, np, tv)] },
+        { "syn": "vp_noobj_sub(E1) -> 'is' tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
+
+        # active transitive continuous
+        { "syn": "vp_nosub_obj_continuous(E1) -> tv_continuous(E1, E2) np(E2)", "sem": lambda tv_continuous, np: [('find', E2, np, tv_continuous)] },
 
         # passive ditransitive: obj sub iob
         { "syn": "vp_noobj_sub_iob(E1) -> 'from' 'which' np(E2) vp_noobj_nosub_iob(E1, E2)", "sem": lambda np, vp_noobj_nosub_iob: [('find', E2, np, vp_noobj_nosub_iob)] },
@@ -110,9 +119,10 @@ def get_grammar(model: Model):
         # transitive verbs
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
-        { "syn": "tv(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'contains'", "sem": lambda: [('contains', E1, E2)] },
+
+        { "syn": "tv_continuous(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
 
         { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows-through', E1, E2)] },
 
@@ -133,14 +143,21 @@ def get_grammar(model: Model):
 
         # relative clauses
         { "syn": "relative_clause(E1) -> 'that' vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
+        { "syn": "relative_clause(E1) -> 'that' vp_noobj_sub(E1)", "sem": lambda vp_noobj_sub: vp_noobj_sub },
         { "syn": "relative_clause(E1) -> relative_clause(E1) 'and' relative_clause(E1)", "sem": lambda relative_clause1, relative_clause2: relative_clause1 + relative_clause2 },
-        { "syn": "relative_clause(E1) -> vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
+        { "syn": "relative_clause(E1) -> vp_nosub_obj_continuous(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
         { "syn": "relative_clause(E1) -> np(E2) preposition(E2, E1) 'which' vp_nosub_obj(E2)", "sem": lambda np, preposition, vp_nosub_obj: [('find', E2, np, preposition + vp_nosub_obj)] },
-        { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) comparator(E2)", "sem": lambda attr, comparator: attr + comparator },
+        
+        # { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) comparator(E2)", "sem": lambda attr, comparator: attr + comparator },
+        { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) vp_nosub_obj(E2)", "sem": lambda attr, vp_nosub_obj: [('find', E2, ('quant', E2, EXISTS, attr), vp_nosub_obj)] },
+        { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: ('quant', E1, det, nbar + attr) },
+        { "syn": "np(E1) -> number(E1)", "sem": lambda number: ('quant', E1, EXISTS, [('=', E1, number)]) },
+
 
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },
 
-        { "syn": "comparator(E1) -> 'exceeds' number(E2)", "sem": lambda number: [('>', E1, number)] },
+        # { "syn": "comparator(E1) -> 'exceeds' number(E2)", "sem": lambda number: [('>', E1, number)] },
+        { "syn": "tv(E1, E2) -> 'exceeds'", "sem": lambda: [('>', E1, E2)] },
 
         # det
         { "syn": "det(E1) -> 'a'", "sem": lambda: EXISTS },
@@ -156,6 +173,7 @@ def get_grammar(model: Model):
         { "syn": "number(E1) -> 'one'", "sem": lambda: 1 },
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
         { "syn": "number(E1) -> number(E1) 'million'", "sem": lambda number: number * 1000000 },
+        # { "syn": "number(E1) -> 'the' attr(E2, E1) 'of' np(E2)", "sem": lambda attr, np: [('find', E2, np, attr)] },
 
         # pp
         { "syn": "pp(E1) -> 'not' pp(E1)", "sem": lambda pp: [('not', pp)] },

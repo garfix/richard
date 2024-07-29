@@ -19,6 +19,7 @@ class CoreModule(SomeModule):
             "avg",
             "count",
             "not",
+            "=",
         ]
     
 
@@ -41,6 +42,8 @@ class CoreModule(SomeModule):
             out_values = self.avg(values, solver, binding)
         elif relation == "not":
             out_values = self.not_function(values, solver, binding)
+        elif relation == "=":
+            out_values = self.assign(values, solver, binding)
         else:
             out_values = []
 
@@ -232,3 +235,11 @@ class CoreModule(SomeModule):
             return [
                 [True]
             ]
+
+
+    # ('=', E1, 5)
+    def assign(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        return [[
+            values[1], values[1]
+        ]]
