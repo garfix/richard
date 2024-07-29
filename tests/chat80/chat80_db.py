@@ -79,6 +79,7 @@ db.insert(Record('borders', {'country_id1': 'pacific', 'country_id2': 'united_st
 db.insert(Record('borders', {'country_id1': 'mediterranean', 'country_id2': 'turkey'}))    
 db.insert(Record('borders', {'country_id1': 'turkey', 'country_id2': 'soviet_union'}))    
 db.insert(Record('borders', {'country_id1': 'soviet_union', 'country_id2': 'china'}))    
+db.insert(Record('borders', {'country_id1': 'west_germany', 'country_id2': 'atlantic'}))    
 
 db.insert(Record('contains', {'part': 'danube', 'whole': 'hungary'}))
 db.insert(Record('contains', {'part': 'danube', 'whole': 'czechoslovakia'}))

@@ -85,6 +85,11 @@ def resolve_name(ds: SomeDataSource, values: list) -> tuple[list[list], list[lis
         types = [None, 'river']
         return db_values, types
     
+    db_values = ds.select("ocean", ["id", "id"], [name, None])
+    if len(db_values) > 0:
+        types = [None, 'ocean']
+        return db_values, types
+
     if name == 'equator':
         types = [None, 'circle_of_latitude']
         return [['equator', 'equator']], types

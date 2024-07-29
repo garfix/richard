@@ -147,6 +147,7 @@ def get_grammar(model: Model):
         { "syn": "relative_clause(E1) -> vp_nosub_obj_continuous(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
         { "syn": "relative_clause(E1) -> np(E2) preposition(E2, E1) 'which' vp_nosub_obj(E2)", "sem": lambda np, preposition, vp_nosub_obj: [('find', E2, np, preposition + vp_nosub_obj)] },
         { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) vp_nosub_obj(E2)", "sem": lambda attr, vp_nosub_obj: [('find', E2, ('quant', E2, EXISTS, attr), vp_nosub_obj)] },
+        { "syn": "relative_clause(E1) -> 'with' 'a' attr(E1, E2) vp_nosub_obj_continuous(E2)", "sem": lambda attr, vp_nosub_obj: [('find', E2, ('quant', E2, EXISTS, attr), vp_nosub_obj)] },
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },
@@ -156,7 +157,7 @@ def get_grammar(model: Model):
 
         # attribute
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },
-        { "syn": "attr(E1, E2) -> attr(E1, E2) relative_clause(E2)", "sem": lambda nbar, relative_clause: nbar + relative_clause },
+        { "syn": "attr(E1, E2) -> attr(E1, E2) relative_clause(E2)", "sem": lambda attr, relative_clause: attr + relative_clause },
 
         # det
         { "syn": "det(E1) -> 'a'", "sem": lambda: EXISTS },
