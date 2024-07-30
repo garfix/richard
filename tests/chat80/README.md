@@ -20,9 +20,13 @@ Compile Chat-80
 
     compile(chat80).
 
-Start Chat-80 interactive, turn on tracing, enter a sentence
+Start Chat-80 interactive, turn on tracing, enter sentences
 
-    hi.
+    chat80:hi.
     Trace.
     What are the continents no country in which contains more than  two cities whose population exceeds 1 million?
+
+Stop
+    ctrl/c
+    e
 

@@ -107,6 +107,11 @@ def get_grammar(model: Model):
             "sem": lambda nbar, vp_noobj_sub: [('count', E1, [('find', E2, ('quant', E2, EXISTS, nbar), vp_noobj_sub)])], 
             "intents": ["number"]
         },
+        { 
+            "syn": "s(E1) -> 'bye' '.'", 
+            "sem": lambda: [('=', E1, 'Cheerio.')], 
+            "intents": ["list"]
+        },
 
 
         # active transitive: sub obj

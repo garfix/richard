@@ -24,7 +24,8 @@ class Chat80Responder(SomeResponseHandler):
                 response.append([value.id if isinstance(value, Instance) else value for value in binding.values()])
         else:
             for binding in bindings:
-                response += sep + str(binding["S1"].id)
+                value = binding["S1"].id if isinstance(binding["S1"], Instance) else binding["S1"]
+                response += sep + value
                 sep = ", "
 
         return response
