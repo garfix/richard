@@ -82,7 +82,8 @@ class TestChat80(unittest.TestCase):
                 ['pacific', 4.545454545454546],
                 ['southern_ocean', 0.0],
                 ['arctic_ocean', 0.0]
-            ]]
+            ]],
+            ["What countries are there in Europe?", "united_kingdom, poland, hungary, austria, west_germany"]
         ]
 
         for test in tests:

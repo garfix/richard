@@ -27,6 +27,11 @@ def get_grammar(model: Model):
             "intents": ["list"] 
         },
         { 
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' pp(E1) '?'", 
+            "sem": lambda nbar, pp: nbar + pp, 
+            "intents": ["list"] 
+        },
+        { 
             "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
             "sem": lambda np: [('find', E1, np, [])], 
             "intents": ["list"] 
