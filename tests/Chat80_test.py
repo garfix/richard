@@ -75,7 +75,14 @@ class TestChat80(unittest.TestCase):
             ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, america, antarctica, australasia"],
             ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
             ["Which countries have a population exceeding 10 million?", "afghanistan, china, united_kingdom, thailand, poland, soviet_union, hungary, czechoslovakia, united_states, australia, yugoslavia, west_germany, india, turkey"],
-            ["Which countries with a population exceeding 10 million border the Atlantic?", "west_germany"]
+            ["Which countries with a population exceeding 10 million border the Atlantic?", "west_germany"],
+            ["What percentage of countries border each ocean?", [
+                ['indian_ocean', 13.636363636363635],
+                ['atlantic', 9.090909090909092],
+                ['pacific', 4.545454545454546],
+                ['southern_ocean', 0.0],
+                ['arctic_ocean', 0.0]
+            ]]
         ]
 
         for test in tests:

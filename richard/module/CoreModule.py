@@ -17,6 +17,7 @@ class CoreModule(SomeModule):
             "aggregate",
             "sum",
             "avg",
+            "percentage",
             "count",
             "not",
             "=",
@@ -40,6 +41,8 @@ class CoreModule(SomeModule):
             out_values = self.sum(values, solver, binding)
         elif relation == "avg":
             out_values = self.avg(values, solver, binding)
+        elif relation == "percentage":
+            out_values = self.percentage(values, solver, binding)
         elif relation == "not":
             out_values = self.not_function(values, solver, binding)
         elif relation == "=":
@@ -216,6 +219,25 @@ class CoreModule(SomeModule):
 
         return [
             [average, None, None]
+        ]
+
+
+    # ('percentage', E1, [nominator-goals], [denominator-goals])
+    # returns the percentage of nominator-goals in denominator-goals
+    def percentage(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        pecentage_var, nominator, denominator = values
+
+        nominator_results = solver.solve(nominator, binding)
+        denominator_results = solver.solve(denominator, binding)
+
+        if len(denominator_results) == 0:
+            return []
+
+        percentage = (len(nominator_results) / len(denominator_results)) * 100.0
+
+        return [
+            [percentage, None, None]
         ]
 
 

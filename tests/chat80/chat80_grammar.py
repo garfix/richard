@@ -58,6 +58,11 @@ def get_grammar(model: Model):
             "intents": ["table"]
         },
         { 
+            "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'", 
+            "sem": lambda np, tv, nbar: nbar + [('percentage', E3, [('find', E1, np, tv)], [('find', E1, np, [])])], 
+            "intents": ["table"] 
+        },
+        { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
             "sem": lambda np: [('find', E1, np, []), ('where', E1, E2)], 
             "intents": ["list"] 
