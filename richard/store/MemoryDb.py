@@ -1,3 +1,4 @@
+import csv
 from richard.store.Record import Record
 from richard.store.RecordSet import RecordSet
 
@@ -45,3 +46,17 @@ class MemoryDb:
         
         return result
     
+
+    def import_csv(self, table: str, path: str):
+        with open(path) as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            line = 0
+            headers = []
+            for row in reader:
+                line += 1
+                if line == 1:
+                    headers = row
+                else:
+                    values = dict(zip(headers, row))
+                    print(values)
+                    self.insert(Record(table, values))

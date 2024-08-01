@@ -56,7 +56,7 @@ class TestChat80(unittest.TestCase):
             ["Which country's capital is London?", "united_kingdom"],
             ["Which is the largest african country?", "mozambique"],
             ["How large is the smallest american country?", 157.47],
-            ["What is the ocean that borders African countries?", "indian_ocean, atlantic"],
+            ["What is the ocean that borders African countries?", "atlantic, indian_ocean"],
             ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
             ["What are the capitals of the countries bordering the Baltic?", [["poland", "warsaw"]]],
             ["Which countries are bordered by two seas?", "soviet_union"],
@@ -77,11 +77,11 @@ class TestChat80(unittest.TestCase):
             ["Which countries have a population exceeding 10 million?", "afghanistan, china, united_kingdom, thailand, poland, soviet_union, hungary, czechoslovakia, united_states, australia, yugoslavia, west_germany, india, turkey"],
             ["Which countries with a population exceeding 10 million border the Atlantic?", "west_germany"],
             ["What percentage of countries border each ocean?", [
-                ['indian_ocean', 13.636363636363635],
+                ['arctic_ocean', 0.0],
                 ['atlantic', 9.090909090909092],
+                ['indian_ocean', 13.636363636363635],
                 ['pacific', 4.545454545454546],
                 ['southern_ocean', 0.0],
-                ['arctic_ocean', 0.0]
             ]],
             ["What countries are there in Europe?", "united_kingdom, poland, hungary, austria, west_germany"],
             ["Bye.", "Cheerio."]

@@ -1,16 +1,23 @@
+import pathlib
 from richard.store.Record import Record
 from richard.store.MemoryDb import MemoryDb
 
+
 # fill an in-memory database
+
+path = str(pathlib.Path(__file__).parent.resolve())
 
 db = MemoryDb()
 
-db.insert(Record('continent', {'id': 'africa'}))   
-db.insert(Record('continent', {'id': 'america'}))   
-db.insert(Record('continent', {'id': 'antarctica'}))   
-db.insert(Record('continent', {'id': 'asia'}))   
-db.insert(Record('continent', {'id': 'australasia'}))   
-db.insert(Record('continent', {'id': 'europe'}))   
+db.import_csv('continent', path + "/resources/continent.csv")
+db.import_csv('ocean', path + "/resources/ocean.csv")
+
+# db.insert(Record('continent', {'id': 'africa'}))   
+# db.insert(Record('continent', {'id': 'america'}))   
+# db.insert(Record('continent', {'id': 'antarctica'}))   
+# db.insert(Record('continent', {'id': 'asia'}))   
+# db.insert(Record('continent', {'id': 'australasia'}))   
+# db.insert(Record('continent', {'id': 'europe'}))   
 
 db.insert(Record('country', {'id': 'afghanistan', 'region': 'indian_subcontinent', 'lat': 33, 'long': -65, 'area': 254.861, 'population': 18.290, 'capital': 'kabul', 'currency': 'afghani'}))
 db.insert(Record('country', {'id': 'china', 'region': 'far_east', 'lat': 30, 'long': -110, 'area': 3691.502, 'population': 840.0, 'capital': 'peking', 'currency': 'yuan'}))
@@ -50,11 +57,11 @@ db.insert(Record('city', {'id': 'chungking', 'country': 'china', 'population': 1
 db.insert(Record('city', {'id': 'mukden', 'country': 'china', 'population': 1151}))    
 
 
-db.insert(Record('ocean', {'id': 'indian_ocean'}))    
-db.insert(Record('ocean', {'id': 'atlantic'}))    
-db.insert(Record('ocean', {'id': 'pacific'}))            
-db.insert(Record('ocean', {'id': 'southern_ocean'}))    
-db.insert(Record('ocean', {'id': 'arctic_ocean'}))    
+# db.insert(Record('ocean', {'id': 'indian_ocean'}))    
+# db.insert(Record('ocean', {'id': 'atlantic'}))    
+# db.insert(Record('ocean', {'id': 'pacific'}))            
+# db.insert(Record('ocean', {'id': 'southern_ocean'}))    
+# db.insert(Record('ocean', {'id': 'arctic_ocean'}))    
 
 db.insert(Record('sea', {'id': 'baltic'}))   
 db.insert(Record('sea', {'id': 'black_sea'}))   

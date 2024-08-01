@@ -10,6 +10,11 @@
 * optimize: reorder atoms
 * optimze: distinguish between all-quantors and existential quantors
 * update documentation
+* unit test
+* better error messages
 * use postgres for chat-80?
 * log the time it takes to perform a block
 * can parsing be done faster?
+* table select columns to display => intents as atoms?
+* improve grammar
+* import from csv
