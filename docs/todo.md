@@ -5,3 +5,11 @@
 * in stead of 'vp_nosub_obj', 'vp_nosub' may be sufficient: you know that it starts with 'sub' but don't know what follows
 * maybe the variable in quant is superfluous
 * create numbers based on a token
+* chat-80 import csv
+* simplify semantics that uses EXISTS
+* optimize: reorder atoms
+* optimze: distinguish between all-quantors and existential quantors
+* update documentation
+* use postgres for chat-80?
+* log the time it takes to perform a block
+* can parsing be done faster?

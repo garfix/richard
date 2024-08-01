@@ -184,7 +184,7 @@ class EarleyParser:
         # index the completed state for fast lookup in the tree extraction phase
         chart.index_completed_state(completed_state)
 
-        for charted_state in chart.states[completed_state.start_word_index] :
+        for charted_state in chart.states[completed_state.start_word_index]:
 
             dot_position = charted_state.dot_position
             rule = charted_state.rule

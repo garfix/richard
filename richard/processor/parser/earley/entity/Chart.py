@@ -1,6 +1,7 @@
 from richard.constants import GAMMA, POS_TYPE_RELATION
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.RuleConstituent import RuleConstituent
+from richard.type.OrderedSet import OrderedSet
 from .ChartState import ChartState
 
 
@@ -8,7 +9,7 @@ class Chart:
     root_category: str
     root_variables: list[str]
     words: list[str]
-    states: list[list[ChartState]]
+    states: list[OrderedSet[ChartState]]
     # all states that were completed, indexed by end word index
     completed_states: dict[int, list[ChartState]]
 
@@ -17,7 +18,7 @@ class Chart:
         self.root_category = root_category
         self.words = words
         self.root_variables = root_variables
-        self.states = [[] for _ in range(len(words) + 1)]
+        self.states = [OrderedSet() for _ in range(len(words) + 1)]
         self.completed_states = {}
 
     
@@ -48,19 +49,11 @@ class Chart:
 
 
     def enqueue(chart, state, position):
-        found = chart.contains_state(state, position)
+        found = state in chart.states[position]
         if not found:
-            chart.states[position].append(state)
+            chart.states[position].add(state)
 
         return found
-
-
-    def contains_state(chart, state, position):
-        for present_state in chart.states[position] :
-            if present_state.equals(state):
-                return True
-
-        return False        
 
     
     def index_completed_state(self, completed_state: ChartState):

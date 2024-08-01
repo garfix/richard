@@ -1,3 +1,16 @@
+## 2024-07-30
+
+First pass of the Chat-80 dialog is complete. All questions have been answered. Leaving the functional approach and reverting to atom-based made it straightforward to complete the dialog. Answering all questions takes 0.3 seconds on my machine. But making it work is just one part of Chat-80. Chat-80 is really really fast. And I noticed that it also produces very simple semantic representations. So I need to:
+
+* chat-80 import csv
+* simplify semantics that uses EXISTS
+* optimize: reorder atoms
+* optimze: distinguish between all-quantors and existential quantors
+
+===
+
+After some profiling I found that the parser was currently taking most time. It could be optimized by moving the chart states into a set in stead of a list. Response time for all questions is now about 0.13 seconds.
+
 ## 2024-07-03
 
 Next to "syn" and "sem", introduce "imp": the atoms that are implied by the sentence. May contain variables that should be turned into sentence variables. These implications can be used to deduce the intent of the sentence, but it can later also be used for other things. Their scope is currently sentence, but may later become dialog.

@@ -4,7 +4,6 @@ from richard.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.RuleConstituent import RuleConstituent
 
 
-@dataclass(frozen=True)
 class GrammarRule:
     
     antecedent: RuleConstituent
@@ -13,6 +12,18 @@ class GrammarRule:
     inferences: list[tuple]
     intents: list[str]
     boost: int
+    hash: int
+
+    def __init__(self, antecedent: RuleConstituent, consequents: list[RuleConstituent], sem: callable, inferences: list[tuple], intents: list[str], boost: int) -> None:
+        self.antecedent = antecedent
+        self.consequents = consequents
+        self.sem = sem
+        self.inferences = inferences
+        self.intents = intents
+        self.boost = boost
+
+        h = [c.hash for c in self.consequents] + [self.antecedent.hash]
+        self.hash = hash(tuple(h))
 
 
     def equals(self, other_rule) -> bool:
