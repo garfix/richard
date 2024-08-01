@@ -61,9 +61,12 @@ class MemoryDb:
                 else:
                     values = {}
                     for header, element in zip(headers, row):
+                        # a | implements an array of values
                         if "|" in element:
                             element = element.split("|")
+                        # integer    
+                        elif element.lstrip("-+").isdigit():
+                            element = int(element)
                         values[header] = element
-
                         
                     self.insert(Record(table, values))
