@@ -53,10 +53,17 @@ class MemoryDb:
             line = 0
             headers = []
             for row in reader:
+                if len(row) == 0:
+                    continue
                 line += 1
                 if line == 1:
                     headers = row
                 else:
-                    values = dict(zip(headers, row))
-                    print(values)
+                    values = {}
+                    for header, element in zip(headers, row):
+                        if "|" in element:
+                            element = element.split("|")
+                        values[header] = element
+
+                        
                     self.insert(Record(table, values))
