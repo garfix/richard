@@ -1,4 +1,5 @@
 import unittest
+import pathlib
 
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -11,24 +12,38 @@ from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from richard.store.MemoryDb import MemoryDb
 from .chat80.Chat80Responder import Chat80Responder
 from .chat80.Chat80Module import Chat80Module
 from .chat80.chat80_grammar import get_grammar
-from .chat80.chat80_db import db
+
 
 class TestChat80(unittest.TestCase):
     """
     Mimics a Chat80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
     Topics:
-    - attributes ('capital of')
+    - proper nouns
     - superlatives ('largest')
     - relative clauses
     - aggregations
+    - inference: in(A, B) -> contains(A, C) in(C, B).
+    - query optimization
+    - different result formats: yes/no, scalar, list, table
     """
    
     def test_chat80(self):
 
-        self.maxDiff = None
+        db = MemoryDb()
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/resources/"
+
+        db.import_csv('continent', path + "continent.csv")
+        db.import_csv('ocean', path + "ocean.csv")
+        db.import_csv('sea', path + "sea.csv")
+        db.import_csv('river', path + "river.csv")
+        db.import_csv('city', path + "city.csv")
+        db.import_csv('country', path + "country.csv")
+        db.import_csv('contains', path + "contains.csv")
+        db.import_csv('borders', path + "borders.csv")
 
         data_source = MemoryDbDataSource(db)
         model = Model([Chat80Module(data_source)])
@@ -54,38 +69,46 @@ class TestChat80(unittest.TestCase):
             ["Does Afghanistan border China?", "yes"],
             ["What is the capital of Upper_Volta?", "ouagadougou"],
             ["Where is the largest country?", "northern_asia"],
-            ["Which countries are European?", "albania, united_kingdom, poland, hungary, czechoslovakia, romania, yugoslavia, austria, west_germany"],
+            ["Which countries are European?", "albania, andorra, austria, belgium, bulgaria, cyprus, czechoslovakia, denmark, east_germany, eire, finland, france, greece, hungary, iceland, italy, liechtenstein, luxembourg, malta, monaco, netherlands, norway, poland, portugal, romania, san_marino, spain, sweden, switzerland, united_kingdom, west_germany, yugoslavia"],
             ["Which country's capital is London?", "united_kingdom"],
-            ["Which is the largest african country?", "mozambique"],
-            ["How large is the smallest american country?", 157.47],
+            ["Which is the largest african country?", "sudan"],
+            ["How large is the smallest american country?", 0],
             ["What is the ocean that borders African countries?", "atlantic, indian_ocean"],
             ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
-            ["What are the capitals of the countries bordering the Baltic?", [["poland", "warsaw"]]],
-            ["Which countries are bordered by two seas?", "soviet_union"],
-            ["How many countries does the Danube flow through?", 2],
-            ["What are the countries south of the Equator and not in Australasia?", "rwanda, mozambique, congo, paraguay"],
-            ["What is the total area of countries south of the Equator and not in Australasia?", 603.472],
+            ["What are the capitals of the countries bordering the Baltic?", [
+                ['denmark', 'copenhagen'], 
+                ['east_germany', 'east_berlin'], 
+                ['finland', 'helsinki'], 
+                ['poland', 'warsaw'], 
+                ['soviet_union', 'moscow'], 
+                ['sweden', 'stockholm'], 
+                ['west_germany', 'bonn']
+            ]],
+            ["Which countries are bordered by two seas?", "egypt, iran, israel, saudi_arabia, turkey"],
+            ["How many countries does the Danube flow through?", 6],
+            ["What are the countries south of the Equator and not in Australasia?", "angola, argentina, bolivia, botswana, brazil, burundi, chile, congo, ecuador, indonesia, lesotho, malagasy, malawi, mauritius, mozambique, paraguay, peru, rwanda, seychelles, south_africa, swaziland, tanzania, uruguay, zaire, zambia, zimbabwe"],
+            ["What is the total area of countries south of the Equator and not in Australasia?", 10228],
             ["What is the average area of the countries in each continent?", [
-                ["africa", 105.869, None],
-                ["america", 3615.122, None],
-                ["asia", 1973.1815, None],
-                ["australasia", 2967.909, None],
-                ["europe", 75.73519999999999, None]]],
+                ["africa", 233.58333333333334, None],
+                ["america", 496.3225806451613, None],
+                ["asia", 485.2307692307692, None],
+                ["australasia", 543.5, None],
+                ["europe", 58.3125, None]]],
             ["Is there more than one country in each continent?", 'no'],
             ["Is there some ocean that does not border any country?", "yes"],
-            ["What are the countries from which a river flows into the Black_Sea?", "soviet_union, hungary, czechoslovakia, romania, yugoslavia, austria, west_germany"],
-            ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, america, antarctica, australasia"],
+            ["What are the countries from which a river flows into the Black_Sea?", "austria, czechoslovakia, hungary, romania, soviet_union, west_germany, yugoslavia"],
+            ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, antarctica, australasia"],
             ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
-            ["Which countries have a population exceeding 10 million?", "afghanistan, china, united_kingdom, thailand, poland, soviet_union, hungary, czechoslovakia, united_states, australia, yugoslavia, west_germany, india, turkey"],
-            ["Which countries with a population exceeding 10 million border the Atlantic?", "west_germany"],
+            ["Which countries have a population exceeding 10 million?", "afghanistan, algeria, argentina, australia, bangladesh, brazil, burma, canada, china, colombia, czechoslovakia, east_germany, egypt, ethiopia, france, india, indonesia, iran, italy, japan, kenya, mexico, morocco, nepal, netherlands, nigeria, north_korea, pakistan, peru, philippines, poland, south_africa, south_korea, soviet_union, spain, sri_lanka, sudan, taiwan, tanzania, thailand, turkey, united_kingdom, united_states, venezuela, vietnam, west_germany, yugoslavia, zaire"],
+            ["Which countries with a population exceeding 10 million border the Atlantic?", "argentina, brazil, canada, colombia, france, mexico, morocco, netherlands, nigeria, south_africa, spain, united_kingdom, united_states, venezuela, west_germany, zaire"],
             ["What percentage of countries border each ocean?", [
-                ['arctic_ocean', 0.0],
-                ['atlantic', 9.090909090909092],
-                ['indian_ocean', 13.636363636363635],
-                ['pacific', 4.545454545454546],
+                ['arctic_ocean', 2.564102564102564],
+                ['atlantic', 36.53846153846153],
+                ['indian_ocean', 14.102564102564102],
+                ['pacific', 20.51282051282051],
                 ['southern_ocean', 0.0],
             ]],
-            ["What countries are there in Europe?", "united_kingdom, poland, hungary, austria, west_germany"],
+            ["What countries are there in Europe?", "albania, andorra, austria, belgium, bulgaria, cyprus, czechoslovakia, denmark, east_germany, eire, finland, france, greece, hungary, iceland, italy, liechtenstein, luxembourg, malta, monaco, netherlands, norway, poland, portugal, romania, san_marino, spain, sweden, switzerland, united_kingdom, west_germany, yugoslavia"],
             ["Bye.", "Cheerio."]
         ]
 

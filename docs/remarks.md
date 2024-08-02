@@ -1,3 +1,39 @@
+## 2024-08-02
+
+In their papers, Warren and Pereira mentioned their query response times. They ranged from 200 to 800 msecs. I thought that was ok, and something I would be able to match easily. Only when I ran their system on a current computer it dawned on me how much processing speed has increased. Response times are now between 0 and 2 msecs. That includes parsing and execution! I had to change a sample sentence a bit to ensure myself that the results weren't just cached. There's much to be done before I can reach this speed. In fact, only the parsing takes already a few msecs, to I will never be able to compete. I can merely do my best to come near... this is humbling.
+
+===
+
+I imported all actual data from Chat-80 from CSV files into the in-memory database and ran the tests again. In total they take now 50 seconds to run (!) This sentence, as expected takes up most time: 43 seconds.
+
+    Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?
+
+There are about a 1000 "borders" relations, they are bi-directional, and they are nested 3 times. Chat-80 runs even this question in less than 1 msec. *yaw drop*
+
+This is what we're up against. Note that the query, in the time of Warren and Pereira, could have taken 12 hours, and the need to start optimizing would be essential.
+
+===
+
+I implemented this inference as part of the model
+
+~~~prolog
+contains(X,Y) :- contains0(X,Y).
+contains(X,Y) :- contains0(X,W), contains(W,Y).
+~~~
+
+like this
+
+~~~
+out_values = self.ds.select("contains", ["part", "whole"], db_values)
+
+part = values[0]
+whole = values[1]
+recurse = solver.solve([("contains", whole, E1), ("in", part, E1)], binding)
+out_values.extend(recurse)
+~~~
+
+I plan to build a simple inference engine, to make these inferences easier. I will need them later.
+
 ## 2024-07-30
 
 First pass of the Chat-80 dialog is complete. All questions have been answered. Leaving the functional approach and reverting to atom-based made it straightforward to complete the dialog. Answering all questions takes 0.3 seconds on my machine. But making it work is just one part of Chat-80. Chat-80 is really really fast. And I noticed that it also produces very simple semantic representations. So I need to:

@@ -1,4 +1,4 @@
-Country,Region,Latitude,Longitude,Area/1000,Area mod 1000,Population/1000000,Population mod 1000000 / 1000,Capital,Currency
+id,region,lat,long,area_div_1000,area_mod_1000,population,population_mod_1000000_div_1000,capital,currency
 afghanistan,indian_subcontinent,33,-65,254,861,18,290,kabul,afghani
 albania,southern_europe,41,-20,11,100,2,350,tirana,lek
 algeria,north_africa,35,-11,919,951,15,770,algiers,dinar

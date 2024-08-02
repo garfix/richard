@@ -1,3 +1,4 @@
+from richard.constants import E1
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
@@ -75,7 +76,7 @@ class Chat80Module(SomeModule):
             out_values = self.ds.select("country", ["capital", "id"], db_values)
         elif relation == "size-of":
             out_types = ["country", None]
-            out_values = self.ds.select("country", ["id", "area"], db_values)
+            out_values = self.ds.select("country", ["id", "area_div_1000"], db_values)
         elif relation == "where":
             out_types = ["country", "place"]
             out_values = self.ds.select("country", ["id", "region"], db_values)
@@ -91,11 +92,17 @@ class Chat80Module(SomeModule):
             out_types = ["country", "city"]
             out_values = self.ds.select("contains", ["whole", "part"], db_values)
         elif relation == "in":
-             out_types = ["country", "region"]
-             out_values = self.ds.select("contains", ["part", "whole"], db_values)
+            out_types = ["country", "region"]
+            out_values = self.ds.select("contains", ["part", "whole"], db_values)
+
+            part = values[0]
+            whole = values[1]
+            recurse = solver.solve([("contains", whole, E1), ("in", part, E1)], binding)
+            out_values.extend(recurse)
+
         elif relation == "south-of":
-             out_types = ["country", "place"]
-             out_values = south_of(self.ds, db_values)
+            out_types = ["country", "place"]
+            out_values = south_of(self.ds, db_values)
         elif relation == "flows-from-to":
             out_types = ["river", "counry", "sea"]
             out_values = flows_from_to(self.ds, db_values)

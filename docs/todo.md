@@ -18,3 +18,5 @@
 * table select columns to display => intents as atoms?
 * improve grammar
 * import from csv
+* floor floating point numbers in tables to integers
+* note that I did implement a rule ("in")
