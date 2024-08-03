@@ -26,9 +26,7 @@ class MemoryDbDataSource(SomeDataSource):
         # from records to lists
         result = []
         for record in records:
-            values = []
-            for field in columns:
-                values.append(record.values[field])
+            values = [record.values[column] for column in columns]
             result.append(values)
         return result
 
