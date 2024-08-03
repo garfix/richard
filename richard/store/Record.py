@@ -2,23 +2,33 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 
-@dataclass(frozen=True)
 class Record:
     """
     A record represents a named tuple (row) in relation (table) of a database. This may be any type of database.
     """
 
     table: str
-    # default: empty dictionary
-    values: dict[str, int|float|str] = field(default_factory=dict)
+    values: dict
+    hash: int
 
-
-    def __post_init__(self):
+    def __init__(self, table: str, values: dict):
+        self.table = table
+        self.values = values
+        
         for name, value in self.values.items():
             if not name.isidentifier():
                 raise ValueError("The record key '" + name + "' is not an identier")
             if not isinstance(value, float) and not isinstance(value, str) and not isinstance(value, int) and not isinstance(value, list):
                 raise ValueError("A record must be int, float or string: " + str(value))
+            
+        h = []
+        for key, value in values.items():
+            h.append(key)
+            if isinstance(value, list):
+                h.extend(value)
+            else:
+                h.append(value)
+        self.hash = hash(tuple(h))
     
 
     def __str__(self):
@@ -30,8 +40,7 @@ class Record:
 
 
     def __hash__(self) -> int:
-        # todo: this is a very inefficient hash, but hash(frozenset(self.values.items())) doesn't work anymore since the values can be lists
-        return hash(self.table) #+ hash(frozenset(self.values.items()))
+        return self.hash
 
 
     def subsetOf(self, other: Record):

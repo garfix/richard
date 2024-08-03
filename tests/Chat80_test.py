@@ -1,5 +1,6 @@
 import unittest
 import pathlib
+import cProfile
 
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -32,6 +33,10 @@ class TestChat80(unittest.TestCase):
     """
    
     def test_chat80(self):
+        # cProfile.runctx('self.do()', globals(), locals(), None, 'cumulative')
+        self.do()
+
+    def do(self):
 
         db = MemoryDb()
         path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/resources/"

@@ -20,3 +20,4 @@
 * import from csv
 * floor floating point numbers in tables to integers
 * note that I did implement a rule ("in")
+* separate folder with importers

@@ -9,17 +9,39 @@ class MemoryDb:
     """
 
     store: dict[str, list[Record]]
+    index: dict[dict[set[Record]]]
 
 
     def __init__(self) -> None:
         self.store = {}
+        self.index = {}
 
 
     def insert(self, record: Record):
+
+        # per table store
+
         if not record.table in self.store:
             self.store[record.table] = []
 
         self.store[record.table].append(record)
+
+        # per value index
+
+        if not record.table in self.index:
+            self.index[record.table] = {}
+
+        for key, value in record.values.items():
+
+            value = str(value)
+
+            if not key in self.index[record.table]:
+                self.index[record.table][key] = {}
+
+            if not value in self.index[record.table][key]:
+                self.index[record.table][key][value] = set()
+
+            self.index[record.table][key][value].add(record)
 
 
     def delete(self, record: Record):
@@ -37,14 +59,23 @@ class MemoryDb:
         """
         returns all records from record's table that include record
         """
-        result = RecordSet()
+        if not record.table in self.index:
+            return RecordSet()
 
-        if record.table in self.store:
-            for r in self.store[record.table]:
-                if record.subsetOf(r):
-                    result.add(r)
-        
-        return result
+        if record.values == {}:
+            return RecordSet(self.store[record.table])
+
+        # create a separate set of records for each element in the record's values
+        sets = []
+        for key, value in record.values.items():
+            value = str(value)
+            if key in self.index[record.table] and value in self.index[record.table][key]:
+                sets.append(self.index[record.table][key][value])
+            else:
+                return RecordSet()
+                       
+        # return the intersection of these sets                       
+        return RecordSet(set.intersection(*sets))
     
 
     def import_csv(self, table: str, path: str):

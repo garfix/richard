@@ -8,11 +8,11 @@ class RecordSet:
     """
     
     # each record can occur only once
-    _records: set[Record]
+    _records: OrderedSet[Record]
 
 
-    def __init__(self) -> None:
-        self._records = OrderedSet()
+    def __init__(self, values: OrderedSet[Record] = OrderedSet()) -> None:
+        self._records = values
 
 
     def __len__(self) -> int:
