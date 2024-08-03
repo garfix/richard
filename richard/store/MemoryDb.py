@@ -55,22 +55,22 @@ class MemoryDb:
         self.store[record.table] = records
 
 
-    def select(self, record: Record) -> RecordSet:
+    def select(self, table, values: dict) -> RecordSet:
         """
         returns all records from record's table that include record
         """
-        if not record.table in self.index:
+        if not table in self.index:
             return RecordSet()
 
-        if record.values == {}:
-            return RecordSet(self.store[record.table])
+        if values == {}:
+            return RecordSet(self.store[table])
 
         # create a separate set of records for each element in the record's values
         sets = []
-        for key, value in record.values.items():
+        for key, value in values.items():
             value = str(value)
-            if key in self.index[record.table] and value in self.index[record.table][key]:
-                sets.append(self.index[record.table][key][value])
+            if key in self.index[table] and value in self.index[table][key]:
+                sets.append(self.index[table][key][value])
             else:
                 return RecordSet()
                        

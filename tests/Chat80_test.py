@@ -1,6 +1,8 @@
+from math import ceil
 import unittest
 import pathlib
 import cProfile
+import time
 
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -121,6 +123,7 @@ class TestChat80(unittest.TestCase):
             question, answer = test
             print()
             print(question)
+            start_time = time.perf_counter()
             request = SentenceRequest(question)
             try:
                 result = pipeline.enter(request)
@@ -129,6 +132,9 @@ class TestChat80(unittest.TestCase):
                 print(composer.format_semantics(request))
                 print(executor.get_results(request))
                 print(responder.get_response(request))
+            
+            end_time = time.perf_counter()
+            print(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
             if not result.error_code == "":
                 print(result.error_code, result.error_args) 

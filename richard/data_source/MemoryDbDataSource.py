@@ -20,4 +20,4 @@ class MemoryDbDataSource(SomeDataSource):
                 column = columns[i]
                 where[column] = field
 
-        return self.db.select(Record(table, where)).fields(columns)
+        return self.db.select(table, where).fields(columns)
