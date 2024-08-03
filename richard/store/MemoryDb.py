@@ -1,6 +1,5 @@
 import csv
 from richard.store.Record import Record
-from richard.store.RecordSet import RecordSet
 
 
 class MemoryDb:
@@ -55,15 +54,15 @@ class MemoryDb:
         self.store[record.table] = records
 
 
-    def select(self, table, values: dict) -> RecordSet:
+    def select(self, table, values: dict) -> list:
         """
         returns all records from record's table that include record
         """
         if not table in self.index:
-            return RecordSet()
+            return []
 
         if values == {}:
-            return RecordSet(self.store[table])
+            return self.store[table]
 
         # create a separate set of records for each element in the record's values
         sets = []
@@ -72,10 +71,10 @@ class MemoryDb:
             if key in self.index[table] and value in self.index[table][key]:
                 sets.append(self.index[table][key][value])
             else:
-                return RecordSet()
+                return []
                        
         # return the intersection of these sets                       
-        return RecordSet(set.intersection(*sets))
+        return set.intersection(*sets)
     
 
     def import_csv(self, table: str, path: str):
