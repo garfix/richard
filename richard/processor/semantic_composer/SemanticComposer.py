@@ -3,21 +3,26 @@ from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
 from richard.interface.SomeParser import SomeParser
+from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
 from richard.entity.Composition import Composition
+from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 
 
 class SemanticComposer(SomeSemanticComposer):
     """
     Performs semantic composition on the product of the parser
+    Opimizes the composition for speed of execution
     """
     
     parser: SomeParser
+    query_optimizer: SomeQueryOptimizer
 
 
     def __init__(self, parser: SomeParser) -> None:
         super().__init__()
         self.parser = parser    
+        self.query_optimizer = BasicQueryOptimizer()
 
     
     def process(self, request: SentenceRequest) -> ProcessResult:
@@ -34,7 +39,8 @@ class SemanticComposer(SomeSemanticComposer):
         self.check_for_sem(root)
         
         semantics, inferences, intent = self.compose(root, ["S1"], next_number)
-        composition = Composition(semantics, inferences, intent)
+        optimized_semantics = self.query_optimizer.optimize(semantics)
+        composition = Composition(semantics, optimized_semantics, inferences, intent)
         return ProcessResult([composition], "", [])    
 
 
@@ -110,6 +116,10 @@ class SemanticComposer(SomeSemanticComposer):
 
     def format_semantics(self, request: SentenceRequest) -> str:
         return self.format_value(request.get_current_product(self).semantics)
+    
+
+    def format_optimized_semantics(self, request: SentenceRequest) -> str:
+        return self.format_value(request.get_current_product(self).optimized_semantics)
     
 
     def format_value(self, value: any, indent: str = "\n") -> str:

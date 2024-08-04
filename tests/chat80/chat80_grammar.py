@@ -49,7 +49,7 @@ def get_grammar(model: Model):
         { 
             "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
             "sem": lambda noun, np: [('find', E2, np, [])] + noun + [('of', E1, E2)],
-            "intents": ["table"],
+            "intents": ["table", "S2", "S1"],
             "boost": 1
         },
         { 
@@ -60,12 +60,12 @@ def get_grammar(model: Model):
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, [('find', E2, np, preposition), ('size-of', E2, E4)])],
-            "intents": ["table"]
+            "intents": ["table", "S3", "S1"]
         },
         { 
             "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'", 
             "sem": lambda np, tv, nbar: nbar + [('percentage', E3, [('find', E1, np, tv)], [('find', E1, np, [])])], 
-            "intents": ["table"] 
+            "intents": ["table", "S2", "E3"] 
         },
         { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 

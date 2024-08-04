@@ -2,6 +2,53 @@
 
 By optimizing the in-memory data store, I brought processing time back from 50 sec to 8.1 sec; 7.8 seconds are spent by the complex (border-border-border) query.
 
+===
+
+Before starting to work on the borders-borders-borders I'll do this one first:
+
+    Which country's capital is London?
+
+It takes 83 msecs and that fast for the very inefficient way the sentence is executed.    
+
+~~~python
+[
+    ('country', S1)
+    ('find', S2, 
+        ('quant', S2, 'exists', 
+            [
+                ('capital', S2)
+            ]), 
+        [
+            ('of', S2, S1)
+            ('find', S3, 
+                ('quant', S3, 'exists', 
+                    [
+                        ('resolve_name', 'London', S3)
+                    ]), 
+                [
+                    ('==', S2, S3)
+                ])
+        ])
+]
+~~~
+
+First we load all countries, then for each country, we find all capitals and remove the ones that do not belong to the country. Then still for each country, we resolve the name "London" and check if it is indeed the capital.
+
+We need to transform this query into:
+
+~~~python
+[
+    ('resolve_name', 'London', S3),
+    ('==', S2, S3),
+    ('of', S2, S1),
+    ('country', S1)
+]
+~~~
+
+Or some other simple representation that does the job.
+
+The DEC KL-10 of Warren and Pereira ran at 50Mhz. My Lenovo LOQ 15IRH8 runs at 2000Mhz, which makes it 40 times faster. My machine has 12 cores, which I'm not using yet.
+
 ## 2024-08-02
 
 In their papers, Warren and Pereira mentioned their query response times. They ranged from 200 to 800 msecs. I thought that was ok, and something I would be able to match easily. Only when I ran their system on a current computer it dawned on me how much processing speed has increased. Response times are now between 0 and 2 msecs. That includes parsing and execution! I had to change a sample sentence a bit to ensure myself that the results weren't just cached. There's much to be done before I can reach this speed. In fact, only the parsing in my system takes already a few msecs, to I will never be able to compete. I can merely do my best to come near... this is humbling.

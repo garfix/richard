@@ -21,10 +21,19 @@ class Chat80Responder(SomeResponseHandler):
         elif "table" in composition.intents:
             response = []
             for binding in bindings:
-                response.append([value.id if isinstance(value, Instance) else value for value in binding.values()])
+                # todo: make this more general
+                v1 = composition.intents[1]
+                v2 = composition.intents[2]
+                val1 = binding[v1].id if isinstance(binding[v1], Instance) else binding[v1]
+                val2 = binding[v2].id if isinstance(binding[v2], Instance) else binding[v2]
+                response.append([val1, val2])
         else:
+            s = set()
             for binding in bindings:
                 value = binding["S1"].id if isinstance(binding["S1"], Instance) else binding["S1"]
+                if value in s:
+                    continue
+                s.add(value)
                 response += sep + value
                 sep = ", "
 
