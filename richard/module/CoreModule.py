@@ -1,6 +1,7 @@
 
 
-from richard.constants import ALL, EXISTS, NONE
+from richard.constants import ALL, BLOCKED, EXISTS, NONE
+from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
 from richard.type.OrderedSet import OrderedSet
@@ -8,53 +9,25 @@ from richard.type.OrderedSet import OrderedSet
 
 class CoreModule(SomeModule):
 
-    def get_relations(self):
-        return [
-            "find", 
-            "==",
-            ">",
-            "<",
-            "aggregate",
-            "sum",
-            "avg",
-            "percentage",
-            "count",
-            "not",
-            "=",
-        ]
+    def __init__(self) -> None:
+        self.relations = {
+            "find": Relation(self.find, [BLOCKED, BLOCKED, BLOCKED]),
+            "==": Relation(self.equals, [BLOCKED, BLOCKED, BLOCKED]),
+            ">": Relation(self.greater_than, [BLOCKED, BLOCKED, BLOCKED]),
+            "<": Relation(self.less_than, [BLOCKED, BLOCKED, BLOCKED]),
+            "aggregate": Relation(self.aggregation, [BLOCKED, BLOCKED, BLOCKED]),
+            "sum": Relation(self.sum, [BLOCKED, BLOCKED, BLOCKED]),
+            "avg": Relation(self.avg, [BLOCKED, BLOCKED, BLOCKED]),
+            "percentage": Relation(self.percentage, [BLOCKED, BLOCKED, BLOCKED]),
+            "count": Relation(self.count, [BLOCKED, BLOCKED, BLOCKED]),
+            "not": Relation(self.not_function, [BLOCKED, BLOCKED, BLOCKED]),
+            "=": Relation(self.assign, [BLOCKED, BLOCKED, BLOCKED]),
+        }
     
-
-    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        if relation == "find":
-            out_values = self.find(values, solver, binding)
-        elif relation == "==":
-            out_values = self.equals(values, solver, binding)
-        elif relation == ">":
-            out_values = self.greater_than(values, solver, binding)
-        elif relation == "<":
-            out_values = self.less_than(values, solver, binding)
-        elif relation == "aggregate":
-            out_values = self.aggregation(values, solver, binding)
-        elif relation == "count":
-            out_values = self.count(values, solver, binding)
-        elif relation == "sum":
-            out_values = self.sum(values, solver, binding)
-        elif relation == "avg":
-            out_values = self.avg(values, solver, binding)
-        elif relation == "percentage":
-            out_values = self.percentage(values, solver, binding)
-        elif relation == "not":
-            out_values = self.not_function(values, solver, binding)
-        elif relation == "=":
-            out_values = self.assign(values, solver, binding)
-        else:
-            out_values = []
-
-        return out_values
 
     # ('find', E1, np, vp_nosub_obj)
     # ('quant', E1, det, nbar)
-    def find(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def find(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
         find_var, quant, body = values
         predicate1, quant_var, det, nbar = quant
 
@@ -104,7 +77,7 @@ class CoreModule(SomeModule):
 
 
     # ('==', E1, E2)
-    def equals(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def equals(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         if values[0] == values[1]:
             return [values]
@@ -112,7 +85,7 @@ class CoreModule(SomeModule):
     
 
     # ('>', E1, E2)
-    def greater_than(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def greater_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         if values[0] > values[1]:
             return [values]
@@ -120,7 +93,7 @@ class CoreModule(SomeModule):
 
 
     # ('<', E1, E2)
-    def less_than(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def less_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         if values[0] < values[1]:
             return [values]
@@ -129,7 +102,7 @@ class CoreModule(SomeModule):
 
     # ('aggregate', nbar, superlative, E1)
     # ('aggregation', E1, E2, [('size-of', E1, E2)], 'min')
-    def aggregation(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def aggregation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
         nbar, superlative, result_var = values
         predicate1, entity_var, attribute_var, argument_atoms, aggregation = superlative
 
@@ -170,7 +143,7 @@ class CoreModule(SomeModule):
 
     # ('count', E1, [body-goals])
     # returns the number of results of body-goals in E1
-    def count(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def count(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         count_var, body = values
 
@@ -184,7 +157,7 @@ class CoreModule(SomeModule):
 
     # ('sum', E1, E2, [body-goals])
     # returns the sum of results of the values of E2 in body-goals in E1
-    def sum(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def sum(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         sum_var, element_var, body = values
 
@@ -200,7 +173,7 @@ class CoreModule(SomeModule):
 
     # ('avg', E1, E2, [body-goals])
     # returns the average of results of the values of E2 in body-goals in E1
-    def avg(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def avg(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         sum_var, element_var, body = values
 
@@ -224,7 +197,7 @@ class CoreModule(SomeModule):
 
     # ('percentage', E1, [nominator-goals], [denominator-goals])
     # returns the percentage of nominator-goals in denominator-goals
-    def percentage(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def percentage(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         pecentage_var, nominator, denominator = values
 
@@ -244,7 +217,7 @@ class CoreModule(SomeModule):
     # ('not',[body-goals])
     # if body-goals returns values, not returns an empty list
     # otherwise, it returns a list with a single value: True
-    def not_function(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def not_function(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         body = values[0]
 
@@ -260,7 +233,7 @@ class CoreModule(SomeModule):
 
 
     # ('=', E1, 5)
-    def assign(self, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def assign(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         return [[
             values[1], values[1]

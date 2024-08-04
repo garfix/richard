@@ -26,8 +26,10 @@ class Model:
         rows = []
         handled = False
         for module in self.modules:
-            if relation in module.get_relations():
-                out_values = module.interpret_relation(relation, model_values, solver, binding)
+            relations = module.get_relations()
+            if relation in relations:
+                info = relations[relation]
+                out_values = info.function(relation, model_values, solver, binding)
                 rows.extend(out_values)
                 handled = True
 

@@ -32,3 +32,9 @@ Range = Variable('Range')
 EXISTS = 'exists'
 NONE = 'none'
 ALL = 'all'
+
+SMALL = 'small'
+MEDIUM = 'medium'
+LARGE = 'large'
+VERY_LARGE = 'very_large'
+BLOCKED = 'blocked'

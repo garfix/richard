@@ -1,19 +1,17 @@
 from abc import ABC, abstractmethod
 
+from richard.entity.Relation import Relation
 from richard.entity.Instance import Instance
-from richard.interface import SomeSolver
 
 
 class SomeModule(ABC):
-    @abstractmethod
-    def get_relations(self) -> list[str]:
-        pass
 
-        
-    @abstractmethod
-    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        pass
-    
+    relations: dict
+
+
+    def get_relations(self) -> dict[str, Relation]:
+        return self.relations
+            
     
     def dehydrate_values(self, values: list) -> list:
         dehydrated = []
