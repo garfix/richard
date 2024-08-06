@@ -9,7 +9,6 @@ class SortByTokenCount:
     def sort(self, trees: list[ParseTreeNode]) -> list[ParseTreeNode]:
 
         results = []
-
         for tree in trees:
             score = self.count_tokens(tree)
             results.append({'tree': tree, 'score': score})

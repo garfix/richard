@@ -1,4 +1,4 @@
-from richard.constants import BLOCKED, E1
+from richard.constants import IGNORED, E1, LARGE, MEDIUM, SMALL
 from richard.entity.Relation import Relation
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
@@ -17,28 +17,28 @@ class Chat80Module(SomeModule):
 
         self.ds = data_source
         self.relations = {
-            "river": Relation(self.simple_entity, [BLOCKED, BLOCKED, BLOCKED]),
-            "country": Relation(self.simple_entity, [BLOCKED, BLOCKED, BLOCKED]),
-            "ocean": Relation(self.simple_entity, [BLOCKED, BLOCKED, BLOCKED]),
-            "sea": Relation(self.simple_entity, [BLOCKED, BLOCKED, BLOCKED]),
-            "city": Relation(self.simple_entity, [BLOCKED, BLOCKED, BLOCKED]),
-            "continent": Relation(self.simple_entity, [BLOCKED, BLOCKED, BLOCKED]),
-            "capital": Relation(self.capital, [BLOCKED, BLOCKED, BLOCKED]),
-            "borders": Relation(self.borders, [BLOCKED, BLOCKED, BLOCKED]),
-            "resolve_name": Relation(self.resolve_name, [BLOCKED, BLOCKED, BLOCKED]),
-            "of": Relation(self.of, [BLOCKED, BLOCKED, BLOCKED]),
-            "size-of": Relation(self.size_of, [BLOCKED, BLOCKED, BLOCKED]),
-            "where": Relation(self.where, [BLOCKED, BLOCKED, BLOCKED]),
-            "european": Relation(self.some_continent, [BLOCKED, BLOCKED, BLOCKED]),
-            "asian": Relation(self.some_continent, [BLOCKED, BLOCKED, BLOCKED]),
-            "african": Relation(self.some_continent, [BLOCKED, BLOCKED, BLOCKED]),
-            "american": Relation(self.some_continent, [BLOCKED, BLOCKED, BLOCKED]),
-            "flows-through": Relation(self.flows_through, [BLOCKED, BLOCKED, BLOCKED]),
-            "south-of": Relation(self.south_of, [BLOCKED, BLOCKED, BLOCKED]),
-            "in": Relation(self.in_function, [BLOCKED, BLOCKED, BLOCKED]),
-            "flows-from-to": Relation(self.flows_from_to, [BLOCKED, BLOCKED, BLOCKED]),
-            "contains": Relation(self.contains, [BLOCKED, BLOCKED, BLOCKED]),
-            "has-population": Relation(self.has_population, [BLOCKED, BLOCKED, BLOCKED]),
+            "river": Relation(self.simple_entity, SMALL, [SMALL]),
+            "country": Relation(self.simple_entity, MEDIUM, [MEDIUM]),
+            "ocean": Relation(self.simple_entity, SMALL, [SMALL]),
+            "sea": Relation(self.simple_entity, SMALL, [SMALL]),
+            "city": Relation(self.simple_entity, MEDIUM, [MEDIUM]),
+            "continent": Relation(self.simple_entity, SMALL, [SMALL]),
+            "capital": Relation(self.capital, MEDIUM, [MEDIUM]),
+            "borders": Relation(self.borders, LARGE, [MEDIUM, MEDIUM]),
+            "resolve_name": Relation(self.resolve_name, LARGE, [LARGE, LARGE]),
+            "of": Relation(self.of, LARGE, [MEDIUM, MEDIUM]),
+            "size-of": Relation(self.size_of, MEDIUM, [MEDIUM, IGNORED]),
+            "where": Relation(self.where, MEDIUM, [MEDIUM, MEDIUM]),
+            "european": Relation(self.some_continent, MEDIUM, [MEDIUM]),
+            "asian": Relation(self.some_continent, MEDIUM, [MEDIUM]),
+            "african": Relation(self.some_continent, MEDIUM, [MEDIUM]),
+            "american": Relation(self.some_continent, MEDIUM, [MEDIUM]),
+            "flows-through": Relation(self.flows_through, MEDIUM, [SMALL, MEDIUM]),
+            "south-of": Relation(self.south_of, LARGE, [MEDIUM, MEDIUM]),
+            "in": Relation(self.in_function, LARGE, [MEDIUM, MEDIUM]),
+            "flows-from-to": Relation(self.flows_from_to, LARGE, [MEDIUM, MEDIUM, MEDIUM]),
+            "contains": Relation(self.contains, LARGE, [LARGE, LARGE]),
+            "has-population": Relation(self.has_population, MEDIUM, [MEDIUM, IGNORED]),
         }
    
     

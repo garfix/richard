@@ -55,11 +55,11 @@ class TestChat80(unittest.TestCase):
         data_source = MemoryDbDataSource(db)
         model = Model([Chat80Module(data_source)])
         solver = Solver(model)
-        grammar = get_grammar(model)
+        grammar = get_grammar()
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser)
+        composer = SemanticComposer(parser, model)
         executor = AtomExecutor(composer, solver)
         responder = SimpleResponder(composer, executor, handler=Chat80Responder())
 

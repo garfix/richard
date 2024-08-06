@@ -8,7 +8,6 @@ class SortByTreeDepth:
     def sort(self, trees: list[ParseTreeNode]) -> list[ParseTreeNode]:
 
         results = []
-
         for tree in trees:
             score = self.get_depth(tree, 0)
             results.append({'tree': tree, 'score': score})

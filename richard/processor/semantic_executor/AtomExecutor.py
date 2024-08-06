@@ -23,7 +23,7 @@ class AtomExecutor(SomeProcessor):
     
     def process(self, request: SentenceRequest) -> ProcessResult:
         composition = self.composer.get_composition(request)
-        bindings = self.solver.solve(composition.semantics, {})       
+        bindings = self.solver.solve(composition.optimized_semantics, {})       
         return ProcessResult([bindings], "", [])
     
 

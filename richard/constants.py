@@ -33,8 +33,12 @@ EXISTS = 'exists'
 NONE = 'none'
 ALL = 'all'
 
-SMALL = 'small'
-MEDIUM = 'medium'
-LARGE = 'large'
-VERY_LARGE = 'very_large'
-BLOCKED = 'blocked'
+ONE = 1
+SMALL = 10
+MEDIUM = 100
+LARGE = 1000
+VERY_LARGE = 10000
+INFINITE = 1000000000000
+IGNORED = 'ignored'
+UNKNOWN = 500
+

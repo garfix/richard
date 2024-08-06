@@ -1,8 +1,7 @@
-from richard.Model import Model
 from richard.constants import ALL, E1, E2, E3, E4, EXISTS, NONE, Range, Result
 
 
-def get_grammar(model: Model):
+def get_grammar():
     return [
 
         # sentence

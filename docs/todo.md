@@ -1,9 +1,9 @@
 ## todo
 
-* create numbers based on a token
-* simplify semantics that uses EXISTS
 * optimize: reorder atoms
 * optimze: distinguish between all-quantors and existential quantors
+* create numbers based on a token
+* simplify semantics that uses EXISTS
 * update documentation
 * unit test
 * better error messages
@@ -11,7 +11,6 @@
 * log the time it takes to perform a block
 * table select columns to display => intents as atoms?
 * improve grammar
-* import from csv
 * floor floating point numbers in tables to integers
 * note that I did implement a rule ("in")
 * separate folder with importers
@@ -21,6 +20,8 @@
 * start using dialog variables in stead of sentence variables; it's hard to change them later
 * maybe the variable in quant is superfluous (yes, may be left out)
 * "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'",  new variables in sem are not turned into sentence variables (E3)
+* create a context and pass it to each module function, in stead of the arguments which are mostly unused
+* can np's be implemented as atoms without find?
 
 ## done
 
@@ -28,3 +29,4 @@
 * document parse tree sort heuristics
 * chat-80 import csv
 * optimize in-memory db
+* import from csv

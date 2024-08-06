@@ -1,7 +1,8 @@
 
 
-from richard.constants import ALL, BLOCKED, EXISTS, NONE
+from richard.constants import ALL, IGNORED, EXISTS, INFINITE, LARGE, NONE, ONE, UNKNOWN
 from richard.entity.Relation import Relation
+from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
 from richard.type.OrderedSet import OrderedSet
@@ -11,17 +12,17 @@ class CoreModule(SomeModule):
 
     def __init__(self) -> None:
         self.relations = {
-            "find": Relation(self.find, [BLOCKED, BLOCKED, BLOCKED]),
-            "==": Relation(self.equals, [BLOCKED, BLOCKED, BLOCKED]),
-            ">": Relation(self.greater_than, [BLOCKED, BLOCKED, BLOCKED]),
-            "<": Relation(self.less_than, [BLOCKED, BLOCKED, BLOCKED]),
-            "aggregate": Relation(self.aggregation, [BLOCKED, BLOCKED, BLOCKED]),
-            "sum": Relation(self.sum, [BLOCKED, BLOCKED, BLOCKED]),
-            "avg": Relation(self.avg, [BLOCKED, BLOCKED, BLOCKED]),
-            "percentage": Relation(self.percentage, [BLOCKED, BLOCKED, BLOCKED]),
-            "count": Relation(self.count, [BLOCKED, BLOCKED, BLOCKED]),
-            "not": Relation(self.not_function, [BLOCKED, BLOCKED, BLOCKED]),
-            "=": Relation(self.assign, [BLOCKED, BLOCKED, BLOCKED]),
+            "find": Relation(self.find, UNKNOWN, [IGNORED, UNKNOWN, UNKNOWN]),
+            "==": Relation(self.equals, INFINITE, [INFINITE, INFINITE]),
+            ">": Relation(self.greater_than, INFINITE, [INFINITE, INFINITE]),
+            "<": Relation(self.less_than, INFINITE, [INFINITE, INFINITE]),
+            "aggregate": Relation(self.aggregation, UNKNOWN, [UNKNOWN, UNKNOWN, IGNORED]),
+            "sum": Relation(self.sum, UNKNOWN, [IGNORED, IGNORED, UNKNOWN]),
+            "avg": Relation(self.avg, UNKNOWN, [IGNORED, IGNORED, UNKNOWN]),
+            "percentage": Relation(self.percentage, UNKNOWN, [IGNORED, IGNORED, UNKNOWN]),
+            "count": Relation(self.count, UNKNOWN, [IGNORED, UNKNOWN]),
+            "not": Relation(self.not_function, UNKNOWN, [INFINITE]),
+            "=": Relation(self.assign, INFINITE, [IGNORED, INFINITE]),
         }
     
 
@@ -79,12 +80,25 @@ class CoreModule(SomeModule):
     # ('==', E1, E2)
     def equals(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
-        if values[0] == values[1]:
-            return [values]
+        e1 = values[0]
+        e2 = values[1]
+
+        if isinstance(e1, Variable):
+            if isinstance(e2, Variable):
+                raise Exception("== is called with two variables")
+            else:
+                return [[e2, e2]]
+        else:
+            if isinstance(e2, Variable):
+                return [[e1, e1]]
+
+        if e1 == e2:
+            return [[e1, e2]]
         return []
-    
+
 
     # ('>', E1, E2)
+    # E1 and E2 must be bound
     def greater_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         if values[0] > values[1]:
@@ -93,6 +107,7 @@ class CoreModule(SomeModule):
 
 
     # ('<', E1, E2)
+    # E1 and E2 must be bound
     def less_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         if values[0] < values[1]:

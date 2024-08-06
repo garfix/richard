@@ -99,8 +99,4 @@ def resolve_name(ds: SomeDataSource, values: list) -> tuple[list[list], list[lis
         types = [None, 'circle_of_latitude']
         return [['equator', 'equator']], types
 
-    if name == 'australasia':
-        types = [None, 'region']
-        return [['australasia', 'australasia']], types
-
     raise Exception("Name not found: " + name)

@@ -9,7 +9,6 @@ class SortByBoost:
     def sort(self, trees: list[ParseTreeNode]) -> list[ParseTreeNode]:
 
         results = []
-
         for tree in trees:
             score = self.get_boost(tree)
             results.append({'tree': tree, 'score': score})
