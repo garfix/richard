@@ -41,7 +41,12 @@ class Solver(SomeSolver):
             # d -= 1  
 
         # print("e", atoms, binding, result)
-        return result
+        # return result
+        a = []
+        for r in result:
+            if not r in a:
+                a.append(r)
+        return a
 
 
     def solve_single(self, tuple: tuple, binding: dict):

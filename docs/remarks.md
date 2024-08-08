@@ -1,3 +1,102 @@
+## 2024-08-08 a
+
+I got this working. I am shocked how much more simpler I'm able to make the semantics using this new technique.
+
+From
+
+    [('find', E2, ('quant', E2, EXISTS, attr), vp_nosub_obj)]
+
+to
+
+    attr + vp_nosub_obj
+
+    
+
+## 2024-08-08
+
+I was inspired by the simple logical constructs that Chat-80 creates. In comparison with them my own constructs were very heavy, and while they were simplified in the optimization step, it seemed strange to generate big structures just to be make them smaller afterwards. Also, I think it's good to have this simplification knowledge inside the grammar. It makes you aware of the differences.
+
+Here are some tests I did. In my mind I switched from atom-based to function based and back several times. Function based almost won, because it's simpler and shows where the "Body" comes from. However, the variables in the functions can't be replaced and this proved to be a problem I couldn't fix. Also function based has functions within functions and that makes it look complicated from the start. I think I found a rather elegant atom based solution.
+
+=====================================================================================================
+
+CURRENT
+
+{ 
+    "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+    "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), [('find', E1, np, preposition)])]
+}
+
+=====================================================================================================
+
+ATOM BASED
+
+def apply(atoms, body):
+	return replace(atoms, "Body", body)
+
+{ 
+  "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+  "sem": lambda np, preposition, nbar: [('all', E2, nbar, apply(np, preposition))]
+}
+
+# np
+{ "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: nbar + Body },
+{ "syn": "np(E1) -> det(E1) nbar(E1)", "sem": apply(det, nbar + Body) },
+{ "syn": "np(E1) -> number(E1)", "sem": lambda number: [('=', E1, number)] + Body },
+
+# det
+{ "syn": "det(E1) -> 'any'", "sem": lambda: Body },
+{ "syn": "det(E1) -> 'no'", "sem": lambda: ('det-none', Body) },
+{ "syn": "det(E1) -> number(E1)", "sem": lambda number: ('det-number', Body, number) },
+{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": ('det-greater-than', Body, number) },
+
+=====================================================================================================
+
+FUNCTION BASED
+
+
+{ "sem": lambda np, preposition, nbar: [('all', E2, nbar + np(preposition))]}
+
+# np
+{ "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: 
+	lambda Body: nbar + Body },
+{ "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: 
+	lambda Body: det(nbar, Body) },
+{ "syn": "np(E1) -> number(E1)", "sem": lambda number: 
+	lambda Body: [('=', E1, number)] + Body },
+
+
+# det
+{ "syn": "det(E1) -> 'any'", "sem": lambda: 
+	lambda Range, Body: Range + Body },
+{ "syn": "det(E1) -> 'no'", "sem": lambda: 
+	lambda Range, Body: ('not', E1, Range + Body) },
+{ "syn": "det(E1) -> number(E1)", "sem": lambda number: 
+	lambda Range, Body: ('det-number', E1, Range + Body, number) },
+{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
+	lambda Range, Body: ('det-greater-than', E1, Range + Body, number) },
+{ "syn": "det(E1) -> 'all'", "sem": lambda: 
+	lambda Range, Body: ('all', E1, Range, Body) },
+
+PROBLEMS
+
+strange to include Body in the meaning of an np, but makes sense
+if "find" is gone, will "do" still work? (no but do is also not necessary, since all np's can be passed directly to a imperative verb)
+
+=====================================================================================================
+
+CURRENT BUT CHANGED
+
+{ 
+    "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+    "sem": lambda np, preposition, nbar: [('find', E2, ('all', Result, Range, nbar), [('find', E1, np, preposition)])]
+}
+
+{ "syn": "det(E1) -> number(E1)", "sem": lambda number: ('det-equals', Result, number) },
+{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('det-greater-than', Result, number) },
+
+=====================================================================================================
+
 ## 2024-08-03
 
 By optimizing the in-memory data store, I brought processing time back from 50 sec to 8.1 sec; 7.8 seconds are spent by the complex (border-border-border) query.

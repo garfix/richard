@@ -1,23 +1,56 @@
 from richard.constants import ALL, E1, E2, E3, E4, EXISTS, NONE, Range, Result
 
 
+SIBLING1 = ["sibling1"]
+SIBLING2 = ["sibling2"]
+
+
+def apply(main, *replacements):
+
+    siblings = [SIBLING1, SIBLING2]
+
+    replaced = main
+
+    for i, replacement in enumerate(replacements):
+        token = siblings[i][0]
+        replaced = replace(replaced, token, replacement, True)
+
+    # print(main, replacements, replaced)
+
+    return replaced
+
+
+def replace(atoms, token, replacement, is_list):
+    replaced = []
+    for atom in atoms:
+        if atom == token:
+            replaced.extend(replacement)
+        elif isinstance(atom, tuple):
+            replaced.append(replace(atom, token, replacement, False))
+        elif isinstance(atom, list):
+            replaced.append(replace(atom, token, replacement, True))
+        else:
+            replaced.append(atom)
+    return replaced if is_list else tuple(replaced)
+
+
 def get_grammar():
     return [
 
         # sentence
         { 
             "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
-            "sem": lambda np, vp_nosub_obj: [('find', E1, np, vp_nosub_obj)], 
+            "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj), 
             "intents": ["y/n"] 
         },
         { 
             "syn": "s(E1) -> 'is' 'there' np(E1) '?'",  
-            "sem": lambda np: [('find', E1, np, [])], 
+            "sem": lambda np: apply(np, []), 
             "intents": ["y/n"] 
         },
         { 
             "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
-            "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), [('find', E1, np, preposition)])], 
+            "sem": lambda np, preposition, nbar: [('all', E2, nbar, apply(np, preposition))], 
             "intents": ["y/n"] 
         },
         { 
@@ -32,48 +65,48 @@ def get_grammar():
         },
         { 
             "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
-            "sem": lambda np: [('find', E1, np, [])], 
+            "sem": lambda np: apply(np, []), 
             "intents": ["list"] 
         },
         { 
             "syn": "s(E1) -> 'what' 'are' np(E1) '?'", 
-            "sem": lambda np: [('find', E1, np, [])], 
+            "sem": lambda np: apply(np, []), 
             "intents": ["list"] 
         },
         { 
             "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) '?'", 
-            "sem": lambda np, vp_noobj_sub_iob: [('find', E1, np, vp_noobj_sub_iob)],
+            "sem": lambda np, vp_noobj_sub_iob: apply(np, vp_noobj_sub_iob),
             "intents": ["list"] 
         },
         { 
             "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
-            "sem": lambda noun, np: [('find', E2, np, [])] + noun + [('of', E1, E2)],
+            "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
             "intents": ["table", "S2", "S1"],
             "boost": 1
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
-            "sem": lambda np: [("sum", E1, E3, [('find', E2, np, []), ('size-of', E2, E3)])],
+            "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size-of', E2, E3)])],
             "intents": ["number"]
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
-            "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, [('find', E2, np, preposition), ('size-of', E2, E4)])],
+            "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size-of', E2, E4)])],
             "intents": ["table", "S3", "S1"]
         },
         { 
             "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'", 
-            "sem": lambda np, tv, nbar: nbar + [('percentage', E3, [('find', E1, np, tv)], [('find', E1, np, [])])], 
+            "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))], 
             "intents": ["table", "S2", "E3"] 
         },
         { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
-            "sem": lambda np: [('find', E1, np, []), ('where', E1, E2)], 
+            "sem": lambda np: apply(np, []) + [('where', E1, E2)], 
             "intents": ["list"] 
         },
         { 
             "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",  
-            "sem": lambda np: [('find', E1, np, []), ('size-of', E1, E2)],
+            "sem": lambda np: apply(np, []) + [('size-of', E1, E2)],
             "intents": ["number"]
         },
         { 
@@ -83,27 +116,27 @@ def get_grammar():
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) '?'", 
-            "sem": lambda nbar, vp_noobj_sub: [('find', E1, ('quant', E1, EXISTS, nbar), vp_noobj_sub)],
+            "sem": lambda nbar, vp_noobj_sub: nbar + vp_noobj_sub,
             "intents": ["list"] 
         },
         { 
             "syn": "s(E1) -> 'which' 'is' np(E1) '?'", 
-            "sem": lambda np: [('find', E1, np, [])], 
+            "sem": lambda np: apply(np, []), 
             "intents": ["list"] 
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", 
-            "sem": lambda nbar, np1, np2: nbar + [('find', E2, np1, [('of', E2, E1), ('find', E3, np2, [('==', E2, E3)])])],
+            "sem": lambda nbar, np1, np2: nbar + apply(np1, [('of', E2, E1)] + apply(np2, [('==', E2, E3)])),
             "intents": ["list"] 
         },
         { 
             "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1) '?'", 
-            "sem": lambda np, vp_nosub_obj: [('find', E1, np, vp_nosub_obj)],
+            "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
             "intents": ["list"] 
         },
         { 
             "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'", 
-            "sem": lambda nbar, vp_noobj_sub: [('count', E1, [('find', E2, ('quant', E2, EXISTS, nbar), vp_noobj_sub)])], 
+            "sem": lambda nbar, vp_noobj_sub: [('count', E1, nbar + vp_noobj_sub)], 
             "intents": ["number"]
         },
         { 
@@ -114,23 +147,23 @@ def get_grammar():
 
 
         # active transitive: sub obj
-        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('find', E2, np, vp_nosub_noobj)] },
-        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('not', [('find', E2, np, vp_nosub_noobj)])] },
+        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: apply(np, vp_nosub_noobj) },
+        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('not', apply(np, vp_nosub_noobj))] },
         { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
 
         { "syn": "vp_nosub_obj(E1) -> 'have' 'a' attr(E1, E2)", "sem": lambda attr: attr },
 
         # passive transitive
-        { "syn": "vp_noobj_sub(E1) -> tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
-        { "syn": "vp_noobj_sub(E1) -> 'does' np(E2) tv(E2, E1)", "sem": lambda np, tv: [('find', E2, np, tv)] },
-        { "syn": "vp_noobj_sub(E1) -> 'is' tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: [('find', E2, np, tv)] },
+        { "syn": "vp_noobj_sub(E1) -> tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: apply(np, tv) },
+        { "syn": "vp_noobj_sub(E1) -> 'does' np(E2) tv(E2, E1)", "sem": lambda np, tv: apply(np, tv) },
+        { "syn": "vp_noobj_sub(E1) -> 'is' tv(E2, E1) 'by' np(E2)", "sem": lambda tv, np: apply(np, tv) },
 
         # active transitive continuous
-        { "syn": "vp_nosub_obj_continuous(E1) -> tv_continuous(E1, E2) np(E2)", "sem": lambda tv_continuous, np: [('find', E2, np, tv_continuous)] },
+        { "syn": "vp_nosub_obj_continuous(E1) -> tv_continuous(E1, E2) np(E2)", "sem": lambda tv_continuous, np: apply(np, tv_continuous) },
 
         # passive ditransitive: obj sub iob
-        { "syn": "vp_noobj_sub_iob(E1) -> 'from' 'which' np(E2) vp_noobj_nosub_iob(E1, E2)", "sem": lambda np, vp_noobj_nosub_iob: [('find', E2, np, vp_noobj_nosub_iob)] },
-        { "syn": "vp_noobj_nosub_iob(E1, E2) -> dtv(E2, E1, E3) np(E3)", "sem": lambda dtv, np: [('find', E3, np, dtv)] },
+        { "syn": "vp_noobj_sub_iob(E1) -> 'from' 'which' np(E2) vp_noobj_nosub_iob(E1, E2)", "sem": lambda np, vp_noobj_nosub_iob: apply(np, vp_noobj_nosub_iob) },
+        { "syn": "vp_noobj_nosub_iob(E1, E2) -> dtv(E2, E1, E3) np(E3)", "sem": lambda dtv, np: apply(np, dtv) },
 
         # transitive verbs
         { "syn": "tv(E1, E2) -> 'border'", "sem": lambda: [('borders', E1, E2)] },
@@ -159,28 +192,41 @@ def get_grammar():
         { "syn": "relative_clause(E1) -> 'that' vp_noobj_sub(E1)", "sem": lambda vp_noobj_sub: vp_noobj_sub },
         { "syn": "relative_clause(E1) -> relative_clause(E1) 'and' relative_clause(E1)", "sem": lambda relative_clause1, relative_clause2: relative_clause1 + relative_clause2 },
         { "syn": "relative_clause(E1) -> vp_nosub_obj_continuous(E1)", "sem": lambda vp_nosub_obj: vp_nosub_obj },
-        { "syn": "relative_clause(E1) -> np(E2) preposition(E2, E1) 'which' vp_nosub_obj(E2)", "sem": lambda np, preposition, vp_nosub_obj: [('find', E2, np, preposition + vp_nosub_obj)] },
-        { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) vp_nosub_obj(E2)", "sem": lambda attr, vp_nosub_obj: [('find', E2, ('quant', E2, EXISTS, attr), vp_nosub_obj)] },
-        { "syn": "relative_clause(E1) -> 'with' 'a' attr(E1, E2) vp_nosub_obj_continuous(E2)", "sem": lambda attr, vp_nosub_obj: [('find', E2, ('quant', E2, EXISTS, attr), vp_nosub_obj)] },
+        { "syn": "relative_clause(E1) -> np(E2) preposition(E2, E1) 'which' vp_nosub_obj(E2)", "sem": lambda np, preposition, vp_nosub_obj: apply(np, preposition + vp_nosub_obj) },
+        { "syn": "relative_clause(E1) -> 'whose' attr(E1, E2) vp_nosub_obj(E2)", "sem": lambda attr, vp_nosub_obj: attr + vp_nosub_obj },
+        { "syn": "relative_clause(E1) -> 'with' 'a' attr(E1, E2) vp_nosub_obj_continuous(E2)", "sem": lambda attr, vp_nosub_obj: attr + vp_nosub_obj },
 
         # np
-        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: ('quant', E1, EXISTS, nbar) },
-        { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: ('quant', E1, det, nbar) },
-        { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: ('quant', E1, det, nbar + attr) },
-        { "syn": "np(E1) -> number(E1)", "sem": lambda number: ('quant', E1, EXISTS, [('=', E1, number)]) },
+        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: 
+            nbar + SIBLING1 },
+        { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: 
+            apply(det, nbar, SIBLING1) },
+        # { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: ('quant', E1, det, nbar + attr) },
+        { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: 
+            apply(det, nbar + attr, SIBLING1) },
+        # { "syn": "np(E1) -> number(E1)", "sem": lambda number: ('quant', E1, EXISTS, [('=', E1, number)]) },
+        { "syn": "np(E1) -> number(E1)", "sem": lambda number: 
+            [('=', E1, number)] + SIBLING1 },
 
         # attribute
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },
         { "syn": "attr(E1, E2) -> attr(E1, E2) relative_clause(E2)", "sem": lambda attr, relative_clause: attr + relative_clause },
 
         # det
-        { "syn": "det(E1) -> 'a'", "sem": lambda: EXISTS },
-        { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
-        { "syn": "det(E1) -> 'some'", "sem": lambda: EXISTS },
-        { "syn": "det(E1) -> 'any'", "sem": lambda: EXISTS },
-        { "syn": "det(E1) -> 'no'", "sem": lambda: NONE },
-        { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('determiner', Result, Range, [('==', Result, number)]) },
-        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('determiner', Result, Range, [('>', Result, number)]) },
+        { "syn": "det(E1) -> 'a'", "sem": lambda: 
+            SIBLING1 + SIBLING2 },
+        { "syn": "det(E1) -> 'the'", "sem": lambda: 
+            SIBLING1 + SIBLING2 },
+        { "syn": "det(E1) -> 'some'", "sem": lambda:
+            SIBLING1 + SIBLING2 },
+        { "syn": "det(E1) -> 'any'", "sem": lambda: 
+            SIBLING1 + SIBLING2 },
+        { "syn": "det(E1) -> 'no'", "sem": lambda: 
+            [('none', SIBLING1 + SIBLING2)] },
+        { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
+            [('det-equals', SIBLING1 + SIBLING2, number)] },
+        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
+            [('det-greater-than', SIBLING1 + SIBLING2, number)] },
 
         # number
         { "syn": "number(E1) -> '1'", "sem": lambda: 1 },
@@ -191,9 +237,9 @@ def get_grammar():
 
         # pp
         { "syn": "pp(E1) -> 'not' pp(E1)", "sem": lambda pp: [('not', pp)] },
-        { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('of', E1, E2)])] },
-        { "syn": "pp(E1) -> 'in' np(E2)", "sem": lambda np: [('find', E2, np, [('in', E1, E2)])] },
-        { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: [('find', E2, np, [('south-of', E1, E2)])] },
+        { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: apply(np, [('of', E1, E2)]) },
+        { "syn": "pp(E1) -> 'in' np(E2)", "sem": lambda np: apply(np, [('in', E1, E2)]) },
+        { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: apply(np, [('south-of', E1, E2)]) },
         { "syn": "pp(E1) -> pp(E1) 'and' pp(E1)", "sem": lambda pp1, pp2: pp1 + pp2 },
 
         { "syn": "preposition(E1, E2) -> 'in'", "sem": lambda: [("in", E1, E2)]},

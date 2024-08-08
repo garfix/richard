@@ -12,7 +12,6 @@ class CoreModule(SomeModule):
 
     def __init__(self) -> None:
         self.relations = {
-            "find": Relation(self.find, UNKNOWN, [IGNORED, UNKNOWN, UNKNOWN]),
             "==": Relation(self.equals, INFINITE, [INFINITE, INFINITE]),
             ">": Relation(self.greater_than, INFINITE, [INFINITE, INFINITE]),
             "<": Relation(self.less_than, INFINITE, [INFINITE, INFINITE]),
@@ -23,59 +22,12 @@ class CoreModule(SomeModule):
             "count": Relation(self.count, UNKNOWN, [IGNORED, UNKNOWN]),
             "not": Relation(self.not_function, UNKNOWN, [INFINITE]),
             "=": Relation(self.assign, INFINITE, [IGNORED, INFINITE]),
+            "det-equals": Relation(self.determiner_equals, INFINITE, [IGNORED, INFINITE]),
+            "det-greater-than": Relation(self.determiner_greater_than, INFINITE, [IGNORED, INFINITE]),
+            "all": Relation(self.determiner_all, INFINITE, [IGNORED, INFINITE]),
+            "none": Relation(self.determiner_none, INFINITE, [IGNORED, INFINITE]),
         }
     
-
-    # ('find', E1, np, vp_nosub_obj)
-    # ('quant', E1, det, nbar)
-    def find(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        find_var, quant, body = values
-        predicate1, quant_var, det, nbar = quant
-
-        entities = OrderedSet([binding[quant_var.name] for binding in solver.solve(nbar, binding)])
-
-        # print(entities)
-
-        range_count = len(entities)
-        results = OrderedSet()
-        for entity in entities:
-            b = binding | {
-                quant_var.name: entity
-            }
-            bindings = solver.solve(body, b)
-            # print(body, b, bindings)
-            if len(bindings) > 0:
-                results.add(entity)
-
-        result_count = len(results)
-
-        if det == EXISTS:
-            success = result_count > 0   
-        elif det == ALL:
-            success = result_count == range_count   
-        elif det == NONE:
-            success = result_count == 0   
-            if success:
-                return [[True, None, None]]
-            else:
-                return []
-        else:
-            predicate2, result_var, range_var, find = det
-
-            binding = {
-                range_var.name: range_count,
-                result_var.name: result_count
-            }
-            ok_bindings = solver.solve(find, binding)
-            success = len(ok_bindings) > 0
-
-            # print(body, success, result_count, find, binding)
-
-        if success:
-            return [[result, None, None] for result in results]
-        else:        
-            return []
-
 
     # ('==', E1, E2)
     def equals(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
@@ -156,8 +108,8 @@ class CoreModule(SomeModule):
             [None, None, best_entity]
         ]
 
-    # ('count', E1, [body-goals])
-    # returns the number of results of body-goals in E1
+    # ('count', E1, [body-atoms])
+    # returns the number of results of body-atoms in E1
     def count(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         count_var, body = values
@@ -170,8 +122,8 @@ class CoreModule(SomeModule):
         ]
     
 
-    # ('sum', E1, E2, [body-goals])
-    # returns the sum of results of the values of E2 in body-goals in E1
+    # ('sum', E1, E2, [body-atoms])
+    # returns the sum of results of the values of E2 in body-atoms in E1
     def sum(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         sum_var, element_var, body = values
@@ -186,8 +138,8 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('avg', E1, E2, [body-goals])
-    # returns the average of results of the values of E2 in body-goals in E1
+    # ('avg', E1, E2, [body-atoms])
+    # returns the average of results of the values of E2 in body-atoms in E1
     def avg(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         sum_var, element_var, body = values
@@ -210,8 +162,8 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('percentage', E1, [nominator-goals], [denominator-goals])
-    # returns the percentage of nominator-goals in denominator-goals
+    # ('percentage', E1, [nominator-atoms], [denominator-atoms])
+    # returns the percentage of nominator-atoms in denominator-atoms
     def percentage(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         pecentage_var, nominator, denominator = values
@@ -229,8 +181,8 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('not',[body-goals])
-    # if body-goals returns values, not returns an empty list
+    # ('not', [body-atoms])
+    # if body-atoms returns values, not returns an empty list
     # otherwise, it returns a list with a single value: True
     def not_function(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
@@ -253,3 +205,83 @@ class CoreModule(SomeModule):
         return [[
             values[1], values[1]
         ]]
+
+
+    # ('det-equals', [body-atoms], E2)
+    def determiner_equals(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        body, number = values
+
+        results = solver.solve(body, binding)
+        count = len(results)
+
+        if count == number:
+            return results
+        else:
+            return []
+
+
+    # ('det-greater-than', [body-atoms], E2)
+    def determiner_greater_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        body, number = values
+
+        results = solver.solve(body, binding)
+        count = len(results)
+
+        if count > number:
+            return results
+        else:
+            return []
+
+
+    # ('all', E1, [range-atoms], [body-atoms])
+    def determiner_all(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        # find_var, quant, body = values
+        # predicate1, quant_var, det, nbar = quant
+
+        quant_var, range, body = values
+
+        entities = OrderedSet([binding[quant_var.name] for binding in solver.solve(range, binding)])
+
+        # print(entities)
+
+        range_count = len(entities)
+        results = OrderedSet()
+        for entity in entities:
+            b = binding | {
+                quant_var.name: entity
+            }
+            bindings = solver.solve(body, b)
+            # print(body, b, bindings)
+            if len(bindings) > 0:
+                results.add(entity)
+
+        result_count = len(results)
+
+        success = result_count == range_count   
+
+        # print(body, success, result_count, find, binding)
+
+        if success:
+            return [[result, None, None] for result in results]
+        else:        
+            return []
+        
+
+    # ('none', [body-atoms])
+    def determiner_none(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+
+        body = values[0]
+
+        results = solver.solve(body, binding)
+        count = len(results)
+
+        if count == 0:
+            return [
+                [True, None, None]
+            ]
+        else:
+            return []        
+        
