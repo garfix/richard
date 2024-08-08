@@ -1,21 +1,13 @@
-from richard.constants import ALL, E1, E2, E3, E4, EXISTS, NONE, Range, Result
-
-
-SIBLING1 = ["sibling1"]
-SIBLING2 = ["sibling2"]
+from richard.constants import E1, E2, E3, E4, Body, Range
 
 
 def apply(main, *replacements):
-
-    siblings = [SIBLING1, SIBLING2]
-
-    replaced = main
+    args, main_sem = main
+    replaced = main_sem
 
     for i, replacement in enumerate(replacements):
-        token = siblings[i][0]
+        token = args[i][0]       
         replaced = replace(replaced, token, replacement, True)
-
-    # print(main, replacements, replaced)
 
     return replaced
 
@@ -198,35 +190,33 @@ def get_grammar():
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: 
-            nbar + SIBLING1 },
+            ([Body], nbar + Body) },
         { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: 
-            apply(det, nbar, SIBLING1) },
-        # { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: ('quant', E1, det, nbar + attr) },
+            ([Body], apply(det, nbar, Body)) },
         { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: 
-            apply(det, nbar + attr, SIBLING1) },
-        # { "syn": "np(E1) -> number(E1)", "sem": lambda number: ('quant', E1, EXISTS, [('=', E1, number)]) },
+            ([Body], apply(det, nbar + attr, Body)) },
         { "syn": "np(E1) -> number(E1)", "sem": lambda number: 
-            [('=', E1, number)] + SIBLING1 },
+            ([Body], [('=', E1, number)] + Body) },
+
+        # det
+        { "syn": "det(E1) -> 'a'", "sem": lambda: 
+            ([Range, Body], Range + Body) },
+        { "syn": "det(E1) -> 'the'", "sem": lambda: 
+            ([Range, Body], Range + Body) },
+        { "syn": "det(E1) -> 'some'", "sem": lambda: 
+            ([Range, Body], Range + Body) },
+        { "syn": "det(E1) -> 'any'", "sem": lambda: 
+            ([Range, Body], Range + Body) },
+        { "syn": "det(E1) -> 'no'", "sem": lambda: 
+            ([Range, Body], [('none', Range + Body)]) },
+        { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
+            ([Range, Body], [('det-equals', Range + Body, number)]) },
+        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
+            ([Range, Body], [('det-greater-than', Range + Body, number)]) },
 
         # attribute
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },
         { "syn": "attr(E1, E2) -> attr(E1, E2) relative_clause(E2)", "sem": lambda attr, relative_clause: attr + relative_clause },
-
-        # det
-        { "syn": "det(E1) -> 'a'", "sem": lambda: 
-            SIBLING1 + SIBLING2 },
-        { "syn": "det(E1) -> 'the'", "sem": lambda: 
-            SIBLING1 + SIBLING2 },
-        { "syn": "det(E1) -> 'some'", "sem": lambda:
-            SIBLING1 + SIBLING2 },
-        { "syn": "det(E1) -> 'any'", "sem": lambda: 
-            SIBLING1 + SIBLING2 },
-        { "syn": "det(E1) -> 'no'", "sem": lambda: 
-            [('none', SIBLING1 + SIBLING2)] },
-        { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
-            [('det-equals', SIBLING1 + SIBLING2, number)] },
-        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
-            [('det-greater-than', SIBLING1 + SIBLING2, number)] },
 
         # number
         { "syn": "number(E1) -> '1'", "sem": lambda: 1 },

@@ -1,6 +1,6 @@
 
 
-from richard.constants import ALL, IGNORED, EXISTS, INFINITE, LARGE, NONE, ONE, UNKNOWN
+from richard.constants import IGNORED, INFINITE, LARGE, ONE, UNKNOWN
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule

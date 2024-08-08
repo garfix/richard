@@ -26,12 +26,8 @@ E3 = Variable('E3')
 E4 = Variable('E4')
 E5 = Variable('E5')
 
-Result = Variable('Result')
-Range = Variable('Range')
-
-EXISTS = 'exists'
-NONE = 'none'
-ALL = 'all'
+Range = ['__Range__']
+Body = ['__Body__']
 
 ONE = 1
 SMALL = 10
