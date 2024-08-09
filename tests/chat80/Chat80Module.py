@@ -12,9 +12,11 @@ from .chat80_relations import resolve_name
 class Chat80Module(SomeModule):
 
     ds: SomeDataSource
+    a: int
 
     def __init__(self, data_source: SomeDataSource) -> None:
 
+        self.a = 0
         self.ds = data_source
         self.relations = {
             "river": Relation(self.simple_entity, SMALL, [SMALL]),
@@ -66,6 +68,8 @@ class Chat80Module(SomeModule):
 
 
     def resolve_name(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+        # self.a += 1
+        # print(self.a)
         db_values = self.dehydrate_values(values)   
         out_values, out_types = resolve_name(self.ds, db_values)
         return self.hydrate_values(out_values, out_types)

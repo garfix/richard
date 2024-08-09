@@ -38,3 +38,4 @@ INFINITE = 1000000000000
 IGNORED = 'ignored'
 UNKNOWN = 500
 
+RESOLVE_NAME = 'resolve_name'
