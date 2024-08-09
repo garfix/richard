@@ -8,6 +8,7 @@ from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
 from richard.entity.Composition import Composition
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
+from tests.chat80.chat80_grammar import SemanticTemplate
 
 
 class SemanticComposer(SomeSemanticComposer):
@@ -107,6 +108,8 @@ class SemanticComposer(SomeSemanticComposer):
             return [self.unify_variables(atom, map) for atom in semantics]
         elif isinstance(semantics, tuple):
             return tuple([self.unify_variables(term, map) for term in semantics])
+        elif isinstance(semantics, SemanticTemplate):
+            return SemanticTemplate(semantics.args, self.unify_variables(semantics.body, map))
         elif isinstance(semantics, Variable) and semantics.name in map:
             return Variable(map[semantics.name])
         else:

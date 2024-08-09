@@ -1,13 +1,18 @@
+from dataclasses import dataclass
 from richard.constants import E1, E2, E3, E4, Body, Range
 
 
-def apply(main, *replacements):
-    args, main_sem = main
-    replaced = main_sem
+@dataclass(frozen=True)
+class SemanticTemplate:
+    args: list
+    body: list[tuple]
 
-    for i, replacement in enumerate(replacements):
-        token = args[i][0]       
-        replaced = replace(replaced, token, replacement, True)
+
+def apply(template: SemanticTemplate, *values):
+    replaced = template.body
+    for i, value in enumerate(values):
+        token = template.args[i][0]       
+        replaced = replace(replaced, token, value, True)
 
     return replaced
 
@@ -23,6 +28,7 @@ def replace(atoms, token, replacement, is_list):
             replaced.append(replace(atom, token, replacement, True))
         else:
             replaced.append(atom)
+
     return replaced if is_list else tuple(replaced)
 
 
@@ -190,29 +196,29 @@ def get_grammar():
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: 
-            ([Body], nbar + Body) },
+            SemanticTemplate([Body], nbar + Body) },
         { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: 
-            ([Body], apply(det, nbar, Body)) },
+            SemanticTemplate([Body], apply(det, nbar, Body)) },
         { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: 
-            ([Body], apply(det, nbar + attr, Body)) },
+            SemanticTemplate([Body], apply(det, nbar + attr, Body)) },
         { "syn": "np(E1) -> number(E1)", "sem": lambda number: 
-            ([Body], [('=', E1, number)] + Body) },
+            SemanticTemplate([Body], [('=', E1, number)] + Body) },
 
         # det
         { "syn": "det(E1) -> 'a'", "sem": lambda: 
-            ([Range, Body], Range + Body) },
+            SemanticTemplate([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'the'", "sem": lambda: 
-            ([Range, Body], Range + Body) },
+            SemanticTemplate([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'some'", "sem": lambda: 
-            ([Range, Body], Range + Body) },
+            SemanticTemplate([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'any'", "sem": lambda: 
-            ([Range, Body], Range + Body) },
+            SemanticTemplate([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'no'", "sem": lambda: 
-            ([Range, Body], [('none', Range + Body)]) },
+            SemanticTemplate([Range, Body], [('none', Range + Body)]) },
         { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
-            ([Range, Body], [('det-equals', Range + Body, number)]) },
+            SemanticTemplate([Range, Body], [('det-equals', Range + Body, number)]) },
         { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
-            ([Range, Body], [('det-greater-than', Range + Body, number)]) },
+            SemanticTemplate([Range, Body], [('det-greater-than', Range + Body, number)]) },
 
         # attribute
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },

@@ -26,8 +26,8 @@ E3 = Variable('E3')
 E4 = Variable('E4')
 E5 = Variable('E5')
 
-Range = ['__Range__']
-Body = ['__Body__']
+Range = ['__$Range$__']
+Body = ['__$Body$__']
 
 ONE = 1
 SMALL = 10
