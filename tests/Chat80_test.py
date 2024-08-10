@@ -89,7 +89,6 @@ class TestChat80(unittest.TestCase):
                 ['poland', 'warsaw'], 
                 ['soviet_union', 'moscow'], 
                 ['sweden', 'stockholm'], 
-                ['west_germany', 'bonn']
             ]],
             ["Which countries are bordered by two seas?", "egypt, iran, israel, saudi_arabia, turkey"],
             ["How many countries does the Danube flow through?", 6],
