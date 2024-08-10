@@ -31,3 +31,7 @@ class RuleConstituent:
 
         return True
     
+
+    def __str__(self) -> str:
+        return self.predicate + "(" + ", ".join([argument for argument in self.arguments]) + ")"
+    

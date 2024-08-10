@@ -2,6 +2,7 @@ from collections import defaultdict
 from richard.Model import Model
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
+from richard.type.InferenceRule import InferenceRule
 
 
 class Solver(SomeSolver):
@@ -16,7 +17,7 @@ class Solver(SomeSolver):
 
     def solve_for(self, atoms: list[tuple], binding: dict, variable: str) -> list[dict]:
         return [binding[variable] for binding in self.solve(atoms, binding)]
-
+    
 
     def solve(self, atoms: list[tuple], binding: dict) -> list[dict]:
 
@@ -68,8 +69,7 @@ class Solver(SomeSolver):
             conflict = False
 
             # go through all arguments
-            i = 0
-            for arg in arguments:
+            for i, arg in enumerate(arguments):
                 # variable?
                 if isinstance(arg, Variable):
                     # if the variable was bound already, no need to assign it
@@ -80,7 +80,6 @@ class Solver(SomeSolver):
                             conflict = True
                         # extend the binding
                         result[arg.name] = v[i]
-                i += 1
 
             if conflict:
                 continue

@@ -1,3 +1,7 @@
+## 2024-08-09
+
+I implemented Warrens query optimization algorithm (which is awesome!). It brought the time to run the queries from 50 seconds down to 0.46 seconds. That seems to be the best I can do. The large query now take 34 msecs. I don't think it can be done much faster in Python. Using Pypy it takes 20 msecs.
+
 ## 2024-08-08 a
 
 I got this working. I am shocked how much more simpler I'm able to make the semantics using this new technique.
@@ -92,7 +96,7 @@ CURRENT BUT CHANGED
     "sem": lambda np, preposition, nbar: [('find', E2, ('all', Result, Range, nbar), [('find', E1, np, preposition)])]
 }
 
-{ "syn": "det(E1) -> number(E1)", "sem": lambda number: ('det-equals', Result, number) },
+{ "syn": "det(E1) -> number(E1)", "sem": lambda number: ('det_equals', Result, number) },
 { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('det_greater_than', Result, number) },
 
 =====================================================================================================

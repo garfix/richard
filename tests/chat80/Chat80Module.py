@@ -6,16 +6,14 @@ from richard.interface.SomeModule import SomeModule
 from .chat80_relations import continental, flows_from_to, south_of
 from .chat80_relations import resolve_name
 
-# model
 
 class Chat80Module(SomeModule):
 
     ds: SomeDataSource
-    a: int
+
 
     def __init__(self, data_source: SomeDataSource) -> None:
 
-        self.a = 0
         self.ds = data_source
         self.relations = {
             "river": Relation(self.simple_entity, SMALL, [SMALL]),
@@ -36,7 +34,6 @@ class Chat80Module(SomeModule):
             "american": Relation(self.some_continent, MEDIUM, [MEDIUM]),
             "flows_through": Relation(self.flows_through, MEDIUM, [SMALL, MEDIUM]),
             "south_of": Relation(self.south_of, IGNORED, [MEDIUM, MEDIUM]),
-            "in": Relation(self.in_function, IGNORED, [MEDIUM, MEDIUM]),
             "flows_from_to": Relation(self.flows_from_to, IGNORED, [MEDIUM, MEDIUM, MEDIUM]),
             "contains": Relation(self.contains, LARGE, [LARGE, LARGE]),
             "has_population": Relation(self.has_population, MEDIUM, [MEDIUM, IGNORED]),
@@ -67,8 +64,6 @@ class Chat80Module(SomeModule):
 
 
     def resolve_name(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
-        # self.a += 1
-        # print(self.a)
         db_values = self.dehydrate_values(values)   
         out_values, out_types = resolve_name(self.ds, db_values)
         return self.hydrate_values(out_values, out_types)

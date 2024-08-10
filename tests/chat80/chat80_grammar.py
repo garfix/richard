@@ -216,7 +216,7 @@ def get_grammar():
         { "syn": "det(E1) -> 'no'", "sem": lambda: 
             SemanticTemplate([Range, Body], [('none', Range + Body)]) },
         { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
-            SemanticTemplate([Range, Body], [('det-equals', Range + Body, number)]) },
+            SemanticTemplate([Range, Body], [('det_equals', Range + Body, number)]) },
         { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
             SemanticTemplate([Range, Body], [('det_greater_than', Range + Body, number)]) },
 

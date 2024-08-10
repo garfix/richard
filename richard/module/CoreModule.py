@@ -22,7 +22,7 @@ class CoreModule(SomeModule):
             "count": Relation(self.count, IGNORED, [IGNORED, UNKNOWN]),
             "not": Relation(self.not_function, IGNORED, [INFINITE]),
             "=": Relation(self.assign, IGNORED, [IGNORED, INFINITE]),
-            "det-equals": Relation(self.determiner_equals, IGNORED, [IGNORED, INFINITE]),
+            "det_equals": Relation(self.determiner_equals, IGNORED, [IGNORED, INFINITE]),
             "det_greater_than": Relation(self.determiner_greater_than, IGNORED, [IGNORED, INFINITE]),
             "all": Relation(self.determiner_all, IGNORED, [IGNORED, IGNORED, INFINITE]),
             "none": Relation(self.determiner_none, IGNORED, [INFINITE]),
@@ -207,7 +207,7 @@ class CoreModule(SomeModule):
         ]]
 
 
-    # ('det-equals', [body-atoms], E2)
+    # ('det_equals', [body-atoms], E2)
     def determiner_equals(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         body, number = values

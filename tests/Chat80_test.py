@@ -15,6 +15,7 @@ from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from richard.module.InferenceModule import InferenceModule
 from richard.store.MemoryDb import MemoryDb
 from .chat80.Chat80Responder import Chat80Responder
 from .chat80.Chat80Module import Chat80Module
@@ -42,9 +43,9 @@ class TestChat80(unittest.TestCase):
 
         self.maxDiff = None
 
-        db = MemoryDb()
         path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/resources/"
 
+        db = MemoryDb()
         db.import_csv('continent', path + "continent.csv")
         db.import_csv('ocean', path + "ocean.csv")
         db.import_csv('sea', path + "sea.csv")
@@ -54,8 +55,11 @@ class TestChat80(unittest.TestCase):
         db.import_csv('contains', path + "contains.csv")
         db.import_csv('borders', path + "borders.csv")
 
+        inferences = InferenceModule()
+        inferences.import_rules(path + "inferences.pl")
+
         data_source = MemoryDbDataSource(db)
-        model = Model([Chat80Module(data_source)])
+        model = Model([Chat80Module(data_source), inferences])
         solver = Solver(model)
         grammar = get_grammar()
 
@@ -155,12 +159,12 @@ class TestChat80(unittest.TestCase):
             results = responder.get_response(request)
             print(results)
             print(composer.format_optimized_semantics(request))
-            if results != answer:
-                print(parser.get_tree(request))
-                print(composer.format_semantics(request))
-                print(composer.format_optimized_semantics(request))
-                print(executor.get_results(request))
-                print(responder.get_response(request))
+            # if results != answer:
+                # print(parser.get_tree(request))
+                # print(composer.format_semantics(request))
+                # print(composer.format_optimized_semantics(request))
+                # print(executor.get_results(request))
+                # print(responder.get_response(request))
             self.assertEqual(answer, results)
 
         print(solver.stats)
