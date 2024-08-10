@@ -21,20 +21,18 @@ class Solver(SomeSolver):
         if not isinstance(atoms, list):
             raise Exception("Solver can only solve lists of atoms, this is not a list: " + str(atoms))
 
-        if len(atoms) == 0:
-            result = [binding]
+        if len(atoms) == 1:
+            return self.solve_single(atoms[0], binding)
+        elif len(atoms) == 0:
+            return [binding]
         else:
             result = []
             bindings = self.solve_single(atoms[0], binding)
-            if len(atoms) == 1:
-                result = bindings
-            else:
-                for b in bindings:
-                    for r in self.solve(atoms[1:], b):
-                        if not r in result:
-                            result.append(r)
-
-        return result
+            for b in bindings:
+                for r in self.solve(atoms[1:], b):
+                    if not r in result:
+                        result.append(r)
+            return result
     
 
     def solve_single(self, tuple: tuple, binding: dict):
