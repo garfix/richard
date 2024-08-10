@@ -12,20 +12,20 @@ class CoreModule(SomeModule):
 
     def __init__(self) -> None:
         self.relations = {
-            "==": Relation(self.equals, INFINITE, [INFINITE, INFINITE]),
-            ">": Relation(self.greater_than, INFINITE, [INFINITE, INFINITE]),
-            "<": Relation(self.less_than, INFINITE, [INFINITE, INFINITE]),
-            "aggregate": Relation(self.aggregation, UNKNOWN, [UNKNOWN, UNKNOWN, IGNORED]),
-            "sum": Relation(self.sum, UNKNOWN, [IGNORED, IGNORED, UNKNOWN]),
-            "avg": Relation(self.avg, UNKNOWN, [IGNORED, IGNORED, UNKNOWN]),
-            "percentage": Relation(self.percentage, UNKNOWN, [IGNORED, IGNORED, UNKNOWN]),
-            "count": Relation(self.count, UNKNOWN, [IGNORED, UNKNOWN]),
-            "not": Relation(self.not_function, UNKNOWN, [INFINITE]),
-            "=": Relation(self.assign, INFINITE, [IGNORED, INFINITE]),
-            "det-equals": Relation(self.determiner_equals, INFINITE, [IGNORED, INFINITE]),
-            "det-greater-than": Relation(self.determiner_greater_than, INFINITE, [IGNORED, INFINITE]),
-            "all": Relation(self.determiner_all, INFINITE, [IGNORED, INFINITE]),
-            "none": Relation(self.determiner_none, INFINITE, [IGNORED, INFINITE]),
+            "==": Relation(self.equals, IGNORED, [INFINITE, INFINITE]),
+            ">": Relation(self.greater_than, IGNORED, [INFINITE, INFINITE]),
+            "<": Relation(self.less_than, IGNORED, [INFINITE, INFINITE]),
+            "aggregate": Relation(self.aggregation, IGNORED, [UNKNOWN, UNKNOWN, IGNORED]),
+            "sum": Relation(self.sum, IGNORED, [IGNORED, IGNORED, UNKNOWN]),
+            "avg": Relation(self.avg, IGNORED, [IGNORED, IGNORED, UNKNOWN]),
+            "percentage": Relation(self.percentage, IGNORED, [IGNORED, IGNORED, UNKNOWN]),
+            "count": Relation(self.count, IGNORED, [IGNORED, UNKNOWN]),
+            "not": Relation(self.not_function, IGNORED, [INFINITE]),
+            "=": Relation(self.assign, IGNORED, [IGNORED, INFINITE]),
+            "det-equals": Relation(self.determiner_equals, IGNORED, [IGNORED, INFINITE]),
+            "det-greater-than": Relation(self.determiner_greater_than, IGNORED, [IGNORED, INFINITE]),
+            "all": Relation(self.determiner_all, IGNORED, [IGNORED, IGNORED, INFINITE]),
+            "none": Relation(self.determiner_none, IGNORED, [INFINITE]),
         }
     
 

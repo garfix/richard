@@ -27,15 +27,18 @@ class Chat80Responder(SomeResponseHandler):
                 val1 = binding[v1].id if isinstance(binding[v1], Instance) else binding[v1]
                 val2 = binding[v2].id if isinstance(binding[v2], Instance) else binding[v2]
                 response.append([val1, val2])
+                response = sorted(response, key = lambda row: row[0])
         else:
             s = set()
+            values = []
             for binding in bindings:
                 value = binding["S1"].id if isinstance(binding["S1"], Instance) else binding["S1"]
                 if value in s:
                     continue
                 s.add(value)
-                response += sep + value
-                sep = ", "
+                values.append(value)
+            values.sort()
+            response = ", ".join(values)
 
         return response
     

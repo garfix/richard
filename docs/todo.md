@@ -1,6 +1,7 @@
 ## todo
 
 * solve: make checking for unique results faster
+* add units to scalar answers
 * optimize: reorder atoms
 * optimze: distinguish between all-quantors and existential quantors
 * create numbers based on a token

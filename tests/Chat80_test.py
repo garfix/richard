@@ -40,6 +40,8 @@ class TestChat80(unittest.TestCase):
 
     def do(self):
 
+        self.maxDiff = None
+
         db = MemoryDb()
         path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/resources/"
 
@@ -89,6 +91,7 @@ class TestChat80(unittest.TestCase):
                 ['poland', 'warsaw'], 
                 ['soviet_union', 'moscow'], 
                 ['sweden', 'stockholm'], 
+                ['west_germany', 'bonn'], 
             ]],
             ["Which countries are bordered by two seas?", "egypt, iran, israel, saudi_arabia, turkey"],
             ["How many countries does the Danube flow through?", 6],
@@ -102,9 +105,10 @@ class TestChat80(unittest.TestCase):
                 ["europe", 58.3125]]],
             ["Is there more than one country in each continent?", 'no'],
             ["Is there some ocean that does not border any country?", "yes"],
+            # romania,soviet_union
             ["What are the countries from which a river flows into the Black_Sea?", "austria, czechoslovakia, hungary, romania, soviet_union, west_germany, yugoslavia"],
             ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, antarctica, australasia"],
-            # ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
+            ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
             ["Which countries have a population exceeding 10 million?", "afghanistan, algeria, argentina, australia, bangladesh, brazil, burma, canada, china, colombia, czechoslovakia, east_germany, egypt, ethiopia, france, india, indonesia, iran, italy, japan, kenya, mexico, morocco, nepal, netherlands, nigeria, north_korea, pakistan, peru, philippines, poland, south_africa, south_korea, soviet_union, spain, sri_lanka, sudan, taiwan, tanzania, thailand, turkey, united_kingdom, united_states, venezuela, vietnam, west_germany, yugoslavia, zaire"],
             ["Which countries with a population exceeding 10 million border the Atlantic?", "argentina, brazil, canada, colombia, france, mexico, morocco, netherlands, nigeria, south_africa, spain, united_kingdom, united_states, venezuela, west_germany, zaire"],
             ["What percentage of countries border each ocean?", [

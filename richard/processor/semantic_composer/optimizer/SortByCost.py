@@ -9,12 +9,9 @@ class SortByCost:
     def sort(self, composition: list[tuple], model: Model):
         if len(composition) == 0:
             return []
-        
-        print(composition)
-        
+                
         result = self.sort_rest([], composition, model)
 
-        print(result)
         return result
     
 
@@ -37,8 +34,6 @@ class SortByCost:
         results.sort(key=lambda result: result['cost'])
 
         sorted = [result['atom'] for result in results]
-
-        print(results)
 
         return self.sort_rest(done + sorted[0:1], sorted[1:], model)
 
