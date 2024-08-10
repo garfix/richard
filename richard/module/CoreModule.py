@@ -23,7 +23,7 @@ class CoreModule(SomeModule):
             "not": Relation(self.not_function, IGNORED, [INFINITE]),
             "=": Relation(self.assign, IGNORED, [IGNORED, INFINITE]),
             "det-equals": Relation(self.determiner_equals, IGNORED, [IGNORED, INFINITE]),
-            "det-greater-than": Relation(self.determiner_greater_than, IGNORED, [IGNORED, INFINITE]),
+            "det_greater_than": Relation(self.determiner_greater_than, IGNORED, [IGNORED, INFINITE]),
             "all": Relation(self.determiner_all, IGNORED, [IGNORED, IGNORED, INFINITE]),
             "none": Relation(self.determiner_none, IGNORED, [INFINITE]),
         }
@@ -68,7 +68,7 @@ class CoreModule(SomeModule):
 
 
     # ('aggregate', nbar, superlative, E1)
-    # ('aggregation', E1, E2, [('size-of', E1, E2)], 'min')
+    # ('aggregation', E1, E2, [('size_of', E1, E2)], 'min')
     def aggregation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
         nbar, superlative, result_var = values
         predicate1, entity_var, attribute_var, argument_atoms, aggregation = superlative
@@ -221,7 +221,7 @@ class CoreModule(SomeModule):
             return []
 
 
-    # ('det-greater-than', [body-atoms], E2)
+    # ('det_greater_than', [body-atoms], E2)
     def determiner_greater_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
 
         body, number = values

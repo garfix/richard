@@ -28,18 +28,18 @@ class Chat80Module(SomeModule):
             "borders": Relation(self.borders, LARGE, [MEDIUM, MEDIUM]),
             "resolve_name": Relation(self.resolve_name, LARGE, [LARGE, LARGE]),
             "of": Relation(self.of, LARGE, [MEDIUM, MEDIUM]),
-            "size-of": Relation(self.size_of, IGNORED, [MEDIUM, IGNORED]),
+            "size_of": Relation(self.size_of, IGNORED, [MEDIUM, IGNORED]),
             "where": Relation(self.where, IGNORED, [MEDIUM, MEDIUM]),
             "european": Relation(self.some_continent, MEDIUM, [MEDIUM]),
             "asian": Relation(self.some_continent, MEDIUM, [MEDIUM]),
             "african": Relation(self.some_continent, MEDIUM, [MEDIUM]),
             "american": Relation(self.some_continent, MEDIUM, [MEDIUM]),
-            "flows-through": Relation(self.flows_through, MEDIUM, [SMALL, MEDIUM]),
-            "south-of": Relation(self.south_of, IGNORED, [MEDIUM, MEDIUM]),
+            "flows_through": Relation(self.flows_through, MEDIUM, [SMALL, MEDIUM]),
+            "south_of": Relation(self.south_of, IGNORED, [MEDIUM, MEDIUM]),
             "in": Relation(self.in_function, IGNORED, [MEDIUM, MEDIUM]),
-            "flows-from-to": Relation(self.flows_from_to, IGNORED, [MEDIUM, MEDIUM, MEDIUM]),
+            "flows_from_to": Relation(self.flows_from_to, IGNORED, [MEDIUM, MEDIUM, MEDIUM]),
             "contains": Relation(self.contains, LARGE, [LARGE, LARGE]),
-            "has-population": Relation(self.has_population, MEDIUM, [MEDIUM, IGNORED]),
+            "has_population": Relation(self.has_population, MEDIUM, [MEDIUM, IGNORED]),
         }
    
     

@@ -84,12 +84,12 @@ def get_grammar():
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
-            "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size-of', E2, E3)])],
+            "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size_of', E2, E3)])],
             "intents": ["number"]
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
-            "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size-of', E2, E4)])],
+            "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
             "intents": ["table", "S3", "S1"]
         },
         { 
@@ -104,7 +104,7 @@ def get_grammar():
         },
         { 
             "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",  
-            "sem": lambda np: apply(np, []) + [('size-of', E1, E2)],
+            "sem": lambda np: apply(np, []) + [('size_of', E1, E2)],
             "intents": ["number"]
         },
         { 
@@ -168,14 +168,14 @@ def get_grammar():
         { "syn": "tv(E1, E2) -> 'borders'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'contains'", "sem": lambda: [('contains', E1, E2)] },
-        { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows-through', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows_through', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'exceeds'", "sem": lambda: [('>', E1, E2)] },
 
         { "syn": "tv_continuous(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv_continuous(E1, E2) -> 'exceeding'", "sem": lambda: [('>', E1, E2)] },
 
         # ditransitive verbs
-        { "syn": "dtv(E1, E2, E3) -> 'flows' 'into'", "sem": lambda: [('flows-from-to', E1, E2, E3)] },
+        { "syn": "dtv(E1, E2, E3) -> 'flows' 'into'", "sem": lambda: [('flows_from_to', E1, E2, E3)] },
 
         # nbar
         { "syn": "nbar(E1) -> adj(E1) nbar(E1)", "sem": lambda adj, nbar: adj + nbar },
@@ -218,10 +218,10 @@ def get_grammar():
         { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
             SemanticTemplate([Range, Body], [('det-equals', Range + Body, number)]) },
         { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
-            SemanticTemplate([Range, Body], [('det-greater-than', Range + Body, number)]) },
+            SemanticTemplate([Range, Body], [('det_greater_than', Range + Body, number)]) },
 
         # attribute
-        { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has-population', E1, E2)] },
+        { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has_population', E1, E2)] },
         { "syn": "attr(E1, E2) -> attr(E1, E2) relative_clause(E2)", "sem": lambda attr, relative_clause: attr + relative_clause },
 
         # number
@@ -235,7 +235,7 @@ def get_grammar():
         { "syn": "pp(E1) -> 'not' pp(E1)", "sem": lambda pp: [('not', pp)] },
         { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: apply(np, [('of', E1, E2)]) },
         { "syn": "pp(E1) -> 'in' np(E2)", "sem": lambda np: apply(np, [('in', E1, E2)]) },
-        { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: apply(np, [('south-of', E1, E2)]) },
+        { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: apply(np, [('south_of', E1, E2)]) },
         { "syn": "pp(E1) -> pp(E1) 'and' pp(E1)", "sem": lambda pp1, pp2: pp1 + pp2 },
 
         { "syn": "preposition(E1, E2) -> 'in'", "sem": lambda: [("in", E1, E2)]},
@@ -250,8 +250,8 @@ def get_grammar():
         { "syn": "adj(E1) -> 'asian'", "sem": lambda: [('asian', E1)] },
 
         # superlatives
-        { "syn": "superlative(E1, E2) -> 'largest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'max') },
-        { "syn": "superlative(E1, E2) -> 'smallest'", "sem": lambda: ('aggregation', E1, E2, [('size-of', E1, E2)], 'min') },
+        { "syn": "superlative(E1, E2) -> 'largest'", "sem": lambda: ('aggregation', E1, E2, [('size_of', E1, E2)], 'max') },
+        { "syn": "superlative(E1, E2) -> 'smallest'", "sem": lambda: ('aggregation', E1, E2, [('size_of', E1, E2)], 'min') },
 
         # noun
         { "syn": "noun(E1) -> 'river'", "sem": lambda: [('river', E1)] },

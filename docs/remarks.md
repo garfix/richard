@@ -10,7 +10,7 @@ to
 
     attr + vp_nosub_obj
 
-    
+
 
 ## 2024-08-08
 
@@ -48,7 +48,7 @@ def apply(atoms, body):
 { "syn": "det(E1) -> 'any'", "sem": lambda: Body },
 { "syn": "det(E1) -> 'no'", "sem": lambda: ('det-none', Body) },
 { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('det-number', Body, number) },
-{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": ('det-greater-than', Body, number) },
+{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": ('det_greater_than', Body, number) },
 
 =====================================================================================================
 
@@ -74,7 +74,7 @@ FUNCTION BASED
 { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
 	lambda Range, Body: ('det-number', E1, Range + Body, number) },
 { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
-	lambda Range, Body: ('det-greater-than', E1, Range + Body, number) },
+	lambda Range, Body: ('det_greater_than', E1, Range + Body, number) },
 { "syn": "det(E1) -> 'all'", "sem": lambda: 
 	lambda Range, Body: ('all', E1, Range, Body) },
 
@@ -93,7 +93,7 @@ CURRENT BUT CHANGED
 }
 
 { "syn": "det(E1) -> number(E1)", "sem": lambda number: ('det-equals', Result, number) },
-{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('det-greater-than', Result, number) },
+{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: ('det_greater_than', Result, number) },
 
 =====================================================================================================
 
@@ -328,7 +328,7 @@ This is a ditransitive verb phrase with subject and object reversed. I created a
     { "syn": "vp_noobj_sub_iob -> 'from' 'which' np vp_noobj_nosub_iob", "sem": lambda np, vp_noobj_nosub_iob: lambda obj: np(vp_noobj_nosub_iob(obj)) },
     { "syn": "vp_noobj_nosub_iob -> vp_noobj_nosub_noiob np", "sem": lambda vp_noobj_nosub_noiob, np: lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub)) },
     { "syn": "vp_noobj_nosub_noiob -> dtv", "sem": lambda dtv: lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob) },
-    { "syn": "dtv -> 'flows' 'into'", "sem": lambda: lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob]) },
+    { "syn": "dtv -> 'flows' 'into'", "sem": lambda: lambda sub, obj, iob: model.find_relation_values('flows_from_to', [sub, obj, iob]) },
 ~~~
 
 To resume the semantics:
@@ -338,7 +338,7 @@ lambda: np(vp_noobj_sub_iob)
 lambda obj: np(vp_noobj_nosub_iob(obj))
 lambda obj: lambda sub: np(vp_noobj_nosub_noiob(obj)(sub))
 lambda obj: lambda sub: lambda iob: dtv(sub, obj, iob)
-lambda sub, obj, iob: model.find_relation_values('flows-from-to', [sub, obj, iob])
+lambda sub, obj, iob: model.find_relation_values('flows_from_to', [sub, obj, iob])
 ~~~
 
 There's beauty in this.
