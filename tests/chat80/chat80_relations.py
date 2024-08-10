@@ -33,7 +33,7 @@ def flows_from_to(ds, values: list[Simple]):
     results = []
     for id, flows_through in flows:
         db_to = flows_through[0]
-        db_from = flows_through[1:]
+        db_from = flows_through[1:2]
         if not id or id == query_river:
             if not query_to or query_to == db_to:
                 if not query_from or query_from in db_from:
