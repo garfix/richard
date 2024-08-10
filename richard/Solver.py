@@ -21,33 +21,21 @@ class Solver(SomeSolver):
         if not isinstance(atoms, list):
             raise Exception("Solver can only solve lists of atoms, this is not a list: " + str(atoms))
 
-        # global d
-        # print("   " * d, "s", tuples, binding)
         if len(atoms) == 0:
             result = [binding]
         else:
-            # d += 1
-
             result = []
             bindings = self.solve_single(atoms[0], binding)
             if len(atoms) == 1:
                 result = bindings
-                # print("bindings", bindings)
             else:
                 for b in bindings:
-                    result.extend(self.solve(atoms[1:], b))
-                    # print("   " * d, tuples[1:], b, result)
+                    for r in self.solve(atoms[1:], b):
+                        if not r in result:
+                            result.append(r)
 
-            # d -= 1  
-
-        # print("e", atoms, binding, result)
-        # return result
-        a = []
-        for r in result:
-            if not r in a:
-                a.append(r)
-        return a
-
+        return result
+    
 
     def solve_single(self, tuple: tuple, binding: dict):
         relation = tuple[0]
