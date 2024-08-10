@@ -1,15 +1,17 @@
+from collections import defaultdict
 from richard.Model import Model
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
 
-# d = 0
 
 class Solver(SomeSolver):
 
     model: Model
+    stats: dict
 
     def __init__(self, model: Model) -> None:
         self.model = model
+        self.stats = defaultdict(lambda: 0)
 
 
     def solve_for(self, atoms: list[tuple], binding: dict, variable: str) -> list[dict]:
@@ -39,6 +41,8 @@ class Solver(SomeSolver):
         relation = tuple[0]
         arguments = tuple[1:]
 
+        # self.stats[relation] += 1
+
         prepared = []
         for arg in arguments:
             # variable
@@ -55,7 +59,6 @@ class Solver(SomeSolver):
                 prepared.append(arg)
 
         values = self.model.find_relation_values(relation, prepared, self, binding)
-        # print("values", relation, len(values))
 
         results = []
         for v in values:
@@ -65,27 +68,24 @@ class Solver(SomeSolver):
             conflict = False
 
             # go through all arguments
-            for v1, arg in zip(v, arguments):
-                # print('arg', arg)
+            i = 0
+            for arg in arguments:
                 # variable?
                 if isinstance(arg, Variable):
                     # if the variable was bound already, no need to assign it
                     # also no need to check for conflict, because the type may be different and that's ok
                     if arg.name not in binding:
                         # check for conflict with previous same variable
-                        if arg.name in result and result[arg.name] != v1:
-                            # print('conflict', arg.name, v1, result)
+                        if arg.name in result and result[arg.name] != v[i]:
                             conflict = True
                         # extend the binding
-                        result[arg.name] = v1
+                        result[arg.name] = v[i]
+                i += 1
 
             if conflict:
                 continue
 
             results.append(result)
-
-        # print("results", relation, len(results))
-        # print(tuple, binding, results)
             
         return results
     
