@@ -3,7 +3,6 @@ from richard.entity.Relation import Relation
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
-from richard.type.Simple import Simple
 from .chat80_relations import continental, flows_from_to, south_of
 from .chat80_relations import resolve_name
 

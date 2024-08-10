@@ -1,5 +1,4 @@
 from richard.interface.SomeDataSource import SomeDataSource
-from richard.type.Simple import Simple
 
 
 class PsycoPg2DataSource(SomeDataSource):
@@ -10,7 +9,7 @@ class PsycoPg2DataSource(SomeDataSource):
         self.connection = connection
 
 
-    def select(self, table: str, columns: list[str], values: list[Simple]) -> list[list[Simple]]:
+    def select(self, table: str, columns: list[str], values: list) -> list[list]:
 
         import psycopg2
 

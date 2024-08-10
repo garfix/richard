@@ -1,7 +1,6 @@
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.store.MemoryDb import MemoryDb
-from richard.type.Simple import Simple
 
 
 class MemoryDbDataSource(SomeDataSource):
@@ -12,7 +11,7 @@ class MemoryDbDataSource(SomeDataSource):
         self.db = db
 
 
-    def select(self, table: str, columns: list[str], values: list[Simple]) -> list[list[Simple]]:
+    def select(self, table: str, columns: list[str], values: list) -> list[list]:
 
         # from list to dictionary
         where = {}

@@ -1,8 +1,7 @@
 from richard.interface.SomeDataSource import SomeDataSource
-from richard.type.Simple import Simple
 
 
-def south_of(ds, values: list[Simple]):
+def south_of(ds, values: list):
     # this implementation could be done in SQL like "SELECT id FROM country WHERE lat < (SELECT lat FROM country WHERE id = %s)"
     id1 = values[0]
     id2 = values[1]
@@ -25,7 +24,7 @@ def south_of(ds, values: list[Simple]):
     raise Exception("Unhandled case")
 
 
-def flows_from_to(ds, values: list[Simple]):
+def flows_from_to(ds, values: list):
     query_river = values[0]
     query_from = values[1]
     query_to = values[2]

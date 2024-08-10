@@ -2,7 +2,6 @@ from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
 from richard.module.CoreModule import CoreModule
 from richard.interface.SomeSolver import SomeSolver
-from richard.type.Simple import Simple
 
 
 class Model:
@@ -30,7 +29,7 @@ class Model:
         return result
 
 
-    def find_relation_values(self, predicate: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list[Simple]]:       
+    def find_relation_values(self, predicate: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:       
 
         relations = self.find_relations(predicate)
         if len(relations) == 0:
