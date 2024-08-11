@@ -1,6 +1,10 @@
-## 2024-08-09
+## 2024-08-10
 
 I implemented Warrens query optimization algorithm (which is awesome!). It brought the time to run the queries from 50 seconds down to 0.46 seconds. That seems to be the best I can do. The large query now take 34 msecs. I don't think it can be done much faster in Python. Using Pypy it takes 20 msecs.
+
+===
+
+I added a simple inference module.
 
 ## 2024-08-08 a
 
