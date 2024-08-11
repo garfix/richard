@@ -25,14 +25,15 @@ from .chat80.chat80_grammar import get_grammar
 class TestChat80(unittest.TestCase):
     """
     Mimics a Chat80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
+
     Topics:
     - proper nouns
     - superlatives ('largest')
     - relative clauses
     - aggregations
-    - inference: in(A, B) -> contains(A, C) in(C, B).
-    - query optimization
+    - inference: in(A, B) -> contains(C, A), in(C, B).
     - different result formats: yes/no, scalar, list, table
+    - query optimization: reordering and isolating sub-queries
     """
    
     def test_chat80(self):
@@ -111,9 +112,7 @@ class TestChat80(unittest.TestCase):
             ["Is there some ocean that does not border any country?", "yes"],
             ["What are the countries from which a river flows into the Black_Sea?", "romania, soviet_union"],
             ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, antarctica, australasia"],
-
             ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
-
             ["Which countries have a population exceeding 10 million?", "afghanistan, algeria, argentina, australia, bangladesh, brazil, burma, canada, china, colombia, czechoslovakia, east_germany, egypt, ethiopia, france, india, indonesia, iran, italy, japan, kenya, mexico, morocco, nepal, netherlands, nigeria, north_korea, pakistan, peru, philippines, poland, south_africa, south_korea, soviet_union, spain, sri_lanka, sudan, taiwan, tanzania, thailand, turkey, united_kingdom, united_states, venezuela, vietnam, west_germany, yugoslavia, zaire"],
             ["Which countries with a population exceeding 10 million border the Atlantic?", "argentina, brazil, canada, colombia, france, mexico, morocco, netherlands, nigeria, south_africa, spain, united_kingdom, united_states, venezuela, west_germany, zaire"],
             ["What percentage of countries border each ocean?", [
@@ -125,13 +124,6 @@ class TestChat80(unittest.TestCase):
             ]],
             ["What countries are there in Europe?", "albania, andorra, austria, belgium, bulgaria, cyprus, czechoslovakia, denmark, east_germany, eire, finland, france, greece, hungary, iceland, italy, liechtenstein, luxembourg, malta, monaco, netherlands, norway, poland, portugal, romania, san_marino, spain, sweden, switzerland, united_kingdom, west_germany, yugoslavia"],
             ["Bye.", "Cheerio."]
-
-            # ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
-            # ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
-            # ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
-            # ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
-            # ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
-            # ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
         ]
 
         for test in tests:
@@ -159,12 +151,12 @@ class TestChat80(unittest.TestCase):
             results = responder.get_response(request)
             print(results)
             print(composer.format_optimized_semantics(request))
-            # if results != answer:
-                # print(parser.get_tree(request))
-                # print(composer.format_semantics(request))
-                # print(composer.format_optimized_semantics(request))
-                # print(executor.get_results(request))
-                # print(responder.get_response(request))
+            if results != answer:
+                print(parser.get_tree(request))
+                print(composer.format_semantics(request))
+                print(composer.format_optimized_semantics(request))
+                print(executor.get_results(request))
+                print(responder.get_response(request))
             self.assertEqual(answer, results)
 
         print(solver.stats)
