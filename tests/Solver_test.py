@@ -1,8 +1,9 @@
 import unittest
 
 from richard.Model import Model
-from richard.constants import E1, E2
+from richard.constants import E1, E2, IGNORED
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
+from richard.entity.Relation import Relation
 from richard.entity.Instance import Instance
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
@@ -10,7 +11,6 @@ from richard.Solver import Solver
 from richard.interface.SomeModule import SomeModule
 from richard.store.MemoryDb import MemoryDb
 from richard.store.Record import Record
-from richard.type.Simple import Simple
 
 
 class TestModule(SomeModule):
@@ -19,11 +19,11 @@ class TestModule(SomeModule):
         self.ds = data_source
 
     def get_relations(self):
-        return [
-            "river",
-            "country",
-            "contains",
-        ]
+        return {
+            "river": Relation(self.interpret_relation, IGNORED, [IGNORED]),
+            "country": Relation(self.interpret_relation, IGNORED, [IGNORED]),
+            "contains": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
+        }
 
     def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
         db_values = self.dehydrate_values(values)

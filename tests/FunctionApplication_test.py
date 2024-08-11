@@ -1,5 +1,6 @@
 import unittest
 
+from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindAll import FindAll
 from richard.block.FindOne import FindOne

@@ -19,14 +19,12 @@ class SemanticComposer(SomeSemanticComposer):
     
     parser: SomeParser
     query_optimizer: SomeQueryOptimizer
-    model: Model
 
 
-    def __init__(self, parser: SomeParser, model: Model) -> None:
+    def __init__(self, parser: SomeParser) -> None:
         super().__init__()
         self.parser = parser    
-        self.query_optimizer = BasicQueryOptimizer()
-        self.model = model
+        self.query_optimizer = None
 
     
     def process(self, request: SentenceRequest) -> ProcessResult:
@@ -43,7 +41,12 @@ class SemanticComposer(SomeSemanticComposer):
         self.check_for_sem(root)
         
         semantics, inferences, intent = self.compose(root, ["S1"], next_number)
-        optimized_semantics = self.query_optimizer.optimize(semantics, self.model)
+
+        if self.query_optimizer:
+            optimized_semantics = self.query_optimizer.optimize(semantics)
+        else:
+            optimized_semantics = semantics
+
         composition = Composition(semantics, optimized_semantics, inferences, intent)
         return ProcessResult([composition], "", [])    
 

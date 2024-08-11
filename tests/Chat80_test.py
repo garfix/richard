@@ -7,6 +7,7 @@ import time
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.Solver import Solver
+from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.Model import Model
 from richard.Pipeline import Pipeline
@@ -66,7 +67,8 @@ class TestChat80(unittest.TestCase):
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser, model)
+        composer = SemanticComposer(parser)
+        composer.query_optimizer = BasicQueryOptimizer(model)
         executor = AtomExecutor(composer, solver)
         responder = SimpleResponder(composer, executor, handler=Chat80Responder())
 

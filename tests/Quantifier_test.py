@@ -4,12 +4,13 @@ from richard.Solver import Solver
 from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.constants import E1, E2, Range, Result
+from richard.constants import E1, E2, IGNORED, Body, Range
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
-from richard.entity.Variable import Variable
+from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
+from richard.processor.parser.helper.grammar_functions import apply
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
@@ -17,6 +18,7 @@ from richard.processor.semantic_composer.SemanticComposer import SemanticCompose
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.store.MemoryDb import MemoryDb
+from richard.type.SemanticTemplate import SemanticTemplate
 
 
 class TestModule(SomeModule):
@@ -27,11 +29,11 @@ class TestModule(SomeModule):
 
 
     def get_relations(self):
-        return [
-            "parent", 
-            "child",
-            "have",
-        ]
+        return {
+            "parent": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
+            "child": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
+            "have": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
+        }
 
 
     def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
@@ -72,31 +74,31 @@ class TestQuantification(unittest.TestCase):
         grammar = [
             { 
                 "syn": "s(V1) -> np(E1) vp_no_sub(E1)", 
-                "sem": lambda np, vp_no_sub: [('find', E1, np, vp_no_sub)]
+                "sem": lambda np, vp_no_sub: apply(np, vp_no_sub)
             },
             { 
                 "syn": "vp_no_sub(E1) -> tv(E1, E2) np(E2)", 
-                "sem": lambda tv, np: [('find', E2, np, tv)] 
+                "sem": lambda tv, np: apply(np, tv)
             },
             { 
                 "syn": "tv(E1, E2) -> 'has'", 
                 "sem": lambda: [('have', E1, E2)] 
             },
             { 
-                "syn": "np(E1) -> det(D1) nbar(E1)", 
-                "sem": lambda det, nbar: ('quant', E1, det, nbar) 
+                "syn": "np(E1) -> det(E1) nbar(E1)", 
+                "sem": lambda det, nbar: SemanticTemplate([Body], apply(det, nbar, Body))
             },
             { 
                 "syn": "nbar(E1) -> noun(E1)", 
                 "sem": lambda noun: noun 
             },
             { 
-                "syn": "det(D1) -> 'every'", 
-                "sem": lambda: ('determiner', Result, Range, [('==', Result, Range)])
+                "syn": "det(E1) -> 'every'", 
+                "sem": lambda: SemanticTemplate([Range, Body], [('all', E1, Range, Body)])
             },
             { 
-                "syn": "det(D1) -> number(D1)", 
-                "sem": lambda number: ('determiner', Result, Range, [('==', Result, number)])     
+                "syn": "det(E1) -> number(E1)", 
+                "sem": lambda number: SemanticTemplate([Range, Body], [('det_equals', Range + Body, number)]) 
             },
             { "syn": "number(D1) -> 'two'", "sem": lambda: 2 },
             { "syn": "number(D1) -> 'three'", "sem": lambda: 3 },

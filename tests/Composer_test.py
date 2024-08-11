@@ -20,11 +20,9 @@ class TestComposer(unittest.TestCase):
             { "syn": "verb(E1) -> 'walks'" },
         ]
 
-        model = Model([])
-
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser, model)
+        composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -55,11 +53,9 @@ class TestComposer(unittest.TestCase):
             { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
         ]
 
-        model = Model([])
-
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser, model)
+        composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -81,11 +77,9 @@ class TestComposer(unittest.TestCase):
             { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
         ]
 
-        model = Model([])
-
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser, model)
+        composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
