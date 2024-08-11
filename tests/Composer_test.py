@@ -1,13 +1,15 @@
 import unittest
 
+from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.constants import E1, E2, EXISTS
+from richard.constants import E1, E2, Body, Range
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.entity.Variable import Variable
 from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from richard.type.SemanticTemplate import SemanticTemplate
 
 class TestComposer(unittest.TestCase):
    
@@ -18,9 +20,11 @@ class TestComposer(unittest.TestCase):
             { "syn": "verb(E1) -> 'walks'" },
         ]
 
+        model = Model([])
+
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser)
+        composer = SemanticComposer(parser, model)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -41,19 +45,21 @@ class TestComposer(unittest.TestCase):
     def test_variable_unification(self):
 
         grammar = [
-            { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: [('find', E1, np, vp)]},
-            { "syn": "vp(E1) -> verb(E1, E2), np(E2)", "sem": lambda verb, np: [('find', E2, np, verb)] },
-            { "syn": "verb(E1, E2) -> 'flows' 'to'", "sem": lambda: [('flow', E1, E2)] },
-            { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: [('quant', E1, det, nbar)] },
-            { "syn": "det(E1) -> 'the'", "sem": lambda: EXISTS },
+            { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: apply(np, vp)},
+            { "syn": "vp(E1) -> verb(E1, E2), np(E2)", "sem": lambda verb, np: apply(np, verb) },
+            { "syn": "verb(E1, E2) -> 'flows' 'to'", "sem": lambda: [('flows', E1, E2)] },
+            { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: SemanticTemplate([Body], apply(det, nbar, Body)) },
+            { "syn": "det(E1) -> 'the'", "sem": lambda: SemanticTemplate([Range, Body], Range + Body) },
             { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
             { "syn": "noun(E1) -> 'river'", "sem": lambda: [('river', E1)] },
             { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
         ]
 
+        model = Model([])
+
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser)
+        composer = SemanticComposer(parser, model)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -64,7 +70,7 @@ class TestComposer(unittest.TestCase):
         request = SentenceRequest("The river flows to the sea")
         pipeline.enter(request)
         composition = composer.get_composition(request)
-        self.assertEqual(str(composition.semantics), "[('find', S1, [('quant', S1, 'exists', [('river', S1)])], [('find', S2, [('quant', S2, 'exists', [('sea', S2)])], [('flow', S1, S2)])])]")
+        self.assertEqual(str(composition.semantics), "[('river', S1), ('sea', S2), ('flows', S1, S2)]")
         
 
     def test_special_category(self):
@@ -75,9 +81,11 @@ class TestComposer(unittest.TestCase):
             { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
         ]
 
+        model = Model([])
+
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
-        composer = SemanticComposer(parser)
+        composer = SemanticComposer(parser, model)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
