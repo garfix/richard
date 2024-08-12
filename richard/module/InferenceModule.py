@@ -48,8 +48,6 @@ class InferenceModule(SomeModule):
 
         rule_arguments = rule.head[1:]
 
-        # print(rule.head[0], values, rule_arguments, rule_binding, binding)
-
         for rule_argument, value in zip(rule_arguments, values):
             if isinstance(rule_argument, Variable):
                 # bind variable
@@ -75,14 +73,12 @@ class InferenceModule(SomeModule):
 
         bindings = solver.solve(rule.body, rule_binding)
 
-        # print(bindings)
-
         results = []
 
         for solution in bindings:
 
             result = []
-
+            
             for rule_argument, value in zip(rule_arguments, values):
                 if isinstance(value, Variable):
                     if isinstance(rule_argument, Variable):
@@ -93,7 +89,5 @@ class InferenceModule(SomeModule):
                     result.append(value)
 
             results.append(result)
-
-        # print('>', results)
 
         return results

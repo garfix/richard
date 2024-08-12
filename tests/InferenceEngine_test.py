@@ -17,6 +17,10 @@ class TestInferenceEngine(unittest.TestCase):
 
         tests = [
             ["river('amazon').", InferenceRule(('river', 'amazon'), [])],
+            ["river('amazon').", InferenceRule(('river', 'amazon'), [])],
+            ["mountain('Dante\\'s peak').", InferenceRule(('mountain', "Dante's peak"), [])],
+            ['person("Robert \\"Bobby\\" Brown").', InferenceRule(('person', 'Robert "Bobby" Brown'), [])],
+            ['river().', InferenceRule(('river',), [])],
             [
                 "father(E1, E2) :- parent(E1, E2), father(E1).", 
                 InferenceRule(('father', Variable('E1'), Variable('E2')), [
@@ -28,8 +32,7 @@ class TestInferenceEngine(unittest.TestCase):
         for test in tests:
             question, answer = test
             result = parser.parse(question)
-            self.assertEqual(answer, result)
-            
+            self.assertEqual(answer, result)           
 
    
     def test_inference_engine(self):

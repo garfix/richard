@@ -12,7 +12,17 @@ class SimpleInferenceRuleParser:
 
 
     def __init__(self) -> None:
-        self.re_tokens = re.compile("(\.|,|:-|\(|\)|'\w+'|[A-Z]\w*|\w+)")
+        self.re_tokens = re.compile("(" + "|".join([
+            '\.',
+            ',',
+            ':-',
+            '\(',
+            '\)',
+            "'(?:\\\\'|[^'])+'",
+            '"(?:\\\\"|[^"])+"',
+            '[A-Z]\w*', 
+            '\w+',
+        ]) + ")")
         self.re_identifier = re.compile("^\w+$")
         self.re_variable = re.compile("^[A-Z]\w*$")
 
@@ -46,8 +56,12 @@ class SimpleInferenceRuleParser:
                 pos = new_pos
 
         dot, new_pos = self.parse_token(tokens, pos)
-        if dot == ".":            
-            pos = new_pos
+        if not dot == ".":            
+            return None       
+        pos = new_pos
+
+        if pos != len(tokens):
+            return None
         
         return InferenceRule(antecedent, consequents)
 
@@ -98,8 +112,12 @@ class SimpleInferenceRuleParser:
         token, new_pos = self.parse_token(tokens, pos)
         if token[0] == "'":
             pos = new_pos
-            return token[1:-1], pos
+            return token[1:-1].replace("\\'", "'"), pos
         
+        if token[0] == '"':
+            pos = new_pos
+            return token[1:-1].replace('\\"', '"'), pos
+
         if re.match(self.re_variable, token):
             pos = new_pos
             return Variable(token), pos
