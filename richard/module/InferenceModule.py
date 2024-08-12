@@ -19,7 +19,7 @@ class InferenceModule(SomeModule):
     
     def insert_rule(self, rule: InferenceRule):
         predicate = rule.head[0]
-        self.relations[predicate] = Relation(self.handle_rule, IGNORED, [INFINITE, INFINITE])
+        self.relations[predicate] = Relation(self.handle_rule, IGNORED, [])
         if not predicate in self.rules:
             self.rules[predicate] = []
         self.rules[predicate].append(rule)
@@ -47,37 +47,53 @@ class InferenceModule(SomeModule):
         rule_binding = {}
 
         rule_arguments = rule.head[1:]
-        for argument, term in zip(rule_arguments, values):
-            if isinstance(argument, Variable):
-                if not isinstance(term, Variable):
-                    rule_binding[argument.name] = term
 
-        solutions = solver.solve(rule.body, rule_binding)
+        # print(rule.head[0], values, rule_arguments, rule_binding, binding)
+
+        for rule_argument, value in zip(rule_arguments, values):
+            if isinstance(rule_argument, Variable):
+                # bind variable
+                if isinstance(value, Variable):
+                    # A / E1
+                    if value.name in binding:
+                        rule_binding[rule_argument.name] = binding[value.name]
+                else:
+                    # A / 'john'
+                    rule_binding[rule_argument.name] = value
+            else:
+                # check for conflicts
+                if isinstance(value, Variable):
+                    # 'john' / E1
+                    if value.name in binding:
+                        if binding[value.name] != rule_argument:
+                            return []
+                else:
+                    # 'john' / 'susan'
+                    if value != rule_argument:
+                        # value conflict in head
+                        return []
+
+        bindings = solver.solve(rule.body, rule_binding)
+
+        # print(bindings)
 
         results = []
-        for solution in solutions:
-            # extend the incoming binding
-            result = binding.copy()
-            # check needed for a variable that occurs twice
-            conflict = False
 
-            # go through all arguments
-            for i, term in enumerate(values):
-                # variable?
-                if isinstance(term, Variable):
-                    # if the variable was bound already, no need to assign it
-                    # also no need to check for conflict, because the type may be different and that's ok
-                    if term.name not in binding:
-                        # check for conflict with previous same variable
-                        if term.name in result and result[term.name] != solution[i]:
-                            conflict = True
-                        # extend the binding
-                        result[term.name] = solution[i]
+        for solution in bindings:
 
-            if conflict:
-                continue
+            result = []
+
+            for rule_argument, value in zip(rule_arguments, values):
+                if isinstance(value, Variable):
+                    if isinstance(rule_argument, Variable):
+                        result.append(solution[rule_argument.name])    
+                    else:
+                        result.append(rule_argument)    
+                else:
+                    result.append(value)
 
             results.append(result)
 
+        # print('>', results)
+
         return results
-    
