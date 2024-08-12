@@ -30,9 +30,9 @@ class TestModule(SomeModule):
 
     def get_relations(self):
         return {
-            "parent": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
-            "child": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
-            "have": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
+            "parent": Relation(self.interpret_relation),
+            "child": Relation(self.interpret_relation),
+            "have": Relation(self.interpret_relation),
         }
 
 

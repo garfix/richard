@@ -1,6 +1,5 @@
-import math
 from richard.Model import Model
-from richard.constants import IGNORED
+from richard.constants import IGNORED, INFINITE
 from richard.entity.Variable import Variable
 
 
@@ -51,13 +50,13 @@ class SortByCost:
         for relation in relations:
             unbound_argument_size_product = 1
             arguments = atom[1:]
-
-            if len(arguments) != len(relation.argument_sizes):
-                raise Exception("Number of argument sizes doesn't match that of relation: " + predicate)
-            
+          
             if relation.relation_size == IGNORED:
-                cost = 100000000000
+                cost = INFINITE
             else:
+
+                if len(arguments) != len(relation.argument_sizes):
+                    raise Exception("Number of argument sizes doesn't match that of relation: " + predicate)
 
                 for argument, argument_size in zip(arguments, relation.argument_sizes):
                     if argument_size == IGNORED:

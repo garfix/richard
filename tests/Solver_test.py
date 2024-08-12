@@ -20,9 +20,9 @@ class TestModule(SomeModule):
 
     def get_relations(self):
         return {
-            "river": Relation(self.interpret_relation, IGNORED, [IGNORED]),
-            "country": Relation(self.interpret_relation, IGNORED, [IGNORED]),
-            "contains": Relation(self.interpret_relation, IGNORED, [IGNORED, IGNORED]),
+            "river": Relation(self.interpret_relation),
+            "country": Relation(self.interpret_relation),
+            "contains": Relation(self.interpret_relation),
         }
 
     def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:

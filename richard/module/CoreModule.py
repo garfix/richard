@@ -12,20 +12,20 @@ class CoreModule(SomeModule):
 
     def __init__(self) -> None:
         self.relations = {
-            "==": Relation(self.equals, IGNORED, [INFINITE, INFINITE]),
-            ">": Relation(self.greater_than, IGNORED, [INFINITE, INFINITE]),
-            "<": Relation(self.less_than, IGNORED, [INFINITE, INFINITE]),
-            "aggregate": Relation(self.aggregation, IGNORED, [UNKNOWN, UNKNOWN, IGNORED]),
-            "sum": Relation(self.sum, IGNORED, [IGNORED, IGNORED, UNKNOWN]),
-            "avg": Relation(self.avg, IGNORED, [IGNORED, IGNORED, UNKNOWN]),
-            "percentage": Relation(self.percentage, IGNORED, [IGNORED, IGNORED, UNKNOWN]),
-            "count": Relation(self.count, IGNORED, [IGNORED, UNKNOWN]),
-            "not": Relation(self.not_function, IGNORED, [INFINITE]),
-            "=": Relation(self.assign, IGNORED, [IGNORED, INFINITE]),
-            "det_equals": Relation(self.determiner_equals, IGNORED, [IGNORED, INFINITE]),
-            "det_greater_than": Relation(self.determiner_greater_than, IGNORED, [IGNORED, INFINITE]),
-            "all": Relation(self.determiner_all, IGNORED, [IGNORED, IGNORED, INFINITE]),
-            "none": Relation(self.determiner_none, IGNORED, [INFINITE]),
+            "==": Relation(self.equals),
+            ">": Relation(self.greater_than),
+            "<": Relation(self.less_than),
+            "aggregate": Relation(self.aggregation),
+            "sum": Relation(self.sum),
+            "avg": Relation(self.avg),
+            "percentage": Relation(self.percentage),
+            "count": Relation(self.count),
+            "not": Relation(self.not_function),
+            "=": Relation(self.assign),
+            "det_equals": Relation(self.determiner_equals),
+            "det_greater_than": Relation(self.determiner_greater_than),
+            "all": Relation(self.determiner_all),
+            "none": Relation(self.determiner_none),
         }
     
 
