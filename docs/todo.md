@@ -8,10 +8,9 @@
 
 * store type information with the variable in stead of an Instance?
 * start using dialog variables in stead of sentence variables; it's hard to change them later
-
 * improve the use of types in the modules, its sloppy
-* improve grammar
 
+* improve grammar
 * table select columns to display => intents as atoms?
 * create numbers based on a token
 * add units to scalar answers

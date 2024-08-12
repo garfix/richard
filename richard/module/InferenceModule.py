@@ -8,6 +8,9 @@ from richard.type.InferenceRule import InferenceRule
 
 
 class InferenceModule(SomeModule):
+    """
+    This module handles very basic Prolog-like facts and inferences.
+    """
 
     rules: dict[str, list[InferenceRule]]
 
