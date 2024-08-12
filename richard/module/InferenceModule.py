@@ -4,6 +4,7 @@ from richard.entity.Variable import Variable
 from richard.interface import SomeSolver
 from richard.interface.SomeModule import SomeModule
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
+from richard.type.ExecutionContext import ExecutionContext
 from richard.type.InferenceRule import InferenceRule
 
 
@@ -38,10 +39,10 @@ class InferenceModule(SomeModule):
                 self.insert_rule(rule)
 
 
-    def handle_rule(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def handle_rule(self, values: list, context: ExecutionContext) -> list[list]:
         results = []
-        for rule in self.rules[relation]:
-            results.extend(self.solve_rule(rule, values, solver, binding))
+        for rule in self.rules[context.predicate]:
+            results.extend(self.solve_rule(rule, values, context.solver, context.binding))
 
         return results
     

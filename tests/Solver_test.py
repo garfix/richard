@@ -11,6 +11,7 @@ from richard.Solver import Solver
 from richard.interface.SomeModule import SomeModule
 from richard.store.MemoryDb import MemoryDb
 from richard.store.Record import Record
+from richard.type.ExecutionContext import ExecutionContext
 
 
 class TestModule(SomeModule):
@@ -20,25 +21,23 @@ class TestModule(SomeModule):
 
     def get_relations(self):
         return {
-            "river": Relation(self.interpret_relation),
-            "country": Relation(self.interpret_relation),
-            "contains": Relation(self.interpret_relation),
+            "river": Relation(self.simple_entity),
+            "country": Relation(self.simple_entity),
+            "contains": Relation(self.contains),
         }
-
-    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    
+    
+    def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)
-        if relation == "river":
-            out_types = ["river"]
-            out_values = self.ds.select("river", ['id'], db_values)
-        elif relation == "country":
-            out_types = ["country"]
-            out_values = self.ds.select("country", ['id'], db_values)
-        elif relation == "contains":
-            out_types = ["country", "river"]
-            out_values = self.ds.select("contains", ['country', 'river'], db_values)
-        else:
-            out_values = []
-
+        out_types = [context.predicate]
+        out_values = self.ds.select(context.predicate, ['id'], db_values)
+        return self.hydrate_values(out_values, out_types)
+    
+    
+    def contains(self, values: list, context: ExecutionContext) -> list[list]:
+        db_values = self.dehydrate_values(values)
+        out_types = ["country", "river"]
+        out_values = self.ds.select("contains", ['country', 'river'], db_values)
         return self.hydrate_values(out_values, out_types)
 
 

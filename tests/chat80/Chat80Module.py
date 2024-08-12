@@ -3,6 +3,7 @@ from richard.entity.Relation import Relation
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
+from richard.type.ExecutionContext import ExecutionContext
 
 
 class Chat80Module(SomeModule):
@@ -38,21 +39,21 @@ class Chat80Module(SomeModule):
         }
    
     
-    def simple_entity(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
-        out_types = [relation]
-        out_values = self.ds.select(relation, ["id"], db_values)
+        out_types = [context.predicate]
+        out_values = self.ds.select(context.predicate, ["id"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
-    def capital(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def capital(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["city"]
         out_values = self.ds.select("country", ["capital"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
-    def borders(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def borders(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         # todo may also be ocean
         out_types = ["country", "country"]
@@ -61,27 +62,27 @@ class Chat80Module(SomeModule):
         return self.hydrate_values(out_values, out_types)
   
 
-    def of(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def of(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["city", "country"]
         out_values = self.ds.select("country", ["capital", "id"], db_values)
         return self.hydrate_values(out_values, out_types)
 
-    def size_of(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def size_of(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["country", None]
         out_values = self.ds.select("country", ["id", "area_div_1000"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
-    def where(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def where(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["country", "place"]
         out_values = self.ds.select("country", ["id", "region"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
-    def some_continent(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def some_continent(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["country"]
         
@@ -96,7 +97,7 @@ class Chat80Module(SomeModule):
         }
 
         out_values = []
-        for region in regions[relation]:
+        for region in regions[context.predicate]:
             ids = self.ds.select_column(table, columns, [country_id, region])
             for id in ids:
                 out_values.append([id])
@@ -104,14 +105,14 @@ class Chat80Module(SomeModule):
         return self.hydrate_values(out_values, out_types)
 
 
-    def flows_through(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def flows_through(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["river", "country"]
         out_values = self.ds.select("contains", ["part", "whole"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
-    def south_of(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def south_of(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["country", "place"]
         
@@ -140,19 +141,19 @@ class Chat80Module(SomeModule):
         return self.hydrate_values(out_values, out_types)
 
 
-    def in_function(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def in_function(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["country", "region"]
         out_values = self.ds.select("contains", ["part", "whole"], db_values)
 
         part = values[0]
         whole = values[1]
-        recurse = solver.solve([("contains", whole, E1), ("in", part, E1)], binding)
+        recurse = context.solver.solve([("contains", whole, E1), ("in", part, E1)], context.binding)
         out_values.extend(recurse)
         return self.hydrate_values(out_values, out_types)
 
 
-    def flows_from_to(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def flows_from_to(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["river", "counry", "sea"]
         
@@ -173,14 +174,14 @@ class Chat80Module(SomeModule):
         return self.hydrate_values(out_values, out_types)
 
 
-    def contains(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def contains(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["country", "city"]
         out_values = self.ds.select("contains", ["whole", "part"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
-    def has_population(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def has_population(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
         out_types = ["country", None]
         if values[0].entity == 'city':
@@ -192,7 +193,7 @@ class Chat80Module(SomeModule):
         return self.hydrate_values(out_values, out_types)
     
 
-    def resolve_name(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)   
 
         name = db_values[0].lower()

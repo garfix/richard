@@ -2,6 +2,7 @@ from collections import defaultdict
 from richard.Model import Model
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
+from richard.type.ExecutionContext import ExecutionContext
 
 
 class Solver(SomeSolver):
@@ -95,8 +96,9 @@ class Solver(SomeSolver):
             raise Exception("No relation called '" + predicate + "' available in the model")
 
         rows = []
+        context = ExecutionContext(predicate, binding, self)
         for relation in relations:
-            out_values = relation.function(predicate, model_values, self, binding)
+            out_values = relation.function(model_values, context)
             rows.extend(out_values)
         
         return rows

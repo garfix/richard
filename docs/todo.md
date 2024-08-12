@@ -15,6 +15,7 @@
 * create numbers based on a token
 * add units to scalar answers
 * floor floating point numbers in tables to integers
+* can aggregates by simplified?
 
 * update documentation
 * note that I did implement a rule ("in")

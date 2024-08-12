@@ -4,12 +4,11 @@ from richard.Solver import Solver
 from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.constants import E1, E2, IGNORED, Body, Range
+from richard.constants import E1, E2, Body, Range
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
-from richard.interface.SomeSolver import SomeSolver
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
@@ -18,6 +17,7 @@ from richard.processor.semantic_composer.SemanticComposer import SemanticCompose
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.store.MemoryDb import MemoryDb
+from richard.type.ExecutionContext import ExecutionContext
 from richard.type.SemanticTemplate import SemanticTemplate
 
 
@@ -30,29 +30,30 @@ class TestModule(SomeModule):
 
     def get_relations(self):
         return {
-            "parent": Relation(self.interpret_relation),
-            "child": Relation(self.interpret_relation),
-            "have": Relation(self.interpret_relation),
+            "parent": Relation(self.parent),
+            "child": Relation(self.child),
+            "have": Relation(self.have),
         }
+    
 
-
-    def interpret_relation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
-
+    def parent(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)
+        out_types = ["parent"]
+        out_values = self.ds.select("has_child", ["parent"], db_values)
+        return self.hydrate_values(out_values, out_types)
 
-        if relation == "parent":
-            out_types = ["parent"]
-            out_values = self.ds.select("has_child", ["parent"], db_values)
-        elif relation == "child":
-            out_types = ["child"]
-            out_values = self.ds.select("has_child", ["child"], db_values)
-        elif relation == "have" and values[0].entity == "parent" and values[1].entity == "child":
-            out_types = ["parent", "child"]
-            out_values = self.ds.select("has_child", ["parent", "child"], db_values)
-        else:
-            out_types = []
-            out_values = []
 
+    def child(self, values: list, context: ExecutionContext) -> list[list]:
+        db_values = self.dehydrate_values(values)
+        out_types = ["child"]
+        out_values = self.ds.select("has_child", ["child"], db_values)
+        return self.hydrate_values(out_values, out_types)
+
+
+    def have(self, values: list, context: ExecutionContext) -> list[list]:
+        db_values = self.dehydrate_values(values)
+        out_types = ["parent", "child"]
+        out_values = self.ds.select("has_child", ["parent", "child"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 

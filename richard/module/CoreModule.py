@@ -1,10 +1,10 @@
 
 
-from richard.constants import IGNORED, INFINITE, LARGE, ONE, UNKNOWN
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
 from richard.interface.SomeSolver import SomeSolver
+from richard.type.ExecutionContext import ExecutionContext
 from richard.type.OrderedSet import OrderedSet
 
 
@@ -30,7 +30,7 @@ class CoreModule(SomeModule):
     
 
     # ('==', E1, E2)
-    def equals(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def equals(self, values: list, context: ExecutionContext) -> list[list]:
 
         e1 = values[0]
         e2 = values[1]
@@ -51,7 +51,7 @@ class CoreModule(SomeModule):
 
     # ('>', E1, E2)
     # E1 and E2 must be bound
-    def greater_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def greater_than(self, values: list, context: ExecutionContext) -> list[list]:
 
         if values[0] > values[1]:
             return [values]
@@ -60,7 +60,7 @@ class CoreModule(SomeModule):
 
     # ('<', E1, E2)
     # E1 and E2 must be bound
-    def less_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def less_than(self, values: list, context: ExecutionContext) -> list[list]:
 
         if values[0] < values[1]:
             return [values]
@@ -69,18 +69,18 @@ class CoreModule(SomeModule):
 
     # ('aggregate', nbar, superlative, E1)
     # ('aggregation', E1, E2, [('size_of', E1, E2)], 'min')
-    def aggregation(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def aggregation(self, values: list, context: ExecutionContext) -> list[list]:
         nbar, superlative, result_var = values
         predicate1, entity_var, attribute_var, argument_atoms, aggregation = superlative
 
-        entities = solver.solve_for(nbar, binding, entity_var.name)
+        entities = context.solver.solve_for(nbar, context.binding, entity_var.name)
 
         attribute_values = []
 
         for entity in entities:
-            attribute_binding = binding.copy()
+            attribute_binding = context.binding.copy()
             attribute_binding[entity_var.name] = entity
-            values = solver.solve_for(argument_atoms, attribute_binding, attribute_var.name)
+            values = context.solver.solve_for(argument_atoms, attribute_binding, attribute_var.name)
             if len(values) > 1:
                 raise Exception((str(argument_atoms) + " returned " + str(len(values)) + " values; should be 1"))
             if len(values) == 0:
@@ -110,11 +110,11 @@ class CoreModule(SomeModule):
 
     # ('count', E1, [body-atoms])
     # returns the number of results of body-atoms in E1
-    def count(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def count(self, values: list, context: ExecutionContext) -> list[list]:
 
         count_var, body = values
 
-        results = solver.solve(body, binding)
+        results = context.solver.solve(body, context.binding)
         count = len(results)
 
         return [
@@ -124,11 +124,11 @@ class CoreModule(SomeModule):
 
     # ('sum', E1, E2, [body-atoms])
     # returns the sum of results of the values of E2 in body-atoms in E1
-    def sum(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def sum(self, values: list, context: ExecutionContext) -> list[list]:
 
         sum_var, element_var, body = values
 
-        results = solver.solve(body, binding)
+        results = context.solver.solve(body, context.binding)
         s = 0
         for result in results:
             s += result[element_var.name]
@@ -140,11 +140,11 @@ class CoreModule(SomeModule):
 
     # ('avg', E1, E2, [body-atoms])
     # returns the average of results of the values of E2 in body-atoms in E1
-    def avg(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def avg(self, values: list, context: ExecutionContext) -> list[list]:
 
         sum_var, element_var, body = values
 
-        results = solver.solve(body, binding)
+        results = context.solver.solve(body, context.binding)
 
         if len(results) == 0:
             return []
@@ -164,12 +164,12 @@ class CoreModule(SomeModule):
 
     # ('percentage', E1, [nominator-atoms], [denominator-atoms])
     # returns the percentage of nominator-atoms in denominator-atoms
-    def percentage(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def percentage(self, values: list, context: ExecutionContext) -> list[list]:
 
         pecentage_var, nominator, denominator = values
 
-        nominator_results = solver.solve(nominator, binding)
-        denominator_results = solver.solve(denominator, binding)
+        nominator_results = context.solver.solve(nominator, context.binding)
+        denominator_results = context.solver.solve(denominator, context.binding)
 
         if len(denominator_results) == 0:
             return []
@@ -184,11 +184,11 @@ class CoreModule(SomeModule):
     # ('not', [body-atoms])
     # if body-atoms returns values, not returns an empty list
     # otherwise, it returns a list with a single value: True
-    def not_function(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def not_function(self, values: list, context: ExecutionContext) -> list[list]:
 
         body = values[0]
 
-        results = solver.solve(body, binding)
+        results = context.solver.solve(body, context.binding)
         count = len(results)
 
         if count > 0:
@@ -200,7 +200,7 @@ class CoreModule(SomeModule):
 
 
     # ('=', E1, 5)
-    def assign(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def assign(self, values: list, context: ExecutionContext) -> list[list]:
 
         return [[
             values[1], values[1]
@@ -208,11 +208,11 @@ class CoreModule(SomeModule):
 
 
     # ('det_equals', [body-atoms], E2)
-    def determiner_equals(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def determiner_equals(self, values: list, context: ExecutionContext) -> list[list]:
 
         body, number = values
 
-        results = solver.solve(body, binding)
+        results = context.solver.solve(body, context.binding)
         count = len(results)
 
         if count == number:
@@ -222,11 +222,11 @@ class CoreModule(SomeModule):
 
 
     # ('det_greater_than', [body-atoms], E2)
-    def determiner_greater_than(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def determiner_greater_than(self, values: list, context: ExecutionContext) -> list[list]:
 
         body, number = values
 
-        results = solver.solve(body, binding)
+        results = context.solver.solve(body, context.binding)
         count = len(results)
 
         if count > number:
@@ -236,24 +236,24 @@ class CoreModule(SomeModule):
 
 
     # ('all', E1, [range-atoms], [body-atoms])
-    def determiner_all(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def determiner_all(self, values: list, context: ExecutionContext) -> list[list]:
 
         # find_var, quant, body = values
         # predicate1, quant_var, det, nbar = quant
 
         quant_var, range, body = values
 
-        entities = OrderedSet([binding[quant_var.name] for binding in solver.solve(range, binding)])
+        entities = OrderedSet([binding[quant_var.name] for binding in context.solver.solve(range, context.binding)])
 
         # print(entities)
 
         range_count = len(entities)
         results = OrderedSet()
         for entity in entities:
-            b = binding | {
+            b = context.binding | {
                 quant_var.name: entity
             }
-            bindings = solver.solve(body, b)
+            bindings = context.solver.solve(body, b)
             # print(body, b, bindings)
             if len(bindings) > 0:
                 results.add(entity)
@@ -271,11 +271,11 @@ class CoreModule(SomeModule):
         
 
     # ('none', [body-atoms])
-    def determiner_none(self, relation: str, values: list, solver: SomeSolver, binding: dict) -> list[list]:
+    def determiner_none(self, values: list, context: ExecutionContext) -> list[list]:
 
         body = values[0]
 
-        results = solver.solve(body, binding)
+        results = context.solver.solve(body, context.binding)
         count = len(results)
 
         if count == 0:
