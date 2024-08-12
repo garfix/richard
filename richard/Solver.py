@@ -2,7 +2,6 @@ from collections import defaultdict
 from richard.Model import Model
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
-from richard.type.InferenceRule import InferenceRule
 
 
 class Solver(SomeSolver):
@@ -59,7 +58,7 @@ class Solver(SomeSolver):
                 # just add value
                 prepared.append(arg)
 
-        values = self.model.find_relation_values(relation, prepared, self, binding)
+        values = self.find_relation_values(relation, prepared, binding)
 
         results = []
         for v in values:
@@ -87,4 +86,18 @@ class Solver(SomeSolver):
             results.append(result)
             
         return results
+    
+
+    def find_relation_values(self, predicate: str, model_values: list, binding: dict) -> list[list]:       
+
+        relations = self.model.find_relations(predicate)
+        if len(relations) == 0:
+            raise Exception("No relation called '" + predicate + "' available in the model")
+
+        rows = []
+        for relation in relations:
+            out_values = relation.function(predicate, model_values, self, binding)
+            rows.extend(out_values)
+        
+        return rows
     

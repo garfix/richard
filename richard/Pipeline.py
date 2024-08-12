@@ -17,7 +17,7 @@ class Pipeline:
     """
     
     blocks: list[ControlBlock]
-    block_index: int = -1
+
 
     def __post_init__(self):
         # this blocks is added last, so that the other blocks don't need to check if there's a next one

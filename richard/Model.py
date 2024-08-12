@@ -1,7 +1,6 @@
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
 from richard.module.CoreModule import CoreModule
-from richard.interface.SomeSolver import SomeSolver
 
 
 class Model:
@@ -27,18 +26,3 @@ class Model:
             if relation in relations:
                 result.append(relations[relation])
         return result
-
-
-    def find_relation_values(self, predicate: str, model_values: list, solver: SomeSolver, binding: dict) -> list[list]:       
-
-        relations = self.find_relations(predicate)
-        if len(relations) == 0:
-            raise Exception("No relation called '" + predicate + "' available in the model")
-
-        rows = []
-        for relation in relations:
-            out_values = relation.function(predicate, model_values, solver, binding)
-            rows.extend(out_values)
-        
-        return rows
-    
