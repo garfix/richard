@@ -18,6 +18,8 @@ class SimpleInferenceRuleParser:
             ':-',
             '\(',
             '\)',
+            '\d+\.\d+',
+            '\d+',
             "'(?:\\\\'|[^'])+'",
             '"(?:\\\\"|[^"])+"',
             '[A-Z]\w*', 
@@ -25,6 +27,8 @@ class SimpleInferenceRuleParser:
         ]) + ")")
         self.re_identifier = re.compile("^\w+$")
         self.re_variable = re.compile("^[A-Z]\w*$")
+        self.re_float = re.compile("^\d+\.\d+$")
+        self.re_int = re.compile("^\d+$")
 
 
     def parse(self, text: str):
@@ -117,6 +121,14 @@ class SimpleInferenceRuleParser:
         if token[0] == '"':
             pos = new_pos
             return token[1:-1].replace('\\"', '"'), pos
+
+        if re.match(self.re_float, token):
+            pos = new_pos
+            return float(token), pos
+
+        if re.match(self.re_int, token):
+            pos = new_pos
+            return int(token), pos
 
         if re.match(self.re_variable, token):
             pos = new_pos

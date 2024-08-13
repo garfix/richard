@@ -21,6 +21,8 @@ class TestInferenceEngine(unittest.TestCase):
             ["mountain('Dante\\'s peak').", InferenceRule(('mountain', "Dante's peak"), [])],
             ['person("Robert \\"Bobby\\" Brown").', InferenceRule(('person', 'Robert "Bobby" Brown'), [])],
             ['river().', InferenceRule(('river',), [])],
+            ["population('france', 43).", InferenceRule(('population', 'france', 43), [])],
+            ["constant('pi', 3.14159265359).", InferenceRule(('constant', 'pi', 3.14159265359), [])],
             [
                 "father(E1, E2) :- parent(E1, E2), father(E1).", 
                 InferenceRule(('father', Variable('E1'), Variable('E2')), [
