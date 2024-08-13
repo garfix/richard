@@ -133,11 +133,6 @@ class EarleyParser:
         if self.log.is_active():
             self.log.add_debug("scan", state.to_string(chart))
 
-        # if next_pos_type == POS_TYPE_REG_EXP:
-        #     if re.match(next_consequent.predicate, end_word):
-        #         lex_item_found = True
-        #         new_pos_type = POS_TYPE_REG_EXP
-
         # token category
         if not lex_item_found and next_consequent.predicate == CATEGORY_TOKEN:
             lex_item_found = True
@@ -154,9 +149,6 @@ class EarleyParser:
                 RuleConstituent(next_consequent.predicate, next_variables, new_pos_type),
                 [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
                 sem,
-                [],
-                [],
-                0
             )
 
             scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)
@@ -195,6 +187,12 @@ class EarleyParser:
             # check if the types match
             if charted_state.rule.consequents[dot_position-1].position_type != completed_state.rule.antecedent.position_type:
                 continue
+
+            # check condition
+            if charted_state.rule.condition:
+                next_word = chart.words[charted_state.end_word_index]
+                if not charted_state.rule.condition(next_word):
+                    continue
 
             # create a new state that is a dot-advancement of an older state
             advanced_state = ChartState(rule, dot_position+1, charted_state.start_word_index, completed_state.end_word_index)

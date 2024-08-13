@@ -1,4 +1,3 @@
-from richard.constants import IGNORED, INFINITE
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface import SomeSolver

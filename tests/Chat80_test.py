@@ -1,4 +1,5 @@
 from math import ceil
+import re
 import unittest
 import pathlib
 import cProfile

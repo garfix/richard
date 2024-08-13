@@ -1,3 +1,4 @@
+import re
 from richard.constants import E1, E2, E3, E4, Body, Range
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.type.SemanticTemplate import SemanticTemplate
@@ -197,10 +198,17 @@ def get_grammar():
         { "syn": "attr(E1, E2) -> attr(E1, E2) relative_clause(E2)", "sem": lambda attr, relative_clause: attr + relative_clause },
 
         # number
-        { "syn": "number(E1) -> '1'", "sem": lambda: 1 },
-        { "syn": "number(E1) -> '10'", "sem": lambda: 10 },
         { "syn": "number(E1) -> 'one'", "sem": lambda: 1 },
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
+        { "syn": "number(E1) -> 'three'", "sem": lambda: 3 },
+        { "syn": "number(E1) -> 'four'", "sem": lambda: 4 },
+        { "syn": "number(E1) -> 'five'", "sem": lambda: 5 },
+        { "syn": "number(E1) -> 'six'", "sem": lambda: 6 },
+        { "syn": "number(E1) -> 'seven'", "sem": lambda: 7 },
+        { "syn": "number(E1) -> 'eight'", "sem": lambda: 8 },
+        { "syn": "number(E1) -> 'nine'", "sem": lambda: 9 },
+        { "syn": "number(E1) -> 'ten'", "sem": lambda: 10 },
+        { "syn": "number(E1) -> token(E1)", "sem": lambda token: int(token), "if": lambda token: re.match('^\d+$', token) },
         { "syn": "number(E1) -> number(E1) 'million'", "sem": lambda number: number * 1000000 },
 
         # pp
