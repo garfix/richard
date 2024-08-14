@@ -108,13 +108,13 @@ class SemanticComposer(SomeSemanticComposer):
     
 
     def extend_map_with_semantics(self, map: dict, semantics: list[tuple]):
-        if isinstance(semantics, SemanticTemplate):
-            return
-        
-        for atom in semantics:
-            for arg in atom:
-                if isinstance(arg, Variable) and arg.name not in map and not arg.name.startswith(self.variable_generator.prefix):
-                    map[arg.name] = self.variable_generator.next()
+        # only lists of atoms for now
+        if isinstance(semantics, list):
+            for atom in semantics:
+                for arg in atom:
+                    # since we're late in the game, don't replace variables that have already been replaced
+                    if isinstance(arg, Variable) and arg.name not in map and not arg.name.startswith(self.variable_generator.prefix):
+                        map[arg.name] = self.variable_generator.next()
 
 
     def unify_variables(self, semantics: any, map: dict[str, str]) -> any:
