@@ -12,108 +12,108 @@ def get_grammar():
         { 
             "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
             "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj), 
-            "intents": ["y/n"] 
+            "inf": [("format", "y/n")],
         },
         { 
             "syn": "s(E1) -> 'is' 'there' np(E1) '?'",  
             "sem": lambda np: apply(np, []), 
-            "intents": ["y/n"] 
+            "inf": [("format", "y/n")],        
         },
         { 
             "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
             "sem": lambda np, preposition, nbar: [('all', E2, nbar, apply(np, preposition))], 
-            "intents": ["y/n"] 
+            "inf": [("format", "y/n")], 
         },
         { 
             "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", 
             "sem": lambda nbar: nbar, 
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' pp(E1) '?'", 
             "sem": lambda nbar, pp: nbar + pp, 
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
             "sem": lambda np: apply(np, []), 
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'what' 'are' np(E1) '?'", 
             "sem": lambda np: apply(np, []), 
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) '?'", 
             "sem": lambda np, vp_noobj_sub_iob: apply(np, vp_noobj_sub_iob),
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
             "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
-            "intents": ["table", "S2", "S1"],
+            "inf": [("format", "table", [E2, E1])],
             "boost": 1
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
             "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size_of', E2, E3)])],
-            "intents": ["number"]
+            "inf": [("format", "number", E1)],
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
-            "intents": ["table", "S3", "S1"]
+            "inf": [("format", "table", [E3, E1])],
         },
         { 
             "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'", 
             "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))], 
-            "intents": ["table", "S2", "E3"] 
+            "inf": [("format", "table", [E2, E3])],
         },
         { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
             "sem": lambda np: apply(np, []) + [('where', E1, E2)], 
-            "intents": ["list"] 
+            "inf": [("format", "list", E2)],
         },
         { 
             "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",  
             "sem": lambda np: apply(np, []) + [('size_of', E1, E2)],
-            "intents": ["number"]
+            "inf": [("format", "number", E2)],
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", 
             "sem": lambda nbar, adjp: nbar + adjp, 
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) '?'", 
             "sem": lambda nbar, vp_noobj_sub: nbar + vp_noobj_sub,
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'which' 'is' np(E1) '?'", 
             "sem": lambda np: apply(np, []), 
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", 
             "sem": lambda nbar, np1, np2: nbar + apply(np1, [('of', E2, E1)] + apply(np2, [('==', E2, E3)])),
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1) '?'", 
             "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
-            "intents": ["list"] 
+            "inf": [("format", "list", E1)],
         },
         { 
             "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'", 
             "sem": lambda nbar, vp_noobj_sub: [('count', E1, nbar + vp_noobj_sub)], 
-            "intents": ["number"]
+            "inf": [("format", "number", E1)],
         },
         { 
             "syn": "s(E1) -> 'bye' '.'", 
             "sem": lambda: [('=', E1, 'Cheerio.')], 
-            "intents": ["list"]
+            "inf": [("format", "list", E1)],
         },
 
 
@@ -251,5 +251,5 @@ def get_grammar():
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token, "inf": [("name", E1)], },
     ]

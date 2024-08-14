@@ -49,7 +49,7 @@ class GrammarRule:
         return True
     
 
-    def basic_form(self):
+    def __str__(self):
 
         s = self.antecedent.predicate + "("
         sep2 = ""

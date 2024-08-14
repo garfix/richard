@@ -1,4 +1,3 @@
-from richard.Model import Model
 from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
@@ -7,7 +6,7 @@ from richard.interface.SomeParser import SomeParser
 from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
 from richard.entity.Composition import Composition
-from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
+from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
 from tests.chat80.chat80_grammar import SemanticTemplate
 
 
@@ -19,28 +18,24 @@ class SemanticComposer(SomeSemanticComposer):
     
     parser: SomeParser
     query_optimizer: SomeQueryOptimizer
+    variable_generator: VariableGenerator
 
 
     def __init__(self, parser: SomeParser) -> None:
         super().__init__()
         self.parser = parser    
         self.query_optimizer = None
+        self.variable_generator = VariableGenerator("S")
 
     
     def process(self, request: SentenceRequest) -> ProcessResult:
-
-        number = 1
-
-        def next_number():
-            nonlocal number
-            number += 1
-            return number
 
         root = self.parser.get_tree(request)
 
         self.check_for_sem(root)
         
-        semantics, inferences, intent = self.compose(root, ["S1"], next_number)
+        root_variable = self.variable_generator.next()
+        semantics, inferences, intent = self.compose(root, [root_variable])
 
         if self.query_optimizer:
             optimized_semantics = self.query_optimizer.optimize(semantics)
@@ -53,46 +48,48 @@ class SemanticComposer(SomeSemanticComposer):
 
     def check_for_sem(self, node: ParseTreeNode):
         if node.form == "" and node.rule.sem is None:
-            raise Exception("Rule '" + node.rule.basic_form() + "' is missing key 'sem'")
+            raise Exception("Rule '" + str(node.rule) + "' is missing key 'sem'")
         
         for child in node.children:
             self.check_for_sem(child)
 
 
-    def compose(self, node: ParseTreeNode, incoming_variables: list[str], next_number: callable) -> list[tuple]:
+    def compose(self, node: ParseTreeNode, incoming_variables: list[str]) -> list[tuple]:
 
         # map formal variables to unified, sentence-wide variables
-        map = self.create_map(node, incoming_variables, next_number)
+        map = self.create_map(node, incoming_variables)
 
         # collect the semantics of the child nodes
         child_semantics = []
-        child_inferences = []
-        child_intents = node.rule.intents
+        inferences = []
+        intents = []
+
+        inferences.extend(node.rule.inferences)
+        intents.extend(node.rule.intents)
+
         for child, consequent in zip(node.children, node.rule.consequents):
             if not child.is_leaf_node():
                 incoming_child_variables = [map[arg] for arg in consequent.arguments]
-                child_semantic, child_inference, child_intent = self.compose(child, incoming_child_variables, next_number)               
-                child_inferences.extend(child_inference)
-                child_semantics.append(child_semantic)
-                child_intents.extend(child_intent)
+                semantics, child_inference, child_intent = self.compose(child, incoming_child_variables)
+                inferences.extend(child_inference)
+                child_semantics.append(semantics)
+                intents.extend(child_intent)
             elif child.rule.sem:
                 child_semantics.append(child.rule.sem())
-                child_inferences.extend(child.rule.inferences)
-                child_intents.extend(child.rule.intents)
 
         # create the semantics of this node by executing its function, passing the values of its children as arguments
-        child_semantic = node.rule.sem(*child_semantics)
+        semantics = node.rule.sem(*child_semantics)
 
         # replace the formal parameters in the semantics with the unified variables
-        unified_semantics = self.unify_variables(child_semantic, map)
+        unified_semantics = self.unify_variables(semantics, map)
 
         # replace the formal parameters in the inferences with the unified variables
-        unified_inferences = self.unify_variables(child_inferences, map)
+        unified_inferences = self.unify_variables(inferences, map)
 
-        return unified_semantics, unified_inferences, child_intents
+        return unified_semantics, unified_inferences, intents
     
     
-    def create_map(self, node: ParseTreeNode, incoming_variables: list[str], next_number: callable):
+    def create_map(self, node: ParseTreeNode, incoming_variables: list[str]):
         # start variable map by mapping antecedent variables to incoming variables
         map = {}
         for i, arg in enumerate(node.rule.antecedent.arguments):
@@ -102,7 +99,7 @@ class SemanticComposer(SomeSemanticComposer):
         for cons in node.rule.consequents:
             for i, arg in enumerate(cons.arguments):
                     if arg not in map:
-                        map[arg] = "S" + str(next_number())
+                        map[arg] = self.variable_generator.next()
         return map
     
 

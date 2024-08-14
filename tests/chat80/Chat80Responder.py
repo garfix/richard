@@ -6,39 +6,55 @@ from richard.entity.Composition import Composition
 class Chat80Responder(SomeResponseHandler):
     def create_response(self, bindings: list[dict], composition: Composition) -> str:
         response = ""
-        sep = ""
 
-        if "y/n" in composition.intents:
+        format = None
+        type = None
+        for atom in composition.inferences:
+            if atom[0] == 'format':
+                format = atom
+                type = format[1]
+
+        if type == "y/n":
             if len(bindings) > 0:
                 response = "yes"
             else:
                 response = "no"
-        elif "number" in composition.intents:
+
+        elif type == "number":
+            variable = format[2]
+            v = variable.name
             if len(bindings) > 0:
-                response = bindings[0]['S1']
+                response = bindings[0][v]
             else:
                 response = "I dont't know"
-        elif "table" in composition.intents:
+
+        elif type == "table":
             response = []
             for binding in bindings:
-                # todo: make this more general
-                v1 = composition.intents[1]
-                v2 = composition.intents[2]
-                val1 = binding[v1].id if isinstance(binding[v1], Instance) else binding[v1]
-                val2 = binding[v2].id if isinstance(binding[v2], Instance) else binding[v2]
-                response.append([val1, val2])
-                response = sorted(response, key = lambda row: row[0])
-        else:
+                row = []
+                for variable in format[2]:
+                    v = variable.name
+                    row.append(binding[v].id if isinstance(binding[v], Instance) else binding[v])
+                response.append(row)
+            response = sorted(response, key = lambda row: row[0])
+
+        elif type == "list":
+            print(format)
+            variable = format[2]
+            v = variable.name
             s = set()
             values = []
             for binding in bindings:
-                value = binding["S1"].id if isinstance(binding["S1"], Instance) else binding["S1"]
+                value = binding[v].id if isinstance(binding[v], Instance) else binding[v]
                 if value in s:
                     continue
                 s.add(value)
                 values.append(value)
             values.sort()
             response = ", ".join(values)
+
+        else:
+            raise Exception("The sentence doesn't have a 'format' inference")
 
         return response
     
