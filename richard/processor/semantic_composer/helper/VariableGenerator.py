@@ -4,7 +4,7 @@ class VariableGenerator:
     number: int
 
 
-    def __init__(self, prefix: str = "S") -> None:
+    def __init__(self, prefix: str) -> None:
         self.number = 0
         self.prefix = prefix
 

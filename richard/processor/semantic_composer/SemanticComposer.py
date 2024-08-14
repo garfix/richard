@@ -25,7 +25,7 @@ class SemanticComposer(SomeSemanticComposer):
         super().__init__()
         self.parser = parser    
         self.query_optimizer = None
-        self.variable_generator = VariableGenerator("S")
+        self.variable_generator = VariableGenerator("$")
 
     
     def process(self, request: SentenceRequest) -> ProcessResult:
@@ -80,6 +80,9 @@ class SemanticComposer(SomeSemanticComposer):
         # create the semantics of this node by executing its function, passing the values of its children as arguments
         semantics = node.rule.sem(*child_semantics)
 
+        # extend the map with variables found in the result of the semantics function
+        self.extend_map_with_semantics(map, semantics)
+
         # replace the formal parameters in the semantics with the unified variables
         unified_semantics = self.unify_variables(semantics, map)
 
@@ -88,7 +91,7 @@ class SemanticComposer(SomeSemanticComposer):
 
         return unified_semantics, unified_inferences, intents
     
-    
+
     def create_map(self, node: ParseTreeNode, incoming_variables: list[str]):
         # start variable map by mapping antecedent variables to incoming variables
         map = {}
@@ -100,8 +103,19 @@ class SemanticComposer(SomeSemanticComposer):
             for i, arg in enumerate(cons.arguments):
                     if arg not in map:
                         map[arg] = self.variable_generator.next()
+
         return map
     
+
+    def extend_map_with_semantics(self, map: dict, semantics: list[tuple]):
+        if isinstance(semantics, SemanticTemplate):
+            return
+        
+        for atom in semantics:
+            for arg in atom:
+                if isinstance(arg, Variable) and arg.name not in map and not arg.name.startswith(self.variable_generator.prefix):
+                    map[arg.name] = self.variable_generator.next()
+
 
     def unify_variables(self, semantics: any, map: dict[str, str]) -> any:
         if isinstance(semantics, list):
