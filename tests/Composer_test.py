@@ -66,7 +66,7 @@ class TestComposer(unittest.TestCase):
         request = SentenceRequest("The river flows to the sea")
         pipeline.enter(request)
         composition = composer.get_composition(request)
-        self.assertEqual(str(composition.semantics), "[('river', S1), ('sea', S2), ('flows', S1, S2)]")
+        self.assertEqual(str(composition.semantics), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
         
 
     def test_special_category(self):

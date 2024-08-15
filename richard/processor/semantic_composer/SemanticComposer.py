@@ -35,14 +35,14 @@ class SemanticComposer(SomeSemanticComposer):
         self.check_for_sem(root)
         
         root_variable = self.variable_generator.next()
-        semantics, inferences, intent = self.compose(root, [root_variable])
+        semantics, inferences = self.compose(root, [root_variable])
 
         if self.query_optimizer:
             optimized_semantics = self.query_optimizer.optimize(semantics)
         else:
             optimized_semantics = semantics
 
-        composition = Composition(semantics, optimized_semantics, inferences, intent)
+        composition = Composition(semantics, optimized_semantics, inferences)
         return ProcessResult([composition], "", [])    
 
 
@@ -62,18 +62,15 @@ class SemanticComposer(SomeSemanticComposer):
         # collect the semantics of the child nodes
         child_semantics = []
         inferences = []
-        intents = []
 
         inferences.extend(node.rule.inferences)
-        intents.extend(node.rule.intents)
 
         for child, consequent in zip(node.children, node.rule.consequents):
             if not child.is_leaf_node():
                 incoming_child_variables = [map[arg] for arg in consequent.arguments]
-                semantics, child_inference, child_intent = self.compose(child, incoming_child_variables)
+                semantics, child_inference = self.compose(child, incoming_child_variables)
                 inferences.extend(child_inference)
                 child_semantics.append(semantics)
-                intents.extend(child_intent)
             elif child.rule.sem:
                 child_semantics.append(child.rule.sem())
 
@@ -89,7 +86,7 @@ class SemanticComposer(SomeSemanticComposer):
         # replace the formal parameters in the inferences with the unified variables
         unified_inferences = self.unify_variables(inferences, map)
 
-        return unified_semantics, unified_inferences, intents
+        return unified_semantics, unified_inferences
     
 
     def create_map(self, node: ParseTreeNode, incoming_variables: list[str]):

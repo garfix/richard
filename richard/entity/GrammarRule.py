@@ -8,7 +8,6 @@ class GrammarRule:
     consequents: list[RuleConstituent]
     sem: callable
     inferences: list[tuple]
-    intents: list[str]
     boost: int
     condition: callable
     hash: int
@@ -18,7 +17,6 @@ class GrammarRule:
                  consequents: list[RuleConstituent], 
                  sem: callable = None, 
                  inferences: list[tuple] = [], 
-                 intents: list[str] = [], 
                  boost: int = 0, 
                  condition: callable = None
         ) -> None:
@@ -26,7 +24,6 @@ class GrammarRule:
         self.consequents = consequents
         self.sem = sem
         self.inferences = inferences
-        self.intents = intents
         self.boost = boost
         self.condition = condition
 
