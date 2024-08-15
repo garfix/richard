@@ -1,3 +1,6 @@
+from richard.entity.Variable import Variable
+
+
 class VariableGenerator:
 
     prefix: str
@@ -16,4 +19,7 @@ class VariableGenerator:
 
     def reset(self):
         self.number = 0
-        
+
+
+    def isinstance(self, variable: Variable):
+        return variable.name.startswith(self.prefix)

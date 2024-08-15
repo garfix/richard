@@ -113,7 +113,7 @@ class SemanticComposer(SomeSemanticComposer):
             for atom in semantics:
                 for arg in atom:
                     # since we're late in the game, don't replace variables that have already been replaced
-                    if isinstance(arg, Variable) and arg.name not in map and not arg.name.startswith(self.variable_generator.prefix):
+                    if isinstance(arg, Variable) and arg.name not in map and not self.variable_generator.isinstance(arg):
                         map[arg.name] = self.variable_generator.next()
 
 
