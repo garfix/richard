@@ -22,20 +22,34 @@ class Chat80Responder(SomeResponseHandler):
 
         elif type == "number":
             variable = format[2]
+            unit = format[3]
+            
             v = variable.name
             if len(bindings) > 0:
                 response = bindings[0][v]
+                if unit:
+                    response = str(response) + " " + unit
             else:
                 response = "I dont't know"
 
         elif type == "table":
+            columns = format[2]
+            units = format[3]
+
             response = []
             for binding in bindings:
+
                 row = []
-                for variable in format[2]:
+                for variable, unit in zip(columns, units):
                     v = variable.name
-                    row.append(binding[v].id if isinstance(binding[v], Instance) else binding[v])
+                    value = binding[v].id if isinstance(binding[v], Instance) else binding[v]
+                    if isinstance(value, float):
+                        value = str(int(value))
+                    if unit:
+                        value = str(value) + " " + unit
+                    row.append(value)
                 response.append(row)
+
             response = sorted(response, key = lambda row: row[0])
 
         elif type == "list":

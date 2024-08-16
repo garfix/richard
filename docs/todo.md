@@ -4,18 +4,13 @@
 * unit test
 * better error messages
 * use postgres for chat-80?
-* log the time it takes to perform a block
 
 * store type information with the variable in stead of an Instance?
 * start using dialog variables in stead of sentence variables; it's hard to change them later
 * improve the use of types in the modules, its sloppy
 
 * improve grammar
-* table select columns to display => intents as atoms?
-* add units to scalar answers
-* floor floating point numbers in tables to integers
 * can aggregates by simplified?
-* support for table format: select the columns, fix the None in the test; cannot use s(E1, E2) because of s(E1) -> s(E2) s(E3)
 
 * update documentation
 * note that I did implement a rule ("in")
@@ -37,4 +32,6 @@
 * inference engine
 * create numbers based on a token
 * create a context and pass it to each module function, in stead of the arguments which are mostly unused
+* table select columns to display => intents as atoms?
+* add units to scalar answers and floor floating point numbers in tables to integers
 

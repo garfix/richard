@@ -22,9 +22,10 @@ from .chat80.chat80_grammar import get_grammar
 
 class TestChat80(unittest.TestCase):
     """
-    Mimics a Chat80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
+    Mimics a Chat-80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
 
     Topics:
+    - long distance dependencies (extraposition)
     - proper nouns
     - superlatives ('largest')
     - relative clauses
@@ -50,7 +51,6 @@ class TestChat80(unittest.TestCase):
 
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
-
         data_source = MemoryDbDataSource(db)
         model = Model([Chat80Module(data_source), inferences])
         solver = Solver(model)
@@ -79,7 +79,7 @@ class TestChat80(unittest.TestCase):
             ["Which countries are European?", "albania, andorra, austria, belgium, bulgaria, cyprus, czechoslovakia, denmark, east_germany, eire, finland, france, greece, hungary, iceland, italy, liechtenstein, luxembourg, malta, monaco, netherlands, norway, poland, portugal, romania, san_marino, spain, sweden, switzerland, united_kingdom, west_germany, yugoslavia"],
             ["Which country's capital is London?", "united_kingdom"],
             ["Which is the largest african country?", "sudan"],
-            ["How large is the smallest american country?", 0],
+            ["How large is the smallest american country?", "0 ksqmiles"],
             ["What is the ocean that borders African countries?", "atlantic, indian_ocean"],
             ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
             ["What are the capitals of the countries bordering the Baltic?", [
@@ -94,13 +94,13 @@ class TestChat80(unittest.TestCase):
             ["Which countries are bordered by two seas?", "egypt, iran, israel, saudi_arabia, turkey"],
             ["How many countries does the Danube flow through?", 6],
             ["What are the countries south of the Equator and not in Australasia?", "angola, argentina, bolivia, botswana, brazil, burundi, chile, congo, ecuador, indonesia, lesotho, malagasy, malawi, mauritius, mozambique, paraguay, peru, rwanda, seychelles, south_africa, swaziland, tanzania, uruguay, zaire, zambia, zimbabwe"],
-            ["What is the total area of countries south of the Equator and not in Australasia?", 10228],
+            ["What is the total area of countries south of the Equator and not in Australasia?", "10228 ksqmiles"],
             ["What is the average area of the countries in each continent?", [
-                ["africa", 233.58333333333334],
-                ["america", 496.3225806451613],
-                ["asia", 485.2307692307692],
-                ["australasia", 543.5],
-                ["europe", 58.3125]]],
+                ["africa", "233 ksqmiles"],
+                ["america", "496 ksqmiles"],
+                ["asia", "485 ksqmiles"],
+                ["australasia", "543 ksqmiles"],
+                ["europe", "58 ksqmiles"]]],
             ["Is there more than one country in each continent?", 'no'],
             ["Is there some ocean that does not border any country?", "yes"],
             ["What are the countries from which a river flows into the Black_Sea?", "romania, soviet_union"],
@@ -109,11 +109,11 @@ class TestChat80(unittest.TestCase):
             ["Which countries have a population exceeding 10 million?", "afghanistan, algeria, argentina, australia, bangladesh, brazil, burma, canada, china, colombia, czechoslovakia, east_germany, egypt, ethiopia, france, india, indonesia, iran, italy, japan, kenya, mexico, morocco, nepal, netherlands, nigeria, north_korea, pakistan, peru, philippines, poland, south_africa, south_korea, soviet_union, spain, sri_lanka, sudan, taiwan, tanzania, thailand, turkey, united_kingdom, united_states, venezuela, vietnam, west_germany, yugoslavia, zaire"],
             ["Which countries with a population exceeding 10 million border the Atlantic?", "argentina, brazil, canada, colombia, france, mexico, morocco, netherlands, nigeria, south_africa, spain, united_kingdom, united_states, venezuela, west_germany, zaire"],
             ["What percentage of countries border each ocean?", [
-                ['arctic_ocean', 2.564102564102564],
-                ['atlantic', 36.53846153846153],
-                ['indian_ocean', 14.102564102564102],
-                ['pacific', 20.51282051282051],
-                ['southern_ocean', 0.0],
+                ['arctic_ocean', "2"],
+                ['atlantic', "36"],
+                ['indian_ocean', "14"],
+                ['pacific', "20"],
+                ['southern_ocean', "0"],
             ]],
             ["What countries are there in Europe?", "albania, andorra, austria, belgium, bulgaria, cyprus, czechoslovakia, denmark, east_germany, eire, finland, france, greece, hungary, iceland, italy, liechtenstein, luxembourg, malta, monaco, netherlands, norway, poland, portugal, romania, san_marino, spain, sweden, switzerland, united_kingdom, west_germany, yugoslavia"],
             ["Bye.", "Cheerio."]

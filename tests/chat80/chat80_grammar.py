@@ -52,23 +52,23 @@ def get_grammar():
         { 
             "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
             "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
-            "inf": [("format", "table", [E2, E1])],
+            "inf": [("format", "table", [E2, E1], [None, None])],
             "boost": 1
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
             "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size_of', E2, E3)])],
-            "inf": [("format", "number", E1)],
+            "inf": [("format", "number", E1, "ksqmiles")],
         },
         { 
             "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
-            "inf": [("format", "table", [E3, E1])],
+            "inf": [("format", "table", [E3, E1], [None, 'ksqmiles'])],
         },
         { 
             "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'", 
             "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))], 
-            "inf": [("format", "table", [E2, E3])],
+            "inf": [("format", "table", [E2, E3], [None, None])],
         },
         { 
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
@@ -78,7 +78,7 @@ def get_grammar():
         { 
             "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",  
             "sem": lambda np: apply(np, []) + [('size_of', E1, E2)],
-            "inf": [("format", "number", E2)],
+            "inf": [("format", "number", E2, "ksqmiles")],
         },
         { 
             "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", 
@@ -108,7 +108,7 @@ def get_grammar():
         { 
             "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'", 
             "sem": lambda nbar, vp_noobj_sub: [('count', E1, nbar + vp_noobj_sub)], 
-            "inf": [("format", "number", E1)],
+            "inf": [("format", "number", E1, None)],
         },
         { 
             "syn": "s(E1) -> 'bye' '.'", 
