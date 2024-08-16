@@ -12,11 +12,10 @@ class FindAll(ControlBlock):
 
     def process(self, request: SentenceRequest) -> BlockResult:
         result = self.processor.process(request)
-        if result.error_code != '':
-            return BlockResult(result.error_code, result.error_args)
+        if result.error != '':
+            return BlockResult(result.error)
 
-        error_code = ""
-        error_args = []
+        error = ""
 
         # the essence of this block: collect all products
         request.set_alternative_products(self.processor, 
@@ -28,13 +27,12 @@ class FindAll(ControlBlock):
             request.set_current_product(self.processor, product)
 
             next_block_result = self.next_block.process(request)
-            success = success or next_block_result.error_code == ""
-            if next_block_result.error_code != "" and error_code == "":
-                error_code = next_block_result.error_code
-                error_args = next_block_result.error_args
+            success = success or next_block_result.error == ""
+            if next_block_result.error != "" and error == "":
+                error = next_block_result.error
            
         if success:
-            return BlockResult("", [])    
+            return BlockResult("")    
         else:
-            return BlockResult(error_code, error_args)
+            return BlockResult(error)
     

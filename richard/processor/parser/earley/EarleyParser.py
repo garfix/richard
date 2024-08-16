@@ -31,26 +31,21 @@ class EarleyParser:
 
         rootNodes = extract_tree_roots(chart)
         error = ""
-        error_args = []
 
         if len(rootNodes) == 0:
 
             nextWord = find_unknown_word(chart)
 
             if nextWord != "":
-                error = UNKNOWN_WORD
-                error_args = [nextWord]
+                error = UNKNOWN_WORD + " " + nextWord
             elif len(tokens) == 0:
                 error = NO_SENTENCE
-                error_args = []
             else:
                 error = NOT_UNDERSTOOD
-                error_args = []
 
         return ProcessResult(
             products=rootNodes,
-            error_code=error,
-            error_args=error_args,
+            error=error
         )
     
 

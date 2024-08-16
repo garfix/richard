@@ -39,7 +39,6 @@ class Chat80Responder(SomeResponseHandler):
             response = sorted(response, key = lambda row: row[0])
 
         elif type == "list":
-            print(format)
             variable = format[2]
             v = variable.name
             s = set()

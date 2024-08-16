@@ -42,4 +42,4 @@ class SentenceRequest:
         if processor in self.current_products:
             return self.current_products[processor]
         else:
-            raise Exception("No product available for " + processor.__class__.__name__)
+            return None

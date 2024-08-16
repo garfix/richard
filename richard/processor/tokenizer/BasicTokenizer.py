@@ -16,7 +16,7 @@ class BasicTokenizer(SomeTokenizer):
 
     def process(self, request: SentenceRequest) -> ProcessResult:
         tokens = self.token_expression.findall(request.text)
-        return ProcessResult([tokens], "", [])
+        return ProcessResult([tokens], "")
 
 
     def get_tokens(self, request: SentenceRequest) -> list[str]:

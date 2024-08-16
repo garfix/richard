@@ -34,8 +34,7 @@ class BasicParser(SomeParser):
         result = self.parser.parse(self.grammar, tokens)
         return ProcessResult(
             self.tree_sorter.sort_trees(result.products),
-            result.error_code,
-            result.error_args
+            result.error
         )
     
 

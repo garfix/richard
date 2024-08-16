@@ -1,10 +1,7 @@
-from math import ceil
-import re
 import unittest
 import pathlib
-import cProfile
-import time
 
+from richard.Tester import Tester
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.Solver import Solver
@@ -14,7 +11,6 @@ from richard.Model import Model
 from richard.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
-from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.module.InferenceModule import InferenceModule
@@ -39,12 +35,6 @@ class TestChat80(unittest.TestCase):
     """
    
     def test_chat80(self):
-        # cProfile.runctx('self.do()', globals(), locals(), None, 'cumulative')
-        self.do()
-
-    def do(self):
-
-        self.maxDiff = None
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/resources/"
 
@@ -129,38 +119,7 @@ class TestChat80(unittest.TestCase):
             ["Bye.", "Cheerio."]
         ]
 
-        for test in tests:
-            question, answer = test
-            print()
-            print(question)
-            start_time = time.perf_counter()
-            request = SentenceRequest(question)
-            try:
-                result = pipeline.enter(request)
-            except:
-                print(parser.get_tree(request))
-                print(composer.format_semantics(request))
-                print(composer.format_optimized_semantics(request))
-                print(executor.get_results(request))
-                print(responder.get_response(request))
-            
-            end_time = time.perf_counter()
-            print(str(ceil((end_time - start_time) * 1000)) + " msecs")
+        tester = Tester(self, pipeline, tests)
+        tester.print = False
+        tester.run()
 
-            if not result.error_code == "":
-                print(result.error_code, result.error_args) 
-                break
-
-            results = responder.get_response(request)
-            print(results)
-            print(composer.format_optimized_semantics(request))
-            if results != answer:
-                print(parser.get_tree(request))
-                print(composer.format_semantics(request))
-                print(composer.format_optimized_semantics(request))
-                print(executor.get_results(request))
-                print(responder.get_response(request))
-            self.assertEqual(answer, results)
-
-        print(solver.stats)
-            

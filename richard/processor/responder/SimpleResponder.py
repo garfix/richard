@@ -28,7 +28,7 @@ class SimpleResponder(SomeProcessor):
         bindings = self.executor.get_results(request)
         composition = self.composer.get_composition(request)
         response = self.handler.create_response(bindings, composition)
-        return ProcessResult([response], "", [])
+        return ProcessResult([response], "")
     
 
     def get_response(self, request: SentenceRequest) -> str:

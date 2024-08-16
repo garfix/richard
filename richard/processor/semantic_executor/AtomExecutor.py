@@ -24,7 +24,7 @@ class AtomExecutor(SomeProcessor):
     def process(self, request: SentenceRequest) -> ProcessResult:
         composition = self.composer.get_composition(request)
         bindings = self.solver.solve(composition.optimized_semantics, {})       
-        return ProcessResult([bindings], "", [])
+        return ProcessResult([bindings], "")
     
 
     def collect(self, tuples: list[tuple]) -> OrderedSet[dict]:

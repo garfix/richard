@@ -5,7 +5,6 @@ from dataclasses import dataclass
 class ProcessResult:
 
     products: list[any]
-    error_code: str
-    error_args: list[str]
+    error: str
     
 

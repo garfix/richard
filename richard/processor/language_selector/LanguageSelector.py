@@ -17,7 +17,7 @@ class LanguageSelector(SomeLanguageSelector):
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
-        return ProcessResult(self.locales, "", [])
+        return ProcessResult(self.locales, "")
     
 
     def get_locale(self, request: SentenceRequest) -> str:

@@ -9,29 +9,26 @@ class FindOne(ControlBlock):
     If no such product could be found, the first error is returned.
     """
     
-
     def process(self, request: SentenceRequest) -> BlockResult:
         result = self.processor.process(request)
-        if result.error_code != '':
-            return BlockResult(result.error_code, result.error_args)
+        if result.error != '':
+            return BlockResult(result.error)
 
         request.set_alternative_products(self.processor, result.products)
 
-        error_code = ""
-        error_args = []
+        error = ""
 
         for product in result.products:
 
             request.set_current_product(self.processor, product)
           
             next_block_result = self.next_block.process(request)
-            if next_block_result.error_code == "":
+            if next_block_result.error == "":
                # first successful product found: quit
-               return BlockResult('', [])
+               return BlockResult('')
             else:
-                error_code = next_block_result.error_code
-                error_args = next_block_result.error_args
+                error = next_block_result.error
             
-        return BlockResult(error_code, error_args)
+        return BlockResult(error)
 
     

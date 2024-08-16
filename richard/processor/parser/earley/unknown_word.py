@@ -21,6 +21,6 @@ def find_unknown_word(chart: Chart):
     if last_understood_index+1 < len(chart.words):
         nextWord = chart.words[last_understood_index+1]
     else:
-        nextWord = " ".join(chart.words)
+        nextWord = ""
 
     return nextWord

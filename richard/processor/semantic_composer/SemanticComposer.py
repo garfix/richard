@@ -43,7 +43,7 @@ class SemanticComposer(SomeSemanticComposer):
             optimized_semantics = semantics
 
         composition = Composition(semantics, optimized_semantics, inferences)
-        return ProcessResult([composition], "", [])    
+        return ProcessResult([composition], "")    
 
 
     def check_for_sem(self, node: ParseTreeNode):

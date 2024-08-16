@@ -9,6 +9,6 @@ class Succeed(ControlBlock):
     """
 
     def process(self, request: SentenceRequest) -> BlockResult:
-        return BlockResult('', [])
+        return BlockResult('')
 
     
