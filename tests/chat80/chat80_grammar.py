@@ -118,9 +118,8 @@ def get_grammar():
 
 
         # active transitive: sub obj
-        { "syn": "vp_nosub_obj(E1) -> vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: apply(np, vp_nosub_noobj) },
-        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_noobj(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('not', apply(np, vp_nosub_noobj))] },
-        { "syn": "vp_nosub_noobj(E1, E2) -> tv(E1, E2)", "sem": lambda tv: tv },
+        { "syn": "vp_nosub_obj(E1) -> tv(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: apply(np, vp_nosub_noobj) },
+        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' tv(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('not', apply(np, vp_nosub_noobj))] },
 
         { "syn": "vp_nosub_obj(E1) -> 'have' 'a' attr(E1, E2)", "sem": lambda attr: attr },
 

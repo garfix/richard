@@ -9,8 +9,6 @@
 * start using dialog variables in stead of sentence variables; it's hard to change them later
 * improve the use of types in the modules, its sloppy
 
-* improve grammar
-
 * update documentation
 * note that I did implement a rule ("in")
 
