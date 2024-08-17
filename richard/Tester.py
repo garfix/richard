@@ -15,9 +15,6 @@ class Tester:
     # print anything if all is well
     print: bool
 
-    # print the time it takes to process each sentence
-    print_time: bool
-
     # profile all tests and print the results
     profile: bool
 
@@ -27,14 +24,12 @@ class Tester:
         pipeline: Pipeline, 
         tests: list,
         print: bool = True,
-        print_time: bool = False,
         profile: bool = False
     ) -> None:
         self.test_case = test_case
         self.pipeline = pipeline
         self.tests = tests
         self.print = print
-        self.print_time = print_time
         self.profile = profile
 
 
@@ -49,27 +44,27 @@ class Tester:
         for test in self.tests:
             question, answer = test
 
-            if self.print:
-                print()
-                print(question)
-
             start_time = time.perf_counter()
             request = SentenceRequest(question)
             try:
                 result = self.pipeline.enter(request)
+                error = result != answer
+
+                end_time = time.perf_counter()
+
+                if self.print or error:
+                    print("\n" + question)
+                    print("> " + str(result))
+                    print(str(ceil((end_time - start_time) * 1000)) + " msecs")
+
+                if error:
+                    self.pipeline.print_debug(request)
+
             except Exception as e:
+                print("\n" + question)
+                print("> " + str(result))
                 self.pipeline.print_debug(request)
                 raise e
-            
-            end_time = time.perf_counter()
-
-            if self.print:
-                print("> " + str(result))
-
-            if self.print and self.print_time:
-                print(str(ceil((end_time - start_time) * 1000)) + " msecs")
-
-            if result != answer:
-                self.pipeline.print_debug(request)
 
             self.test_case.assertEqual(answer, result)
+

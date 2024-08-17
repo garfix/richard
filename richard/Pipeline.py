@@ -39,9 +39,12 @@ class Pipeline:
 
 
     def print_debug(self, request: SentenceRequest):
+        print()
+        print("Block results:")
+        print()
         for block in self.blocks:
             processor = block.processor
             result = request.get_current_product(processor)
             if result:
                 print(result)
-                
+                print()

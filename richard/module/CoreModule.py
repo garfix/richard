@@ -15,7 +15,8 @@ class CoreModule(SomeModule):
             "==": Relation(self.equals),
             ">": Relation(self.greater_than),
             "<": Relation(self.less_than),
-            "aggregate": Relation(self.aggregation),
+            "min": Relation(self.min),
+            "max": Relation(self.max),
             "sum": Relation(self.sum),
             "avg": Relation(self.avg),
             "percentage": Relation(self.percentage),
@@ -67,47 +68,6 @@ class CoreModule(SomeModule):
         return []
 
 
-    # ('aggregate', nbar, superlative, E1)
-    # ('aggregation', E1, E2, [('size_of', E1, E2)], 'min')
-    def aggregation(self, values: list, context: ExecutionContext) -> list[list]:
-        nbar, superlative, result_var = values
-        predicate1, entity_var, attribute_var, argument_atoms, aggregation = superlative
-
-        entities = context.solver.solve_for(nbar, context.binding, entity_var.name)
-
-        attribute_values = []
-
-        for entity in entities:
-            attribute_binding = context.binding.copy()
-            attribute_binding[entity_var.name] = entity
-            values = context.solver.solve_for(argument_atoms, attribute_binding, attribute_var.name)
-            if len(values) > 1:
-                raise Exception((str(argument_atoms) + " returned " + str(len(values)) + " values; should be 1"))
-            if len(values) == 0:
-                raise Exception((str(argument_atoms) + " returned no values; should be 1"))
-            attribute_values.append(values[0])
-
-        best_value = None
-        best_entity = None
-
-        for entity, attribute_value in zip(entities, attribute_values):
-            found = False
-            if aggregation == "max":
-                if best_value == None or attribute_value > best_value:
-                    found = True
-            elif aggregation == "min":
-                if best_value == None or attribute_value < best_value:
-                    found = True
-            else: 
-                raise Exception("Unknown aggregation: " + aggregation)
-            if found:
-                best_value = attribute_value
-                best_entity = entity
-
-        return [
-            [None, None, best_entity]
-        ]
-
     # ('count', E1, [body-atoms])
     # returns the number of results of body-atoms in E1
     def count(self, values: list, context: ExecutionContext) -> list[list]:
@@ -135,6 +95,52 @@ class CoreModule(SomeModule):
 
         return [
             [s, None, None]
+        ]
+
+
+    # ('min', E1, E2, [body-atoms])
+    # returns the minimum value of results of the values of E2 in body-atoms in E1
+    def min(self, values: list, context: ExecutionContext) -> list[list]:
+
+        min_var, element_var, body = values
+
+        results = context.solver.solve(body, context.binding)
+
+        if len(results) == 0:
+            return []
+
+        min = None
+        entity = None
+        for result in results:
+            if min is None or result[element_var.name] < min:
+                min = result[element_var.name]
+                entity = result[min_var.name]
+
+        return [
+            [entity, None, None]
+        ]
+
+
+    # ('max', E1, E2, [body-atoms])
+    # returns the maximum value of results of the values of E2 in body-atoms in E1
+    def max(self, values: list, context: ExecutionContext) -> list[list]:
+
+        max_var, element_var, body = values
+
+        results = context.solver.solve(body, context.binding)
+
+        if len(results) == 0:
+            return []
+
+        max = None
+        entity = None
+        for result in results:
+            if max is None or result[element_var.name] > max:
+                max = result[element_var.name]
+                entity = result[max_var.name]
+
+        return [
+            [entity, None, None]
         ]
 
 

@@ -154,7 +154,7 @@ def get_grammar():
         { "syn": "nbar(E1) -> adj(E1) nbar(E1)", "sem": lambda adj, nbar: adj + nbar },
         { "syn": "nbar(E1) -> noun(E1)", "sem": lambda noun: noun },
         { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
-        { "syn": "nbar(E1) -> superlative(E1, E2) nbar(E1)", "sem": lambda superlative, nbar: [('aggregate', nbar, superlative, E1)] },
+        { "syn": "nbar(E1) -> superlative(E1) nbar(E1)", "sem": lambda superlative, nbar: apply(superlative, nbar) },
         { "syn": "nbar(E1) -> nbar(E1) relative_clause(E1)", "sem": lambda nbar, relative_clause: nbar + relative_clause },
         { "syn": "nbar(E1) -> nbar(E1) pp(E1)", "sem": lambda nbar, pp: nbar + pp },
 
@@ -193,6 +193,12 @@ def get_grammar():
         { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
             SemanticTemplate([Range, Body], [('det_greater_than', Range + Body, number)]) },
 
+        # superlatives
+        { "syn": "superlative(E1) -> 'largest'", "sem": lambda: 
+            SemanticTemplate([Body], [('max', E1, E2, Body + [('size_of', E1, E2)])]) },
+        { "syn": "superlative(E1) -> 'smallest'", "sem": lambda: 
+            SemanticTemplate([Body], [('min', E1, E2, Body + [('size_of', E1, E2)])]) },
+
         # attribute
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has_population', E1, E2)] },
         { "syn": "attr(E1, E2) -> attr(E1, E2) relative_clause(E2)", "sem": lambda attr, relative_clause: attr + relative_clause },
@@ -228,10 +234,6 @@ def get_grammar():
         { "syn": "adj(E1) -> 'african'", "sem": lambda: [('african', E1)] },
         { "syn": "adj(E1) -> 'american'", "sem": lambda: [('american', E1)] },
         { "syn": "adj(E1) -> 'asian'", "sem": lambda: [('asian', E1)] },
-
-        # superlatives
-        { "syn": "superlative(E1, E2) -> 'largest'", "sem": lambda: ('aggregation', E1, E2, [('size_of', E1, E2)], 'max') },
-        { "syn": "superlative(E1, E2) -> 'smallest'", "sem": lambda: ('aggregation', E1, E2, [('size_of', E1, E2)], 'min') },
 
         # noun
         { "syn": "noun(E1) -> 'river'", "sem": lambda: [('river', E1)] },

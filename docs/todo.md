@@ -10,7 +10,6 @@
 * improve the use of types in the modules, its sloppy
 
 * improve grammar
-* can aggregates by simplified?
 
 * update documentation
 * note that I did implement a rule ("in")
@@ -34,4 +33,5 @@
 * create a context and pass it to each module function, in stead of the arguments which are mostly unused
 * table select columns to display => intents as atoms?
 * add units to scalar answers and floor floating point numbers in tables to integers
+* can aggregates by simplified?
 
