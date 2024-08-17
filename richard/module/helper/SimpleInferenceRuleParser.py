@@ -105,6 +105,9 @@ class SimpleInferenceRuleParser:
 
     def parse_identifier(self, tokens: list[str], pos: int):
         token, new_pos = self.parse_token(tokens, pos)
+        if not token:
+            return None, 0
+
         if re.match(self.re_identifier, token):
             pos = new_pos
             return token, pos

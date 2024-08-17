@@ -44,7 +44,7 @@ class TestComposer(unittest.TestCase):
 
         grammar = [
             { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: apply(np, vp)},
-            { "syn": "vp(E1) -> verb(E1, E2), np(E2)", "sem": lambda verb, np: apply(np, verb) },
+            { "syn": "vp(E1) -> verb(E1, E2) np(E2)", "sem": lambda verb, np: apply(np, verb) },
             { "syn": "verb(E1, E2) -> 'flows' 'to'", "sem": lambda: [('flows', E1, E2)] },
             { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: SemanticTemplate([Body], apply(det, nbar, Body)) },
             { "syn": "det(E1) -> 'the'", "sem": lambda: SemanticTemplate([Range, Body], Range + Body) },

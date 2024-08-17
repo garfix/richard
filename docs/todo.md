@@ -13,9 +13,6 @@
 * note that I did implement a rule ("in")
 
 * separate folder with importers
-* importers based on hand-written grammar in stead of regex
-* in stead of 'vp_nosub_obj', 'vp_nosub' may be sufficient: you know that it starts with 'sub' but don't know what follows
-* "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'",  new variables in sem are not turned into sentence variables (E3)
 
 ## done
 
@@ -32,4 +29,5 @@
 * table select columns to display => intents as atoms?
 * add units to scalar answers and floor floating point numbers in tables to integers
 * can aggregates by simplified?
+* importers based on hand-written grammar in stead of regex
 
