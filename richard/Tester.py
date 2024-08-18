@@ -62,7 +62,6 @@ class Tester:
 
             except Exception as e:
                 print("\n" + question)
-                print("> " + str(result))
                 self.pipeline.print_debug(request)
                 raise e
 
