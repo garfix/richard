@@ -53,24 +53,24 @@ class TestChat80(unittest.TestCase):
 
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
-        data_source = MemoryDbDataSource(db)
+
         dialog_context = SimpleMemoryModule({
             "isa": Relation(attributes=["entity", "type"]),
         })
         sentence_context = SimpleMemoryModule({
             "format": Relation(attributes=["type", "variables", "units"]),
         })
+
         model = Model([
-            Chat80Module(data_source),
+            Chat80Module(MemoryDbDataSource(db)),
             inferences,
             dialog_context,
             sentence_context
         ])
         solver = Solver(model)
-        grammar = get_grammar()
 
         tokenizer = BasicTokenizer()
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(get_grammar(), tokenizer)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
