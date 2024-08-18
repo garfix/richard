@@ -2,6 +2,8 @@ import unittest
 import pathlib
 
 from richard.Tester import Tester
+from richard.entity.Relation import Relation
+from richard.module.SimpleMemoryModule import SimpleMemoryModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.Solver import Solver
@@ -34,7 +36,7 @@ class TestChat80(unittest.TestCase):
     - different result formats: yes/no, scalar, list, table
     - query optimization: reordering and isolating sub-queries
     """
-   
+
     def test_chat80(self):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/resources/"
@@ -52,7 +54,18 @@ class TestChat80(unittest.TestCase):
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
         data_source = MemoryDbDataSource(db)
-        model = Model([Chat80Module(data_source), inferences])
+        dialog_context = SimpleMemoryModule({
+            "isa": Relation(attributes=["entity", "type"]),
+        })
+        sentence_context = SimpleMemoryModule({
+            "format": Relation(attributes=["type", "variables", "units"]),
+        })
+        model = Model([
+            Chat80Module(data_source),
+            inferences,
+            dialog_context,
+            sentence_context
+        ])
         solver = Solver(model)
         grammar = get_grammar()
 
@@ -60,8 +73,9 @@ class TestChat80(unittest.TestCase):
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
+        composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, solver)
-        responder = SimpleResponder(composer, executor, handler=Chat80Responder())
+        responder = SimpleResponder(solver, executor, handler=Chat80Responder())
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -83,13 +97,13 @@ class TestChat80(unittest.TestCase):
             ["What is the ocean that borders African countries?", "atlantic, indian_ocean"],
             ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
             ["What are the capitals of the countries bordering the Baltic?", [
-                ['denmark', 'copenhagen'], 
-                ['east_germany', 'east_berlin'], 
-                ['finland', 'helsinki'], 
-                ['poland', 'warsaw'], 
-                ['soviet_union', 'moscow'], 
-                ['sweden', 'stockholm'], 
-                ['west_germany', 'bonn'], 
+                ['denmark', 'copenhagen'],
+                ['east_germany', 'east_berlin'],
+                ['finland', 'helsinki'],
+                ['poland', 'warsaw'],
+                ['soviet_union', 'moscow'],
+                ['sweden', 'stockholm'],
+                ['west_germany', 'bonn'],
             ]],
             ["Which countries are bordered by two seas?", "egypt, iran, israel, saudi_arabia, turkey"],
             ["How many countries does the Danube flow through?", 6],

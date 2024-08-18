@@ -1,7 +1,9 @@
+from richard.entity.ReifiedVariable import ReifiedVariable
 from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
+from richard.interface.SomeClearableDb import SomeClearableDb
 from richard.interface.SomeParser import SomeParser
 from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
@@ -15,25 +17,30 @@ class SemanticComposer(SomeSemanticComposer):
     Performs semantic composition on the product of the parser
     Opimizes the composition for speed of execution
     """
-    
+
     parser: SomeParser
     query_optimizer: SomeQueryOptimizer
     variable_generator: VariableGenerator
+    sentence_context: SomeClearableDb
 
 
     def __init__(self, parser: SomeParser) -> None:
         super().__init__()
-        self.parser = parser    
+        self.parser = parser
         self.query_optimizer = None
         self.variable_generator = VariableGenerator("$")
+        self.sentence_context = None
 
-    
+
     def process(self, request: SentenceRequest) -> ProcessResult:
+
+        if self.sentence_context:
+            self.sentence_context.clear()
 
         root = self.parser.get_tree(request)
 
         self.check_for_sem(root)
-        
+
         root_variable = self.variable_generator.next()
         semantics, inferences = self.compose(root, [root_variable])
 
@@ -43,13 +50,13 @@ class SemanticComposer(SomeSemanticComposer):
             optimized_semantics = semantics
 
         composition = Composition(semantics, optimized_semantics, inferences)
-        return ProcessResult([composition], "")    
+        return ProcessResult([composition], "")
 
 
     def check_for_sem(self, node: ParseTreeNode):
         if node.form == "" and node.rule.sem is None:
             raise Exception("Rule '" + str(node.rule) + "' is missing key 'sem'")
-        
+
         for child in node.children:
             self.check_for_sem(child)
 
@@ -87,7 +94,7 @@ class SemanticComposer(SomeSemanticComposer):
         unified_inferences = self.unify_variables(inferences, map)
 
         return unified_semantics, unified_inferences
-    
+
 
     def create_map(self, node: ParseTreeNode, incoming_variables: list[str]):
         # start variable map by mapping antecedent variables to incoming variables
@@ -102,7 +109,7 @@ class SemanticComposer(SomeSemanticComposer):
                         map[arg] = self.variable_generator.next()
 
         return map
-    
+
 
     def extend_map_with_semantics(self, map: dict, semantics: list[tuple]):
         # only lists of atoms for now
@@ -123,11 +130,13 @@ class SemanticComposer(SomeSemanticComposer):
             return SemanticTemplate(semantics.args, self.unify_variables(semantics.body, map))
         elif isinstance(semantics, Variable) and semantics.name in map:
             return Variable(map[semantics.name])
+        elif isinstance(semantics, ReifiedVariable) and semantics.name in map:
+            return map[semantics.name]
         else:
             return semantics
 
 
     def get_composition(self, request: SentenceRequest) -> Composition:
         return request.get_current_product(self)
-    
+
 

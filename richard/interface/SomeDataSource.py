@@ -20,4 +20,7 @@ class SomeDataSource(ABC):
 
     def select_column(self, table: str, columns: list[str], values: list) -> list:
         return [row[0] for row in self.select(table, columns, values)]
-    
+
+
+    def insert(self, table: str, columns: list[str], values: list):
+        pass

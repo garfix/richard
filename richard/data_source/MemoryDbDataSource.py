@@ -1,5 +1,6 @@
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
+from richard.store.Record import Record
 from richard.store.MemoryDb import MemoryDb
 
 
@@ -29,3 +30,10 @@ class MemoryDbDataSource(SomeDataSource):
             result.append(values)
         return result
 
+
+    def insert(self, table: str, columns: list[str], values: list):
+        self.db.insert(Record(table, dict(zip(columns, values))))
+
+
+    def clear(self):
+        self.db.clear()

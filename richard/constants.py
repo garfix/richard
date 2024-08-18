@@ -1,3 +1,4 @@
+from richard.entity.ReifiedVariable import ReifiedVariable
 from richard.entity.Variable import Variable
 
 
@@ -25,6 +26,12 @@ E2 = Variable('E2')
 E3 = Variable('E3')
 E4 = Variable('E4')
 E5 = Variable('E5')
+
+e1 = ReifiedVariable('E1')
+e2 = ReifiedVariable('E2')
+e3 = ReifiedVariable('E3')
+e4 = ReifiedVariable('E4')
+e5 = ReifiedVariable('E5')
 
 Range = ['__$Range$__']
 Body = ['__$Body$__']

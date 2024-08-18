@@ -10,22 +10,26 @@ class AtomExecutor(SomeProcessor):
     """
     Executes the function that forms the meaning of the sentence, and produces its result
     """
-    
+
     composer: SomeSemanticComposer
     solver: Solver
 
 
     def __init__(self, composer: SomeSemanticComposer, solver: Solver) -> None:
         super().__init__()
-        self.composer = composer    
+        self.composer = composer
         self.solver = solver
 
-    
+
     def process(self, request: SentenceRequest) -> ProcessResult:
         composition = self.composer.get_composition(request)
-        bindings = self.solver.solve(composition.optimized_semantics, {})       
+
+        for inference in composition.inferences:
+            self.solver.write_atom(inference)
+
+        bindings = self.solver.solve(composition.optimized_semantics)
         return ProcessResult([bindings], "")
-    
+
 
     def collect(self, tuples: list[tuple]) -> OrderedSet[dict]:
         pass

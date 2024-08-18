@@ -17,9 +17,9 @@ class Solver(SomeSolver):
 
     def solve_for(self, atoms: list[tuple], binding: dict, variable: str) -> list[dict]:
         return [binding[variable] for binding in self.solve(atoms, binding)]
-    
 
-    def solve(self, atoms: list[tuple], binding: dict) -> list[dict]:
+
+    def solve(self, atoms: list[tuple], binding: dict = {}) -> list[dict]:
 
         if not isinstance(atoms, list):
             raise Exception("Solver can only solve lists of atoms, this is not a list: " + str(atoms))
@@ -36,13 +36,11 @@ class Solver(SomeSolver):
                     if not r in result:
                         result.append(r)
             return result
-    
 
-    def solve_single(self, tuple: tuple, binding: dict):
-        relation = tuple[0]
-        arguments = tuple[1:]
 
-        # self.stats[relation] += 1
+    def solve_single(self, atom: tuple, binding: dict):
+        predicate = atom[0]
+        arguments = atom[1:]
 
         prepared = []
         for arg in arguments:
@@ -51,15 +49,15 @@ class Solver(SomeSolver):
                 # bound?
                 if arg.name in binding:
                     # add variable value
-                    prepared.append(binding[arg.name])   
-                else: 
+                    prepared.append(binding[arg.name])
+                else:
                     # add variable itself
                     prepared.append(arg)
             else:
                 # just add value
                 prepared.append(arg)
 
-        values = self.find_relation_values(relation, prepared, binding)
+        values = self.find_relation_values(predicate, arguments, prepared, binding)
 
         results = []
         for v in values:
@@ -85,21 +83,35 @@ class Solver(SomeSolver):
                 continue
 
             results.append(result)
-            
-        return results
-    
 
-    def find_relation_values(self, predicate: str, model_values: list, binding: dict) -> list[list]:       
+        return results
+
+
+    def find_relation_values(self, predicate: str, arguments: list, model_values: list, binding: dict) -> list[list]:
 
         relations = self.model.find_relations(predicate)
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
         rows = []
-        context = ExecutionContext(predicate, binding, self)
         for relation in relations:
-            out_values = relation.function(model_values, context)
+            context = ExecutionContext(relation, predicate, arguments, binding, self)
+            out_values = relation.query_function(model_values, context)
             rows.extend(out_values)
-        
+
         return rows
-    
+
+
+    def write_atom(self, atom: tuple):
+        predicate = atom[0]
+        arguments = atom[1:]
+
+        relations = self.model.find_relations(predicate)
+        if len(relations) == 0:
+            raise Exception("No relation called '" + predicate + "' available in the model")
+
+        for relation in relations:
+            if relation.write_function is not None:
+                context = ExecutionContext(relation, predicate, arguments, {}, self)
+                relation.write_function(arguments, context)
+

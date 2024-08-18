@@ -12,8 +12,7 @@ class MemoryDb:
 
 
     def __init__(self) -> None:
-        self.store = {}
-        self.index = {}
+        self.clear()
 
 
     def insert(self, record: Record):
@@ -72,10 +71,10 @@ class MemoryDb:
                 sets.append(self.index[table][key][value])
             else:
                 return []
-                       
-        # return the intersection of these sets                       
+
+        # return the intersection of these sets
         return set.intersection(*sets)
-    
+
 
     def import_csv(self, table: str, path: str):
         with open(path) as csvfile:
@@ -94,9 +93,14 @@ class MemoryDb:
                         # a | implements an array of values
                         if "|" in element:
                             element = element.split("|")
-                        # integer    
+                        # integer
                         elif element.lstrip("-+").isdigit():
                             element = int(element)
                         values[header] = element
-                        
+
                     self.insert(Record(table, values))
+
+
+    def clear(self):
+        self.store = {}
+        self.index = {}

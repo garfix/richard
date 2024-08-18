@@ -8,6 +8,9 @@ class SomeSolver(ABC):
         pass
 
     @abstractmethod
-    def solve(self, atoms: list[tuple], binding: dict) -> list[dict]:
+    def solve(self, atoms: list[tuple], binding: dict = {}) -> list[dict]:
         pass
 
+    @abstractmethod
+    def write_atom(self, atom: tuple):
+        pass

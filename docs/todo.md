@@ -10,9 +10,6 @@
 * improve the use of types in the modules, its sloppy
 
 * update documentation
-* note that I did implement a rule ("in")
-
-* separate folder with importers
 
 ## done
 

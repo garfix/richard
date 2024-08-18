@@ -21,19 +21,19 @@ class TestModule(SomeModule):
 
     def get_relations(self):
         return {
-            "river": Relation(self.simple_entity),
-            "country": Relation(self.simple_entity),
-            "contains": Relation(self.contains),
+            "river": Relation(query_function=self.simple_entity),
+            "country": Relation(query_function=self.simple_entity),
+            "contains": Relation(query_function=self.contains),
         }
-    
-    
+
+
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)
         out_types = [context.predicate]
         out_values = self.ds.select(context.predicate, ['id'], db_values)
         return self.hydrate_values(out_values, out_types)
-    
-    
+
+
     def contains(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)
         out_types = ["country", "river"]
@@ -42,18 +42,18 @@ class TestModule(SomeModule):
 
 
 class TestSolver(unittest.TestCase):
-   
+
     def test_solver(self):
 
         db = MemoryDb()
-        db.insert(Record('river', {'id': 'amazon'}))   
-        db.insert(Record('river', {'id': 'brahmaputra'}))   
+        db.insert(Record('river', {'id': 'amazon'}))
+        db.insert(Record('river', {'id': 'brahmaputra'}))
 
-        db.insert(Record('country', {'id': 'brasil'}))   
-        db.insert(Record('country', {'id': 'india'}))   
+        db.insert(Record('country', {'id': 'brasil'}))
+        db.insert(Record('country', {'id': 'india'}))
 
-        db.insert(Record('contains', {'country': 'brasil', 'river': 'amazon'}))   
-        db.insert(Record('contains', {'country': 'india', 'river': 'brahmaputra'}))   
+        db.insert(Record('contains', {'country': 'brasil', 'river': 'amazon'}))
+        db.insert(Record('contains', {'country': 'india', 'river': 'brahmaputra'}))
 
         data_source = MemoryDbDataSource(db)
         model = Model([TestModule(data_source)])
@@ -62,26 +62,25 @@ class TestSolver(unittest.TestCase):
 
         tests = [
             [
-                [('river', E1)], 
+                [('river', E1)],
                 [{'E1': Instance('river', 'amazon')}, {'E1': Instance('river', 'brahmaputra')}]
             ],
             [
-                [('river', E1), ('contains', Instance('country', 'india'), E1)], 
+                [('river', E1), ('contains', Instance('country', 'india'), E1)],
                 [{'E1': Instance('river', 'brahmaputra')}]
             ],
             [
-                [('contains', E1, E2), ('country', E1)], 
-                [{'E1': Instance('country', 'brasil'), 'E2': Instance('river', 'amazon')}, 
+                [('contains', E1, E2), ('country', E1)],
+                [{'E1': Instance('country', 'brasil'), 'E2': Instance('river', 'amazon')},
                  {'E1': Instance('country', 'india'), 'E2': Instance('river', 'brahmaputra')}]
             ],
             [
-                [('contains', E1, E1)], 
+                [('contains', E1, E1)],
                 []
             ],
         ]
 
         for test in tests:
             question, answer = test
-            result = solver.solve(question, {})
+            result = solver.solve(question)
             self.assertEqual(answer, result)
-            

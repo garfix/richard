@@ -19,10 +19,10 @@ class InferenceModule(SomeModule):
         self.relations = {}
         self.rules = {}
 
-    
+
     def insert_rule(self, rule: InferenceRule):
         predicate = rule.head[0]
-        self.relations[predicate] = Relation(self.handle_rule)
+        self.relations[predicate] = Relation(query_function=self.handle_rule)
         if not predicate in self.rules:
             self.rules[predicate] = []
         self.rules[predicate].append(rule)
@@ -44,7 +44,7 @@ class InferenceModule(SomeModule):
             results.extend(self.solve_rule(rule, values, context.solver, context.binding))
 
         return results
-    
+
 
     def solve_rule(self, rule: InferenceRule, values: list, solver: SomeSolver, binding: dict):
         rule_binding = {}
@@ -85,9 +85,9 @@ class InferenceModule(SomeModule):
             for rule_argument, value in zip(rule_arguments, values):
                 if isinstance(value, Variable):
                     if isinstance(rule_argument, Variable):
-                        result.append(solution[rule_argument.name])    
+                        result.append(solution[rule_argument.name])
                     else:
-                        result.append(rule_argument)    
+                        result.append(rule_argument)
                 else:
                     result.append(value)
 

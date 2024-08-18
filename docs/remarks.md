@@ -1,3 +1,13 @@
+## 2024-08-17
+
+I want to move away from Instances, and store facts about reified variables in a dialog store. Main reason: the instances with their types only work if all quantifiers occur before the other relations. It's completely outdated.
+
+The dialog context is a memory store that contains facts about reified dialog variables.
+
+I will distinguish between sentence contexts and dialog contexts. Sentence contexts are cleared at the start of every composition.
+
+The sentence context is there because we don't want to pollute the dialog context db with facts that belong to discarded interpretations.
+
 ## 2024-08-10
 
 I implemented Warrens query optimization algorithm (which is awesome!). It brought the time to run the queries from 50 seconds down to 0.46 seconds. That seems to be the best I can do. The large query now take 34 msecs. I don't think it can be done much faster in Python. Using Pypy it takes 20 msecs.
@@ -30,8 +40,8 @@ Here are some tests I did. In my mind I switched from atom-based to function bas
 
 CURRENT
 
-{ 
-    "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+{
+    "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",
     "sem": lambda np, preposition, nbar: [('find', E2, ('quant', E2, ALL, nbar), [('find', E1, np, preposition)])]
 }
 
@@ -42,8 +52,8 @@ ATOM BASED
 def apply(atoms, body):
 	return replace(atoms, "Body", body)
 
-{ 
-  "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+{
+  "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",
   "sem": lambda np, preposition, nbar: [('all', E2, nbar, apply(np, preposition))]
 }
 
@@ -66,24 +76,24 @@ FUNCTION BASED
 { "sem": lambda np, preposition, nbar: [('all', E2, nbar + np(preposition))]}
 
 # np
-{ "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: 
+{ "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar:
 	lambda Body: nbar + Body },
-{ "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: 
+{ "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar:
 	lambda Body: det(nbar, Body) },
-{ "syn": "np(E1) -> number(E1)", "sem": lambda number: 
+{ "syn": "np(E1) -> number(E1)", "sem": lambda number:
 	lambda Body: [('=', E1, number)] + Body },
 
 
 # det
-{ "syn": "det(E1) -> 'any'", "sem": lambda: 
+{ "syn": "det(E1) -> 'any'", "sem": lambda:
 	lambda Range, Body: Range + Body },
-{ "syn": "det(E1) -> 'no'", "sem": lambda: 
+{ "syn": "det(E1) -> 'no'", "sem": lambda:
 	lambda Range, Body: ('not', E1, Range + Body) },
-{ "syn": "det(E1) -> number(E1)", "sem": lambda number: 
+{ "syn": "det(E1) -> number(E1)", "sem": lambda number:
 	lambda Range, Body: ('det-number', E1, Range + Body, number) },
-{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
+{ "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number:
 	lambda Range, Body: ('det_greater_than', E1, Range + Body, number) },
-{ "syn": "det(E1) -> 'all'", "sem": lambda: 
+{ "syn": "det(E1) -> 'all'", "sem": lambda:
 	lambda Range, Body: ('all', E1, Range, Body) },
 
 PROBLEMS
@@ -95,8 +105,8 @@ if "find" is gone, will "do" still work? (no but do is also not necessary, since
 
 CURRENT BUT CHANGED
 
-{ 
-    "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
+{
+    "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",
     "sem": lambda np, preposition, nbar: [('find', E2, ('all', Result, Range, nbar), [('find', E1, np, preposition)])]
 }
 
@@ -115,23 +125,23 @@ Before starting to work on the borders-borders-borders I'll do this one first:
 
     Which country's capital is London?
 
-It takes 83 msecs and that fast for the very inefficient way the sentence is executed.    
+It takes 83 msecs and that fast for the very inefficient way the sentence is executed.
 
 ~~~python
 [
     ('country', S1)
-    ('find', S2, 
-        ('quant', S2, 'exists', 
+    ('find', S2,
+        ('quant', S2, 'exists',
             [
                 ('capital', S2)
-            ]), 
+            ]),
         [
             ('of', S2, S1)
-            ('find', S3, 
-                ('quant', S3, 'exists', 
+            ('find', S3,
+                ('quant', S3, 'exists',
                     [
                         ('resolve_name', 'London', S3)
-                    ]), 
+                    ]),
                 [
                     ('==', S2, S3)
                 ])
@@ -221,7 +231,7 @@ While I was implementing `has child` again, making an exception for this verb "h
 
 Looking for other semantics parsers, I checked Sippycup once more ( https://github.com/wcmac/sippycup ). I know I have seen this before, so it must have influenced this library, but it probably was in a time that I didn't program in Python yet.
 
-Anyway, seeing it again came as a huge shock. Not so much that its approach is largely similar to the one this library takes, but the fact that it presents multiple ways to deal with semantics. Each of its tutorial pages has a different semantic representation. 
+Anyway, seeing it again came as a huge shock. Not so much that its approach is largely similar to the one this library takes, but the fact that it presents multiple ways to deal with semantics. Each of its tutorial pages has a different semantic representation.
 
 In its third unit that deals with geographic queries https://nbviewer.org/github/wcmac/sippycup/blob/master/sippycup-unit-3.ipynb it takes the approach I have used here as well. The semantics of a rule consists of lambda functions, and these are combined to create the complete semantics.  So far so good.
 
@@ -353,7 +363,7 @@ There's beauty in this.
 
 ## 2024-06-05
 
-Wow @ 
+Wow @
 
 > Is there more than one country in each continent?
 
@@ -381,7 +391,7 @@ The custom aggregation function could return `False` if it failed, or produced n
 
 ## 2024-06-04
 
-An interesting sentence in Chat-80's dialog: 
+An interesting sentence in Chat-80's dialog:
 
 > What is the average area of the countries in each continent?
 
@@ -391,7 +401,7 @@ It expects an answer like
     North America: 700.000
     Australia: 400.000
 
-It is what would be a GROUP BY in SQL: `SELECT continent.name, AVG(country.area) OF country JOIN continent GROUP BY continent.id`. 
+It is what would be a GROUP BY in SQL: `SELECT continent.name, AVG(country.area) OF country JOIN continent GROUP BY continent.id`.
 
 What does take to process it?
 
@@ -508,11 +518,11 @@ I need a query that can be modified based on the context:
 
     select country_id, capital_id from country cn inner join city ci on ci.country_id = cn.id [where cn.id = 15]
 
-"whose capital is"    
+"whose capital is"
 
     select country_id, capital_id from country cn inner join city ci on ci.country_id = cn.id [where ci.id = 15]
 
-A relation expressing a verb, used by `find`, will need both where clauses    
+A relation expressing a verb, used by `find`, will need both where clauses
 
 Only the where-clause changes.
 
@@ -535,7 +545,7 @@ class MyDomain
     def select(self, relation, where_clause, select_clause):
         if (relation == 'has_child')
             return self.db1.select()
-~~~            
+~~~
 
 or
 
@@ -546,8 +556,8 @@ domain = Domain([
 
 grammar = [
     { "syn": "child -> 'children'", "sem": lambda: lambda: domain.select('has_child', ['child']) },
-    { 
-        "syn": "vp_no_sub -> aux qp child", 
+    {
+        "syn": "vp_no_sub -> aux qp child",
         "sem": lambda aux, qp, child:
                 lambda subject: find(
                     (qp, child),
@@ -590,8 +600,8 @@ This code may be do the job:
     domain = Domain()
     domain.add(MemoryDb(), [
         { "rel": "has_child", "map": lambda r: r },
-        
-        { "rel": "has_son", "map": lambda r, db: 
+
+        { "rel": "has_son", "map": lambda r, db:
             db.select(Record('parent', {'parent_id': r.values['parent'], 'child_id': r.values['child']})).
             join(db.select(Record('gender', {'g': 'male'}), ['parent', 'person_id'])) }
     ])
@@ -607,9 +617,9 @@ I created a proof of concept using the sentence "each parent has two children". 
 
 This is now a typical parsing rule:
 
-    { 
-        "syn": "s -> np vp_no_sub", 
-        "sem": lambda np, vp_no_sub: lambda: find(np(), vp_no_sub) 
+    {
+        "syn": "s -> np vp_no_sub",
+        "sem": lambda np, vp_no_sub: lambda: find(np(), vp_no_sub)
     },
 
 The "syn" (for syntax) is the rewrite rule. "sem" is a plain Python function that takes the semantic functions of its (non-word) children as inputs and returns a function that acts on these child functions. The outer function declares the dependencies (the child semantics) and is executed by the composer to get to the inner function. The inner function then has access to the child semantics in its closure. It is the inner function that is passed as depenency to the parent semantic function.
@@ -639,13 +649,13 @@ Would it be possible to arrange the syntax so that it becomes a direct child?
     - nbar - parent
     - vp - has two children
 
-In theory, yes, but it would split the NP over two nodes, which complicates things, and further, it seems that no linguistic theory has ever done that. 
+In theory, yes, but it would split the NP over two nodes, which complicates things, and further, it seems that no linguistic theory has ever done that.
 
 Giving a node access to the semantics of it's grandchild can be handled in a ridiculously simple way, by passing the parse tree node to the semantic function.
 
     sem: lambda node: check(
-                        node.child_sem('np').child_sem('qp'), 
-                        node.child_sem('np').child_sem('np'), 
+                        node.child_sem('np').child_sem('qp'),
+                        node.child_sem('np').child_sem('np'),
                         node.child_sem('vp')
                     )
 
@@ -668,7 +678,7 @@ I started a new Github repository for this project and another one to create the
 
 I started this new project because NLI-GO was too much bogged down in its self-created dual-aspect programming language. It caused hard problems every time and conflicted too much with the goal of being simple.
 
-After some months of idling I had the idea of implementing semantics in the host programming language directly, as functions. In this case it's Go, but it should be any language that allows functions as terms and hence as arguments to other functions. This holds true for most modern languages. It seems to me the simple consequence of Richard Montague's writings, but strangly I can't find any example of such direct implementation of semantics when searching the web. 
+After some months of idling I had the idea of implementing semantics in the host programming language directly, as functions. In this case it's Go, but it should be any language that allows functions as terms and hence as arguments to other functions. This holds true for most modern languages. It seems to me the simple consequence of Richard Montague's writings, but strangly I can't find any example of such direct implementation of semantics when searching the web.
 
 A few days ago I managed to manually create a single function, representing the meaning of the sentence "add 2 to 5" by combining the meaning-functions of the phrases of a sentence. That was an important proof-of-concept, but I need some more cases to be confident that this approach works.
 
@@ -689,7 +699,7 @@ One point of concern are long-term dependencies. I've used this sentence before 
             adv(P1) - easiest
             vp(P1, E1, E2) - to take from   sense: take_from(P1, E2, E1)
 
-The core of this sentence's meaning is the `check($np, $dep_vp)` from `s`. It first collects all `$np` ("all babies"), then feeds these as arguments to `$dep_vp` ("were the toys easiest to take from"). 
+The core of this sentence's meaning is the `check($np, $dep_vp)` from `s`. It first collects all `$np` ("all babies"), then feeds these as arguments to `$dep_vp` ("were the toys easiest to take from").
 
 I can do that also in the new system. Find all `np()`, then pass these as argument to `dep_vp()`. The result of the function would then be a list of baby-ids. But I'm wondering if it is okay that a `dep_vp` always returns the missing `np`. Could it be possible that the newly found `P1` is needed as well? Should the `dep_vp` return a list of bindings?
 
@@ -733,14 +743,14 @@ To process `check($np, $dep_vp)`, the system needs to go through all `np`'s and 
                 nbar parent
             verb
             np2
-                qp1 : go:quantifier(Result, Range, $quantifier)  
+                qp1 : go:quantifier(Result, Range, $quantifier)
                     quantifier - 4 : [Result == 4]
 
                 nbar children
 
 
     func check()
-            
+
 
 Richard! doesn't translate from syntax to logic, instead it just uses functions for semantic composition, and adds custom code to each node. This custom code executes the sentence (imperative) rather than just forms a logical expression. The parsing is functional, but the semantics is imperative.
 

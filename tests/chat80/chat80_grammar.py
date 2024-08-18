@@ -1,5 +1,5 @@
 import re
-from richard.constants import E1, E2, E3, E4, Body, Range
+from richard.constants import E1, E2, E3, E4, e1, e2, e3, Body, Range
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.type.SemanticTemplate import SemanticTemplate
 
@@ -9,111 +9,111 @@ def get_grammar():
     return [
 
         # sentence
-        { 
-            "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",  
-            "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj), 
-            "inf": [("format", "y/n")],
+        {
+            "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",
+            "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
+            "inf": [("format", "y/n", [], [])],
         },
-        { 
-            "syn": "s(E1) -> 'is' 'there' np(E1) '?'",  
-            "sem": lambda np: apply(np, []), 
-            "inf": [("format", "y/n")],        
+        {
+            "syn": "s(E1) -> 'is' 'there' np(E1) '?'",
+            "sem": lambda np: apply(np, []),
+            "inf": [("format", "y/n", [], [])],
         },
-        { 
-            "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",  
-            "sem": lambda np, preposition, nbar: [('all', E2, nbar, apply(np, preposition))], 
-            "inf": [("format", "y/n")], 
+        {
+            "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",
+            "sem": lambda np, preposition, nbar: [('all', E2, nbar, apply(np, preposition))],
+            "inf": [("format", "y/n", [], [])],
         },
-        { 
-            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'", 
-            "sem": lambda nbar: nbar, 
-            "inf": [("format", "list", E1)],
+        {
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'",
+            "sem": lambda nbar: nbar,
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' pp(E1) '?'", 
-            "sem": lambda nbar, pp: nbar + pp, 
-            "inf": [("format", "list", E1)],
+        {
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' pp(E1) '?'",
+            "sem": lambda nbar, pp: nbar + pp,
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'what' 'is' np(E1) '?'", 
-            "sem": lambda np: apply(np, []), 
-            "inf": [("format", "list", E1)],
+        {
+            "syn": "s(E1) -> 'what' 'is' np(E1) '?'",
+            "sem": lambda np: apply(np, []),
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'what' 'are' np(E1) '?'", 
-            "sem": lambda np: apply(np, []), 
-            "inf": [("format", "list", E1)],
+        {
+            "syn": "s(E1) -> 'what' 'are' np(E1) '?'",
+            "sem": lambda np: apply(np, []),
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) '?'", 
+        {
+            "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) '?'",
             "sem": lambda np, vp_noobj_sub_iob: apply(np, vp_noobj_sub_iob),
-            "inf": [("format", "list", E1)],
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'", 
+        {
+            "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'",
             "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
-            "inf": [("format", "table", [E2, E1], [None, None])],
+            "inf": [("format", "table", [e2, e1], [None, None])],
             "boost": 1
         },
-        { 
-            "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'", 
+        {
+            "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'",
             "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size_of', E2, E3)])],
-            "inf": [("format", "number", E1, "ksqmiles")],
+            "inf": [("format", "number", [e1], ["ksqmiles"])],
         },
-        { 
-            "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'", 
+        {
+            "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'",
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
-            "inf": [("format", "table", [E3, E1], [None, 'ksqmiles'])],
+            "inf": [("format", "table", [e3, e1], [None, 'ksqmiles'])],
         },
-        { 
-            "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'", 
-            "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))], 
-            "inf": [("format", "table", [E2, E3], [None, None])],
+        {
+            "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'",
+            "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))],
+            "inf": [("format", "table", [e2, e3], [None, None])],
         },
-        { 
-            "syn": "s(E2) -> 'where' 'is' np(E1) '?'", 
-            "sem": lambda np: apply(np, []) + [('where', E1, E2)], 
-            "inf": [("format", "list", E2)],
+        {
+            "syn": "s(E2) -> 'where' 'is' np(E1) '?'",
+            "sem": lambda np: apply(np, []) + [('where', E1, E2)],
+            "inf": [("format", "list", [e2], [])],
         },
-        { 
-            "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",  
+        {
+            "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",
             "sem": lambda np: apply(np, []) + [('size_of', E1, E2)],
-            "inf": [("format", "number", E2, "ksqmiles")],
+            "inf": [("format", "number", [e2], ["ksqmiles"])],
         },
-        { 
-            "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'", 
-            "sem": lambda nbar, adjp: nbar + adjp, 
-            "inf": [("format", "list", E1)],
+        {
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'",
+            "sem": lambda nbar, adjp: nbar + adjp,
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) '?'", 
+        {
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) '?'",
             "sem": lambda nbar, vp_noobj_sub: nbar + vp_noobj_sub,
-            "inf": [("format", "list", E1)],
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'which' 'is' np(E1) '?'", 
-            "sem": lambda np: apply(np, []), 
-            "inf": [("format", "list", E1)],
+        {
+            "syn": "s(E1) -> 'which' 'is' np(E1) '?'",
+            "sem": lambda np: apply(np, []),
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'", 
+        {
+            "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'",
             "sem": lambda nbar, np1, np2: nbar + apply(np1, [('of', E2, E1)] + apply(np2, [('==', E2, E3)])),
-            "inf": [("format", "list", E1)],
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1) '?'", 
+        {
+            "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1) '?'",
             "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
-            "inf": [("format", "list", E1)],
+            "inf": [("format", "list", [e1], [])],
         },
-        { 
-            "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'", 
-            "sem": lambda nbar, vp_noobj_sub: [('count', E1, nbar + vp_noobj_sub)], 
-            "inf": [("format", "number", E1, None)],
+        {
+            "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'",
+            "sem": lambda nbar, vp_noobj_sub: [('count', E1, nbar + vp_noobj_sub)],
+            "inf": [("format", "number", [e1], [None])],
         },
-        { 
-            "syn": "s(E1) -> 'bye' '.'", 
-            "sem": lambda: [('=', E1, 'Cheerio.')], 
-            "inf": [("format", "list", E1)],
+        {
+            "syn": "s(E1) -> 'bye' '.'",
+            "sem": lambda: [('=', E1, 'Cheerio.')],
+            "inf": [("format", "list", [e1], [])],
         },
 
 
@@ -167,35 +167,35 @@ def get_grammar():
         { "syn": "relative_clause(E1) -> 'with' 'a' attr(E1, E2) vp_nosub_obj_continuous(E2)", "sem": lambda attr, vp_nosub_obj: attr + vp_nosub_obj },
 
         # np
-        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar: 
+        { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar:
             SemanticTemplate([Body], nbar + Body) },
-        { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar: 
+        { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar:
             SemanticTemplate([Body], apply(det, nbar, Body)) },
-        { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar: 
+        { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar:
             SemanticTemplate([Body], apply(det, nbar + attr, Body)) },
-        { "syn": "np(E1) -> number(E1)", "sem": lambda number: 
+        { "syn": "np(E1) -> number(E1)", "sem": lambda number:
             SemanticTemplate([Body], [('=', E1, number)] + Body) },
 
         # det
-        { "syn": "det(E1) -> 'a'", "sem": lambda: 
+        { "syn": "det(E1) -> 'a'", "sem": lambda:
             SemanticTemplate([Range, Body], Range + Body) },
-        { "syn": "det(E1) -> 'the'", "sem": lambda: 
+        { "syn": "det(E1) -> 'the'", "sem": lambda:
             SemanticTemplate([Range, Body], Range + Body) },
-        { "syn": "det(E1) -> 'some'", "sem": lambda: 
+        { "syn": "det(E1) -> 'some'", "sem": lambda:
             SemanticTemplate([Range, Body], Range + Body) },
-        { "syn": "det(E1) -> 'any'", "sem": lambda: 
+        { "syn": "det(E1) -> 'any'", "sem": lambda:
             SemanticTemplate([Range, Body], Range + Body) },
-        { "syn": "det(E1) -> 'no'", "sem": lambda: 
+        { "syn": "det(E1) -> 'no'", "sem": lambda:
             SemanticTemplate([Range, Body], [('none', Range + Body)]) },
-        { "syn": "det(E1) -> number(E1)", "sem": lambda number: 
+        { "syn": "det(E1) -> number(E1)", "sem": lambda number:
             SemanticTemplate([Range, Body], [('det_equals', Range + Body, number)]) },
-        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number: 
+        { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number:
             SemanticTemplate([Range, Body], [('det_greater_than', Range + Body, number)]) },
 
         # superlatives
-        { "syn": "superlative(E1) -> 'largest'", "sem": lambda: 
+        { "syn": "superlative(E1) -> 'largest'", "sem": lambda:
             SemanticTemplate([Body], [('max', E1, E2, Body + [('size_of', E1, E2)])]) },
-        { "syn": "superlative(E1) -> 'smallest'", "sem": lambda: 
+        { "syn": "superlative(E1) -> 'smallest'", "sem": lambda:
             SemanticTemplate([Body], [('min', E1, E2, Body + [('size_of', E1, E2)])]) },
 
         # attribute
@@ -235,22 +235,23 @@ def get_grammar():
         { "syn": "adj(E1) -> 'asian'", "sem": lambda: [('asian', E1)] },
 
         # noun
-        { "syn": "noun(E1) -> 'river'", "sem": lambda: [('river', E1)] },
-        { "syn": "noun(E1) -> 'rivers'", "sem": lambda: [('river', E1)] },
-        { "syn": "noun(E1) -> 'capital'", "sem": lambda: [('capital', E1)] },
-        { "syn": "noun(E1) -> 'capitals'", "sem": lambda: [('capital', E1)] },
-        { "syn": "noun(E1) -> 'ocean'", "sem": lambda: [('ocean', E1)] },
-        { "syn": "noun(E1) -> 'oceans'", "sem": lambda: [('ocean', E1)] },
-        { "syn": "noun(E1) -> 'country'", "sem": lambda: [('country', E1)] },
-        { "syn": "noun(E1) -> 'countries'", "sem": lambda: [('country', E1)] },
-        { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
-        { "syn": "noun(E1) -> 'seas'", "sem": lambda: [('sea', E1)] },
-        { "syn": "noun(E1) -> 'city'", "sem": lambda: [('city', E1)] },
-        { "syn": "noun(E1) -> 'cities'", "sem": lambda: [('city', E1)] },
-        { "syn": "noun(E1) -> 'continent'", "sem": lambda: [('continent', E1)] },
-        { "syn": "noun(E1) -> 'continents'", "sem": lambda: [('continent', E1)] },
+        { "syn": "noun(E1) -> 'river'",         "sem": lambda: [('river', E1)],         "inf": [('isa', e1, 'river')] },
+        { "syn": "noun(E1) -> 'rivers'",        "sem": lambda: [('river', E1)],         "inf": [('isa', e1, 'river')] },
+        { "syn": "noun(E1) -> 'capital'",       "sem": lambda: [('capital', E1)],       "inf": [('isa', e1, 'city')] },
+        { "syn": "noun(E1) -> 'capitals'",      "sem": lambda: [('capital', E1)],       "inf": [('isa', e1, 'city')] },
+        { "syn": "noun(E1) -> 'ocean'",         "sem": lambda: [('ocean', E1)],         "inf": [('isa', e1, 'ocean')] },
+        { "syn": "noun(E1) -> 'oceans'",        "sem": lambda: [('ocean', E1)],         "inf": [('isa', e1, 'oean')] },
+        { "syn": "noun(E1) -> 'country'",       "sem": lambda: [('country', E1)],       "inf": [('isa', e1, 'country')] },
+        { "syn": "noun(E1) -> 'countries'",     "sem": lambda: [('country', E1)],       "inf": [('isa', e1, 'country')] },
+        { "syn": "noun(E1) -> 'sea'",           "sem": lambda: [('sea', E1)],           "inf": [('isa', e1, 'sea')] },
+        { "syn": "noun(E1) -> 'seas'",          "sem": lambda: [('sea', E1)],           "inf": [('isa', e1, 'sea')] },
+        { "syn": "noun(E1) -> 'city'",          "sem": lambda: [('city', E1)],          "inf": [('isa', e1, 'city')] },
+        { "syn": "noun(E1) -> 'cities'",        "sem": lambda: [('city', E1)],          "inf": [('isa', e1, 'city')] },
+        { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)],     "inf": [('isa', e1, 'continent')] },
+        { "syn": "noun(E1) -> 'continents'",    "sem": lambda: [('continent', E1)],     "inf": [('isa', e1, 'continent')] },
+
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token, "inf": [("name", E1)], },
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
     ]

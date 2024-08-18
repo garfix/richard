@@ -3,7 +3,6 @@
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
-from richard.interface.SomeSolver import SomeSolver
 from richard.type.ExecutionContext import ExecutionContext
 from richard.type.OrderedSet import OrderedSet
 
@@ -12,23 +11,23 @@ class CoreModule(SomeModule):
 
     def __init__(self) -> None:
         self.relations = {
-            "==": Relation(self.equals),
-            ">": Relation(self.greater_than),
-            "<": Relation(self.less_than),
-            "min": Relation(self.min),
-            "max": Relation(self.max),
-            "sum": Relation(self.sum),
-            "avg": Relation(self.avg),
-            "percentage": Relation(self.percentage),
-            "count": Relation(self.count),
-            "not": Relation(self.not_function),
-            "=": Relation(self.assign),
-            "det_equals": Relation(self.determiner_equals),
-            "det_greater_than": Relation(self.determiner_greater_than),
-            "all": Relation(self.determiner_all),
-            "none": Relation(self.determiner_none),
+            "==": Relation(query_function=self.equals),
+            ">": Relation(query_function=self.greater_than),
+            "<": Relation(query_function=self.less_than),
+            "min": Relation(query_function=self.min),
+            "max": Relation(query_function=self.max),
+            "sum": Relation(query_function=self.sum),
+            "avg": Relation(query_function=self.avg),
+            "percentage": Relation(query_function=self.percentage),
+            "count": Relation(query_function=self.count),
+            "not": Relation(query_function=self.not_function),
+            "=": Relation(query_function=self.assign),
+            "det_equals": Relation(query_function=self.determiner_equals),
+            "det_greater_than": Relation(query_function=self.determiner_greater_than),
+            "all": Relation(query_function=self.determiner_all),
+            "none": Relation(query_function=self.determiner_none),
         }
-    
+
 
     # ('==', E1, E2)
     def equals(self, values: list, context: ExecutionContext) -> list[list]:
@@ -80,7 +79,7 @@ class CoreModule(SomeModule):
         return [
             [count, None]
         ]
-    
+
 
     # ('sum', E1, E2, [body-atoms])
     # returns the sum of results of the values of E2 in body-atoms in E1
@@ -251,8 +250,6 @@ class CoreModule(SomeModule):
 
         entities = OrderedSet([binding[quant_var.name] for binding in context.solver.solve(range, context.binding)])
 
-        # print(entities)
-
         range_count = len(entities)
         results = OrderedSet()
         for entity in entities:
@@ -266,15 +263,13 @@ class CoreModule(SomeModule):
 
         result_count = len(results)
 
-        success = result_count == range_count   
-
-        # print(body, success, result_count, find, binding)
+        success = result_count == range_count
 
         if success:
             return [[result, None, None] for result in results]
-        else:        
+        else:
             return []
-        
+
 
     # ('none', [body-atoms])
     def determiner_none(self, values: list, context: ExecutionContext) -> list[list]:
@@ -289,5 +284,4 @@ class CoreModule(SomeModule):
                 [True, None, None]
             ]
         else:
-            return []        
-        
+            return []

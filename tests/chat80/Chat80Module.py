@@ -1,6 +1,6 @@
 from richard.constants import IGNORED, E1, LARGE, MEDIUM, SMALL
 from richard.entity.Relation import Relation
-from richard.interface import SomeSolver
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.type.ExecutionContext import ExecutionContext
@@ -15,77 +15,77 @@ class Chat80Module(SomeModule):
 
         self.ds = data_source
         self.relations = {
-            "river": Relation(self.simple_entity, SMALL, [SMALL]),
-            "country": Relation(self.simple_entity, MEDIUM, [MEDIUM]),
-            "ocean": Relation(self.simple_entity, SMALL, [SMALL]),
-            "sea": Relation(self.simple_entity, SMALL, [SMALL]),
-            "city": Relation(self.simple_entity, MEDIUM, [MEDIUM]),
-            "continent": Relation(self.simple_entity, SMALL, [SMALL]),
-            "capital": Relation(self.capital, MEDIUM, [MEDIUM]),
-            "borders": Relation(self.borders, LARGE, [MEDIUM, MEDIUM]),
-            "resolve_name": Relation(self.resolve_name, LARGE, [LARGE, LARGE]),
-            "of": Relation(self.of, LARGE, [MEDIUM, MEDIUM]),
-            "size_of": Relation(self.size_of, IGNORED, [MEDIUM, IGNORED]),
-            "where": Relation(self.where, IGNORED, [MEDIUM, MEDIUM]),
-            "european": Relation(self.some_continent, MEDIUM, [MEDIUM]),
-            "asian": Relation(self.some_continent, MEDIUM, [MEDIUM]),
-            "african": Relation(self.some_continent, MEDIUM, [MEDIUM]),
-            "american": Relation(self.some_continent, MEDIUM, [MEDIUM]),
-            "flows_through": Relation(self.flows_through, MEDIUM, [SMALL, MEDIUM]),
-            "south_of": Relation(self.south_of, IGNORED, [MEDIUM, MEDIUM]),
-            "flows_from_to": Relation(self.flows_from_to, IGNORED, [MEDIUM, MEDIUM, MEDIUM]),
-            "contains": Relation(self.contains, LARGE, [LARGE, LARGE]),
-            "has_population": Relation(self.has_population, MEDIUM, [MEDIUM, IGNORED]),
+            "river": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
+            "country": Relation(query_function=self.simple_entity, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
+            "ocean": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
+            "sea": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
+            "city": Relation(query_function=self.simple_entity, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
+            "continent": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
+            "capital": Relation(query_function=self.capital, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
+            "borders": Relation(query_function=self.borders, relation_size=LARGE, argument_sizes=[MEDIUM, MEDIUM]),
+            "resolve_name": Relation(query_function=self.resolve_name, relation_size=LARGE, argument_sizes=[LARGE, LARGE]),
+            "of": Relation(query_function=self.of, relation_size=LARGE, argument_sizes=[MEDIUM, MEDIUM]),
+            "size_of": Relation(query_function=self.size_of, relation_size=IGNORED, argument_sizes=[MEDIUM, IGNORED]),
+            "where": Relation(query_function=self.where, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]),
+            "european": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
+            "asian": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
+            "african": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
+            "american": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
+            "flows_through": Relation(query_function=self.flows_through, relation_size=MEDIUM, argument_sizes=[SMALL, MEDIUM]),
+            "south_of": Relation(query_function=self.south_of, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]),
+            "flows_from_to": Relation(query_function=self.flows_from_to, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM, MEDIUM]),
+            "contains": Relation(query_function=self.contains, relation_size=LARGE, argument_sizes=[LARGE, LARGE]),
+            "has_population": Relation(query_function=self.has_population, relation_size=MEDIUM, argument_sizes=[MEDIUM, IGNORED]),
         }
-   
-    
+
+
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = [context.predicate]
         out_values = self.ds.select(context.predicate, ["id"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
     def capital(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["city"]
         out_values = self.ds.select("country", ["capital"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
     def borders(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         # todo may also be ocean
         out_types = ["country", "country"]
         out_values = self.ds.select("borders", ["country_id1", "country_id2"], db_values)
         out_values.extend(self.ds.select("borders", ["country_id2", "country_id1"], db_values))
         return self.hydrate_values(out_values, out_types)
-  
+
 
     def of(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["city", "country"]
         out_values = self.ds.select("country", ["capital", "id"], db_values)
         return self.hydrate_values(out_values, out_types)
 
     def size_of(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["country", None]
         out_values = self.ds.select("country", ["id", "area_div_1000"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
     def where(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["country", "place"]
         out_values = self.ds.select("country", ["id", "region"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
     def some_continent(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["country"]
-        
+
         country_id = db_values[0]
         table = "country"
         columns = ["id", "region"]
@@ -106,16 +106,16 @@ class Chat80Module(SomeModule):
 
 
     def flows_through(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["river", "country"]
         out_values = self.ds.select("contains", ["part", "whole"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
     def south_of(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["country", "place"]
-        
+
         # this implementation could be done in SQL like "SELECT id FROM country WHERE lat < (SELECT lat FROM country WHERE id = %s)"
         id1 = db_values[0]
         id2 = db_values[1]
@@ -142,7 +142,7 @@ class Chat80Module(SomeModule):
 
 
     def in_function(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["country", "region"]
         out_values = self.ds.select("contains", ["part", "whole"], db_values)
 
@@ -154,9 +154,9 @@ class Chat80Module(SomeModule):
 
 
     def flows_from_to(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["river", "counry", "sea"]
-        
+
         query_river = db_values[0]
         query_from = db_values[1]
         query_to = db_values[2]
@@ -175,37 +175,47 @@ class Chat80Module(SomeModule):
 
 
     def contains(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["country", "city"]
         out_values = self.ds.select("contains", ["whole", "part"], db_values)
         return self.hydrate_values(out_values, out_types)
 
 
     def has_population(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
         out_types = ["country", None]
-        if values[0].entity == 'city':
+
+        term = context.arguments[0]
+        type = ""
+        if isinstance(term, Variable):
+            isas = context.solver.solve([('isa', term.name, Variable('Type'))])
+            if len(isas) > 0:
+                type = isas[0]["Type"]
+
+        if type == 'city':
             out_values = self.ds.select("city", ["id", "population"], db_values)
             out_values = [[row[0], row[1] * 1000] for row in out_values]
         else:
             out_values = self.ds.select("country", ["id", "population"], db_values)
             out_values = [[row[0], row[1] * 1000000] for row in out_values]
         return self.hydrate_values(out_values, out_types)
-    
+
 
     def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)   
+        db_values = self.dehydrate_values(values)
 
         name = db_values[0].lower()
         out_types = [None, None]
         out_values = self.ds.select("country", ["id", "id"], [name, None])
         if len(out_values) > 0:
             out_types = [None, 'country']
+            context.solver.write_atom(('isa', context.arguments[1].name, 'country'))
             return self.hydrate_values(out_values, out_types)
 
         out_values = self.ds.select("city", ["id", "id"], [name, None])
         if len(out_values) > 0:
             out_types = [None, 'city']
+            context.solver.write_atom(('isa', context.arguments[1].name, 'city'))
             return self.hydrate_values(out_values, out_types)
 
         out_values = self.ds.select("sea", ["id", "id"], [name, None])
@@ -217,7 +227,7 @@ class Chat80Module(SomeModule):
         if len(out_values) > 0:
             out_types = [None, 'river']
             return self.hydrate_values(out_values, out_types)
-        
+
         out_values = self.ds.select("ocean", ["id", "id"], [name, None])
         if len(out_values) > 0:
             out_types = [None, 'ocean']
@@ -234,4 +244,3 @@ class Chat80Module(SomeModule):
 
         raise Exception("Name not found: " + name)
 
-        

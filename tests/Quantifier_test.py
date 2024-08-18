@@ -30,11 +30,11 @@ class TestModule(SomeModule):
 
     def get_relations(self):
         return {
-            "parent": Relation(self.parent),
-            "child": Relation(self.child),
-            "have": Relation(self.have),
+            "parent": Relation(query_function=self.parent),
+            "child": Relation(query_function=self.child),
+            "have": Relation(query_function=self.have),
         }
-    
+
 
     def parent(self, values: list, context: ExecutionContext) -> list[list]:
         db_values = self.dehydrate_values(values)
@@ -58,7 +58,7 @@ class TestModule(SomeModule):
 
 
 class TestQuantification(unittest.TestCase):
-   
+
     def test_quantification(self):
 
         db = MemoryDb()
@@ -73,33 +73,33 @@ class TestQuantification(unittest.TestCase):
         model = Model([TestModule(data_source)])
 
         grammar = [
-            { 
-                "syn": "s(V1) -> np(E1) vp_no_sub(E1)", 
+            {
+                "syn": "s(V1) -> np(E1) vp_no_sub(E1)",
                 "sem": lambda np, vp_no_sub: apply(np, vp_no_sub)
             },
-            { 
-                "syn": "vp_no_sub(E1) -> tv(E1, E2) np(E2)", 
+            {
+                "syn": "vp_no_sub(E1) -> tv(E1, E2) np(E2)",
                 "sem": lambda tv, np: apply(np, tv)
             },
-            { 
-                "syn": "tv(E1, E2) -> 'has'", 
-                "sem": lambda: [('have', E1, E2)] 
+            {
+                "syn": "tv(E1, E2) -> 'has'",
+                "sem": lambda: [('have', E1, E2)]
             },
-            { 
-                "syn": "np(E1) -> det(E1) nbar(E1)", 
+            {
+                "syn": "np(E1) -> det(E1) nbar(E1)",
                 "sem": lambda det, nbar: SemanticTemplate([Body], apply(det, nbar, Body))
             },
-            { 
-                "syn": "nbar(E1) -> noun(E1)", 
-                "sem": lambda noun: noun 
+            {
+                "syn": "nbar(E1) -> noun(E1)",
+                "sem": lambda noun: noun
             },
-            { 
-                "syn": "det(E1) -> 'every'", 
+            {
+                "syn": "det(E1) -> 'every'",
                 "sem": lambda: SemanticTemplate([Range, Body], [('all', E1, Range, Body)])
             },
-            { 
-                "syn": "det(E1) -> number(E1)", 
-                "sem": lambda number: SemanticTemplate([Range, Body], [('det_equals', Range + Body, number)]) 
+            {
+                "syn": "det(E1) -> number(E1)",
+                "sem": lambda number: SemanticTemplate([Range, Body], [('det_equals', Range + Body, number)])
             },
             { "syn": "number(D1) -> 'two'", "sem": lambda: 2 },
             { "syn": "number(D1) -> 'three'", "sem": lambda: 3 },
