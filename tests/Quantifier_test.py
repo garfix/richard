@@ -37,24 +37,18 @@ class TestModule(SomeModule):
 
 
     def parent(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)
-        out_types = ["parent"]
-        out_values = self.ds.select("has_child", ["parent"], db_values)
-        return self.hydrate_values(out_values, out_types)
+        out_values = self.ds.select("has_child", ["parent"], values)
+        return out_values
 
 
     def child(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)
-        out_types = ["child"]
-        out_values = self.ds.select("has_child", ["child"], db_values)
-        return self.hydrate_values(out_values, out_types)
+        out_values = self.ds.select("has_child", ["child"], values)
+        return out_values
 
 
     def have(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)
-        out_types = ["parent", "child"]
-        out_values = self.ds.select("has_child", ["parent", "child"], db_values)
-        return self.hydrate_values(out_values, out_types)
+        out_values = self.ds.select("has_child", ["parent", "child"], values)
+        return out_values
 
 
 class TestQuantification(unittest.TestCase):

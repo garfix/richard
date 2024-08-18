@@ -4,7 +4,6 @@ from richard.Model import Model
 from richard.constants import E1, E2, IGNORED
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Relation import Relation
-from richard.entity.Instance import Instance
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.Solver import Solver
@@ -28,17 +27,13 @@ class TestModule(SomeModule):
 
 
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)
-        out_types = [context.predicate]
-        out_values = self.ds.select(context.predicate, ['id'], db_values)
-        return self.hydrate_values(out_values, out_types)
+        out_values = self.ds.select(context.predicate, ['id'], values)
+        return out_values
 
 
     def contains(self, values: list, context: ExecutionContext) -> list[list]:
-        db_values = self.dehydrate_values(values)
-        out_types = ["country", "river"]
-        out_values = self.ds.select("contains", ['country', 'river'], db_values)
-        return self.hydrate_values(out_values, out_types)
+        out_values = self.ds.select("contains", ['country', 'river'], values)
+        return out_values
 
 
 class TestSolver(unittest.TestCase):
@@ -63,16 +58,16 @@ class TestSolver(unittest.TestCase):
         tests = [
             [
                 [('river', E1)],
-                [{'E1': Instance('river', 'amazon')}, {'E1': Instance('river', 'brahmaputra')}]
+                [{'E1': 'amazon'}, {'E1': 'brahmaputra'}]
             ],
             [
-                [('river', E1), ('contains', Instance('country', 'india'), E1)],
-                [{'E1': Instance('river', 'brahmaputra')}]
+                [('river', E1), ('contains', 'india', E1)],
+                [{'E1': 'brahmaputra'}]
             ],
             [
                 [('contains', E1, E2), ('country', E1)],
-                [{'E1': Instance('country', 'brasil'), 'E2': Instance('river', 'amazon')},
-                 {'E1': Instance('country', 'india'), 'E2': Instance('river', 'brahmaputra')}]
+                [{'E1': 'brasil', 'E2': 'amazon'},
+                 {'E1': 'india', 'E2': 'brahmaputra'}]
             ],
             [
                 [('contains', E1, E1)],

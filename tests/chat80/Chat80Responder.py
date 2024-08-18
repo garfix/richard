@@ -1,4 +1,3 @@
-from richard.entity.Instance import Instance
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
 from richard.interface.SomeResponseHandler import SomeResponseHandler
@@ -39,7 +38,7 @@ class Chat80Responder(SomeResponseHandler):
 
                 row = []
                 for variable, unit in zip(variables, units):
-                    value = binding[variable].id if isinstance(binding[variable], Instance) else binding[variable]
+                    value = binding[variable]
                     if isinstance(value, float):
                         value = str(int(value))
                     if unit:
@@ -54,7 +53,7 @@ class Chat80Responder(SomeResponseHandler):
             s = set()
             values = []
             for binding in bindings:
-                value = binding[variable].id if isinstance(binding[variable], Instance) else binding[variable]
+                value = binding[variable]
                 if value in s:
                     continue
                 s.add(value)
