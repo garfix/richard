@@ -5,6 +5,8 @@
 * better error messages
 * use postgres for chat-80?
 
+* name preceded by optional "the"
+
 * update documentation
 
 ## done

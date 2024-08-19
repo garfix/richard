@@ -1,3 +1,153 @@
+## 2024-08-19
+
+Start with Warren's isolating independent parts. Warren describes how to separate the independent parts, but doesn't describe how to process these parts.
+
+I'm using these slow queries as examples:
+
+[A] ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
+
+    [
+        ('ocean', $1)
+        ('borders', $1, $2)
+        ('african', $2)
+        ('country', $2)
+        ('borders', $1, $3)
+        ('asian', $3)
+        ('country', $3)
+    ]
+
+54 msecs
+
+[B] ["What are the countries from which a river flows into the Black_Sea?", "romania, soviet_union"],
+
+    [
+        ('resolve_name', 'Black_Sea', $6)
+        ('river', $5)
+        ('country', $4)
+        ('flows_from_to', $5, $4, $6)
+    ]
+
+80 msecs
+
+
+[C] ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, antarctica, australasia"],
+
+    [
+        ('continent', $7)
+        ('none',
+            [
+                ('country', $8)
+                ('in', $8, $7)
+                ('det_greater_than',
+                    [
+                        ('city', $9)
+                        ('has_population', $9, $10)
+                        ('=', $11, 1000000)
+                        ('>', $10, $11)
+                        ('contains', $8, $9)
+                    ], 2)
+            ])
+    ]
+
+183 msecs
+
+
+So how to do it? Some options:
+
+- wrap a `isolate({block})` relation around the independent part, so that is executed only once.
+
+Works for [A]
+
+    [
+        ('ocean', $1)
+        ('isolate', [
+            ('borders', $1, $2)
+            ('isolate', [
+                ('african', $2)
+            ])
+            ('isolate', [
+                ('country', $2)
+            ])
+        ])
+        ('isolate', [
+            ('borders', $1, $3)
+            ('isolate', [
+                ('asian', $3)
+            ])
+            ('isolate', [
+                ('country', $3)
+            ])
+        ])
+    ]
+
+Could also work for [B], but `flows_from_to` should be placed up front.
+
+    [
+        ('resolve_name', 'Black_Sea', $6)
+        ('flows_from_to', $5, $4, $6)
+        ('isolate', [
+            ('river', $5)
+        ])
+        ('isolate', [
+            ('country', $4)
+        ])
+    ]
+
+What would it do for [C]?
+
+
+~~~python
+    [
+        ('continent', $7)
+        ('none',
+            [
+                ('country', $8)
+                ('isolate', [
+                    ('in', $8, $7)
+                ])
+                ('isolate', [
+                    ('det_greater_than',
+                        [
+                            ('city', $9)
+                            ('isolate', [
+                                ('has_population', $9, $10)
+                                ('=', $11, 1000000)
+                                ('isolate', [
+                                    ('>', $10, $11)
+                                ])
+                                ('isolate', [
+                                    ('contains', $8, $9)
+                                ])
+                            ])
+                        ], 2)
+                ])
+            ])
+    ]
+~~~
+
+Compare Chat-80's original plan:
+
+~~~prolog
+    answer([A]) :-
+    A = setof B
+        continent(B)
+    & { \+
+            exists C D
+            in(C,B)
+            & {country(C)}
+            & { D = numberof E
+                exists F
+                    in(E,C)
+                & {city(E)}
+                & { population(E,F)
+                    & {exceeds(F,--(1,million))} }
+            & {D>2} } }
+~~~
+
+
+There is no need to isolate the last subquery in a group.
+
+
 ## 2024-08-17
 
 I want to move away from Instances, and store facts about reified variables in a dialog store. Main reason: the instances with their types only work if all quantifiers occur before the other relations. It's completely outdated.

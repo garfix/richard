@@ -4,15 +4,18 @@ from richard.entity.Variable import Variable
 
 
 class SortByCost:
+    """
+    Based on "Efficient processing of interactive relational database queries in logic" - David H.D. Warren (1981)
+    """
 
     def sort(self, composition: list[tuple], model: Model):
         if len(composition) == 0:
             return []
-                
+
         result = self.sort_rest([], composition, model)
 
         return result
-    
+
 
     def sort_rest(self, done: list[tuple], todo: list[tuple], model: Model) -> list[tuple]:
 
@@ -24,10 +27,11 @@ class SortByCost:
             for argument in atom[1:]:
                 if isinstance(argument, Variable):
                     bound_variables.add(argument.name)
-        
+
         results = []
         for atom in todo:
             cost = self.calculate_cost(atom, bound_variables, model)
+            atom = self.sort_arguments(atom, model)
             results.append({'atom': atom, 'cost': cost})
 
         results.sort(key=lambda result: result['cost'])
@@ -36,11 +40,21 @@ class SortByCost:
 
         return self.sort_rest(done + sorted[0:1], sorted[1:], model)
 
-    
+
+    def sort_arguments(self, atom: tuple, model: Model) -> tuple:
+        atom_as_list = list(atom)
+        replaced = False
+        for i, arg in enumerate(atom):
+            if isinstance(arg, list):
+                atom_as_list[i] = self.sort(arg, model)
+                replaced = True
+        if replaced:
+            return tuple(atom_as_list)
+        else:
+            return atom
+
+
     def calculate_cost(self, atom: tuple, bound_variables: set, model: Model):
-        """
-        Based on "Efficient processing of interactive relational database queries in logic" - David H.D. Warren (1981)
-        """
         predicate = atom[0]
         relations = model.find_relations(predicate)
         if len(relations) == 0:
@@ -50,7 +64,7 @@ class SortByCost:
         for relation in relations:
             unbound_argument_size_product = 1
             arguments = atom[1:]
-          
+
             if relation.relation_size == IGNORED:
                 cost = INFINITE
             else:
@@ -76,5 +90,4 @@ class SortByCost:
             costs.append(cost)
 
         return sum(costs)
-    
-    
+
