@@ -33,7 +33,7 @@ class Chat80Module(SomeModule):
             "american": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
             "flows_through": Relation(query_function=self.flows_through, relation_size=MEDIUM, argument_sizes=[SMALL, MEDIUM]),
             "south_of": Relation(query_function=self.south_of, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]),
-            "flows_from_to": Relation(query_function=self.flows_from_to, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM, MEDIUM]),
+            "flows_from_to": Relation(query_function=self.flows_from_to, relation_size=MEDIUM, argument_sizes=[MEDIUM, MEDIUM, MEDIUM]),
             "contains": Relation(query_function=self.contains, relation_size=LARGE, argument_sizes=[LARGE, LARGE]),
             "has_population": Relation(query_function=self.has_population, relation_size=MEDIUM, argument_sizes=[MEDIUM, IGNORED]),
         }
@@ -134,9 +134,9 @@ class Chat80Module(SomeModule):
         for id, flows_through in flows:
             db_to = flows_through[0]
             db_from = flows_through[1:2]
-            if not id or id == query_river:
-                if not query_to or query_to == db_to:
-                    if not query_from or query_from in db_from:
+            if isinstance(query_river, Variable) or id == query_river:
+                if isinstance(query_to, Variable) or query_to == db_to:
+                    if isinstance(query_from, Variable) or query_from in db_from:
                         for f in db_from:
                             out_values.append([id, f, db_to])
 
