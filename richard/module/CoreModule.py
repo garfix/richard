@@ -26,6 +26,7 @@ class CoreModule(SomeModule):
             "det_greater_than": Relation(query_function=self.determiner_greater_than),
             "all": Relation(query_function=self.determiner_all),
             "none": Relation(query_function=self.determiner_none),
+            "isolated": Relation(query_function=self.isolated),
         }
 
 
@@ -285,3 +286,18 @@ class CoreModule(SomeModule):
             ]
         else:
             return []
+
+
+    # ('isolated', [body-atoms])
+    def isolated(self, values: list, context: ExecutionContext) -> list[list]:
+        body = values[0]
+
+        results = context.solver.solve(body, context.binding)
+        count = len(results)
+
+        if count == 0:
+            return []
+        else:
+            return [
+                [True]
+            ]

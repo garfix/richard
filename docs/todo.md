@@ -5,7 +5,9 @@
 * better error messages
 * use postgres for chat-80?
 
+* more access to in-between results of blocks
 * name preceded by optional "the"
+* pass variables to functions or None values?
 
 * update documentation
 
