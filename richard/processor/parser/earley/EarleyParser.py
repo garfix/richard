@@ -1,12 +1,8 @@
-
-import re
-from richard.constants import CATEGORY_TOKEN, TERMINAL, CATEGORY_PROPER_NOUN, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_REG_EXP, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
+from richard.constants import CATEGORY_TOKEN, TERMINAL, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
-from richard.entity.Log import Log
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.RuleConstituent import RuleConstituent
-from richard.interface.SomeLogger import SomeLogger
 from .entity.Chart import Chart
 from .entity.ChartState import ChartState
 from .tree_extract import extract_tree_roots
@@ -14,15 +10,10 @@ from .unknown_word import find_unknown_word
 
 
 class EarleyParser:
-    """ 
+    """
     An implementation of Earley's top-down chart parsing algorithm as described in
     "Speech and Language Processing" (first edition) - Daniel Jurafsky & James H. Martin (Prentice Hall, 2000)
     """
-
-    log: SomeLogger
-
-    def __init__(self, log: SomeLogger = Log(False)):
-        self.log = log
 
 
     def parse(self, grammar_rules: GrammarRules, tokens: list[str]) -> ProcessResult:
@@ -47,7 +38,7 @@ class EarleyParser:
             products=rootNodes,
             error=error
         )
-    
+
 
     def buildChart(self, grammar_rules: GrammarRules, words, rootCategory, rootVariables):
         """
@@ -85,7 +76,7 @@ class EarleyParser:
                 j += 1
 
         return chart
-    
+
 
     def predict(self, grammar_rules: GrammarRules, chart: Chart, state: ChartState):
         """
@@ -97,16 +88,10 @@ class EarleyParser:
         next_consequent_variables = state.rule.consequents[consequentIndex].arguments
         end_word_index = state.end_word_index
 
-        if self.log.is_active():
-            self.log.add_debug("predict", state.to_string(chart))
-
         for rule in grammar_rules.find_rules(nextConsequent.predicate, len(next_consequent_variables)) :
 
             predicted_state = ChartState(rule, 1, end_word_index, end_word_index)
             chart.enqueue(predicted_state, end_word_index)
-
-            if self.log.is_active():
-                self.log.add_debug("> predicted", predicted_state.to_string(chart))
 
 
     def scan(self, chart: Chart, state: ChartState):
@@ -124,9 +109,6 @@ class EarleyParser:
         lex_item_found = False
         new_pos_type = POS_TYPE_RELATION
         sem = None
-
-        if self.log.is_active():
-            self.log.add_debug("scan", state.to_string(chart))
 
         # token category
         if not lex_item_found and next_consequent.predicate == CATEGORY_TOKEN:
@@ -149,24 +131,18 @@ class EarleyParser:
             scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)
             chart.enqueue(scanned_state, end_word_index+1)
 
-            if self.log.is_active():
-                self.log.add_debug("> scanned", scanned_state.to_string(chart)+" "+end_word)
-
 
     def complete(self, chart: Chart, completed_state: ChartState):
         """
         This function is called whenever a state is complete.
         Its purpose is to advance other states.
-        
+
         For example:
         - this state is NP -> noun, it has been completed
         - now proceed all other states in the chart that are waiting for an NP at the current position
         """
 
         completed_antecedent = completed_state.rule.antecedent.predicate
-
-        if self.log.is_active():
-            self.log.add_debug("complete", completed_state.to_string(chart))
 
         # index the completed state for fast lookup in the tree extraction phase
         chart.index_completed_state(completed_state)
@@ -194,6 +170,3 @@ class EarleyParser:
 
             # enqueue the new state
             chart.enqueue(advanced_state, completed_state.end_word_index)
-
-            if self.log.is_active():
-                self.log.add_debug("> advanced", advanced_state.to_string(chart))
