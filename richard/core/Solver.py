@@ -15,10 +15,6 @@ class Solver(SomeSolver):
         self.stats = defaultdict(lambda: 0)
 
 
-    def solve_for(self, atoms: list[tuple], binding: dict, variable: str) -> list[dict]:
-        return [binding[variable] for binding in self.solve(atoms, binding)]
-
-
     def solve(self, atoms: list[tuple], binding: dict = {}) -> list[dict]:
 
         if not isinstance(atoms, list):
@@ -42,22 +38,7 @@ class Solver(SomeSolver):
         predicate = atom[0]
         arguments = atom[1:]
 
-        prepared = []
-        for arg in arguments:
-            # variable
-            if isinstance(arg, Variable):
-                # bound?
-                if arg.name in binding:
-                    # add variable value
-                    prepared.append(binding[arg.name])
-                else:
-                    # add variable itself
-                    prepared.append(arg)
-            else:
-                # just add value
-                prepared.append(arg)
-
-        values = self.find_relation_values(predicate, arguments, prepared, binding)
+        values = self.find_relation_values(predicate, arguments, binding)
 
         results = []
         for v in values:
@@ -87,19 +68,40 @@ class Solver(SomeSolver):
         return results
 
 
-    def find_relation_values(self, predicate: str, arguments: list, model_values: list, binding: dict) -> list[list]:
+    def find_relation_values(self, predicate: str, arguments: list, binding: dict) -> list[list]:
 
         relations = self.model.find_relations(predicate)
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
+        db_values = self.model_values_2_db_values(arguments, binding)
+
         rows = []
         for relation in relations:
             context = ExecutionContext(relation, predicate, arguments, binding, self)
-            out_values = relation.query_function(model_values, context)
+            out_values = relation.query_function(db_values, context)
             rows.extend(out_values)
 
         return rows
+
+
+    def model_values_2_db_values(self, model_values: list, binding: dict) -> list:
+        prepared = []
+        for arg in model_values:
+            # variable
+            if isinstance(arg, Variable):
+                # bound?
+                if arg.name in binding:
+                    # add variable value
+                    prepared.append(binding[arg.name])
+                else:
+                    # add None
+                    prepared.append(None)
+            else:
+                # just add value
+                prepared.append(arg)
+
+        return prepared
 
 
     def write_atom(self, atom: tuple):

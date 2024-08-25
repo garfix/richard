@@ -36,13 +36,13 @@ class CoreModule(SomeModule):
         e1 = values[0]
         e2 = values[1]
 
-        if isinstance(e1, Variable):
-            if isinstance(e2, Variable):
+        if e1 is None:
+            if e2 is None:
                 raise Exception("== is called with two variables")
             else:
                 return [[e2, e2]]
         else:
-            if isinstance(e2, Variable):
+            if e2 is None:
                 return [[e1, e1]]
 
         if e1 == e2:
@@ -72,7 +72,7 @@ class CoreModule(SomeModule):
     # returns the number of results of body-atoms in E1
     def count(self, values: list, context: ExecutionContext) -> list[list]:
 
-        count_var, body = values
+        body = values[1]
 
         results = context.solver.solve(body, context.binding)
         count = len(results)
@@ -86,7 +86,8 @@ class CoreModule(SomeModule):
     # returns the sum of results of the values of E2 in body-atoms in E1
     def sum(self, values: list, context: ExecutionContext) -> list[list]:
 
-        sum_var, element_var, body = values
+        element_var = context.arguments[1]
+        body = values[2]
 
         results = context.solver.solve(body, context.binding)
         s = 0
@@ -102,7 +103,9 @@ class CoreModule(SomeModule):
     # returns the minimum value of results of the values of E2 in body-atoms in E1
     def min(self, values: list, context: ExecutionContext) -> list[list]:
 
-        min_var, element_var, body = values
+        min_var = context.arguments[0]
+        element_var = context.arguments[1]
+        body = values[2]
 
         results = context.solver.solve(body, context.binding)
 
@@ -125,7 +128,9 @@ class CoreModule(SomeModule):
     # returns the maximum value of results of the values of E2 in body-atoms in E1
     def max(self, values: list, context: ExecutionContext) -> list[list]:
 
-        max_var, element_var, body = values
+        max_var = context.arguments[0]
+        element_var = context.arguments[1]
+        body = values[2]
 
         results = context.solver.solve(body, context.binding)
 
@@ -148,7 +153,8 @@ class CoreModule(SomeModule):
     # returns the average of results of the values of E2 in body-atoms in E1
     def avg(self, values: list, context: ExecutionContext) -> list[list]:
 
-        sum_var, element_var, body = values
+        element_var = context.arguments[1]
+        body = values[2]
 
         results = context.solver.solve(body, context.binding)
 
@@ -172,7 +178,8 @@ class CoreModule(SomeModule):
     # returns the percentage of nominator-atoms in denominator-atoms
     def percentage(self, values: list, context: ExecutionContext) -> list[list]:
 
-        pecentage_var, nominator, denominator = values
+        nominator = values[1]
+        denominator = values[2]
 
         nominator_results = context.solver.solve(nominator, context.binding)
         denominator_results = context.solver.solve(denominator, context.binding)
@@ -244,10 +251,9 @@ class CoreModule(SomeModule):
     # ('all', E1, [range-atoms], [body-atoms])
     def determiner_all(self, values: list, context: ExecutionContext) -> list[list]:
 
-        # find_var, quant, body = values
-        # predicate1, quant_var, det, nbar = quant
-
-        quant_var, range, body = values
+        quant_var = context.arguments[0]
+        range = values[1]
+        body = values[2]
 
         entities = OrderedSet([binding[quant_var.name] for binding in context.solver.solve(range, context.binding)])
 
@@ -258,7 +264,6 @@ class CoreModule(SomeModule):
                 quant_var.name: entity
             }
             bindings = context.solver.solve(body, b)
-            # print(body, b, bindings)
             if len(bindings) > 0:
                 results.add(entity)
 

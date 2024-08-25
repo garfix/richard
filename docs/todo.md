@@ -4,13 +4,10 @@
 * unit test
 * better error messages
 * use postgres for chat-80?
+* update documentation
 
 * auto suggest files problem in vs code
 * more access to in-between results of blocks
-* name preceded by optional "the"
-* pass variables to functions or None values?
-
-* update documentation
 
 ## done
 
@@ -30,3 +27,4 @@
 * importers based on hand-written grammar in stead of regex
 * store type information with the variable in stead of an Instance?
 * start using dialog variables in stead of sentence variables; it's hard to change them later
+* pass variables to functions or None values?

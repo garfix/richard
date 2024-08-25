@@ -41,17 +41,17 @@ class InferenceModule(SomeModule):
     def handle_rule(self, values: list, context: ExecutionContext) -> list[list]:
         results = []
         for rule in self.rules[context.predicate]:
-            results.extend(self.solve_rule(rule, values, context.solver, context.binding))
+            results.extend(self.solve_rule(rule, context.arguments, context.solver, context.binding))
 
         return results
 
 
-    def solve_rule(self, rule: InferenceRule, values: list, solver: SomeSolver, binding: dict):
+    def solve_rule(self, rule: InferenceRule, arguments: list, solver: SomeSolver, binding: dict):
         rule_binding = {}
 
         rule_arguments = rule.head[1:]
 
-        for rule_argument, value in zip(rule_arguments, values):
+        for rule_argument, value in zip(rule_arguments, arguments):
             if isinstance(rule_argument, Variable):
                 # bind variable
                 if isinstance(value, Variable):
@@ -82,7 +82,7 @@ class InferenceModule(SomeModule):
 
             result = []
 
-            for rule_argument, value in zip(rule_arguments, values):
+            for rule_argument, value in zip(rule_arguments, arguments):
                 if isinstance(value, Variable):
                     if isinstance(rule_argument, Variable):
                         result.append(solution[rule_argument.name])

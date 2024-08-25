@@ -134,9 +134,9 @@ class Chat80Module(SomeModule):
         for id, flows_through in flows:
             db_to = flows_through[0]
             db_from = flows_through[1:2]
-            if isinstance(query_river, Variable) or id == query_river:
-                if isinstance(query_to, Variable) or query_to == db_to:
-                    if isinstance(query_from, Variable) or query_from in db_from:
+            if query_river is None or id == query_river:
+                if query_to is None or query_to == db_to:
+                    if query_from is None or query_from in db_from:
                         for f in db_from:
                             out_values.append([id, f, db_to])
 

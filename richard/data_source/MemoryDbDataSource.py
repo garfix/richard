@@ -17,7 +17,7 @@ class MemoryDbDataSource(SomeDataSource):
         # from list to dictionary
         where = {}
         for field, column in zip(values, columns):
-            if field is not None and not isinstance(field, Variable):
+            if field is not None:
                 where[column] = field
 
         # call db
