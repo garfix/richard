@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from richard.core.formatter import format_value
+from richard.core.atoms import format_value
 
 
 @dataclass(frozen=True)

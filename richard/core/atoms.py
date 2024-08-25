@@ -1,3 +1,6 @@
+from richard.entity.Variable import Variable
+
+
 def format_value(value: any, indent: str = "\n") -> str:
     """
     Formats nested lists, tuples and strings
@@ -19,3 +22,11 @@ def format_value(value: any, indent: str = "\n") -> str:
     else:
         text = str(value)
     return text
+
+
+def get_atom_variables(atom: tuple) -> list[str]:
+    variables = []
+    for arg in atom[1:]:
+        if isinstance(arg, Variable):
+            variables.append(arg.name)
+    return variables

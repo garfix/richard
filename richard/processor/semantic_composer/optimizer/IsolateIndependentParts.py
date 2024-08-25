@@ -1,3 +1,4 @@
+from richard.core.atoms import get_atom_variables
 from richard.entity.Variable import Variable
 
 
@@ -22,9 +23,8 @@ class IsolateIndependentParts:
 
         for i, atom in enumerate(atoms):
             indexes = set()
-            for arg in atom[1:]:
-                if isinstance(arg, Variable):
-                    indexes |= set(self.find_atoms_with_variable(atoms, arg.name))
+            for arg in get_atom_variables(atom):
+                indexes |= set(self.find_atoms_with_variable(atoms, arg))
 
             if i in indexes:
                 indexes.remove(i)
@@ -53,60 +53,38 @@ class IsolateIndependentParts:
 
     def has_dependencies_to_succeeding_atoms(self, atom_index: int, atoms: list[tuple], dependency_graph: dict):
 
-        # print(atom_index, atoms, dependency_graph)
-
         if not atom_index in dependency_graph:
-            # print('No')
             return False
 
         for i in dependency_graph[atom_index]:
             atom = atoms[i]
             dependent_atom_index = self.find_first_dependent_atom(atom, atoms[:i])
-            # print(atom, i, dependent_atom_index)
             if dependent_atom_index is not None and dependent_atom_index > atom_index:
-                # print('Yes')
                 return True
 
-        # print('No 2')
         return False
 
 
     def find_atoms_with_variable(self, atoms: list[tuple], variable: str) -> list[int]:
         indexes = []
         for i, atom in enumerate(atoms):
-            for arg in atom[1:]:
-                if isinstance(arg, Variable) and arg.name == variable:
+            for arg in get_atom_variables(atom):
+                if arg == variable:
                     indexes.append(i)
         return indexes
 
 
     def is_first_atom_to_contain_root_variable(self, atom: tuple, preceding_atoms: list[tuple], root_variables: list[str]) -> bool:
-        # if atom contains any root variables, check if some atom contained them earlier
-
-        found_root_variables = set()
-        for arg in atom[1:]:
-            if isinstance(arg, Variable):
-                if arg.name in root_variables:
-                    found_root_variables.add(arg.name)
-
-        if len(found_root_variables) == 0:
-            return False
+        found_root_variables = set(root_variables) & set(get_atom_variables(atom))
 
         is_firsts = []
-
-        # print(preceding_atoms)
-
         for root_variable in found_root_variables:
             is_first = True
             for an_atom in preceding_atoms:
-                for an_arg in an_atom[1:]:
-                    # print(an_atom, an_arg, isinstance(an_arg, Variable), root_variable)
-                    if isinstance(an_arg, Variable) and an_arg.name == root_variable:
-                        # print('First!')
+                for an_arg in get_atom_variables(an_atom):
+                    if an_arg == root_variable:
                         is_first = False
             is_firsts.append(is_first)
-
-        # print(atom, is_firsts, not False in is_firsts, found_root_variables, preceding_atoms)
 
         return True in is_firsts
 
@@ -117,16 +95,15 @@ class IsolateIndependentParts:
 
         firsts = []
 
-        for arg in atom[1:]:
-            if isinstance(arg, Variable):
-                first = None
-                for i, an_atom in enumerate(preceding_atoms):
-                    for an_arg in an_atom:
-                        if isinstance(an_arg, Variable) and an_arg.name == arg.name:
-                            if first is None:
-                                first = i
-                if first is not None:
-                    firsts.append(first)
+        for arg in get_atom_variables(atom):
+            first = None
+            for i, an_atom in enumerate(preceding_atoms):
+                for an_arg in get_atom_variables(an_atom):
+                    if an_arg == arg and first is None:
+                        first = i
+
+            if first is not None:
+                firsts.append(first)
 
         if len(firsts) == 0:
             return None
@@ -138,17 +115,15 @@ class IsolateIndependentParts:
 
         isolated = []
 
-        for i, atom in enumerate(atoms):
+        for i in indexes:
+            atom = atoms[i]
+            if i in graph[None]:
+                isolated.append(atoms[i])
+                isolated.extend(self.isolate_atoms_from_graph(atoms, graph, graph[i], root_variables))
+            else:
+                isolated.append(('isolated', [atom] + self.isolate_atoms_from_graph(atoms, graph, graph[i], root_variables)))
 
-            # print(i)
-
-            if i in indexes:
-                if i in graph[None]:
-                    isolated.append(atoms[i])
-                    isolated.extend(self.isolate_atoms_from_graph(atoms, graph, graph[i], root_variables))
-                else:
-                    isolated.append(('isolated', [atom] + self.isolate_atoms_from_graph(atoms, graph, graph[i], root_variables)))
-
+        # isolate the atoms' arguments
         recursive_isolated = [self.isolate_arguments(atom, root_variables) for atom in isolated]
 
         return recursive_isolated
@@ -157,10 +132,7 @@ class IsolateIndependentParts:
     def isolate_arguments(self, atom, root_variables: list[str]):
         isolated_args = []
 
-        extended_root_variables = root_variables.copy()
-        for arg in atom:
-            if isinstance(arg, Variable):
-                extended_root_variables.append(arg.name)
+        extended_root_variables = root_variables + get_atom_variables(atom)
 
         for arg in atom:
             if isinstance(arg, list):
