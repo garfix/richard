@@ -1,9 +1,9 @@
 import unittest
 
-from richard.Model import Model
-from richard.Pipeline import Pipeline
+from richard.core.Model import Model
+from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.constants import E1, E2, Body, Range
+from richard.core.constants import E1, E2, Body, Range
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.grammar_functions import apply

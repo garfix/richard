@@ -1,12 +1,12 @@
 import unittest
 
-from richard.Model import Model
-from richard.constants import E1, E2, IGNORED
+from richard.core.Model import Model
+from richard.core.constants import E1, E2, IGNORED
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Relation import Relation
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
-from richard.Solver import Solver
+from richard.core.Solver import Solver
 from richard.interface.SomeModule import SomeModule
 from richard.store.MemoryDb import MemoryDb
 from richard.store.Record import Record

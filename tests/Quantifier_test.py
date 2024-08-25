@@ -1,10 +1,10 @@
 import unittest
 
-from richard.Solver import Solver
-from richard.Model import Model
-from richard.Pipeline import Pipeline
+from richard.core.Solver import Solver
+from richard.core.Model import Model
+from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.constants import E1, E2, Body, Range
+from richard.core.constants import E1, E2, Body, Range
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource

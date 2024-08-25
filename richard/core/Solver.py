@@ -1,5 +1,5 @@
 from collections import defaultdict
-from richard.Model import Model
+from richard.core.Model import Model
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
 from richard.type.ExecutionContext import ExecutionContext

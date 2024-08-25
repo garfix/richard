@@ -1,9 +1,9 @@
 import pathlib
 import unittest
 
-from richard.Model import Model
-from richard.constants import E1, E2
-from richard.Solver import Solver
+from richard.core.Model import Model
+from richard.core.constants import E1, E2
+from richard.core.Solver import Solver
 from richard.entity.Variable import Variable
 from richard.module.InferenceModule import InferenceModule
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
@@ -24,7 +24,7 @@ class TestInferenceEngine(unittest.TestCase):
             ["population('france', 43).", InferenceRule(('population', 'france', 43), [])],
             ["constant('pi', 3.14159265359).", InferenceRule(('constant', 'pi', 3.14159265359), [])],
             [
-                "father(E1, E2) :- parent(E1, E2), father(E1).", 
+                "father(E1, E2) :- parent(E1, E2), father(E1).",
                 InferenceRule(('father', Variable('E1'), Variable('E2')), [
                     ('parent', Variable('E1'), Variable('E2')),
                     ('father', Variable('E1'))
@@ -34,9 +34,9 @@ class TestInferenceEngine(unittest.TestCase):
         for test in tests:
             question, answer = test
             result = parser.parse(question)
-            self.assertEqual(answer, result)           
+            self.assertEqual(answer, result)
 
-   
+
     def test_inference_engine(self):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/inference/"

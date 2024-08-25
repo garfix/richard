@@ -1,6 +1,6 @@
 import unittest
 
-from richard.Pipeline import Pipeline
+from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.language_selector.LanguageSelector import LanguageSelector
@@ -9,7 +9,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestMultilingual(unittest.TestCase):
-   
+
     def test_two_languages(self):
 
         language_selector = LanguageSelector(["en_US", "nl_NL"])
@@ -55,4 +55,3 @@ class TestMultilingual(unittest.TestCase):
         pipeline.enter(request)
         tree = parser.get_product(request)
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(jan 'Jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'Marie')))))")
-        

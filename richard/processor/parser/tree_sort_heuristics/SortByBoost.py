@@ -1,4 +1,4 @@
-from richard.constants import CATEGORY_TOKEN
+from richard.core.constants import CATEGORY_TOKEN
 from richard.entity.ParseTreeNode import ParseTreeNode
 
 
@@ -20,5 +20,4 @@ class SortByBoost:
 
     def get_boost(self, node: ParseTreeNode) -> int:
         return -node.rule.boost
-    
-    
+

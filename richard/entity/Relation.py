@@ -1,4 +1,4 @@
-from richard.constants import IGNORED
+from richard.core.constants import IGNORED
 
 
 class Relation:

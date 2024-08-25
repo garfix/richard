@@ -1,5 +1,5 @@
-from richard.Model import Model
-from richard.constants import RESOLVE_NAME
+from richard.core.Model import Model
+from richard.core.constants import RESOLVE_NAME
 from richard.entity.Variable import Variable
 
 
@@ -8,7 +8,7 @@ class FrontResolveName:
     def sort(self, composition: list[tuple]):
         name_resolvers, others = self.extract_list(composition)
         return name_resolvers + others
-    
+
 
     def extract_list(self, composition: list[tuple]):
         name_resolvers = []
@@ -30,7 +30,7 @@ class FrontResolveName:
                 rest_composition.append(atom)
 
         return name_resolvers, rest_composition
-    
+
 
     def extract_tuple(self, terms: tuple):
         name_resolvers = []
@@ -43,6 +43,6 @@ class FrontResolveName:
                 rest_composition.append(child)
             else:
                 rest_composition.append(term)
-        
+
         return name_resolvers, tuple(rest_composition)
-    
+

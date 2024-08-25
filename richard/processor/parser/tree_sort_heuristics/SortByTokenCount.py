@@ -1,4 +1,4 @@
-from richard.constants import CATEGORY_TOKEN
+from richard.core.constants import CATEGORY_TOKEN
 from richard.entity.ParseTreeNode import ParseTreeNode
 
 
@@ -25,4 +25,3 @@ class SortByTokenCount:
             count += self.count_tokens(child)
 
         return count
-    

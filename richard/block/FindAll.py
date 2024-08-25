@@ -1,4 +1,4 @@
-from richard.constants import NO_RESULTS
+from richard.core.constants import NO_RESULTS
 from richard.entity.BlockResult import BlockResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.ControlBlock import ControlBlock
@@ -18,7 +18,7 @@ class FindAll(ControlBlock):
         error = ""
 
         # the essence of this block: collect all products
-        request.set_alternative_products(self.processor, 
+        request.set_alternative_products(self.processor,
             request.get_alternative_products(self.processor) + result.products)
 
         success = False
@@ -30,9 +30,9 @@ class FindAll(ControlBlock):
             success = success or next_block_result.error == ""
             if next_block_result.error != "" and error == "":
                 error = next_block_result.error
-           
+
         if success:
-            return BlockResult("")    
+            return BlockResult("")
         else:
             return BlockResult(error)
-    
+

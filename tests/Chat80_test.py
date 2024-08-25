@@ -1,16 +1,16 @@
 import unittest
 import pathlib
 
-from richard.Tester import Tester
+from richard.core.Tester import Tester
 from richard.entity.Relation import Relation
 from richard.module.SimpleMemoryModule import SimpleMemoryModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.Solver import Solver
+from richard.core.Solver import Solver
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
-from richard.Model import Model
-from richard.Pipeline import Pipeline
+from richard.core.Model import Model
+from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser

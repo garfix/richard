@@ -2,7 +2,7 @@ from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.interface.SomeSemanticComposer import SomeSemanticComposer
-from richard.Solver import Solver
+from richard.core.Solver import Solver
 from richard.type.OrderedSet import OrderedSet
 
 

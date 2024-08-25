@@ -1,13 +1,13 @@
 import unittest
 
-from richard.Pipeline import Pipeline
+from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestParser(unittest.TestCase):
-   
+
     def test_parser_process(self):
 
         grammar = [
@@ -33,7 +33,7 @@ class TestParser(unittest.TestCase):
 
         tree = parser.get_tree(request)
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
-    
+
 
     def test_quote(self):
 

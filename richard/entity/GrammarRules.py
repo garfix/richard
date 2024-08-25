@@ -1,4 +1,4 @@
-from richard.constants import POS_TYPE_WORD_FORM
+from richard.core.constants import POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 
 

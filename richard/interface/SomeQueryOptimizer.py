@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from richard.Model import Model
+from richard.core.Model import Model
 
 
 class SomeQueryOptimizer:

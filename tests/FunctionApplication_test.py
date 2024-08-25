@@ -1,7 +1,7 @@
 import unittest
 
-from richard.Model import Model
-from richard.Pipeline import Pipeline
+from richard.core.Model import Model
+from richard.core.Pipeline import Pipeline
 from richard.block.FindAll import FindAll
 from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
@@ -21,8 +21,8 @@ class TestFunctionApplication(unittest.TestCase):
         grammar = [
             { "syn": "s(E1) -> 'what' 'is' term(E1)", "sem": lambda term: term },
             { "syn": "s(E1) -> 'calculate' term(E1)", "sem": lambda term: term },
-            { 
-                "syn": "term(E1) -> term(E2) operator(E3) term(E4)", 
+            {
+                "syn": "term(E1) -> term(E2) operator(E3) term(E4)",
                 "sem": lambda term1, operator, term2: operator(term1, term2)
             },
             { "syn": "operator(E1) -> 'plus'",  "sem": lambda: lambda a, b: a + b },
@@ -49,7 +49,7 @@ class TestFunctionApplication(unittest.TestCase):
         pipeline.enter(request)
         composition = composer.get_composition(request)
         self.assertEqual(composition.semantics, 7)
-        
+
         # test find_all
         # test ambiguous sentence with 2 readings (that exposed an error in the parser, now solved)
 

@@ -25,8 +25,4 @@ def format_value(value: any, indent: str = "\n") -> str:
 
 
 def get_atom_variables(atom: tuple) -> list[str]:
-    variables = []
-    for arg in atom[1:]:
-        if isinstance(arg, Variable):
-            variables.append(arg.name)
-    return variables
+    return [arg.name for arg in atom if isinstance(arg, Variable)]

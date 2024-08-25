@@ -1,4 +1,4 @@
-from richard.constants import IGNORED, E1, LARGE, MEDIUM, SMALL
+from richard.core.constants import IGNORED, E1, LARGE, MEDIUM, SMALL
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource

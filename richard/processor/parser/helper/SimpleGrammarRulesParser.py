@@ -1,6 +1,6 @@
 import re
 
-from richard.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
+from richard.core.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.RuleConstituent import RuleConstituent
@@ -22,7 +22,7 @@ class SimpleGrammarRulesParser:
             '\)',
             "'(?:\\\\'|[^'])+'",
             '"(?:\\\\"|[^"])+"',
-            '[A-Z]\w*', 
+            '[A-Z]\w*',
             '\w+',
         ]) + ")")
         self.re_identifier = re.compile("^\w+$")
@@ -35,7 +35,7 @@ class SimpleGrammarRulesParser:
         for simple_rule in simple_grammar:
             if not 'syn' in simple_rule:
                 raise Exception("A rule must contain a 'syn' value")
-            
+
             antecedent, consequents = self.parse_syntax(simple_rule['syn'])
 
             sem = None
@@ -57,7 +57,7 @@ class SimpleGrammarRulesParser:
             rules.append(GrammarRule(antecedent, consequents, sem=sem, inferences=inferences, boost=boost, condition=condition))
 
         return GrammarRules(rules)
-    
+
 
     def parse_syntax(self, syntax):
 
@@ -73,7 +73,7 @@ class SimpleGrammarRulesParser:
         if token != "->":
             raise Exception("Missing -> operator in 'syn' value: " + syntax)
         pos = new_pos
-        
+
         consequents = []
         while True:
 
@@ -84,7 +84,7 @@ class SimpleGrammarRulesParser:
                 if not string:
                     break
                 atom = RuleConstituent(string, [], POS_TYPE_WORD_FORM)
-                
+
             pos = new_pos
             consequents.append(atom)
 
@@ -92,7 +92,7 @@ class SimpleGrammarRulesParser:
             raise Exception("Could not complete parsing the consequencts: " + syntax)
 
         return antecedent, consequents
-    
+
 
     def parse_variable(self, tokens: list[str], pos: int):
         token, new_pos = self.parse_token(tokens, pos)
@@ -102,7 +102,7 @@ class SimpleGrammarRulesParser:
         if re.match(self.re_variable, token):
             pos = new_pos
             return token, pos
-        
+
         return None, 0
 
 
@@ -114,7 +114,7 @@ class SimpleGrammarRulesParser:
         if token[0] == "'":
             pos = new_pos
             return token[1:-1].replace("\\'", "'"), pos
-        
+
         if token[0] == '"':
             pos = new_pos
             return token[1:-1].replace('\\"', '"'), pos
@@ -141,7 +141,7 @@ class SimpleGrammarRulesParser:
                 break
             pos = new_pos
             terms.append(term)
-    
+
             comma, new_pos = self.parse_token(tokens, pos)
             if comma != ",":
                 break
@@ -153,22 +153,22 @@ class SimpleGrammarRulesParser:
         pos = new_pos
 
         return RuleConstituent(predicate, terms, POS_TYPE_RELATION), pos
-    
+
 
     def parse_identifier(self, tokens: list[str], pos: int):
         token, new_pos = self.parse_token(tokens, pos)
         if not token:
             return None, 0
-        
+
         if re.match(self.re_identifier, token):
             pos = new_pos
             return token, pos
-        
+
         return None, 0
 
 
     def parse_token(self, tokens: list[str], pos: int):
         if pos >= len(tokens):
             return None, 0
-                
+
         return tokens[pos], pos + 1

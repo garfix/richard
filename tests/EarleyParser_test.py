@@ -1,6 +1,6 @@
 import unittest
 
-from richard.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
+from richard.core.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.Log import Log
@@ -8,7 +8,7 @@ from richard.entity.RuleConstituent import RuleConstituent
 from richard.processor.parser.earley.EarleyParser import EarleyParser
 
 class TestEarleyParser(unittest.TestCase):
-   
+
     def test_ambiguity(self):
         # create a toy grammar to generates superfluous sentences (to test the parsing of ambiguity)
         grammarRules = GrammarRules([
@@ -51,7 +51,7 @@ class TestEarleyParser(unittest.TestCase):
             GrammarRule(
                 RuleConstituent("proper_noun", ["E1"], POS_TYPE_RELATION),
                 [RuleConstituent("mary", [], POS_TYPE_WORD_FORM)],
-            ),            
+            ),
             # superfluous: noun(P1) -> "John"
             GrammarRule(
                 RuleConstituent("noun", ["E1"], POS_TYPE_RELATION),
@@ -60,7 +60,7 @@ class TestEarleyParser(unittest.TestCase):
         ])
         parser = EarleyParser()
         result = parser.parse(grammarRules, ["John", "loves", "Mary"])
-                    
+
         self.assertEqual(len(result.products), 4)
         self.assertEqual(result.products[0].inline_str(), "s(np(noun(john 'John')) verb(loves 'loves') np(noun(proper_noun(mary 'Mary'))))")
         self.assertEqual(result.products[1].inline_str(), "s(np(noun(proper_noun(john 'John'))) verb(loves 'loves') np(noun(proper_noun(mary 'Mary'))))")

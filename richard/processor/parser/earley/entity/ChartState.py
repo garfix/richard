@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from richard.constants import TERMINAL
+from richard.core.constants import TERMINAL
 from richard.entity.GrammarRule import GrammarRule
 
 
@@ -20,14 +20,14 @@ class ChartState:
 
     def __hash__(self) -> int:
         return hash((self.rule.hash, self.dot_position, self.start_word_index, self.end_word_index))
-    
-    
+
+
     def __eq__(self, other_state: object) -> bool:
         return self.rule.equals(other_state.rule) and \
                self.dot_position == other_state.dot_position and \
                self.start_word_index == other_state.start_word_index and \
                self.end_word_index == other_state.end_word_index
-    
+
 
     def is_terminal(self):
         if len(self.rule.consequents[0].arguments) == 0:

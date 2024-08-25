@@ -1,4 +1,4 @@
-from richard.constants import DELTA, GAMMA, POS_TYPE_RELATION
+from richard.core.constants import DELTA, GAMMA, POS_TYPE_RELATION
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.RuleConstituent import RuleConstituent
 from richard.type.OrderedSet import OrderedSet

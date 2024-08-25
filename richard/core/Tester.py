@@ -3,7 +3,7 @@ import unittest
 import cProfile
 import time
 
-from richard.Pipeline import Pipeline
+from richard.core.Pipeline import Pipeline
 from richard.entity.SentenceRequest import SentenceRequest
 
 class Tester:

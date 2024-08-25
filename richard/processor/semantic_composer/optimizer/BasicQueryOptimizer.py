@@ -1,4 +1,4 @@
-from richard.Model import Model
+from richard.core.Model import Model
 from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.processor.semantic_composer.optimizer.IsolateIndependentParts import IsolateIndependentParts
 from richard.processor.semantic_composer.optimizer.FrontResolveName import FrontResolveName

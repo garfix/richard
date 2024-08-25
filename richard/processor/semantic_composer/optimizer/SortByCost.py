@@ -1,5 +1,5 @@
-from richard.Model import Model
-from richard.constants import IGNORED, INFINITE
+from richard.core.Model import Model
+from richard.core.constants import IGNORED, INFINITE
 from richard.entity.Variable import Variable
 
 

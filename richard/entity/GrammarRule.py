@@ -1,9 +1,9 @@
-from richard.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
+from richard.core.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.RuleConstituent import RuleConstituent
 
 
 class GrammarRule:
-    
+
     antecedent: RuleConstituent
     consequents: list[RuleConstituent]
     sem: callable
@@ -12,12 +12,12 @@ class GrammarRule:
     condition: callable
     hash: int
 
-    def __init__(self, 
-                 antecedent: RuleConstituent, 
-                 consequents: list[RuleConstituent], 
-                 sem: callable = None, 
-                 inferences: list[tuple] = [], 
-                 boost: int = 0, 
+    def __init__(self,
+                 antecedent: RuleConstituent,
+                 consequents: list[RuleConstituent],
+                 sem: callable = None,
+                 inferences: list[tuple] = [],
+                 boost: int = 0,
                  condition: callable = None
         ) -> None:
         self.antecedent = antecedent
@@ -38,13 +38,13 @@ class GrammarRule:
 
         if len(self.consequents) != len(other_rule.consequents):
             return False
-        
+
         for i, consequent in enumerate(self.consequents):
             if not consequent.equals(other_rule.consequents[i]):
                 return False
-            
+
         return True
-    
+
 
     def __str__(self):
 
@@ -73,5 +73,5 @@ class GrammarRule:
             sep = " "
 
         return s
-    
-        
+
+
