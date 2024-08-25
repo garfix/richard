@@ -1,27 +1,6 @@
 from richard.entity.Variable import Variable
 
 
-def format_value(value: any, indent: str = "\n") -> str:
-    if isinstance(value, tuple):
-        text = indent + "("
-        sep = ""
-        for element in value:
-            text += sep + format_value(element, indent + "    ")
-            sep = ", "
-        text += ")"
-    elif isinstance(value, list):
-        text = indent + "["
-        for element in value:
-            text += format_value(element, indent + "    ")
-        text += indent + "]"
-    elif isinstance(value, str):
-        text = "'" + value + "'"
-    else:
-        text = str(value)
-    return text
-
-
-
 class IsolateIndependentParts:
     """
     Based on "Efficient processing of interactive relational database queries in logic" - David H.D. Warren (1981)
@@ -31,24 +10,11 @@ class IsolateIndependentParts:
         if len(atoms) == 0:
             return []
 
-
         dependency_graph = self.create_dependency_graph(atoms)
-
         isolation_graph = self.create_isolation_graph(atoms, root_variables, dependency_graph)
+        isolated_atoms = self.isolate_atoms_from_graph(atoms, isolation_graph, list(isolation_graph[None]), root_variables)
 
-        # print(format_value(atoms))
-        # print(dependency_graph)
-        # print(isolation_graph)
-
-        iso = self.isolate_atoms_from_graph(atoms, isolation_graph, list(isolation_graph[None]), root_variables)
-
-        # print(format_value(iso))
-
-        # exit()
-
-        return iso
-
-        return atoms
+        return isolated_atoms
 
 
     def create_dependency_graph(self, atoms: list[tuple]):
