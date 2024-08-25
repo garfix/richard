@@ -4,6 +4,8 @@ from richard.entity.Variable import Variable
 
 TERMINAL = "terminal"
 GAMMA = "gamma"
+DELTA = "delta"
+ROOT_CATEGORY = "s"
 
 NAME_NOT_FOUND = "Name not found: %s"
 SORT_CONFLICT = "It doesn't make sense"

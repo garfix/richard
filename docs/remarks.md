@@ -1,3 +1,17 @@
+## 2024-08-23
+
+I needed a way to explicitly express the result variables of a sentence and I did this by allowing `s(E1, E2, E3)`, i.e. `s` can now have multiple variables. These variables serve as the result variables needed for the isolated parts algorithm. I did this by adding an extra layer of basic rewrites:
+
+    # gamma(G) -> delta(D)
+
+    # delta(D) -> s(P1)
+    # delta(D) -> s(P1, P2)
+    # delta(D) -> s(P1, P2, P3)
+    # delta(D) -> s(P1, P2, P3, P4)
+    # delta(D) -> s(P1, P2, P3, P4, P5)
+
+Quite happy with this solution.
+
 ## 2024-08-19
 
 Start with Warren's isolating independent parts. Warren describes how to separate the independent parts, but doesn't describe how to process these parts.

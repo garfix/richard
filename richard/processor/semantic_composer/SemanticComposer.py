@@ -23,6 +23,8 @@ class SemanticComposer(SomeSemanticComposer):
     variable_generator: VariableGenerator
     sentence_context: SomeClearableDb
 
+    print_result: bool
+
 
     def __init__(self, parser: SomeParser) -> None:
         super().__init__()
@@ -30,6 +32,7 @@ class SemanticComposer(SomeSemanticComposer):
         self.query_optimizer = None
         self.variable_generator = VariableGenerator("$")
         self.sentence_context = None
+        self.print_result = False
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
@@ -41,15 +44,20 @@ class SemanticComposer(SomeSemanticComposer):
 
         self.check_for_sem(root)
 
-        root_variable = self.variable_generator.next()
-        semantics, inferences = self.compose(root, [root_variable])
+        root_variables = [self.variable_generator.next() for _ in root.rule.antecedent.arguments]
+        semantics, inferences = self.compose(root, root_variables)
 
         if self.query_optimizer:
-            optimized_semantics = self.query_optimizer.optimize(semantics)
+            optimized_semantics = self.query_optimizer.optimize(semantics, root_variables)
         else:
             optimized_semantics = semantics
 
-        composition = Composition(semantics, optimized_semantics, inferences)
+        # todo
+        composition = Composition(semantics, optimized_semantics, inferences, root_variables)
+
+        if self.print_result:
+            print(composition)
+
         return ProcessResult([composition], "")
 
 

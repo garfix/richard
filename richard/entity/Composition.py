@@ -6,6 +6,7 @@ class Composition:
     semantics: list[tuple]
     optimized_semantics: list[tuple]
     inferences: list[tuple]
+    return_variables: list[str]
 
 
     def __str__(self) -> str:
@@ -15,7 +16,7 @@ class Composition:
         if self.inferences:
             s += "\n\nInferences:\n\n" + str(self.inferences)
         return s
-    
+
 
     def format_value(self, value: any, indent: str = "\n") -> str:
         if isinstance(value, tuple):
@@ -35,4 +36,3 @@ class Composition:
         else:
             text = str(value)
         return text
-    

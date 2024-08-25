@@ -1,4 +1,4 @@
-from richard.constants import GAMMA, POS_TYPE_RELATION
+from richard.constants import DELTA, GAMMA, POS_TYPE_RELATION
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.RuleConstituent import RuleConstituent
 from richard.type.OrderedSet import OrderedSet
@@ -14,19 +14,17 @@ class Chart:
     completed_states: dict[int, list[ChartState]]
 
 
-    def __init__(self, words: list[str], root_category: str, root_variables: list[str]) -> None:
-        self.root_category = root_category
+    def __init__(self, words: list[str]) -> None:
         self.words = words
-        self.root_variables = root_variables
         self.states = [OrderedSet() for _ in range(len(words) + 1)]
         self.completed_states = {}
 
-    
+
     def build_incomplete_gamma_state(chart):
         return ChartState(
             GrammarRule(
                 RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
-                [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
+                [RuleConstituent(DELTA, ["D"], POS_TYPE_RELATION)],
             ),
             1, 0, 0)
 
@@ -35,7 +33,7 @@ class Chart:
         return ChartState(
             GrammarRule(
                 RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
-                [RuleConstituent(chart.root_category, chart.root_variables, POS_TYPE_RELATION)],
+                [RuleConstituent(DELTA, ["D"], POS_TYPE_RELATION)],
             ),
             2, 0, len(chart.words))
 
@@ -47,7 +45,7 @@ class Chart:
 
         return found
 
-    
+
     def index_completed_state(self, completed_state: ChartState):
         if not completed_state.end_word_index in self.completed_states:
             self.completed_states[completed_state.end_word_index] = []

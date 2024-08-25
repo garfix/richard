@@ -12,7 +12,7 @@ from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.type.SemanticTemplate import SemanticTemplate
 
 class TestComposer(unittest.TestCase):
-   
+
     def test_missing_sem(self):
         grammar = [
             { "syn": "s(E1) -> proper_noun(E1) verb(V)", "sem": lambda proper_noun, verb: proper_noun + verb },
@@ -36,7 +36,7 @@ class TestComposer(unittest.TestCase):
         except Exception as e:
             self.assertEqual(str(e), "Rule 'proper_noun(E1) -> 'mary'' is missing key 'sem'")
             exception_occurred = True
-        
+
         self.assertEqual(exception_occurred, True)
 
 
@@ -67,7 +67,7 @@ class TestComposer(unittest.TestCase):
         pipeline.enter(request)
         composition = composer.get_composition(request)
         self.assertEqual(str(composition.semantics), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
-        
+
 
     def test_special_category(self):
 
@@ -94,4 +94,29 @@ class TestComposer(unittest.TestCase):
         self.assertEqual(tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
         composition = composer.get_composition(request)
         self.assertEqual(str(composition.semantics), "John")
+
+
+    def test_multiple_return_variables(self):
+
+        grammar = [
+            { "syn": "s(E1, E2) -> np(E1) vp(E2)", "sem": lambda np, vp: np + vp },
+            { "syn": "np(E1) -> 'john'", "sem": lambda: 'john' },
+            { "syn": "vp(E1) -> 'sleeps'", "sem": lambda: 'sleeps' },
+        ]
+
+        tokenizer = BasicTokenizer()
+        parser = BasicParser(grammar, tokenizer)
+        composer = SemanticComposer(parser)
+
+        pipeline = Pipeline([
+            FindOne(tokenizer),
+            FindOne(parser),
+            FindOne(composer),
+        ])
+
+        request = SentenceRequest("John sleeps")
+        pipeline.enter(request)
+
+        composition = composer.get_composition(request)
+        self.assertEqual(composition.return_variables, ["$1", "$2"])
 

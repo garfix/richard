@@ -50,7 +50,7 @@ def get_grammar():
             "inf": [("format", "list", [e1], [])],
         },
         {
-            "syn": "s(E1) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'",
+            "syn": "s(E1, E2) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'",
             "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
             "inf": [("format", "table", [e2, e1], [None, None])],
             "boost": 1
@@ -61,12 +61,12 @@ def get_grammar():
             "inf": [("format", "number", [e1], ["ksqmiles"])],
         },
         {
-            "syn": "s(E1) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'",
+            "syn": "s(E1, E3) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'",
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
             "inf": [("format", "table", [e3, e1], [None, 'ksqmiles'])],
         },
         {
-            "syn": "s(E1) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'",
+            "syn": "s(E2, E3) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'",
             "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))],
             "inf": [("format", "table", [e2, e3], [None, None])],
         },

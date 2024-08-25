@@ -95,7 +95,7 @@ class TestChat80(unittest.TestCase):
             ["Which is the largest african country?", "sudan"],
             ["How large is the smallest american country?", "0 ksqmiles"],
             ["What is the ocean that borders African countries?", "atlantic, indian_ocean"],
-            ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
+ ["What is the ocean that borders African countries and that borders Asian countries?", "indian_ocean"],
             ["What are the capitals of the countries bordering the Baltic?", [
                 ['denmark', 'copenhagen'],
                 ['east_germany', 'east_berlin'],
@@ -105,7 +105,7 @@ class TestChat80(unittest.TestCase):
                 ['sweden', 'stockholm'],
                 ['west_germany', 'bonn'],
             ]],
-            ["Which countries are bordered by two seas?", "egypt, iran, israel, saudi_arabia, turkey"],
+["Which countries are bordered by two seas?", "egypt, iran, israel, saudi_arabia, turkey"],
             ["How many countries does the Danube flow through?", 6],
             ["What are the countries south of the Equator and not in Australasia?", "angola, argentina, bolivia, botswana, brazil, burundi, chile, congo, ecuador, indonesia, lesotho, malagasy, malawi, mauritius, mozambique, paraguay, peru, rwanda, seychelles, south_africa, swaziland, tanzania, uruguay, zaire, zambia, zimbabwe"],
             ["What is the total area of countries south of the Equator and not in Australasia?", "10228 ksqmiles"],
@@ -118,7 +118,7 @@ class TestChat80(unittest.TestCase):
             ["Is there more than one country in each continent?", 'no'],
             ["Is there some ocean that does not border any country?", "yes"],
             ["What are the countries from which a river flows into the Black_Sea?", "romania, soviet_union"],
-            ["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, antarctica, australasia"],
+["What are the continents no country in which contains more than two cities whose population exceeds 1 million?", "africa, antarctica, australasia"],
             ["Which country bordering the Mediterranean borders a country that is bordered by a country whose population exceeds the population of India?", "turkey"],
             ["Which countries have a population exceeding 10 million?", "afghanistan, algeria, argentina, australia, bangladesh, brazil, burma, canada, china, colombia, czechoslovakia, east_germany, egypt, ethiopia, france, india, indonesia, iran, italy, japan, kenya, mexico, morocco, nepal, netherlands, nigeria, north_korea, pakistan, peru, philippines, poland, south_africa, south_korea, soviet_union, spain, sri_lanka, sudan, taiwan, tanzania, thailand, turkey, united_kingdom, united_states, venezuela, vietnam, west_germany, yugoslavia, zaire"],
             ["Which countries with a population exceeding 10 million border the Atlantic?", "argentina, brazil, canada, colombia, france, mexico, morocco, netherlands, nigeria, south_africa, spain, united_kingdom, united_states, venezuela, west_germany, zaire"],
@@ -136,4 +136,3 @@ class TestChat80(unittest.TestCase):
         tester = Tester(self, pipeline, tests)
         tester.print = False
         tester.run()
-

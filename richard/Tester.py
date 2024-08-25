@@ -20,8 +20,8 @@ class Tester:
 
 
     def __init__(self,
-        test_case: unittest.TestCase, 
-        pipeline: Pipeline, 
+        test_case: unittest.TestCase,
+        pipeline: Pipeline,
         tests: list,
         print: bool = True,
         profile: bool = False
@@ -47,14 +47,17 @@ class Tester:
             start_time = time.perf_counter()
             request = SentenceRequest(question)
             try:
+                if self.print:
+                    print("\n===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ===== ")
+                    print("\n" + question + "\n")
+
                 result = self.pipeline.enter(request)
                 error = result != answer
 
                 end_time = time.perf_counter()
 
                 if self.print or error:
-                    print("\n" + question)
-                    print("> " + str(result))
+                    print("\n> " + str(result))
                     print(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
                 if error:

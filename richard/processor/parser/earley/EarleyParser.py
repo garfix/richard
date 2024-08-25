@@ -1,4 +1,4 @@
-from richard.constants import CATEGORY_TOKEN, TERMINAL, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
+from richard.constants import CATEGORY_TOKEN, DELTA, GAMMA, ROOT_CATEGORY, TERMINAL, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.ProcessResult import ProcessResult
@@ -18,9 +18,10 @@ class EarleyParser:
 
     def parse(self, grammar_rules: GrammarRules, tokens: list[str]) -> ProcessResult:
 
-        chart = self.buildChart(grammar_rules, tokens, "s", ["P"])
+        chart = self.buildChart(grammar_rules, tokens)
 
         rootNodes = extract_tree_roots(chart)
+
         error = ""
 
         if len(rootNodes) == 0:
@@ -40,15 +41,29 @@ class EarleyParser:
         )
 
 
-    def buildChart(self, grammar_rules: GrammarRules, words, rootCategory, rootVariables):
+    def buildChart(self, grammar_rules: GrammarRules, words):
         """
         The body of Earley's algorithm
         """
 
-        chart = Chart(words, rootCategory, rootVariables)
+        chart = Chart(words)
         wordCount = len(words)
 
+        # gamma(G) -> delta(D)
         chart.enqueue(chart.build_incomplete_gamma_state(), 0)
+
+        # delta(D) -> s(P1)
+        # delta(D) -> s(P1, P2)
+        # delta(D) -> s(P1, P2, P3)
+        # ...
+        for c in grammar_rules.find_argument_counts(ROOT_CATEGORY):
+            variables = ["P" + str(j) for j in range(1, c+1)]
+            grammar_rules.add_rule(GrammarRule(
+                RuleConstituent(DELTA, ["D"], POS_TYPE_RELATION),
+                [RuleConstituent(ROOT_CATEGORY, variables, POS_TYPE_RELATION)],
+                sem=lambda s: s
+            ))
+
 
         for i in range(wordCount + 1):
 

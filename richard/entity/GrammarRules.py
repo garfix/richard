@@ -26,22 +26,14 @@ class GrammarRules:
         self.index[antecedent][argument_count].append(rule)
 
 
-    def merge(self, otherRules):
-        for m in otherRules.index :
-            for r in m :
-                for rule in r :
-                    self.add_rule(rule)
-
-
     def find_rules(self, antecedent: str, argument_count: int) -> list[GrammarRule]:
         if antecedent in self.index and argument_count in self.index[antecedent]:
             return self.index[antecedent][argument_count]
         else:
             return []
 
-
-    def import_from(self, rules):
-        for rules_per_category in rules.index :
-            for rulesPerCount in rules_per_category :
-                for rule in rulesPerCount :
-                    self.add_rule(rule)
+    def find_argument_counts(self, antecedent: str) -> list[GrammarRule]:
+        if antecedent in self.index:
+            return self.index[antecedent]
+        else:
+            return []
