@@ -1,4 +1,5 @@
 from richard.core.Model import Model
+from richard.core.atoms import get_atom_variables
 from richard.core.constants import IGNORED, INFINITE
 from richard.entity.Variable import Variable
 
@@ -8,45 +9,40 @@ class SortByCost:
     Based on "Efficient processing of interactive relational database queries in logic" - David H.D. Warren (1981)
     """
 
-    def sort(self, composition: list[tuple], model: Model):
+    def sort(self, composition: list[tuple], model: Model, bound_variables: set[str] = set()):
         if len(composition) == 0:
             return []
 
-        result = self.sort_rest([], composition, model)
+        result = self.sort_rest([], composition, model, bound_variables)
 
         return result
 
 
-    def sort_rest(self, done: list[tuple], todo: list[tuple], model: Model) -> list[tuple]:
+    def sort_rest(self, done: list[tuple], todo: list[tuple], model: Model, bound_variables: set[str]) -> list[tuple]:
 
         if len(todo) == 0:
             return done
 
-        bound_variables = set()
-        for atom in done:
-            for argument in atom[1:]:
-                if isinstance(argument, Variable):
-                    bound_variables.add(argument.name)
-
         results = []
         for atom in todo:
             cost = self.calculate_cost(atom, bound_variables, model)
-            atom = self.sort_arguments(atom, model)
             results.append({'atom': atom, 'cost': cost})
 
         results.sort(key=lambda result: result['cost'])
-
         sorted = [result['atom'] for result in results]
 
-        return self.sort_rest(done + sorted[0:1], sorted[1:], model)
+        sorted_first_atom = self.sort_arguments(sorted[0], model, bound_variables)
+        bound_variables = bound_variables | set(get_atom_variables(sorted_first_atom))
+
+        return self.sort_rest(done + [sorted_first_atom], sorted[1:], model, bound_variables)
 
 
-    def sort_arguments(self, atom: tuple, model: Model) -> tuple:
+    def sort_arguments(self, atom: tuple, model: Model, bound_variables: set[str]) -> tuple:
         atom_as_list = list(atom)
         replaced = False
         for i, arg in enumerate(atom):
             if isinstance(arg, list):
-                atom_as_list[i] = self.sort(arg, model)
+                atom_as_list[i] = self.sort(arg, model, bound_variables)
                 replaced = True
         if replaced:
             return tuple(atom_as_list)
@@ -73,6 +69,7 @@ class SortByCost:
                     raise Exception("Number of argument sizes doesn't match that of relation: " + predicate)
 
                 for argument, argument_size in zip(arguments, relation.argument_sizes):
+
                     if argument_size == IGNORED:
                         pass
                     elif isinstance(argument, Variable):

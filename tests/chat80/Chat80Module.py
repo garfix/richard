@@ -34,7 +34,7 @@ class Chat80Module(SomeModule):
             "flows_through": Relation(query_function=self.flows_through, relation_size=MEDIUM, argument_sizes=[SMALL, MEDIUM]),
             "south_of": Relation(query_function=self.south_of, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]),
             "flows_from_to": Relation(query_function=self.flows_from_to, relation_size=MEDIUM, argument_sizes=[MEDIUM, MEDIUM, MEDIUM]),
-            "contains": Relation(query_function=self.contains, relation_size=LARGE, argument_sizes=[LARGE, LARGE]),
+            "contains": Relation(query_function=self.contains, relation_size=MEDIUM, argument_sizes=[MEDIUM, MEDIUM]),
             "has_population": Relation(query_function=self.has_population, relation_size=MEDIUM, argument_sizes=[MEDIUM, IGNORED]),
         }
 
