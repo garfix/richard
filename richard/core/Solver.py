@@ -38,6 +38,10 @@ class Solver(SomeSolver):
         predicate = atom[0]
         arguments = atom[1:]
 
+        # if not predicate in self.stats:
+        #     self.stats[predicate] = 0
+        # self.stats[predicate] += 1
+
         values = self.find_relation_values(predicate, arguments, binding)
 
         results = []

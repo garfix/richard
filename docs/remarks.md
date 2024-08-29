@@ -1,3 +1,7 @@
+## 2024-08-28
+
+I built a caching mechanism in `isolated`. That mainly helps for the borders-borders-borders queries where the same country reoccurs in multiple relations. Many tweaks can be made in the code things faster, but for now the performance will do. All Chat-80 queries together run in 0.23 seconds, which is much slower than in the SWI Prolog implementation, but it is much faster than what I started with (40 sec).
+
 ## 2024-08-23
 
 I needed a way to explicitly express the result variables of a sentence and I did this by allowing `s(E1, E2, E3)`, i.e. `s` can now have multiple variables. These variables serve as the result variables needed for the isolated parts algorithm. I did this by adding an extra layer of basic rewrites:

@@ -9,6 +9,8 @@ from richard.type.OrderedSet import OrderedSet
 
 class CoreModule(SomeModule):
 
+    isolated_queries_cache: dict
+
     def __init__(self) -> None:
         self.relations = {
             "==": Relation(query_function=self.equals),
@@ -28,6 +30,8 @@ class CoreModule(SomeModule):
             "none": Relation(query_function=self.determiner_none),
             "isolated": Relation(query_function=self.isolated),
         }
+
+        self.isolated_queries_cache = {}
 
 
     # ('==', E1, E2)
@@ -297,12 +301,20 @@ class CoreModule(SomeModule):
     def isolated(self, values: list, context: ExecutionContext) -> list[list]:
         body = values[0]
 
-        results = context.solver.solve(body, context.binding)
-        count = len(results)
+        key = str(body) + str(context.binding)
+        if key in self.isolated_queries_cache:
+            return self.isolated_queries_cache[key]
+        else:
+            results = context.solver.solve(body, context.binding)
+            count = len(results)
 
         if count == 0:
-            return []
+            result = []
         else:
-            return [
+            result = [
                 [True]
             ]
+
+        self.isolated_queries_cache[key] = result
+
+        return result

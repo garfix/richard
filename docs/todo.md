@@ -6,6 +6,7 @@
 * use postgres for chat-80?
 * update documentation
 
+* atoms in a list-argument may depend on a variable of a higher level
 * auto suggest files problem in vs code
 * more access to in-between results of blocks
 
