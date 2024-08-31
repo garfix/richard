@@ -10,7 +10,7 @@ class FindOne(ControlBlock):
     """
 
     def process(self, request: SentenceRequest) -> BlockResult:
-        result = self.processor.wrap_process(request)
+        result = request.log_process(self.processor)
         if result.error != '':
             return BlockResult(result.error)
 

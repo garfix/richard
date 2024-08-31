@@ -1,3 +1,7 @@
+from richard.entity.ProcessResult import ProcessResult
+from richard.interface import SomeProcessor
+
+
 NONE = 'none'
 LAST = 'last'
 ALL = 'all'
@@ -61,6 +65,19 @@ class Logger:
 
     def add(self, entry):
         self.entries.append(entry)
+
+
+    def add_alternatives(self, result: ProcessResult):
+        if self.is_active() and self.show_alternatives == ALL:
+            if not self.show_processors or self in self.show_processors:
+                for product in result.products:
+                    self.add(product)
+
+
+    def add_active_product(self, processor: SomeProcessor, alternative: any):
+        if self.is_active() and self.show_active:
+            if not self.show_processors or processor in self.show_processors:
+                self.add(alternative)
 
 
     def __str__(self) -> str:

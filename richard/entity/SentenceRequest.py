@@ -1,4 +1,5 @@
-from richard.entity.Logger import Logger, nullLogger
+from richard.entity.Logger import ALL, Logger, nullLogger
+from richard.entity.ProcessResult import ProcessResult
 from richard.interface.SomeProcessor import SomeProcessor
 
 
@@ -38,12 +39,16 @@ class SentenceRequest:
             return []
 
 
+    def log_process(self, processor: SomeProcessor) -> ProcessResult:
+
+        result = processor.process(self)
+        self.logger.add_alternatives(result)
+        return result
+
+
     def set_current_product(self, processor: SomeProcessor, alternative: any):
         self.current_products[processor] = alternative
-
-        if self.logger.is_active() and self.logger.show_active:
-            if not self.logger.show_processors or processor in self.logger.show_processors:
-                self.logger.add(alternative)
+        self.logger.add_active_product(processor, alternative)
 
 
     def get_current_product(self, processor: SomeProcessor):
@@ -51,3 +56,4 @@ class SentenceRequest:
             return self.current_products[processor]
         else:
             return None
+

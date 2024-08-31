@@ -135,9 +135,7 @@ class TestChat80(unittest.TestCase):
         ]
 
         logger = Logger()
-        # logger.log_all_tests()
-        # logger.log_all_alternatives(tokenizer, parser)
-        # logger.log_active_products(parser)
+        logger.log_no_tests()
 
         tester = DialogTester(self, pipeline, tests, logger)
         tester.run()
