@@ -54,7 +54,7 @@ class DialogTester:
             try:
                 if log_this:
                     self.logger.add("\n~~ [ {} ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".format(i + 1))
-                    self.logger.add("\n" + question + "\n")
+                    self.logger.add("\nH: " + question + "\n")
 
                 start_time = time.perf_counter()
                 result = self.pipeline.enter(request)
@@ -63,7 +63,7 @@ class DialogTester:
                 error = result != answer
 
                 if log_this or error:
-                    self.logger.add("\n> " + str(result))
+                    self.logger.add("\nC: " + str(result))
                     self.logger.add(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
                 self.test_case.assertEqual(answer, result)

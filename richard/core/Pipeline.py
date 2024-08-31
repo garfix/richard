@@ -1,5 +1,4 @@
 from richard.block.Succeed import Succeed
-from richard.entity.BlockResult import BlockResult
 from richard.entity.ControlBlock import ControlBlock
 from richard.entity.SentenceRequest import SentenceRequest
 
@@ -28,7 +27,7 @@ class Pipeline:
             block.next_block = self.blocks[i+1] if i < len(self.blocks)-1 else terminal
 
 
-    def enter(self, request: SentenceRequest) -> BlockResult:
+    def enter(self, request: SentenceRequest) -> any:
 
         result = self.blocks[0].process(request)
         if result.error != "":

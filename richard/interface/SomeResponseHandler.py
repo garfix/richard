@@ -1,6 +1,5 @@
 from abc import abstractmethod
 
-from richard.entity.Composition import Composition
 from richard.interface.SomeSolver import SomeSolver
 
 class SomeResponseHandler:
