@@ -1,3 +1,4 @@
+from richard.entity.Logger import Logger, nullLogger
 from richard.interface.SomeProcessor import SomeProcessor
 
 
@@ -15,12 +16,15 @@ class SentenceRequest:
 
     # all alternative products (more than one product suggests ambiguity)
     alternative_products: dict[SomeProcessor, list[any]]
-    
 
-    def __init__(self, text: str) -> None:
+    logger: Logger
+
+
+    def __init__(self, text: str, logger: Logger = nullLogger) -> None:
         self.text = text
         self.current_products = {}
         self.alternative_products = {}
+        self.logger = logger
 
 
     def set_alternative_products(self, processor: SomeProcessor, alternatives: list[any]):
@@ -36,6 +40,10 @@ class SentenceRequest:
 
     def set_current_product(self, processor: SomeProcessor, alternative: any):
         self.current_products[processor] = alternative
+
+        if self.logger.is_active() and self.logger.show_active:
+            if not self.logger.show_processors or processor in self.logger.show_processors:
+                self.logger.add(alternative)
 
 
     def get_current_product(self, processor: SomeProcessor):

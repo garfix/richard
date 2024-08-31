@@ -1,7 +1,8 @@
 import unittest
 import pathlib
 
-from richard.core.Tester import Tester
+from richard.core.DialogTester import DialogTester
+from richard.entity.Logger import Logger
 from richard.entity.Relation import Relation
 from richard.module.SimpleMemoryModule import SimpleMemoryModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
@@ -133,6 +134,13 @@ class TestChat80(unittest.TestCase):
             ["Bye.", "Cheerio."],
         ]
 
-        tester = Tester(self, pipeline, tests)
-        tester.print = False
+        logger = Logger()
+        # logger.log_all_tests()
+        # logger.log_all_alternatives(tokenizer, parser)
+        # logger.log_active_products(parser)
+
+        tester = DialogTester(self, pipeline, tests, logger)
         tester.run()
+
+        print(logger)
+

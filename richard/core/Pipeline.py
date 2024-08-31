@@ -12,7 +12,7 @@ class Pipeline:
     Each processor generates one or more alternative interpretations (ambiguity), and the pipeline processes these one by one.
     Each processor has access to the active alternative interpretations of its predecessors.
     """
-    
+
     blocks: list[ControlBlock]
 
 
@@ -37,14 +37,3 @@ class Pipeline:
             processor = self.blocks[-1].processor
             return request.get_current_product(processor)
 
-
-    def print_debug(self, request: SentenceRequest):
-        print()
-        print("Block results:")
-        print()
-        for block in self.blocks:
-            processor = block.processor
-            result = request.get_current_product(processor)
-            if result:
-                print(result)
-                print()

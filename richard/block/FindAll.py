@@ -1,4 +1,3 @@
-from richard.core.constants import NO_RESULTS
 from richard.entity.BlockResult import BlockResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.ControlBlock import ControlBlock
@@ -11,7 +10,7 @@ class FindAll(ControlBlock):
     """
 
     def process(self, request: SentenceRequest) -> BlockResult:
-        result = self.processor.process(request)
+        result = self.processor.wrap_process(request)
         if result.error != '':
             return BlockResult(result.error)
 

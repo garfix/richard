@@ -3,7 +3,6 @@ import unittest
 from richard.core.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
-from richard.entity.Log import Log
 from richard.entity.RuleConstituent import RuleConstituent
 from richard.processor.parser.earley.EarleyParser import EarleyParser
 

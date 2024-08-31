@@ -7,10 +7,10 @@ class TryFirst(ControlBlock):
     """
     This block just tries the first of the alternative products. If it failes, no other products are tried.
     """
-    
+
 
     def process(self, request: SentenceRequest) -> BlockResult:
-        result = self.processor.process(request)
+        result = self.processor.wrap_process(request)
         if result.error != '':
             return BlockResult(result.error)
 
@@ -21,7 +21,7 @@ class TryFirst(ControlBlock):
         for product in result.products:
 
             request.set_current_product(self.processor, product)
-          
+
             next_block_result = self.next_block.process(request)
             error = next_block_result.error
 
@@ -30,4 +30,3 @@ class TryFirst(ControlBlock):
 
         return BlockResult(error)
 
-    
