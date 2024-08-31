@@ -27,7 +27,7 @@ class AtomExecutor(SomeProcessor):
         for inference in composition.inferences:
             self.solver.write_atom(inference)
 
-        bindings = self.solver.solve(composition.optimized_semantics)
+        bindings = self.solver.solve(composition.get_semantics_last_iteration())
         return ProcessResult([bindings], "")
 
 

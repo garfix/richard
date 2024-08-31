@@ -66,7 +66,7 @@ class TestComposer(unittest.TestCase):
         request = SentenceRequest("The river flows to the sea")
         pipeline.enter(request)
         composition = composer.get_composition(request)
-        self.assertEqual(str(composition.semantics), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
+        self.assertEqual(str(composition.get_semantics_last_iteration()), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
 
 
     def test_special_category(self):
@@ -93,7 +93,7 @@ class TestComposer(unittest.TestCase):
         tree = parser.get_tree(request)
         self.assertEqual(tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
         composition = composer.get_composition(request)
-        self.assertEqual(str(composition.semantics), "John")
+        self.assertEqual(str(composition.get_semantics_last_iteration()), "John")
 
 
     def test_multiple_return_variables(self):

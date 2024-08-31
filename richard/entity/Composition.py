@@ -5,16 +5,27 @@ from richard.core.atoms import format_value
 
 @dataclass(frozen=True)
 class Composition:
-    semantics: list[tuple]
-    optimized_semantics: list[tuple]
+    semantics_iterations: dict[str, list[tuple]]
     inferences: list[tuple]
     return_variables: list[str]
 
 
     def __str__(self) -> str:
-        s = "Semantics:\n" + format_value(self.semantics)
-        if self.optimized_semantics != self.semantics:
-            s += "\n\nOptimized:\n" + format_value(self.optimized_semantics)
-        if self.inferences:
-            s += "\n\nInferences:\n\n" + str(self.inferences)
-        return s
+        result = []
+        result.append("Inferences")
+        result.append(str(self.inferences))
+        result.append("Return variables")
+        result.append(str(self.return_variables))
+
+        for description, value in self.semantics_iterations.items():
+            result.append(description)
+            result.append(format_value(value))
+
+        return "\n\n".join(result)
+
+
+    def get_semantics_last_iteration(self):
+        semantics = None
+        for sem in self.semantics_iterations.values():
+            semantics = sem
+        return semantics

@@ -136,6 +136,7 @@ class TestChat80(unittest.TestCase):
 
         logger = Logger()
         logger.log_no_tests()
+        # logger.log_active_products()
 
         tester = DialogTester(self, pipeline, tests, logger)
         tester.run()

@@ -45,12 +45,11 @@ class SemanticComposer(SomeSemanticComposer):
         semantics, inferences = self.compose(root, root_variables)
 
         if self.query_optimizer:
-            optimized_semantics = self.query_optimizer.optimize(semantics, root_variables)
+            semantics_iterations = self.query_optimizer.optimize(semantics, root_variables)
         else:
-            optimized_semantics = semantics
+            semantics_iterations = {"Semantics": semantics}
 
-        # todo
-        composition = Composition(semantics, optimized_semantics, inferences, root_variables)
+        composition = Composition(semantics_iterations, inferences, root_variables)
 
         return ProcessResult([composition], "")
 
