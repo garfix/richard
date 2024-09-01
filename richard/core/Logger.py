@@ -1,5 +1,7 @@
 from richard.entity.ProcessResult import ProcessResult
 from richard.interface.SomeProcessor import SomeProcessor
+import shutil
+
 
 
 NONE = 'none'
@@ -8,11 +10,12 @@ ALL = 'all'
 
 NO_COLOR = '\033[0m'
 HEADER_COLOR = '\033[33m'
-SUBHEADER_COLOR = '\033[96m'
+SUBHEADER_COLOR = '\033[36m'
 VALUE_COLOR = '\033[37m'
-SEPARATOR_COLOR = '\033[32m'
+SEPARATOR_COLOR = '\033[33m'
 KEY_COLOR = '\033[34m'
 ERROR_COLOR = '\033[31m'
+COMMENT_COLOR = '\033[90m'
 
 class Logger:
 
@@ -75,12 +78,15 @@ class Logger:
         self.entries.append(entry + "\n")
 
     def add_test_separator(self, test_number: int):
-         self.entries.append("\n{}~~[{} {} {}]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{}\n"
-            .format(SEPARATOR_COLOR, VALUE_COLOR, test_number, SEPARATOR_COLOR, NO_COLOR))
+        terminal_width = shutil.get_terminal_size().columns
+        sep = "~" * terminal_width
+        line = "{}~~[{} {} {}]{}".format(SEPARATOR_COLOR, VALUE_COLOR, test_number, SEPARATOR_COLOR, sep)
+        truncated = line[:terminal_width + len(SEPARATOR_COLOR) + len(VALUE_COLOR) + len(SEPARATOR_COLOR)]
+        self.entries.append(truncated + NO_COLOR + "\n")
 
 
     def add_key_value(self, key: str, value: str):
-        self.entries.append(("{}{}{}: {}\n").format(KEY_COLOR, key, NO_COLOR, value))
+        self.entries.append(("{}[{}]{} {}\n").format(KEY_COLOR, key, NO_COLOR, value))
 
 
     def add_header(self, header):
@@ -89,6 +95,10 @@ class Logger:
 
     def add_subheader(self, subheader):
         self.entries.append(SUBHEADER_COLOR + subheader + NO_COLOR + "\n")
+
+
+    def add_comment(self, comment):
+        self.entries.append(COMMENT_COLOR + comment + NO_COLOR + "\n")
 
 
     def add_error(self, error):

@@ -64,7 +64,7 @@ class DialogTester:
 
                 if log_this or error:
                     self.logger.add_key_value('Computer', answer)
-                    self.logger.add(str(ceil((end_time - start_time) * 1000)) + " msecs")
+                    self.logger.add_comment(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
                 self.test_case.assertEqual(answer, result)
 

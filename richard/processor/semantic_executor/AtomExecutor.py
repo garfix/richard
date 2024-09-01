@@ -1,4 +1,5 @@
 from richard.core.Logger import Logger
+from richard.core.atoms import format_value
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
@@ -45,4 +46,4 @@ class AtomExecutor(SomeProcessor):
 
 
     def log_product(self, product: any, logger: Logger):
-        logger.add(str(product))
+            logger.add("\n".join(str(d) for d in product))
