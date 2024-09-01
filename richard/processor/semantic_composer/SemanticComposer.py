@@ -160,8 +160,11 @@ class SemanticComposer(SomeSemanticComposer):
         logger.add_subheader("Return variables")
         logger.add(", ".join(composition.return_variables))
 
+        prev = None
         for description, value in composition.semantics_iterations.items():
-            logger.add_subheader(description)
-            logger.add(format_value(value).strip())
+            if value != prev:
+                logger.add_subheader(description)
+                logger.add(format_value(value).strip())
+                prev = value
 
 
