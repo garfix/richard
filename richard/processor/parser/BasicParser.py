@@ -1,3 +1,4 @@
+from richard.core.Logger import Logger
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
@@ -27,17 +28,27 @@ class BasicParser(SomeParser):
         self.grammar = sgrp.parse(grammar)
         self.parser = EarleyParser()
         self.tree_sorter = BasicParseTreeSortHeuristics()
-            
+
+
+    def get_name(self) -> str:
+        return "Parser"
+
 
     def process(self, request: SentenceRequest) -> ProcessResult:
         tokens = self.tokenizer.get_tokens(request)
         result = self.parser.parse(self.grammar, tokens)
+        sorted_trees = self.tree_sorter.sort_trees(result.products)
         return ProcessResult(
-            self.tree_sorter.sort_trees(result.products),
+            sorted_trees,
             result.error
         )
-    
+
 
     def get_tree(self, request: SentenceRequest) -> ParseTreeNode:
         return request.get_current_product(self)
-    
+
+
+    def log_product(self, product: any, logger: Logger):
+        tree: ParseTreeNode = product
+        logger.add(str(tree).strip())
+

@@ -5,6 +5,7 @@ from richard.interface.SomeProcessor import SomeProcessor
 
 
 class SomeLanguageSelector(SomeProcessor):
+
     @abstractmethod
-    def get_locale(self, request: SentenceRequest) -> str: 
+    def get_locale(self, request: SentenceRequest) -> str:
         pass

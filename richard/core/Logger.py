@@ -1,10 +1,18 @@
 from richard.entity.ProcessResult import ProcessResult
-from richard.interface import SomeProcessor
+from richard.interface.SomeProcessor import SomeProcessor
 
 
 NONE = 'none'
 LAST = 'last'
 ALL = 'all'
+
+NO_COLOR = '\033[0m'
+HEADER_COLOR = '\033[33m'
+SUBHEADER_COLOR = '\033[96m'
+VALUE_COLOR = '\033[37m'
+SEPARATOR_COLOR = '\033[32m'
+KEY_COLOR = '\033[34m'
+ERROR_COLOR = '\033[31m'
 
 class Logger:
 
@@ -64,20 +72,45 @@ class Logger:
 
 
     def add(self, entry):
-        self.entries.append(entry)
+        self.entries.append(entry + "\n")
+
+    def add_test_separator(self, test_number: int):
+         self.entries.append("\n{}~~[{} {} {}]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{}\n"
+            .format(SEPARATOR_COLOR, VALUE_COLOR, test_number, SEPARATOR_COLOR, NO_COLOR))
 
 
-    def add_alternatives(self, result: ProcessResult):
+    def add_key_value(self, key: str, value: str):
+        self.entries.append(("{}{}{}: {}\n").format(KEY_COLOR, key, NO_COLOR, value))
+
+
+    def add_header(self, header):
+        self.entries.append(HEADER_COLOR + header + NO_COLOR + "\n")
+
+
+    def add_subheader(self, subheader):
+        self.entries.append(SUBHEADER_COLOR + subheader + NO_COLOR + "\n")
+
+
+    def add_error(self, error):
+        self.entries.append(ERROR_COLOR + error + NO_COLOR + "\n")
+
+
+    def add_process_result(self, processor: SomeProcessor, result: ProcessResult):
         if self.is_active() and self.show_alternatives == ALL:
-            if not self.show_processors or self in self.show_processors:
+            if not self.show_processors or processor in self.show_processors:
+                self.add_header(processor.get_name())
+                if result.error != "":
+                    self.add_error(result.error)
+
                 for product in result.products:
-                    self.add(product)
+                    processor.log_product(product, self)
 
 
     def add_active_product(self, processor: SomeProcessor, alternative: any):
         if self.is_active() and self.show_active:
             if not self.show_processors or processor in self.show_processors:
-                self.add(alternative)
+                self.add_header(processor.get_name())
+                processor.log_product(alternative, self)
 
 
     def __str__(self) -> str:

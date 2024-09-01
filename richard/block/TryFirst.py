@@ -10,7 +10,7 @@ class TryFirst(ControlBlock):
 
 
     def process(self, request: SentenceRequest) -> BlockResult:
-        result = request.log_process(self.processor)
+        result = request.exec_process(self.processor)
         if result.error != '':
             return BlockResult(result.error)
 

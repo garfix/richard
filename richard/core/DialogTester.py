@@ -4,7 +4,7 @@ import cProfile
 import time
 
 from richard.core.Pipeline import Pipeline
-from richard.entity.Logger import ALL, LAST, Logger
+from richard.core.Logger import ALL, LAST, Logger
 from richard.entity.SentenceRequest import SentenceRequest
 
 class DialogTester:
@@ -53,8 +53,8 @@ class DialogTester:
             request = SentenceRequest(question, logger=self.logger)
             try:
                 if log_this:
-                    self.logger.add("\n~~ [ {} ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~".format(i + 1))
-                    self.logger.add("\nH: " + question + "\n")
+                    self.logger.add_test_separator(i+1)
+                    self.logger.add_key_value('Human', question)
 
                 start_time = time.perf_counter()
                 result = self.pipeline.enter(request)
@@ -63,7 +63,7 @@ class DialogTester:
                 error = result != answer
 
                 if log_this or error:
-                    self.logger.add("\nC: " + str(result))
+                    self.logger.add_key_value('Computer', answer)
                     self.logger.add(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
                 self.test_case.assertEqual(answer, result)

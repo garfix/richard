@@ -1,3 +1,4 @@
+from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeLanguageSelector import SomeLanguageSelector
@@ -9,7 +10,7 @@ class Multilingual(SomeProcessor):
     This compositing processor takes other processors as input and uses the processor of the active language when asks to `process` input
     It can be used to combine any combinations of processors, like tokenization processors or parsing processors
     """
-    
+
     processors: dict[str, SomeProcessor]
     language_selector: SomeLanguageSelector
 
@@ -18,7 +19,11 @@ class Multilingual(SomeProcessor):
         self.processors = processors
         self.language_selector = language_selector
 
-        
+
+    def get_name(self) -> str:
+        return "Multilingual Language selector"
+
+
     def process(self, request: SentenceRequest) -> ProcessResult:
 
         locale = self.language_selector.get_locale(request)
@@ -27,8 +32,11 @@ class Multilingual(SomeProcessor):
             raise Exception("No processor available for locale " + locale)
 
         return self.processors[locale].process(request)
-    
+
 
     def get_product(self, request: SentenceRequest) -> any:
         return request.get_current_product(self)
-    
+
+
+    def log_product(self, product: any, logger: Logger):
+        logger.add(str(product))

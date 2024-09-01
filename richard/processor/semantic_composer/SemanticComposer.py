@@ -1,3 +1,5 @@
+from richard.core.Logger import Logger
+from richard.core.atoms import format_value
 from richard.entity.ReifiedVariable import ReifiedVariable
 from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
@@ -30,6 +32,10 @@ class SemanticComposer(SomeSemanticComposer):
         self.query_optimizer = None
         self.variable_generator = VariableGenerator("$")
         self.sentence_context = None
+
+
+    def get_name(self) -> str:
+        return "Composer"
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
@@ -143,4 +149,19 @@ class SemanticComposer(SomeSemanticComposer):
 
     def get_result_string(self, request: SentenceRequest):
         return str(request.get_current_product(self))
+
+
+    def log_product(self, product: any, logger: Logger):
+
+        composition: Composition = product
+
+        logger.add_subheader("Inferences")
+        logger.add(format_value(composition.inferences))
+        logger.add_subheader("Return variables")
+        logger.add(", ".join(composition.return_variables))
+
+        for description, value in composition.semantics_iterations.items():
+            logger.add_subheader(description)
+            logger.add(format_value(value).strip())
+
 

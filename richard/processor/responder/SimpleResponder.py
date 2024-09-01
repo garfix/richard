@@ -1,3 +1,4 @@
+from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeSolver import SomeSolver
@@ -11,7 +12,7 @@ class SimpleResponder(SomeProcessor):
     """
     Formats the executor's bindings into a formatted response
     """
-    
+
     solver: SomeSolver
     executor: SomeSemanticExecutor
     handler: SomeResponseHandler
@@ -20,15 +21,23 @@ class SimpleResponder(SomeProcessor):
     def __init__(self, solver: SomeSolver, executor: SomeSemanticExecutor, handler: SomeResponseHandler) -> None:
         super().__init__()
         self.solver = solver
-        self.executor = executor    
+        self.executor = executor
         self.handler = handler
 
-    
+
+    def get_name(self) -> str:
+        return "Responder"
+
+
     def process(self, request: SentenceRequest) -> ProcessResult:
         bindings = self.executor.get_results(request)
         response = self.handler.create_response(bindings, self.solver)
         return ProcessResult([response], "")
-    
+
 
     def get_response(self, request: SentenceRequest) -> str:
         return request.get_current_product(self)
+
+
+    def log_product(self, product: any, logger: Logger):
+        logger.add(str(product))

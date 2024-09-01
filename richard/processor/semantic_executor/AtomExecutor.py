@@ -1,3 +1,4 @@
+from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
@@ -21,6 +22,10 @@ class AtomExecutor(SomeProcessor):
         self.solver = solver
 
 
+    def get_name(self) -> str:
+        return "Executor"
+
+
     def process(self, request: SentenceRequest) -> ProcessResult:
         composition = self.composer.get_composition(request)
 
@@ -37,3 +42,7 @@ class AtomExecutor(SomeProcessor):
 
     def get_results(self, request: SentenceRequest) -> list:
         return request.get_current_product(self)
+
+
+    def log_product(self, product: any, logger: Logger):
+        logger.add(str(product))

@@ -11,5 +11,15 @@ To this end it must inject these processors as dependencies. The dependency serv
 class SomeProcessor(ABC):
 
     @abstractmethod
+    def get_name(self) -> str:
+        pass
+
+
+    @abstractmethod
     def process(self, request) -> ProcessResult:
+        pass
+
+
+    @abstractmethod
+    def log_product(self, product, logger):
         pass

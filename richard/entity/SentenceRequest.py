@@ -1,4 +1,4 @@
-from richard.entity.Logger import ALL, Logger, nullLogger
+from richard.core.Logger import ALL, Logger, nullLogger
 from richard.entity.ProcessResult import ProcessResult
 from richard.interface.SomeProcessor import SomeProcessor
 
@@ -39,10 +39,9 @@ class SentenceRequest:
             return []
 
 
-    def log_process(self, processor: SomeProcessor) -> ProcessResult:
-
+    def exec_process(self, processor: SomeProcessor) -> ProcessResult:
         result = processor.process(self)
-        self.logger.add_alternatives(result)
+        self.logger.add_process_result(processor, result)
         return result
 
 
