@@ -47,7 +47,6 @@ class SentenceRequest:
 
     def set_current_product(self, processor: SomeProcessor, alternative: any):
         self.current_products[processor] = alternative
-        self.logger.add_active_product(processor, alternative)
 
 
     def get_current_product(self, processor: SomeProcessor):

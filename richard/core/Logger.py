@@ -3,7 +3,6 @@ from richard.interface.SomeProcessor import SomeProcessor
 import shutil
 
 
-
 NONE = 'none'
 LAST = 'last'
 ALL = 'all'
@@ -38,7 +37,6 @@ class Logger:
         self.show_products = NONE
         self.show_products_processors = []
         self.show_stats = False
-        self.show_stats_processors = []
         self.entries = []
 
 
@@ -64,13 +62,11 @@ class Logger:
         self.show_products_processors = processors
 
 
-    def log_stats(self, *processors):
+    def log_stats(self):
         """
-        Log statistics that some processors provide
-        processors: the products of these processors are logged (default = all)
+        Log statistics with the products
         """
         self.show_stats = True
-        self.show_stats_processors = processors
 
 
     def is_active(self):
@@ -123,18 +119,8 @@ class Logger:
                     product.log(self)
 
 
-    def add_active_product(self, processor: SomeProcessor, alternative: any):
-        if self.is_active() and self.show_active:
-            if not self.show_products_processors or processor in self.show_products_processors:
-                self.add_header(processor.get_name())
-                alternative.log(self)
-
-
-    def should_log_stats(self, processor: SomeProcessor):
-        if self.is_active() and self.show_stats:
-            if not self.show_stats_processors or processor in self.show_stats_processors:
-                return True
-        return False
+    def should_log_stats(self):
+        return self.is_active() and self.show_stats
 
 
     def __str__(self) -> str:

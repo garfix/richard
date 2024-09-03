@@ -1,5 +1,4 @@
 from collections import defaultdict
-from richard.core.Logger import Logger
 from richard.core.Model import Model
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver

@@ -29,7 +29,7 @@ class AtomExecutor(SomeProcessor):
 
     def process(self, request: SentenceRequest) -> ProcessResult:
         incoming: SemanticComposerProduct = request.get_current_product(self.composer)
-        solver = Solver(self.model, log_stats=request.logger.should_log_stats(self))
+        solver = Solver(self.model, log_stats=request.logger.should_log_stats())
 
         # store the inferences in the sentence context
         for inference in incoming.inferences:
