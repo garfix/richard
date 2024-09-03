@@ -46,6 +46,4 @@ class BasicParser(SomeProcessor):
         )
 
 
-    def log_product(self, product: BasicParserProduct, logger: Logger):
-        logger.add(str(product.parse_tree).strip())
 

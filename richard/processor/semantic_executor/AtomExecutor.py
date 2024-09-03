@@ -40,11 +40,3 @@ class AtomExecutor(SomeProcessor):
 
         return ProcessResult([product], "")
 
-
-    def log_product(self, product: AtomExecutorProduct, logger: Logger):
-            logger.add("\n".join(str(d) for d in product.bindings))
-
-            print(product.stats)
-            if product.stats:
-                 logger.add_subheader("Stats")
-                 logger.add("\n".join("{}: {}".format(predicate, count) for predicate, count in product.stats.items()))

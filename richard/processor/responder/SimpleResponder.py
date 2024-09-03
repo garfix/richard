@@ -37,6 +37,3 @@ class SimpleResponder(SomeProcessor):
         product = SimpleResponderProduct(response)
         return ProcessResult([product], "")
 
-
-    def log_product(self, product: SimpleResponderProduct, logger: Logger):
-        logger.add(str(product.output))

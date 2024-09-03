@@ -142,19 +142,3 @@ class SemanticComposer(SomeProcessor):
         else:
             return semantics
 
-
-    def log_product(self, product: SemanticComposerProduct, logger: Logger):
-
-        logger.add_subheader("Inferences")
-        logger.add(format_value(product.inferences))
-        logger.add_subheader("Return variables")
-        logger.add(", ".join(product.return_variables))
-
-        prev = None
-        for description, value in product.semantics_iterations.items():
-            if value != prev:
-                logger.add_subheader(description)
-                logger.add(format_value(value).strip())
-                prev = value
-
-

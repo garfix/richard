@@ -1,5 +1,4 @@
 import re
-from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
@@ -27,6 +26,3 @@ class BasicTokenizer(SomeProcessor):
         product = BasicTokenizerProduct(tokens)
         return ProcessResult([product], "")
 
-
-    def log_product(self, product: BasicTokenizerProduct, logger: Logger):
-        logger.add("Tokens: " + ", ".join(product.tokens))

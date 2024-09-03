@@ -19,7 +19,3 @@ class SomeProcessor(ABC):
     def process(self, request) -> ProcessResult:
         pass
 
-
-    @abstractmethod
-    def log_product(self, product, logger):
-        pass

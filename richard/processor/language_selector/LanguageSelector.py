@@ -26,6 +26,3 @@ class LanguageSelector(SomeProcessor):
         products = [LanguageSelectorProduct(locale) for locale in self.locales]
         return ProcessResult(products, "")
 
-
-    def log_product(self, product: LanguageSelectorProduct, logger: Logger):
-        logger.add(", ".join(product.locale))

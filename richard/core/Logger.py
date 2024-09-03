@@ -21,8 +21,8 @@ class Logger:
 
     which_tests: str
 
-    show_alternatives: str
-    show_alternatives_processors: list
+    show_products: str
+    show_products_processors: list
 
     is_last_test: bool
 
@@ -35,10 +35,8 @@ class Logger:
     def __init__(self):
         self.which_tests = LAST
         self.is_last_test = False
-        self.show_alternatives = NONE
-        self.show_alternatives_processors = []
-        self.show_active = False
-        self.show_active_processors = []
+        self.show_products = NONE
+        self.show_products_processors = []
         self.show_stats = False
         self.show_stats_processors = []
         self.entries = []
@@ -62,8 +60,8 @@ class Logger:
         Create a log entry for all alternative products of a processor (for instance: all parse trees)
         processors: the products of these processors are logged (default = all)
         """
-        self.show_alternatives = ALL
-        self.show_alternatives_processors = processors
+        self.show_products = ALL
+        self.show_products_processors = processors
 
 
     def log_stats(self, *processors):
@@ -115,21 +113,21 @@ class Logger:
 
 
     def add_process_result(self, processor: SomeProcessor, result: ProcessResult):
-        if self.is_active() and self.show_alternatives == ALL:
-            if not self.show_alternatives_processors or processor in self.show_alternatives_processors:
+        if self.is_active() and self.show_products == ALL:
+            if not self.show_products_processors or processor in self.show_products_processors:
                 self.add_header(processor.get_name())
                 if result.error != "":
                     self.add_error(result.error)
 
                 for product in result.products:
-                    processor.log_product(product, self)
+                    product.log(self)
 
 
     def add_active_product(self, processor: SomeProcessor, alternative: any):
         if self.is_active() and self.show_active:
-            if not self.show_alternatives_processors or processor in self.show_alternatives_processors:
+            if not self.show_products_processors or processor in self.show_products_processors:
                 self.add_header(processor.get_name())
-                processor.log_product(alternative, self)
+                alternative.log(self)
 
 
     def should_log_stats(self, processor: SomeProcessor):
