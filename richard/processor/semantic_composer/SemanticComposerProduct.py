@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Composition:
+class SemanticComposerProduct:
     semantics_iterations: dict[str, list[tuple]]
     inferences: list[tuple]
     return_variables: list[str]

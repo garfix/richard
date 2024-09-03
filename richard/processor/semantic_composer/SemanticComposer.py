@@ -6,27 +6,27 @@ from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
 from richard.interface.SomeClearableDb import SomeClearableDb
-from richard.interface.SomeParser import SomeParser
+from richard.interface.SomeProcessor import SomeProcessor
 from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
-from richard.interface.SomeSemanticComposer import SomeSemanticComposer
-from richard.entity.Composition import Composition
+from richard.processor.parser.BasicParserProduct import BasicParserProduct
+from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
 from tests.chat80.chat80_grammar import SemanticTemplate
 
 
-class SemanticComposer(SomeSemanticComposer):
+class SemanticComposer(SomeProcessor):
     """
     Performs semantic composition on the product of the parser
     Opimizes the composition for speed of execution
     """
 
-    parser: SomeParser
+    parser: SomeProcessor
     query_optimizer: SomeQueryOptimizer
     variable_generator: VariableGenerator
     sentence_context: SomeClearableDb
 
 
-    def __init__(self, parser: SomeParser) -> None:
+    def __init__(self, parser: SomeProcessor) -> None:
         super().__init__()
         self.parser = parser
         self.query_optimizer = None
@@ -43,21 +43,21 @@ class SemanticComposer(SomeSemanticComposer):
         if self.sentence_context:
             self.sentence_context.clear()
 
-        root = self.parser.get_tree(request)
+        incoming: BasicParserProduct = request.get_current_product(self.parser)
+        parse_tree = incoming.parse_tree
 
-        self.check_for_sem(root)
+        self.check_for_sem(parse_tree)
 
-        root_variables = [self.variable_generator.next() for _ in root.rule.antecedent.arguments]
-        semantics, inferences = self.compose(root, root_variables)
+        root_variables = [self.variable_generator.next() for _ in parse_tree.rule.antecedent.arguments]
+        semantics, inferences = self.compose(parse_tree, root_variables)
 
         if self.query_optimizer:
             semantics_iterations = self.query_optimizer.optimize(semantics, root_variables)
         else:
             semantics_iterations = {"Semantics": semantics}
 
-        composition = Composition(semantics_iterations, inferences, root_variables)
-
-        return ProcessResult([composition], "")
+        product = SemanticComposerProduct(semantics_iterations, inferences, root_variables)
+        return ProcessResult([product], "")
 
 
     def check_for_sem(self, node: ParseTreeNode):
@@ -143,25 +143,15 @@ class SemanticComposer(SomeSemanticComposer):
             return semantics
 
 
-    def get_composition(self, request: SentenceRequest) -> Composition:
-        return request.get_current_product(self)
-
-
-    def get_result_string(self, request: SentenceRequest):
-        return str(request.get_current_product(self))
-
-
-    def log_product(self, product: any, logger: Logger):
-
-        composition: Composition = product
+    def log_product(self, product: SemanticComposerProduct, logger: Logger):
 
         logger.add_subheader("Inferences")
-        logger.add(format_value(composition.inferences))
+        logger.add(format_value(product.inferences))
         logger.add_subheader("Return variables")
-        logger.add(", ".join(composition.return_variables))
+        logger.add(", ".join(product.return_variables))
 
         prev = None
-        for description, value in composition.semantics_iterations.items():
+        for description, value in product.semantics_iterations.items():
             if value != prev:
                 logger.add_subheader(description)
                 logger.add(format_value(value).strip())

@@ -1,8 +1,8 @@
 from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.interface.SomeLanguageSelector import SomeLanguageSelector
 from richard.interface.SomeProcessor import SomeProcessor
+from richard.processor.language_selector.LanguageSelectorProduct import LanguageSelectorProduct
 
 
 class Multilingual(SomeProcessor):
@@ -12,9 +12,9 @@ class Multilingual(SomeProcessor):
     """
 
     processors: dict[str, SomeProcessor]
-    language_selector: SomeLanguageSelector
+    language_selector: SomeProcessor
 
-    def __init__(self, processors: dict[str, SomeProcessor], language_selector: SomeLanguageSelector) -> None:
+    def __init__(self, processors: dict[str, SomeProcessor], language_selector: SomeProcessor) -> None:
         super().__init__()
         self.processors = processors
         self.language_selector = language_selector
@@ -26,16 +26,12 @@ class Multilingual(SomeProcessor):
 
     def process(self, request: SentenceRequest) -> ProcessResult:
 
-        locale = self.language_selector.get_locale(request)
+        incoming: LanguageSelectorProduct = request.get_current_product(self.language_selector)
 
-        if locale not in self.processors:
-            raise Exception("No processor available for locale " + locale)
+        if incoming.locale not in self.processors:
+            raise Exception("No processor available for locale " + incoming.locale)
 
-        return self.processors[locale].process(request)
-
-
-    def get_product(self, request: SentenceRequest) -> any:
-        return request.get_current_product(self)
+        return self.processors[incoming.locale].process(request)
 
 
     def log_product(self, product: any, logger: Logger):

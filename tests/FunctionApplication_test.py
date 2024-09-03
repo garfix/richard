@@ -47,7 +47,7 @@ class TestFunctionApplication(unittest.TestCase):
 
         request = SentenceRequest("What is three plus four")
         pipeline.enter(request)
-        composition = composer.get_composition(request)
+        composition = request.get_current_product(composer)
         self.assertEqual(composition.get_semantics_last_iteration(), 7)
 
         # test find_all

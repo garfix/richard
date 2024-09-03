@@ -4,23 +4,24 @@ from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeParseTreeSortHeuristics import SomeParseTreeSortHeuristics
-from richard.interface.SomeParser import SomeParser
-from richard.interface.SomeTokenizer import SomeTokenizer
+from richard.interface.SomeProcessor import SomeProcessor
+from richard.processor.parser.BasicParserProduct import BasicParserProduct
+from richard.processor.tokenizer.BasicTokenizerProduct import BasicTokenizerProduct
 from richard.type.SimpleGrammar import SimpleGrammar
 from .tree_sort_heuristics.BasicParseTreeSortHeuristics import BasicParseTreeSortHeuristics
 from .helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from .earley.EarleyParser import EarleyParser
 
 
-class BasicParser(SomeParser):
+class BasicParser(SomeProcessor):
 
-    tokenizer: SomeTokenizer
+    tokenizer: SomeProcessor
     grammar: GrammarRules
     parser: EarleyParser
     tree_sorter: SomeParseTreeSortHeuristics
 
 
-    def __init__(self, grammar: SimpleGrammar, tokenizer: SomeTokenizer) -> None:
+    def __init__(self, grammar: SimpleGrammar, tokenizer: SomeProcessor) -> None:
 
         self.tokenizer = tokenizer
 
@@ -35,20 +36,16 @@ class BasicParser(SomeParser):
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
-        tokens = self.tokenizer.get_tokens(request)
-        result = self.parser.parse(self.grammar, tokens)
+        incoming: BasicTokenizerProduct = request.get_current_product(self.tokenizer)
+        result = self.parser.parse(self.grammar, incoming.tokens)
         sorted_trees = self.tree_sorter.sort_trees(result.products)
+        products = [BasicParserProduct(tree) for tree in sorted_trees]
         return ProcessResult(
-            sorted_trees,
+            products,
             result.error
         )
 
 
-    def get_tree(self, request: SentenceRequest) -> ParseTreeNode:
-        return request.get_current_product(self)
-
-
-    def log_product(self, product: any, logger: Logger):
-        tree: ParseTreeNode = product
-        logger.add(str(tree).strip())
+    def log_product(self, product: BasicParserProduct, logger: Logger):
+        logger.add(str(product.parse_tree).strip())
 

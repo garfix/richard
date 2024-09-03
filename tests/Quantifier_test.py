@@ -1,6 +1,5 @@
 import unittest
 
-from richard.core.Solver import Solver
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
@@ -10,6 +9,7 @@ from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.processor.parser.helper.grammar_functions import apply
+from richard.processor.semantic_executor.AtomExecutorProduct import AtomExecutorProduct
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
@@ -101,11 +101,10 @@ class TestQuantification(unittest.TestCase):
             { "syn": "noun(E1) -> 'children'", "sem": lambda: [('child', E1)] },
         ]
 
-        solver = Solver(model)
         tokenizer = BasicTokenizer()
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
-        executor = AtomExecutor(composer, solver)
+        executor = AtomExecutor(composer, model)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -115,11 +114,9 @@ class TestQuantification(unittest.TestCase):
         ])
 
         request = SentenceRequest("Every parent has two children")
-        pipeline.enter(request)
-        results = executor.get_results(request)
-        self.assertEqual(len(results), 3)
+        results: AtomExecutorProduct = pipeline.enter(request)
+        self.assertEqual(len(results.bindings), 3)
 
         request = SentenceRequest("Every parent has three children")
-        pipeline.enter(request)
-        results = executor.get_results(request)
-        self.assertEqual(len(results), 0)
+        results: AtomExecutorProduct = pipeline.enter(request)
+        self.assertEqual(len(results.bindings), 0)

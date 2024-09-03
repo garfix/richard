@@ -7,7 +7,6 @@ from richard.entity.Relation import Relation
 from richard.module.SimpleMemoryModule import SimpleMemoryModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.core.Solver import Solver
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
@@ -68,15 +67,14 @@ class TestChat80(unittest.TestCase):
             dialog_context,
             sentence_context
         ])
-        solver = Solver(model)
 
         tokenizer = BasicTokenizer()
         parser = BasicParser(get_grammar(), tokenizer)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
-        executor = AtomExecutor(composer, solver)
-        responder = SimpleResponder(solver, executor, handler=Chat80Responder())
+        executor = AtomExecutor(composer, model)
+        responder = SimpleResponder(model, executor, handler=Chat80Responder())
 
         pipeline = Pipeline([
             FindOne(tokenizer),
@@ -136,10 +134,11 @@ class TestChat80(unittest.TestCase):
 
         logger = Logger()
         logger.log_no_tests()
-        # logger.log_active_products()
-        # logger.log_all_alternatives()
+        # logger.log_all_tests()
+        # logger.log_products()
+        # logger.log_stats()
 
-        tester = DialogTester(self, pipeline, tests, logger)
+        tester = DialogTester(self, tests, pipeline, logger)
         tester.run()
 
         print(logger)

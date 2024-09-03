@@ -1,11 +1,11 @@
 from richard.core.Logger import Logger
-from richard.core.atoms import format_value
+from richard.core.Model import Model
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor
-from richard.interface.SomeSemanticComposer import SomeSemanticComposer
 from richard.core.Solver import Solver
-from richard.type.OrderedSet import OrderedSet
+from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
+from richard.processor.semantic_executor.AtomExecutorProduct import AtomExecutorProduct
 
 
 class AtomExecutor(SomeProcessor):
@@ -13,14 +13,14 @@ class AtomExecutor(SomeProcessor):
     Executes the function that forms the meaning of the sentence, and produces its result
     """
 
-    composer: SomeSemanticComposer
-    solver: Solver
+    composer: SomeProcessor
+    model: Model
 
 
-    def __init__(self, composer: SomeSemanticComposer, solver: Solver) -> None:
+    def __init__(self, composer: SomeProcessor, model: Model) -> None:
         super().__init__()
         self.composer = composer
-        self.solver = solver
+        self.model = model
 
 
     def get_name(self) -> str:
@@ -28,22 +28,23 @@ class AtomExecutor(SomeProcessor):
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
-        composition = self.composer.get_composition(request)
+        incoming: SemanticComposerProduct = request.get_current_product(self.composer)
+        solver = Solver(self.model, log_stats=request.logger.should_log_stats(self))
 
-        for inference in composition.inferences:
-            self.solver.write_atom(inference)
+        # store the inferences in the sentence context
+        for inference in incoming.inferences:
+            solver.write_atom(inference)
 
-        bindings = self.solver.solve(composition.get_semantics_last_iteration())
-        return ProcessResult([bindings], "")
+        bindings = solver.solve(incoming.get_semantics_last_iteration())
+        product = AtomExecutorProduct(bindings, solver.stats)
 
-
-    def collect(self, tuples: list[tuple]) -> OrderedSet[dict]:
-        pass
-
-
-    def get_results(self, request: SentenceRequest) -> list:
-        return request.get_current_product(self)
+        return ProcessResult([product], "")
 
 
-    def log_product(self, product: any, logger: Logger):
-            logger.add("\n".join(str(d) for d in product))
+    def log_product(self, product: AtomExecutorProduct, logger: Logger):
+            logger.add("\n".join(str(d) for d in product.bindings))
+
+            print(product.stats)
+            if product.stats:
+                 logger.add_subheader("Stats")
+                 logger.add("\n".join("{}: {}".format(predicate, count) for predicate, count in product.stats.items()))

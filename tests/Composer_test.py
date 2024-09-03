@@ -5,9 +5,11 @@ from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, E2, Body, Range
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
+from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.type.SemanticTemplate import SemanticTemplate
 
@@ -64,8 +66,7 @@ class TestComposer(unittest.TestCase):
         ])
 
         request = SentenceRequest("The river flows to the sea")
-        pipeline.enter(request)
-        composition = composer.get_composition(request)
+        composition: SemanticComposerProduct = pipeline.enter(request)
         self.assertEqual(str(composition.get_semantics_last_iteration()), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
 
 
@@ -88,11 +89,10 @@ class TestComposer(unittest.TestCase):
         ])
 
         request = SentenceRequest("John sleeps")
-        pipeline.enter(request)
+        composition: SemanticComposerProduct = pipeline.enter(request)
 
-        tree = parser.get_tree(request)
-        self.assertEqual(tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
-        composition = composer.get_composition(request)
+        product: BasicParserProduct = request.get_current_product(parser)
+        self.assertEqual(product.parse_tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
         self.assertEqual(str(composition.get_semantics_last_iteration()), "John")
 
 
@@ -115,8 +115,6 @@ class TestComposer(unittest.TestCase):
         ])
 
         request = SentenceRequest("John sleeps")
-        pipeline.enter(request)
-
-        composition = composer.get_composition(request)
+        composition: SemanticComposerProduct = pipeline.enter(request)
         self.assertEqual(composition.return_variables, ["$1", "$2"])
 

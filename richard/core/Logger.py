@@ -20,12 +20,14 @@ COMMENT_COLOR = '\033[90m'
 class Logger:
 
     which_tests: str
+
     show_alternatives: str
-    show_processors: list
+    show_alternatives_processors: list
 
     is_last_test: bool
 
-    show_active: bool
+    show_stats: bool
+    show_stats_processors: bool
 
     entries: list
 
@@ -34,8 +36,11 @@ class Logger:
         self.which_tests = LAST
         self.is_last_test = False
         self.show_alternatives = NONE
-        self.show_processors = []
+        self.show_alternatives_processors = []
         self.show_active = False
+        self.show_active_processors = []
+        self.show_stats = False
+        self.show_stats_processors = []
         self.entries = []
 
 
@@ -52,30 +57,34 @@ class Logger:
         self.which_tests = NONE
 
 
-    def log_all_alternatives(self, *processors):
+    def log_products(self, *processors):
         """
         Create a log entry for all alternative products of a processor (for instance: all parse trees)
         processors: the products of these processors are logged (default = all)
         """
         self.show_alternatives = ALL
-        self.show_processors = processors
+        self.show_alternatives_processors = processors
 
 
-    def log_active_products(self, *processors):
+    def log_stats(self, *processors):
         """
-        Create a log entry for each product when it is processed in a block
+        Log statistics that some processors provide
         processors: the products of these processors are logged (default = all)
         """
-        self.show_active = True
-        self.show_processors = processors
+        self.show_stats = True
+        self.show_stats_processors = processors
 
 
     def is_active(self):
+        """
+        Should the current test be logged?
+        """
         return (self.which_tests == ALL) or (self.which_tests == LAST and self.is_last_test)
 
 
     def add(self, entry):
         self.entries.append(entry + "\n")
+
 
     def add_test_separator(self, test_number: int):
         terminal_width = shutil.get_terminal_size().columns
@@ -107,7 +116,7 @@ class Logger:
 
     def add_process_result(self, processor: SomeProcessor, result: ProcessResult):
         if self.is_active() and self.show_alternatives == ALL:
-            if not self.show_processors or processor in self.show_processors:
+            if not self.show_alternatives_processors or processor in self.show_alternatives_processors:
                 self.add_header(processor.get_name())
                 if result.error != "":
                     self.add_error(result.error)
@@ -118,9 +127,16 @@ class Logger:
 
     def add_active_product(self, processor: SomeProcessor, alternative: any):
         if self.is_active() and self.show_active:
-            if not self.show_processors or processor in self.show_processors:
+            if not self.show_alternatives_processors or processor in self.show_alternatives_processors:
                 self.add_header(processor.get_name())
                 processor.log_product(alternative, self)
+
+
+    def should_log_stats(self, processor: SomeProcessor):
+        if self.is_active() and self.show_stats:
+            if not self.show_stats_processors or processor in self.show_stats_processors:
+                return True
+        return False
 
 
     def __str__(self) -> str:

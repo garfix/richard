@@ -5,6 +5,7 @@ from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.language_selector.LanguageSelector import LanguageSelector
 from richard.processor.language_selector.Multilingual import Multilingual
+from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
@@ -46,12 +47,12 @@ class TestMultilingual(unittest.TestCase):
 
         request = SentenceRequest("John loves Mary")
 
-        pipeline.enter(request)
-        tree = parser.get_product(request)
+        product: BasicParserProduct = pipeline.enter(request)
+        tree = product.parse_tree
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
 
         request = SentenceRequest("Jan houdt van Marie")
 
-        pipeline.enter(request)
-        tree = parser.get_product(request)
+        product: BasicParserProduct = pipeline.enter(request)
+        tree = product.parse_tree
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(jan 'Jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'Marie')))))")

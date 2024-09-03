@@ -2,10 +2,11 @@ import re
 from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.interface.SomeTokenizer import SomeTokenizer
+from richard.interface.SomeProcessor import SomeProcessor
+from richard.processor.tokenizer.BasicTokenizerProduct import BasicTokenizerProduct
 
 
-class BasicTokenizer(SomeTokenizer):
+class BasicTokenizer(SomeProcessor):
 
     BASIC_TOKEN_RE = "([a-zA-Z_0-9]+|[^\\s])"
 
@@ -23,12 +24,9 @@ class BasicTokenizer(SomeTokenizer):
 
     def process(self, request: SentenceRequest) -> ProcessResult:
         tokens = self.token_expression.findall(request.text)
-        return ProcessResult([tokens], "")
+        product = BasicTokenizerProduct(tokens)
+        return ProcessResult([product], "")
 
 
-    def get_tokens(self, request: SentenceRequest) -> list[str]:
-        return request.get_current_product(self)
-
-
-    def log_product(self, product: any, logger: Logger):
-        logger.add("Tokens: " + ", ".join(product))
+    def log_product(self, product: BasicTokenizerProduct, logger: Logger):
+        logger.add("Tokens: " + ", ".join(product.tokens))

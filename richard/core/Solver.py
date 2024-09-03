@@ -1,4 +1,5 @@
 from collections import defaultdict
+from richard.core.Logger import Logger
 from richard.core.Model import Model
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
@@ -8,10 +9,12 @@ from richard.type.ExecutionContext import ExecutionContext
 class Solver(SomeSolver):
 
     model: Model
+    log_stats: bool
     stats: dict
 
-    def __init__(self, model: Model) -> None:
+    def __init__(self, model: Model, log_stats: bool=False) -> None:
         self.model = model
+        self.log_stats = log_stats
         self.stats = defaultdict(lambda: 0)
 
 
@@ -38,9 +41,11 @@ class Solver(SomeSolver):
         predicate = atom[0]
         arguments = atom[1:]
 
-        # if not predicate in self.stats:
-        #     self.stats[predicate] = 0
-        # self.stats[predicate] += 1
+        # predicate stats
+        if self.log_stats:
+            if not predicate in self.stats:
+                self.stats[predicate] = 0
+            self.stats[predicate] += 1
 
         values = self.find_relation_values(predicate, arguments, binding)
 
@@ -83,7 +88,10 @@ class Solver(SomeSolver):
         rows = []
         for relation in relations:
             context = ExecutionContext(relation, predicate, arguments, binding, self)
+
+            # call the relation's query function
             out_values = relation.query_function(db_values, context)
+
             rows.extend(out_values)
 
         return rows

@@ -1,10 +1,11 @@
 from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.interface.SomeLanguageSelector import SomeLanguageSelector
+from richard.interface.SomeProcessor import SomeProcessor
+from richard.processor.language_selector.LanguageSelectorProduct import LanguageSelectorProduct
 
 
-class LanguageSelector(SomeLanguageSelector):
+class LanguageSelector(SomeProcessor):
     """
     Just picks one of the available locales, one by one. If processing the input with one locale fails, the next locale is tried.
     Always used in combination with the `Multilingual` composite processor.
@@ -22,11 +23,9 @@ class LanguageSelector(SomeLanguageSelector):
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
-        return ProcessResult(self.locales, "")
+        products = [LanguageSelectorProduct(locale) for locale in self.locales]
+        return ProcessResult(products, "")
 
 
-    def get_locale(self, request: SentenceRequest) -> str:
-        return request.get_current_product(self)
-
-    def log_product(self, product: any, logger: Logger):
-        logger.add(", ".join(product))
+    def log_product(self, product: LanguageSelectorProduct, logger: Logger):
+        logger.add(", ".join(product.locale))

@@ -3,6 +3,7 @@ import unittest
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
@@ -29,9 +30,8 @@ class TestParser(unittest.TestCase):
         ])
 
         request = SentenceRequest("John loves Mary")
-        pipeline.enter(request)
-
-        tree = parser.get_tree(request)
+        product: BasicParserProduct = pipeline.enter(request)
+        tree = product.parse_tree
         self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
 
 
@@ -52,9 +52,9 @@ class TestParser(unittest.TestCase):
         ])
 
         request = SentenceRequest("John's shoe")
-        pipeline.enter(request)
+        product: BasicParserProduct = pipeline.enter(request)
 
-        tree = parser.get_tree(request)
+        tree = product.parse_tree
         self.assertEqual(tree.inline_str(), "s(np(john 'John') ' ''' s 's' np(shoe 'shoe'))")
 
 

@@ -4,7 +4,7 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestTokenizer(unittest.TestCase):
-   
+
     def test_tokenizer(self):
 
         tokenizer = BasicTokenizer()
@@ -17,6 +17,6 @@ class TestTokenizer(unittest.TestCase):
 
         for test in tests:
             result = tokenizer.process(SentenceRequest(test["input"]))
-            self.assertEqual(result.products[0], test["expected"])
+            self.assertEqual(result.products[0].tokens, test["expected"])
 
-    
+
