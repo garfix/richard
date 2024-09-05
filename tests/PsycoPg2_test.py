@@ -3,14 +3,14 @@ import unittest
 from richard.data_source.PsycoPg2DataSource import PsycoPg2DataSource
 
 
-class TestPostgresDB(unittest.TestCase):
+class TestPsycopPg2(unittest.TestCase):
     """
     To run this test, install PostgreSQL, set up a PostgreSQL database named "richard" and perform
 
     create table customer (id int, name text);
     insert into customer (id, name) values (1, 'John'), (2, 'Jack');
 
-    A Python package (PsycoPg 2 or 3) to access Postgres is needed
+    A Python package to access Postgres is needed
 
     pip install psycopg2-binary
 
@@ -24,19 +24,16 @@ class TestPostgresDB(unittest.TestCase):
 
         try:
             import psycopg2
-            from psycopg2.extras import RealDictCursor
 
             connection = psycopg2.connect(
                 database='richard', # Your database
                 host='127.0.0.1',
                 user='patrick', # Your username
                 password='test123', # Your password
-                port=5432,
-                # note: we won't use this cursor: the test is that it will to be overridden by the default cursor
-                cursor_factory=RealDictCursor
+                port=5432
             )
         except ImportError:
-            raise Exception("To run this test, import psycopg")
+            raise Exception("To run this test, import psycopg2")
 
         ds = PsycoPg2DataSource(connection)
 
