@@ -20,15 +20,15 @@ class TestPostgresDB(unittest.TestCase):
 
 
         # skip for now
-        # return
+        return
 
         try:
             import mysql.connector
 
             connection = mysql.connector.connect(
                 host="localhost",
-                user="patrick",  # Your MySQL username
-                password="test123",  # Your MySQL password
+                user="patrick",  # Your username
+                password="test123",  # Your password
                 database="richard"  # Your database name
             )
 

@@ -27,10 +27,10 @@ class TestPostgresDB(unittest.TestCase):
             from psycopg2.extras import RealDictCursor
 
             connection = psycopg2.connect(
-                database='richard', # Your Postgres database
+                database='richard', # Your database
                 host='127.0.0.1',
-                user='patrick', # Your Postgres username
-                password='test123', # Your MySQL password
+                user='patrick', # Your username
+                password='test123', # Your password
                 port=5432,
                 # note: we won't use this cursor: the test is that it will to be overridden by the default cursor
                 cursor_factory=RealDictCursor
