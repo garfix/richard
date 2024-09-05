@@ -1,14 +1,9 @@
 ## todo
 
-* independent sub-queries (Warren)
 * unit test
 * better error messages
 * use postgres for chat-80?
 * update documentation
-
-* atoms in a list-argument may depend on a variable of a higher level
-* auto suggest files problem in vs code
-* more access to in-between results of blocks
 
 ## done
 
@@ -29,3 +24,5 @@
 * store type information with the variable in stead of an Instance?
 * start using dialog variables in stead of sentence variables; it's hard to change them later
 * pass variables to functions or None values?
+* more access to in-between results of blocks
+* added data source for MySQL
