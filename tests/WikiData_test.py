@@ -67,7 +67,7 @@ class TestWikiData(unittest.TestCase):
         ])
 
         tests = [
-            ["Where was Madonna born?", "Bay City"],
+            ["Where was madonna born?", "Bay City"],
         ]
 
         logger = Logger()

@@ -22,11 +22,8 @@ class SparqlDataSource(SomeDataSource):
 
         variables = self.prepare_variables(values, terms)
 
-        query = """
-            SELECT {} WHERE {{
-                {} {} {}
-            }}
-        """.format(" ".join(variables), terms[0], table, terms[1])
+        # create the sparql query
+        query = self.create_query(variables, terms, table)
 
         # Set the parameters for the request
         params = {
@@ -57,6 +54,16 @@ class SparqlDataSource(SomeDataSource):
         results = self.prepare_results(data, values, terms)
 
         return results
+
+
+    def create_query(self, variables: list[str], terms: list, table: str):
+        query = """
+            SELECT {} WHERE {{
+                {} {} {}
+            }}
+        """.format(" ".join(variables), terms[0], table, terms[1])
+
+        return query
 
 
     def prepare_term(self, term: any, index: int, columns: list[str]):

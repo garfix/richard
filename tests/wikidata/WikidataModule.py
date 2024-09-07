@@ -26,7 +26,12 @@ class WikidataModule(SomeModule):
         person = values[0]
         name = values[1]
 
+        # try with given case
         out_values = self.ds.select('rdfs:label', [ID, TEXT], [person, name])
+        if len(out_values) == 0 and name != name.title():
+            # try with first letters capitalized
+            out_values = self.ds.select('rdfs:label', [ID, TEXT], [person, name.title()])
+
         if len(out_values) > 0:
             # for now, just take the first
             limited = out_values[:1]
