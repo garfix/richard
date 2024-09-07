@@ -11,7 +11,7 @@ from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
-from tests.chat80.chat80_grammar import SemanticTemplate
+from tests.chat80.grammar import SemanticTemplate
 
 
 class SemanticComposer(SomeProcessor):

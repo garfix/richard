@@ -19,7 +19,7 @@ from richard.module.InferenceModule import InferenceModule
 from richard.store.MemoryDb import MemoryDb
 from .chat80.Chat80Responder import Chat80Responder
 from .chat80.Chat80Module import Chat80Module
-from .chat80.chat80_grammar import get_grammar
+from .chat80.grammar import get_grammar
 
 
 class TestChat80(unittest.TestCase):
