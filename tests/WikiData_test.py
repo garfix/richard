@@ -34,6 +34,7 @@ class TestWikiData(unittest.TestCase):
     def test_wikidata(self):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/wikidata/resources/"
+        result_cache_path = str(pathlib.Path(__file__).parent.resolve()) + "/wikidata/result_cache/"
 
         # skip for now
         # return
@@ -48,7 +49,7 @@ class TestWikiData(unittest.TestCase):
         model = Model([
             inferences,
             sentence_context,
-            WikidataModule(WikidataDataSource()),
+            WikidataModule(WikidataDataSource(result_cache_path=result_cache_path)),
         ])
 
         tokenizer = BasicTokenizer()
