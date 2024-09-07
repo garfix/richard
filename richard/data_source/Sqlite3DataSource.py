@@ -1,7 +1,7 @@
 from richard.interface.SomeDataSource import SomeDataSource
 
 
-class SqliteDataSource(SomeDataSource):
+class Sqlite3DataSource(SomeDataSource):
 
     connection: any
 

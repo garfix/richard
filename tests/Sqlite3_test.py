@@ -1,6 +1,6 @@
 import pathlib
 import unittest
-from richard.data_source.SqliteDataSource import SqliteDataSource
+from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 
 
 class TestSqlite3(unittest.TestCase):
@@ -34,7 +34,7 @@ class TestSqlite3(unittest.TestCase):
 
         connection.commit()
 
-        ds = SqliteDataSource(connection)
+        ds = Sqlite3DataSource(connection)
 
         self.assertEqual(ds.select_column('customer', ['id', 'name'], [None, None]), [1, 2])
         self.assertEqual(ds.select('customer', ['id', 'name'], [1, None]), [[1, 'John']])
