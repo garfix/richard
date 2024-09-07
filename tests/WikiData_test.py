@@ -19,13 +19,18 @@ from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from tests.wikidata.WikidataModule import WikidataModule
 from tests.wikidata.WikidataResponder import WikidataResponder
 from .wikidata.grammar import get_grammar
-
 from richard.data_source.WikidataDataSource import WikidataDataSource
 
 
 class TestWikiData(unittest.TestCase):
     """
     In this test we connect to Wikidata Query Service, using its SPARQL endpoint
+
+    NB!    Results from Wikidata are cached to file, for speed and to avoid making too many requests
+
+    Set result_cache_path to None to access Wikidata without the cache
+
+    The endpoint is accessed via HTTP, so we need the requests library
 
     pip install requests
 
@@ -36,9 +41,7 @@ class TestWikiData(unittest.TestCase):
         path = str(pathlib.Path(__file__).parent.resolve()) + "/wikidata/resources/"
         result_cache_path = str(pathlib.Path(__file__).parent.resolve()) + "/wikidata/result_cache/"
 
-        # skip for now
-        # return
-
+        # map domain predicates to one or more Wikidata predicates
         inferences = InferenceModule()
         inferences.import_rules(path + "mapping.pl")
 
@@ -72,10 +75,9 @@ class TestWikiData(unittest.TestCase):
         ]
 
         logger = Logger()
-        # logger.log_no_tests()
-        # logger.log_all_tests()
-        logger.log_products()
-        logger.log_stats()
+        logger.log_no_tests()
+        # logger.log_products()
+        # logger.log_stats()
 
         tester = DialogTester(self, tests, pipeline, logger)
         tester.run()
