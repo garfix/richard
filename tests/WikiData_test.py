@@ -33,7 +33,6 @@ class TestWikiData(unittest.TestCase):
 
     def test_wikidata(self):
 
-
         path = str(pathlib.Path(__file__).parent.resolve()) + "/wikidata/resources/"
 
         # skip for now
@@ -42,16 +41,12 @@ class TestWikiData(unittest.TestCase):
         inferences = InferenceModule()
         inferences.import_rules(path + "mapping.pl")
 
-        # dialog_context = SimpleMemoryModule({
-        #     "isa": Relation(attributes=["entity", "type"]),
-        # })
         sentence_context = SimpleMemoryModule({
             "format": Relation(attributes=["type", "variables"]),
         })
 
         model = Model([
             inferences,
-            # dialog_context,
             sentence_context,
             WikidataModule(WikidataDataSource()),
         ])
@@ -71,9 +66,6 @@ class TestWikiData(unittest.TestCase):
             FindOne(responder)
         ])
 
-
-        # first goal:
-
         tests = [
             ["Where was Madonna born?", "Bay City"],
         ]
@@ -82,7 +74,7 @@ class TestWikiData(unittest.TestCase):
         # logger.log_no_tests()
         # logger.log_all_tests()
         logger.log_products()
-        # logger.log_stats()
+        logger.log_stats()
 
         tester = DialogTester(self, tests, pipeline, logger)
         tester.run()

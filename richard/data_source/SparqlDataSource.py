@@ -40,8 +40,8 @@ class SparqlDataSource(SomeDataSource):
         # Send the request to the Wikidata SPARQL endpoint
         response = requests.get(self.url, params=params)
 
-        print(response)
-        print(response.headers)
+        # print(response)
+        # print(response.headers)
 
         if response.status_code == 403:
             raise Exception("Not allowed: " + str(response.text))
@@ -53,21 +53,8 @@ class SparqlDataSource(SomeDataSource):
         # Parse the JSON response
         data = response.json()
 
-        # go through the response
-        results = []
-        for item in data['results']['bindings']:
-
-            result = []
-            for i in range(2):
-                if values[i] == None:
-                    # drop the preceding '?'
-                    var = terms[i][1:]
-                    value = item[var]['value']
-                    result.append(value)
-                else:
-                    result.append(values[i])
-
-            results.append(result)
+        # create results from response data
+        results = self.prepare_results(data, values, terms)
 
         return results
 
@@ -94,3 +81,21 @@ class SparqlDataSource(SomeDataSource):
         if len(variables) == 0:
             variables = ["1"]
         return variables
+
+
+    def prepare_results(self, data: dict, values: list, terms: list):
+        results = []
+        for item in data['results']['bindings']:
+
+            result = []
+            for i in range(2):
+                if values[i] == None:
+                    # drop the preceding '?'
+                    var = terms[i][1:]
+                    value = item[var]['value']
+                    result.append(value)
+                else:
+                    result.append(values[i])
+
+            results.append(result)
+        return results

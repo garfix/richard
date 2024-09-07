@@ -7,6 +7,9 @@ from richard.type.ExecutionContext import ExecutionContext
 
 
 class WikidataModule(SomeModule):
+    """
+    This module wraps several Wikidata predicates
+    """
 
     ds: SomeDataSource
 
@@ -42,5 +45,4 @@ class WikidataModule(SomeModule):
             raise Exception("Place should be None: " + str(values))
 
         out_values = self.ds.select('wdt:P19', [ID, ID], [person, place])
-        print(out_values)
         return out_values
