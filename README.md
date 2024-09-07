@@ -12,8 +12,10 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 * Python code as semantic attachments to parsing rules
 * Inference rules (using basic Prolog syntax)
 * Interaction with any type of data source
-* Predefined data sources for Postgres, MySql, Sqlite, Sparql
-* Code examples mimicking Chat-80, Wikidata access
+* Predefined data sources for Postgres, MySql, Sqlite, and Sparql
+* Implementation of David H.D. Warren's query optimizations
+* Code example that mimicks a Chat-80 dialog
+* Code example for a Wikidata dialog (proof-of-concept)
 
 ## Requires
 
