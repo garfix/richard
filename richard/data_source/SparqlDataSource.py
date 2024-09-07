@@ -13,12 +13,14 @@ class SparqlDataSource(SomeDataSource):
     url: str
     result_cache_path: dict
     headers: list
+    lang: str
 
 
-    def __init__(self, url: str, result_cache_path: bool=None, headers: list={}):
+    def __init__(self, url: str, result_cache_path: bool=None, headers: list={}, lang: str="en"):
         self.url = url
         self.result_cache_path = result_cache_path
         self.headers = headers
+        self.lang = lang
 
 
     def select(self, table: str, columns: list[str], values: list) -> list[list]:
@@ -32,7 +34,7 @@ class SparqlDataSource(SomeDataSource):
                 with open(file_name, 'rb') as file:
                     result = pickle.load(file)
                     return result
-            except OSError as e:
+            except OSError:
                 pass
 
         # the actual select
@@ -71,16 +73,8 @@ class SparqlDataSource(SomeDataSource):
             'format': 'json'  # Get the results in JSON format
         }
 
-        print(query)
-        # exit()
-
         # Send the request to the Wikidata SPARQL endpoint
-        # print(self.headers)
-        # exit()
         response = requests.get(self.url, params=params, headers=self.headers)
-
-        # print(response)
-        # print(response.headers)
 
         if response.status_code == 403:
             raise Exception("Not allowed: " + str(response.text))
@@ -88,8 +82,6 @@ class SparqlDataSource(SomeDataSource):
             raise Exception("Too many requests: " + str(response.text))
         if response.status_code == 400:
             raise Exception("Bad request: " + str(response.text))
-
-        # print(response.json())
 
         # Parse the JSON response
         data = response.json()
@@ -106,8 +98,8 @@ class SparqlDataSource(SomeDataSource):
 
         for text_variable in text_variables:
             locale_filter += """
-                FILTER(LANG({}) = "en") .
-            """.format(text_variable)
+                FILTER(LANG({}) = "{}") .
+            """.format(text_variable, self.lang)
 
         query = """
             SELECT {} WHERE {{
@@ -129,7 +121,7 @@ class SparqlDataSource(SomeDataSource):
                 prepared = term
             else:
                 # todo: locale
-                prepared = "'{}'@en".format(term)
+                prepared = "'{}'@{}".format(term, self.lang)
         else:
             prepared = str(term)
         return prepared
