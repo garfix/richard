@@ -2,7 +2,6 @@
 
 * unit test
 * better error messages
-* use postgres for chat-80?
 * update documentation
 
 ## done
@@ -25,4 +24,5 @@
 * start using dialog variables in stead of sentence variables; it's hard to change them later
 * pass variables to functions or None values?
 * more access to in-between results of blocks
-* added data source for MySQL
+* added data sources for Postgres, MySQL, Sqlite3, Sparql
+

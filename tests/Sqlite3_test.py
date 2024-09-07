@@ -14,7 +14,7 @@ class TestSqlite3(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/sqlite3/"
 
-        # Creates 'richard.db' if it doesn't exist
+        # creates 'richard.db' if it doesn't exist
         connection = sqlite3.connect(path + 'richard.db')
         cursor = connection.cursor()
 

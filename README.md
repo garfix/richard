@@ -8,9 +8,12 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 
 ## Features
 
-* Python code as semantic attachments to parsing rules
 * A configurable processing pipeline
-* Interaction with any type of database
+* Python code as semantic attachments to parsing rules
+* Inference rules (using basic Prolog syntax)
+* Interaction with any type of data source
+* Predefined data sources for Postgres, MySql, Sqlite, Sparql
+* Code examples mimicking Chat-80, Wikidata access
 
 ## Requires
 
