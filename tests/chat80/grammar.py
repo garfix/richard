@@ -12,114 +12,114 @@ def get_grammar():
         {
             "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) '?'",
             "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
-            "inf": [("format", "y/n", [], [])],
+            "inf": [("format", "y/n")],
         },
         {
             "syn": "s(E1) -> 'is' 'there' np(E1) '?'",
             "sem": lambda np: apply(np, []),
-            "inf": [("format", "y/n", [], [])],
+            "inf": [("format", "y/n")],
         },
         {
             "syn": "s(E2) -> 'is' 'there' np(E1) preposition(E1, E2) 'each' nbar(E2) '?'",
             "sem": lambda np, preposition, nbar: [('all', E2, nbar, apply(np, preposition))],
-            "inf": [("format", "y/n", [], [])],
+            "inf": [("format", "y/n")],
         },
         {
             "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' '?'",
             "sem": lambda nbar: nbar,
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' pp(E1) '?'",
             "sem": lambda nbar, pp: nbar + pp,
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'what' 'is' np(E1) '?'",
             "sem": lambda np: apply(np, []),
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'what' 'are' np(E1) '?'",
             "sem": lambda np: apply(np, []),
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) '?'",
             "sem": lambda np, vp_noobj_sub_iob: apply(np, vp_noobj_sub_iob),
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1, E2) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) '?'",
             "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
-            "inf": [("format", "table", [e2, e1], [None, None])],
+            "inf": [("format", "table"), ("format_table", [e2, e1], [None, None])],
             "boost": 1
         },
         {
             "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) '?'",
             "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size_of', E2, E3)])],
-            "inf": [("format", "number", [e1], ["ksqmiles"])],
+            "inf": [("format", "number"), ("format_number", e1, "ksqmiles")],
         },
         {
             "syn": "s(E1, E3) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) '?'",
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
-            "inf": [("format", "table", [e3, e1], [None, 'ksqmiles'])],
+            "inf": [("format", "table"), ("format_table", [e3, e1], [None, 'ksqmiles'])],
         },
         {
             "syn": "s(E2, E3) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) '?'",
             "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))],
-            "inf": [("format", "table", [e2, e3], [None, None])],
+            "inf": [("format", "table"), ("format_table", [e2, e3], [None, None])],
         },
         {
             "syn": "s(E2) -> 'where' 'is' np(E1) '?'",
             "sem": lambda np: apply(np, []) + [('where', E1, E2)],
-            "inf": [("format", "list", [e2], [])],
+            "inf": [("format", "list"), ("format_list", e2)],
         },
         {
             "syn": "s(E2) -> 'how' 'large' 'is' np(E1) '?'",
             "sem": lambda np: apply(np, []) + [('size_of', E1, E2)],
-            "inf": [("format", "number", [e2], ["ksqmiles"])],
+            "inf": [("format", "number"), ("format_number", e2, "ksqmiles")],
         },
         {
             "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) '?'",
             "sem": lambda nbar, adjp: nbar + adjp,
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) '?'",
             "sem": lambda nbar, vp_noobj_sub: nbar + vp_noobj_sub,
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'which' 'is' np(E1) '?'",
             "sem": lambda np: apply(np, []),
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'which' nbar(E1) '\\'' 's' np(E2) 'is' np(E3) '?'",
             "sem": lambda nbar, np1, np2: nbar + apply(np1, [('of', E2, E1)] + apply(np2, [('==', E2, E3)])),
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1) '?'",
             "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
         {
             "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) '?'",
             "sem": lambda nbar, vp_noobj_sub: [('count', E1, nbar + vp_noobj_sub)],
-            "inf": [("format", "number", [e1], [None])],
+            "inf": [("format", "number"), ("format_number", e1, '')],
         },
         {
             "syn": "s(E1) -> 'bye' '.'",
             "sem": lambda: [('=', E1, 'Cheerio.')],
-            "inf": [("format", "list", [e1], [])],
+            "inf": [("format", "list"), ("format_list", e1)],
         },
 
 
         # active transitive: sub obj
-        { "syn": "vp_nosub_obj(E1) -> tv(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: apply(np, vp_nosub_noobj) },
-        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' tv(E1, E2) np(E2)", "sem": lambda vp_nosub_noobj, np: [('not', apply(np, vp_nosub_noobj))] },
+        { "syn": "vp_nosub_obj(E1) -> tv(E1, E2) np(E2)", "sem": lambda tv, np: apply(np, tv) },
+        { "syn": "vp_nosub_obj(E1) -> 'does' 'not' vp_nosub_obj(E1)", "sem": lambda vp_nosub_obj: [('not', vp_nosub_obj)] },
 
         { "syn": "vp_nosub_obj(E1) -> 'have' 'a' attr(E1, E2)", "sem": lambda attr: attr },
 

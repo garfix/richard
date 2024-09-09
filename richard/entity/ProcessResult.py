@@ -6,5 +6,5 @@ class ProcessResult:
 
     products: list[any]
     error: str
-    
+
 

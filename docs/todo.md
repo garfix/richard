@@ -3,6 +3,12 @@
 * unit test
 * better error messages
 * update documentation
+    * language forms
+    * dialog context
+    * sentence context
+    * responder
+    * dialog variables
+
 
 ## done
 
@@ -25,4 +31,5 @@
 * pass variables to functions or None values?
 * more access to in-between results of blocks
 * added data sources for Postgres, MySQL, Sqlite3, Sparql
+* simplify the responder
 

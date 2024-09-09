@@ -1,8 +1,6 @@
-import re
-from richard.core.constants import E1, E2, E3, E4, e1, e2, e3, Body, Range
+from richard.core.constants import E1, E2, e2, Body
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.type.SemanticTemplate import SemanticTemplate
-
 
 
 def get_grammar():
@@ -12,7 +10,7 @@ def get_grammar():
         {
             "syn": "s(E2) -> 'where' 'was' np(E1) 'born' '?'",
             "sem": lambda np: apply(np, []) + [('place_of_birth', E1, E2)],
-            "inf": [("format", "list", e2)],
+            "inf": [("format", "list"), ("format_list", e2)],
         },
 
         # nbar

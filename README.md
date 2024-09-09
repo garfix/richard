@@ -9,7 +9,9 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 ## Features
 
 * A configurable processing pipeline
-* Python code as semantic attachments to parsing rules
+* An implementation of Earley's parser
+* Lists of tuples (logic atoms) as semantic attachments to parsing rules
+* An executor that processes logic atoms
 * Inference rules (using basic Prolog syntax)
 * Interaction with any type of data source
 * Predefined data sources for Postgres, MySql, Sqlite, and Sparql

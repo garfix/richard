@@ -12,10 +12,12 @@ class Model:
 
 
     def __init__(
-            self, 
+            self,
             modules: list[SomeModule]
     ) -> None:
-        self.modules = [CoreModule()]
+        self.modules = [
+            CoreModule(),
+        ]
         self.modules.extend(modules)
 
 

@@ -4,6 +4,7 @@ import pathlib
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.entity.Relation import Relation
+from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.SimpleMemoryModule import SimpleMemoryModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -17,7 +18,6 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.module.InferenceModule import InferenceModule
 from richard.store.MemoryDb import MemoryDb
-from .chat80.Chat80Responder import Chat80Responder
 from .chat80.Chat80Module import Chat80Module
 from .chat80.grammar import get_grammar
 
@@ -54,18 +54,16 @@ class TestChat80(unittest.TestCase):
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
 
+        sentence_context = BasicSentenceContext()
         dialog_context = SimpleMemoryModule({
             "isa": Relation(attributes=["entity", "type"]),
-        })
-        sentence_context = SimpleMemoryModule({
-            "format": Relation(attributes=["type", "variables", "units"]),
         })
 
         model = Model([
             Chat80Module(MemoryDbDataSource(db)),
             inferences,
-            dialog_context,
-            sentence_context
+            sentence_context,
+            dialog_context
         ])
 
         tokenizer = BasicTokenizer()
@@ -74,7 +72,7 @@ class TestChat80(unittest.TestCase):
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
-        responder = SimpleResponder(model, executor, handler=Chat80Responder())
+        responder = SimpleResponder(model, executor)
 
         pipeline = Pipeline([
             FindOne(tokenizer),
