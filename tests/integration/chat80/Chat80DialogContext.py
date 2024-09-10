@@ -1,18 +1,10 @@
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Relation import Relation
-from richard.interface.SomeDataSource import SomeDataSource
-from richard.interface.SomeModule import SomeModule
-from richard.store.MemoryDb import MemoryDb
+from richard.module.SimpleMemoryModule import SimpleMemoryModule
 
 
-class Chat80DialogContext(SomeModule):
-    
-    ds: SomeDataSource
-
+class Chat80DialogContext(SimpleMemoryModule):
 
     def __init__(self) -> None:
-        self.ds = MemoryDbDataSource(MemoryDb())
-
-        self.relations = {
-            "isa": Relation(attributes=["entity", "type"], writable=True),
-        }
+        super().__init__({
+            "isa": Relation(attributes=["entity", "type"]),
+        })

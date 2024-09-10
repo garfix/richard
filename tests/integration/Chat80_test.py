@@ -3,9 +3,7 @@ import pathlib
 
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
-from richard.entity.Relation import Relation
 from richard.module.BasicSentenceContext import BasicSentenceContext
-from richard.module.SimpleMemoryModule import SimpleMemoryModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -18,6 +16,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.module.InferenceModule import InferenceModule
 from richard.store.MemoryDb import MemoryDb
+from tests.integration.chat80.Chat80DialogContext import Chat80DialogContext
 from .chat80.Chat80Module import Chat80Module
 from .chat80.grammar import get_grammar
 
@@ -51,16 +50,16 @@ class TestChat80(unittest.TestCase):
         db.import_csv('contains', path + "contains.csv")
         db.import_csv('borders', path + "borders.csv")
 
+        facts = Chat80Module(MemoryDbDataSource(db))
+
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
 
         sentence_context = BasicSentenceContext()
-        dialog_context = SimpleMemoryModule({
-            "isa": Relation(attributes=["entity", "type"]),
-        })
+        dialog_context = Chat80DialogContext()
 
         model = Model([
-            Chat80Module(MemoryDbDataSource(db)),
+            facts,
             inferences,
             sentence_context,
             dialog_context

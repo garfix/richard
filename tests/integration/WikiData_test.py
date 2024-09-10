@@ -44,11 +44,12 @@ class TestWikiData(unittest.TestCase):
         inferences.import_rules(path + "mapping.pl")
 
         sentence_context = BasicSentenceContext()
+        wikidata = WikidataModule(WikidataDataSource(result_cache_path=result_cache_path))
 
         model = Model([
             inferences,
             sentence_context,
-            WikidataModule(WikidataDataSource(result_cache_path=result_cache_path)),
+            wikidata,
         ])
 
         tokenizer = BasicTokenizer()
