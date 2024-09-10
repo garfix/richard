@@ -4,7 +4,6 @@ import unittest
 
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
-from richard.entity.Relation import Relation
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
@@ -16,9 +15,9 @@ from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from tests.wikidata.WikidataModule import WikidataModule
-from .wikidata.grammar import get_grammar
 from richard.data_source.WikidataDataSource import WikidataDataSource
+from .wikidata.WikidataModule import WikidataModule
+from .wikidata.grammar import get_grammar
 
 
 class TestWikiData(unittest.TestCase):

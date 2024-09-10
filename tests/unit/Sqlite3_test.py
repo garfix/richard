@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 
@@ -12,10 +11,8 @@ class TestSqlite3(unittest.TestCase):
 
         import sqlite3
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/sqlite3/"
-
-        # creates 'richard.db' if it doesn't exist
-        connection = sqlite3.connect(path + 'richard.db')
+        # create a database (in memory)
+        connection = sqlite3.connect(':memory:')
         cursor = connection.cursor()
 
         # create a table

@@ -1,5 +1,3 @@
-from richard.core.Logger import Logger
-from richard.core.atoms import format_value
 from richard.entity.ReifiedVariable import ReifiedVariable
 from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
@@ -11,7 +9,7 @@ from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
-from tests.chat80.grammar import SemanticTemplate
+from richard.type.SemanticTemplate import SemanticTemplate
 
 
 class SemanticComposer(SomeProcessor):
