@@ -151,9 +151,9 @@ class Chat80Module(SomeModule):
         term = context.arguments[0]
         type = ""
         if isinstance(term, Variable):
-            isas = context.solver.solve([('isa', term.name, Variable('Type'))])
-            if len(isas) > 0:
-                type = isas[0]["Type"]
+            isa = context.solver.solve1([('isa', term.name, Variable('Type'))])
+            if isa is not None:
+                type = isa["Type"]
 
         if type == 'city':
             out_values = self.ds.select("city", ["id", "population"], values)
