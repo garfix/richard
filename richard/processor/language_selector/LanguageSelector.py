@@ -1,4 +1,3 @@
-from richard.core.Logger import Logger
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeProcessor import SomeProcessor

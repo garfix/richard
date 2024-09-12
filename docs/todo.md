@@ -4,10 +4,7 @@
 * better error messages
 * update documentation
     * language forms
-    * dialog context
-    * sentence context
-    * responder
-    * dialog variables
+* should resolve_name raise an execption?
 
 
 ## done

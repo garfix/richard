@@ -194,9 +194,9 @@ def get_grammar():
 
         # superlatives
         { "syn": "superlative(E1) -> 'largest'", "sem": lambda:
-            SemanticTemplate([Body], [('max', E1, E2, Body + [('size_of', E1, E2)])]) },
+            SemanticTemplate([Body], [('arg_max', E1, E2, Body + [('size_of', E1, E2)])]) },
         { "syn": "superlative(E1) -> 'smallest'", "sem": lambda:
-            SemanticTemplate([Body], [('min', E1, E2, Body + [('size_of', E1, E2)])]) },
+            SemanticTemplate([Body], [('arg_min', E1, E2, Body + [('size_of', E1, E2)])]) },
 
         # attribute
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has_population', E1, E2)] },

@@ -16,8 +16,8 @@ class CoreModule(SomeModule):
             "==": Relation(query_function=self.equals),
             ">": Relation(query_function=self.greater_than),
             "<": Relation(query_function=self.less_than),
-            "min": Relation(query_function=self.min),
-            "max": Relation(query_function=self.max),
+            "arg_min": Relation(query_function=self.arg_min),
+            "arg_max": Relation(query_function=self.arg_max),
             "sum": Relation(query_function=self.sum),
             "avg": Relation(query_function=self.avg),
             "percentage": Relation(query_function=self.percentage),
@@ -26,6 +26,7 @@ class CoreModule(SomeModule):
             "=": Relation(query_function=self.assign),
             "det_equals": Relation(query_function=self.determiner_equals),
             "det_greater_than": Relation(query_function=self.determiner_greater_than),
+            "det_less_than": Relation(query_function=self.determiner_less_than),
             "all": Relation(query_function=self.determiner_all),
             "none": Relation(query_function=self.determiner_none),
             "isolated": Relation(query_function=self.isolated),
@@ -58,7 +59,15 @@ class CoreModule(SomeModule):
     # E1 and E2 must be bound
     def greater_than(self, values: list, context: ExecutionContext) -> list[list]:
 
-        if values[0] > values[1]:
+        e1 = values[0]
+        e2 = values[1]
+
+        if e1 is None:
+            raise Exception("> first argument is unbound")
+        if e2 is None:
+            raise Exception("> second argument is unbound")
+
+        if e1 > e2:
             return [values]
         return []
 
@@ -67,7 +76,15 @@ class CoreModule(SomeModule):
     # E1 and E2 must be bound
     def less_than(self, values: list, context: ExecutionContext) -> list[list]:
 
-        if values[0] < values[1]:
+        e1 = values[0]
+        e2 = values[1]
+
+        if e1 is None:
+            raise Exception("< first argument is unbound")
+        if e2 is None:
+            raise Exception("< second argument is unbound")
+
+        if e1 < e2:
             return [values]
         return []
 
@@ -103,9 +120,9 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('min', E1, E2, [body-atoms])
+    # ('arg_min', E1, E2, [body-atoms])
     # returns the minimum value of results of the values of E2 in body-atoms in E1
-    def min(self, values: list, context: ExecutionContext) -> list[list]:
+    def arg_min(self, values: list, context: ExecutionContext) -> list[list]:
 
         min_var = context.arguments[0]
         element_var = context.arguments[1]
@@ -124,13 +141,13 @@ class CoreModule(SomeModule):
                 entity = result[min_var.name]
 
         return [
-            [entity, None, None]
+            [entity, min, None]
         ]
 
 
-    # ('max', E1, E2, [body-atoms])
+    # ('arg_max', E1, E2, [body-atoms])
     # returns the maximum value of results of the values of E2 in body-atoms in E1
-    def max(self, values: list, context: ExecutionContext) -> list[list]:
+    def arg_max(self, values: list, context: ExecutionContext) -> list[list]:
 
         max_var = context.arguments[0]
         element_var = context.arguments[1]
@@ -149,7 +166,7 @@ class CoreModule(SomeModule):
                 entity = result[max_var.name]
 
         return [
-            [entity, None, None]
+            [entity, max, None]
         ]
 
 
@@ -212,16 +229,16 @@ class CoreModule(SomeModule):
             return []
         else:
             return [
-                [True]
+                [True, None]
             ]
 
 
     # ('=', E1, 5)
     def assign(self, values: list, context: ExecutionContext) -> list[list]:
 
-        return [[
-            values[1], values[1]
-        ]]
+        return [
+            [values[1], values[1]]
+        ]
 
 
     # ('det_equals', [body-atoms], E2)
@@ -247,6 +264,20 @@ class CoreModule(SomeModule):
         count = len(results)
 
         if count > number:
+            return results
+        else:
+            return []
+
+
+    # ('det_less_than', [body-atoms], E2)
+    def determiner_less_than(self, values: list, context: ExecutionContext) -> list[list]:
+
+        body, number = values
+
+        results = context.solver.solve(body, context.binding)
+        count = len(results)
+
+        if count < number:
             return results
         else:
             return []
@@ -291,7 +322,7 @@ class CoreModule(SomeModule):
 
         if count == 0:
             return [
-                [True, None, None]
+                [True, None]
             ]
         else:
             return []
