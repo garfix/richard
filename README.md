@@ -2,9 +2,11 @@
 
 A Natural Language Understanding and Execution library for Python
 
-This library turns a sentence in any ordinary human language directly into executable Python code. It can be used as answering engine, a command executor, or to join me in my study to explore what is possible with a natural language interface.
+This library is able to turn a sentence in any ordinary human language directly into executable Python code. It can be used as answering engine, a command executor, or to join me in my study to explore what is possible with a natural language interface.
 
-The system is completely rule-based, which means that you as a developer have complete control over the code that is to be executed. The results are accurate, repeatable, and transparent.
+The system is completely rule-based, which means that you as a developer have to write the processing pipeline, the grammar and most of the relations. The prize is complete control over the code that is to be executed. The results are accurate, repeatable, and transparent.
+
+In this project, a successor to my earlier [NLI-GO](https://github.com/garfix/nli-go), I will (attempt to) replicate landmark historical NLI systems in a single architecture. Each system provides a different perspective on the field. The subject is complicated (to the point of screaming out loud) and quite out of fashion, but the attitude was and will be: don't dwell on what can't be done, find out what can be done, and make it easier and easier.
 
 A good way to get an idea about the system is to look at the demos in the `tests/integration` directory and read the [documentation](https://richard.readthedocs.io/).
 
@@ -19,7 +21,7 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
     * inference engine
     * adapters for PostgreSQL, MySQL, Sqlite3, and SPARQL
     * parse tree ordering heuristics
-    *
+    * David H.D. Warren's query optimization techniques
     * Chat-80 demo
     * Wikidata demo
 * 0.2 May 2024
@@ -54,7 +56,7 @@ To add the project to your virtual environment, use
 
 ## Example code
 
-Here's part of the setup that replicates the famous historical CHAT-80 system. You see that the processing pipeline is built up from just the blocks needed to do the job. The model is built from modules, each of which implements a number of relations in Python code. The test code is tells the system to run the questions and compare them with the answers.
+Here's part of the setup that replicates the famous historical CHAT-80 system. You can see that the processing pipeline is built up from just the blocks needed to do the job. The model is built from modules, each of which implements a number of relations in Python code. The test code is tells the system to run the questions and compare them with the answers.
 
 ~~~python
 
