@@ -1,4 +1,3 @@
-from richard.core.constants import CATEGORY_TOKEN
 from richard.entity.ParseTreeNode import ParseTreeNode
 
 

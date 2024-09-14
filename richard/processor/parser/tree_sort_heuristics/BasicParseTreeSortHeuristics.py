@@ -11,4 +11,3 @@ class BasicParseTreeSortHeuristics:
         trees = SortByTokenCount().sort(trees)
         trees = SortByBoost().sort(trees)
         return trees
-    
