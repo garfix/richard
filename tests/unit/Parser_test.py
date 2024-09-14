@@ -30,9 +30,8 @@ class TestParser(unittest.TestCase):
         ])
 
         request = SentenceRequest("John loves Mary")
-        product: BasicParserProduct = pipeline.enter(request)
-        tree = product.parse_tree
-        self.assertEqual(tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
+        parse_tree = pipeline.enter(request)
+        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
 
 
     def test_quote(self):
@@ -52,10 +51,9 @@ class TestParser(unittest.TestCase):
         ])
 
         request = SentenceRequest("John's shoe")
-        product: BasicParserProduct = pipeline.enter(request)
+        parse_tree = pipeline.enter(request)
 
-        tree = product.parse_tree
-        self.assertEqual(tree.inline_str(), "s(np(john 'John') ' ''' s 's' np(shoe 'shoe'))")
+        self.assertEqual(parse_tree.inline_str(), "s(np(john 'John') ' ''' s 's' np(shoe 'shoe'))")
 
 
     def test_syntax_error(self):

@@ -1,5 +1,6 @@
 import unittest
 
+from richard.block.TryFirst import TryFirst
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
@@ -110,13 +111,13 @@ class TestQuantification(unittest.TestCase):
             FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
-            FindOne(executor)
+            TryFirst(executor)
         ])
 
         request = SentenceRequest("Every parent has two children")
-        results: AtomExecutorProduct = pipeline.enter(request)
-        self.assertEqual(len(results.bindings), 3)
+        bindings = pipeline.enter(request)
+        self.assertEqual(len(bindings), 3)
 
         request = SentenceRequest("Every parent has three children")
-        results: AtomExecutorProduct = pipeline.enter(request)
-        self.assertEqual(len(results.bindings), 0)
+        bindings = pipeline.enter(request)
+        self.assertEqual(len(bindings), 0)

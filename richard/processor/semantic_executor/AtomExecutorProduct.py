@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from richard.core.Logger import Logger
-from richard.interface.Product import Product
+from richard.interface.Product import SomeProduct
 
 @dataclass
-class AtomExecutorProduct(Product):
+class AtomExecutorProduct(SomeProduct):
     bindings: list[dict]
     stats: dict[str, int]
 
@@ -14,3 +14,8 @@ class AtomExecutorProduct(Product):
             if self.stats:
                  logger.add_subheader("Stats")
                  logger.add("\n".join("{}: {}".format(predicate, count) for predicate, count in self.stats.items()))
+
+
+    def get_output(self) -> any:
+        return self.bindings
+

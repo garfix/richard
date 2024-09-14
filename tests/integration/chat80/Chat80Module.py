@@ -1,4 +1,5 @@
 from richard.core.constants import IGNORED, E1, LARGE, MEDIUM, SMALL
+from richard.entity.ProcessingException import ProcessingException
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
@@ -177,4 +178,4 @@ class Chat80Module(SomeModule):
             return [['equator', 'equator']]
 
 
-        raise Exception("Name not found: " + name)
+        raise ProcessingException("Name not found: " + name)

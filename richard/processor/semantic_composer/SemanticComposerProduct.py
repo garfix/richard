@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from richard.core.Logger import Logger
 from richard.core.atoms import format_value
-from richard.interface.Product import Product
+from richard.interface.Product import SomeProduct
 
 @dataclass(frozen=True)
-class SemanticComposerProduct(Product):
+class SemanticComposerProduct(SomeProduct):
     semantics_iterations: dict[str, list[tuple]]
     inferences: list[tuple]
     return_variables: list[str]
@@ -30,4 +30,7 @@ class SemanticComposerProduct(Product):
                 logger.add(format_value(value).strip())
                 prev = value
 
+
+    def get_output(self) -> any:
+        return self.get_semantics_last_iteration()
 

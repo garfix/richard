@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 
+from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.module.BasicSentenceContext import BasicSentenceContext
@@ -64,7 +65,7 @@ class TestWikiData(unittest.TestCase):
             FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
-            FindOne(executor),
+            TryFirst(executor),
             FindOne(responder)
         ])
 

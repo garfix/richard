@@ -60,8 +60,7 @@ class DialogTester:
                 start_time = time.perf_counter()
 
                 # send the request through the pipeline
-                product: SimpleResponderProduct = self.pipeline.enter(request)
-                result = product.output
+                result = self.pipeline.enter(request)
 
                 end_time = time.perf_counter()
 

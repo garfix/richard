@@ -33,6 +33,9 @@ class Pipeline:
         if result.error != "":
             return result.error
         else:
+            # go to the loas processor
             processor = self.blocks[-1].processor
-            return request.get_current_product(processor)
-
+            # get the product
+            product = request.get_current_product(processor)
+            # return its output value
+            return product.get_output()

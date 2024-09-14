@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from richard.core.Logger import Logger
-from richard.interface.Product import Product
+from richard.interface.Product import SomeProduct
 
 @dataclass
-class SimpleResponderProduct(Product):
+class SimpleResponderProduct(SomeProduct):
     output: str
 
 
@@ -13,3 +13,8 @@ class SimpleResponderProduct(Product):
 
     def log(self, logger: Logger):
         logger.add(str(self.output))
+
+
+    def get_output(self) -> any:
+        return self.output
+
