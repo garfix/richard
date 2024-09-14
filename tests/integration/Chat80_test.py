@@ -83,7 +83,6 @@ class TestChat80(unittest.TestCase):
         ])
 
         tests = [
-            # ["Does Afghanistan border Blob?", "yes"],
             ["What rivers are there?", "amazon, amu_darya, amur, brahmaputra, colorado, congo_river, cubango, danube, don, elbe, euphrates, ganges, hwang_ho, indus, irrawaddy, lena, limpopo, mackenzie, mekong, mississippi, murray, niger_river, nile, ob, oder, orange, orinoco, parana, rhine, rhone, rio_grande, salween, senegal_river, tagus, vistula, volga, volta, yangtze, yenisei, yukon, zambesi"],
             ["Does Afghanistan border China?", "yes"],
             ["What is the capital of Upper_Volta?", "ouagadougou"],

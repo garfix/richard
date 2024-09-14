@@ -2,10 +2,6 @@
 
 * unit test
 * better error messages
-* update documentation
-    * language forms
-* should resolve_name raise an execption?
-
 
 ## done
 

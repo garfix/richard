@@ -1,5 +1,7 @@
 See https://betterscientificsoftware.github.io/python-for-hpc/tutorials/python-pypi-packaging/#creating-a-python-package
 
+## Initial setup
+
 Start a virtual environment
 
     python3 -m venv venv
@@ -9,6 +11,8 @@ To create a PyPi distibution you need these packages
 
     pip install setuptools
     pip install twine
+
+## New version
 
 to create a new source distribution (version), update the version number in `setup.py` and run
 
