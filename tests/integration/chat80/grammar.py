@@ -218,8 +218,7 @@ def get_grammar():
 
         # pp
         { "syn": "pp(E1) -> 'not' pp(E1)", "sem": lambda pp: [('not', pp)] },
-        { "syn": "pp(E1) -> 'of' np(E2)", "sem": lambda np: apply(np, [('of', E1, E2)]) },
-        { "syn": "pp(E1) -> 'in' np(E2)", "sem": lambda np: apply(np, [('in', E1, E2)]) },
+        { "syn": "pp(E1) -> preposition(E1, E2) np(E2)", "sem": lambda preposition, np: apply(np, preposition) },
         { "syn": "pp(E1) -> 'south' 'of' np(E2)", "sem": lambda np: apply(np, [('south_of', E1, E2)]) },
         { "syn": "pp(E1) -> pp(E1) 'and' pp(E1)", "sem": lambda pp1, pp2: pp1 + pp2 },
 
