@@ -1,10 +1,33 @@
+![Richard!](richard.jpg)
+
 A Natural Language Understanding and Execution library for Python
 
-This library turns a question, statement or command from a ordinary human language directly into Python executable code. It is completely rule-based and you as a developer define the code that is to be executed. The executable code can be any Python code, and there is specially suited for database access.
+This library turns a sentence in any ordinary human language directly into executable Python code. It can be used as answering engine, a command executor, or to join me in my study to explore what is possible with a natural language interface.
+
+The system is completely rule-based, which means that you as a developer have complete control over the code that is to be executed. The results are accurate, repeatable, and transparent.
+
+A good way to get an idea about the system is to look at the demos in the `tests/integration` directory and read the [documentation](https://richard.readthedocs.io/).
 
 ## In development
 
 Note! While still on version 0 I will introduce backward-incompatible changes as I'm looking for the right form. Also, the documentation will not always match the code.
+
+## Versions
+
+* 0.3 September 2024
+    * from function based grammar to atom based grammar
+    * inference engine
+    * adapters for PostgreSQL, MySQL, Sqlite3, and SPARQL
+    * parse tree ordering heuristics
+    *
+    * Chat-80 demo
+    * Wikidata demo
+* 0.2 May 2024
+    * set up the pipeline
+    * Earley parser
+    * function based grammar and execution
+* 0.1 May 2024
+    * starting up
 
 ## Features
 
@@ -16,7 +39,7 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 * Interaction with any type of data source
 * Predefined data sources for Postgres, MySql, Sqlite, and Sparql
 * Implementation of David H.D. Warren's query optimizations
-* Code example that mimicks a Chat-80 dialog
+* Code example that replicates a Chat-80 dialog
 * Code example for a Wikidata dialog (proof-of-concept)
 
 ## Requires
@@ -31,11 +54,13 @@ To add the project to your virtual environment, use
 
 ## Example code
 
+Here's part of the setup that replicates the famous historical CHAT-80 system. You see that the processing pipeline is built up from just the blocks needed to do the job. The model is built from modules, each of which implements a number of relations in Python code. The test code is tells the system to run the questions and compare them with the answers.
+
 ~~~python
 
-class Test(unittest.TestCase):
+class Chat80Test(unittest.TestCase):
 
-    def test(self):
+    def test_chat80(self):
 
         facts = Chat80Module(MemoryDbDataSource(db))
 
@@ -88,7 +113,7 @@ class Test(unittest.TestCase):
 
 ## Example grammar
 
-Showing part of the grammar that mimics a CHAT-80 dialog:
+Showing part of the grammar that mimics a CHAT-80 dialog. Each rule has a syntactic rewrite part, a semantic attachment, and a set of inferences that create facts in the sentence context.
 
 ~~~python
 def get_grammar():

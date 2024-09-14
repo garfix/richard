@@ -24,7 +24,7 @@ from .chat80.grammar import get_grammar
 
 class TestChat80(unittest.TestCase):
     """
-    Mimics a Chat-80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
+    Replicates a Chat-80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
 
     Topics:
     - long distance dependencies (extraposition)
