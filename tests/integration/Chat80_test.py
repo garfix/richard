@@ -77,9 +77,9 @@ class TestChat80(unittest.TestCase):
         pipeline = Pipeline([
             FindOne(tokenizer),
             FindOne(parser),
-            FindOne(composer),
+            TryFirst(composer),
             TryFirst(executor),
-            FindOne(responder)
+            TryFirst(responder)
         ])
 
         tests = [

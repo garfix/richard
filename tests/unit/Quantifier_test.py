@@ -110,7 +110,7 @@ class TestQuantification(unittest.TestCase):
         pipeline = Pipeline([
             FindOne(tokenizer),
             FindOne(parser),
-            FindOne(composer),
+            TryFirst(composer),
             TryFirst(executor)
         ])
 
