@@ -112,8 +112,8 @@ def get_grammar():
         },
         {
             "syn": "s(E1) -> 'bye' '.'",
-            "sem": lambda: [('=', E1, 'Cheerio.')],
-            "inf": [("format", "list"), ("format_list", e1)],
+            "sem": lambda: [],
+            "inf": [("format", "canned"), ("format_canned", "Cheerio.")],
         },
 
 

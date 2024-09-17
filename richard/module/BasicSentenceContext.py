@@ -10,5 +10,6 @@ class BasicSentenceContext(SimpleMemoryModule):
             "format_list": Relation(attributes=["variable"]),
             "format_table": Relation(attributes=["variables", "units"]),
             "format_number": Relation(attributes=["variable", "unit"]),
+            "format_canned": Relation(attributes=["response"]),
         })
 

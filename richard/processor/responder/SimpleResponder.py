@@ -112,6 +112,14 @@ class SimpleResponder(SomeProcessor):
             values.sort()
             response = ", ".join(values)
 
+        elif type == "canned":
+
+            canned_format = solver.solve1([('format_canned', Variable('Response'))])
+            if canned_format == None:
+                raise Exception("The sentence doesn't have a 'format_canned' inference")
+
+            response = canned_format["Response"]
+
         else:
             raise Exception("Unrecognized format type: " + type)
 
