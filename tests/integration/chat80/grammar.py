@@ -239,7 +239,7 @@ def get_grammar():
         { "syn": "noun(E1) -> 'capital'",       "sem": lambda: [('capital', E1)],       "inf": [('isa', e1, 'city')] },
         { "syn": "noun(E1) -> 'capitals'",      "sem": lambda: [('capital', E1)],       "inf": [('isa', e1, 'city')] },
         { "syn": "noun(E1) -> 'ocean'",         "sem": lambda: [('ocean', E1)],         "inf": [('isa', e1, 'ocean')] },
-        { "syn": "noun(E1) -> 'oceans'",        "sem": lambda: [('ocean', E1)],         "inf": [('isa', e1, 'oean')] },
+        { "syn": "noun(E1) -> 'oceans'",        "sem": lambda: [('ocean', E1)],         "inf": [('isa', e1, 'ocean')] },
         { "syn": "noun(E1) -> 'country'",       "sem": lambda: [('country', E1)],       "inf": [('isa', e1, 'country')] },
         { "syn": "noun(E1) -> 'countries'",     "sem": lambda: [('country', E1)],       "inf": [('isa', e1, 'country')] },
         { "syn": "noun(E1) -> 'sea'",           "sem": lambda: [('sea', E1)],           "inf": [('isa', e1, 'sea')] },
