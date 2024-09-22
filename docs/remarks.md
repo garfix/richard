@@ -1,3 +1,185 @@
+## 2024-09-21
+
+So Cooper's system presumes open world, but our system is closed world. What to do?
+
+1. Allow our system to be open world as well
+2. See if we happen to be able solve Cooper's dialog in our closed world system
+
+1 seems really hard. Let's start with 2, with a tricky sentence
+
+    anything that is not a compound is not ferrous sulfide
+
+It's a tricky sentence, but in the current system it should be implemented as
+
+    all(E1,
+        [ thing(E1) not([compound(E1)]) ],
+        [ resolve_name('ferrous sulfide', E2) not(['==', E1, E2]) ]
+    )
+
+Notice first that `thing(E1)` matches every entity in the database(!), but that it must be placed before `not([compound(E1)])` or no entities will be found at all.
+
+The range part of all will basically result in all elements (non-compounds) in this database. As ferrous sulfide is a compound it will pass the body and the query will succeed.
+
+As the dialog doesn't really contain that many different examples, being able to handle this sentence means that the system as is can handle Cooper's dialog in a closed world assumption.
+
+Sentences like "dark-gray things are not white" and "no metal is a nonmetal" are silly in a closed world assumption. They may be left out, or given null-semantics.
+
+Should we than care that it actually has an open world assumption? That's my question now. Maybe we should.
+
+When I ask ChatGPT about open world systems it mentions all kinds of systems as open world, including Prolog. What it says is: if Prolog returns no results this _means_ that it doesn't know. Even if it _says_ `false` it means it doesn't know. And that's an interesting point because we could say that the system just returns what it knows. How this is presented is up to the response module of the system.
+
+A yes/no question could become a "yes/i don't know" question. An answer about the number of children could be "I know of 1 child, but there could be more. Or less, if my knowledge is inaccurate." An answer about an aggregate could be: "The average is 35.1 based on the knowledge I have, but I could be missing something"
+
+This sounds like I'm joking, but in some systems this kind of honesty may actually be appreciated.
+
+===
+
+Even though the sentences in this dialog may be answers using a closed world assumption, I will in fact try to solve them using an open world assumption, just like Cooper intended. It's theoretically interesting, and if there are real world use cases for it, it's good to be prepared.
+
+This means for an answer to be "no" there must be a result that is negative, rather than no results.
+
+===
+
+"ferrous sulfide" is an __open compound noun__, and the system expects us to interpret the last word as a separate predicate:
+
+    sulfide(X)
+
+If something is called a sulfide then it is a sulfide.
+
+===
+
+I will be using two grammars in stead of one with conditions per rule, because the use case is not strong enough to introduce such a big new addition. Also, it makes the grammar depend on the dialog context, and before I do that I want a better used case.
+
+## 2024-09-20
+
+Ways to write "not"
+
+~~~python
+    ("!white", E1)
+    ("-white", E1)
+    ("~white", E1)
+    ("not white", E1)
+~~~
+
+===
+
+I am copying some information from an NLI-GO markdown about Strong negation:
+
+Strong Negation
+
+Atoms can also take a negative form
+
+    `-predH(A, B)` :- predI(A, C) -predJ(C, B);
+
+The interpretation of this rule is:
+
+1) I believe `predH(A, B)` to be false if I believe `predI(A, C)` to be true and `predJ(C, B)` not to be true
+
+Example interpretations of `-predH` are "it does not rain", "is not red", "is not on". This kind of negation is different from `not` above. Whereas `not` inverts `known`/`unknown`, `-` inverts the meaning of the predicate itself. `-raining()` means "dry or foggy or whatever, but not raining". It means "everything else". `-red` means "blue, yellow, green, purple, etc, etc" It is an affirmation of the positive belief to the complement of the original predicate: "I believe `-predH()` to be true".
+
+In a Closed World `-` and `not` come down to the same thing, since it assumes that what is unknown is also untrue. NLI-GO takes a broader view in order to deal with the full power of natural language. It takes the Open World view.
+
+However, when Open World proves to be too unrestrictive for a use case, you can make exceptions, and say: "for this type of predicates I need to closed world". Here's an example:
+
+    `-predH(A, B)` :- not(predH(A, B));
+
+This means simply: I believe `predH(A, B)` to be false if I have no knowledge about `predH(A, B)`. Examples are abound: if I can't find a reservation for customer C, I believe he has not made a reservation. (Full open world would have leave you in doubt as to wether the reservation had been made.)
+
+More about this form of negation, called "strong negation" can be read [on Wikipedia](https://en.wikipedia.org/wiki/Stable_model_semantics#Strong_negation)
+
+So when do you use `not` and when `-`?
+
+* Use `not` when you mean "failed" (if it's a goal) or "not found"/"not proven" (if it's a statement)
+* Use `-` when you mean "know not to be the case"; this operator is not applied to goals
+
+==========================================
+
+I have a big problem with "sodium chloride is an element".
+
+It is proven by the fact that is it a compound, and therefore not an element. But it can be more easily proven through a missing `element()` fact.
+
+Cooper's system is using an open world assumption where something needs to be explicitly disproven. Not true is different from not known.
+
+The closed world assumption is so implicit in Prolog-like systems that can even forget to mention it.
+
+The only use for strong negation is in being able to create exceptions to rules.
+
+## 2024-09-19
+
+How to implement "sodium chloride is salt"? I think the only way to make this useful for queries is to use the same dialog ID for both names.
+
+Let's first introduce "salt"
+
+"salt is a compound"
+
+    resolve_name("salt", E1) store(('compound', e1))
+
+`e1` is the variable `$7` for example; as a value it is '$7'. `resolve_name` tries to find a tuple `name(X, 'salt')`. When found, it returns the value of `X`. If not found, it creates and stores the tuple `name('$7', 'salt')` and returns '$7'.
+
+Next introduce "natrium chloride" as a synonym for "salt".
+
+"sodium chloride is salt"
+
+    resolve_name("salt", E1) store(('name', "sodium chloride", e1))
+
+`resolve_name` now returns `$7` (found in the database tuple `name('$7', 'salt')`), and stores a new name that links to the same dialog entity `('name', '$7', 'sodium chloride')`
+
+Note that the first name, "sodium chloride" is interpreted as just a `token`, while the second name, "salt", is interpreted as a `resolve_name` atom.
+
+## 2024-09-18
+
+The name "magnesium" is to be implemented as an entity, with an id (let's say "magnesium"). It's not a predicate (`magnesium(E)`).
+
+The id is found by performing `resolve_name`, where the id can simply equal the name. No need to make it more complicated.
+
+About "burns rapidly". Here "rapidly" is an adverb to "burns". "burns" doesn't mean it's burning, but that it "can burn". So that's a capacity. "Rapidly" would be an adverb to that capacity. Cooper himself did not go into this complexity himself, and turned "burn rapidly" into a verb:
+
+    (4) V = {#BURNS, #BURNS#RAPIDLY, #BURN, #BURN#RAPIDLY}
+
+It's hard to do full justice to this adverb here. Also, the Cooper system is not really about this kind of thing, so making this complicated here will distract a bit on the essence of the system. We'll just introduce the predicate `burns_rapidly`.
+
+Types of sentences to be solved, together with possible productions
+
+- ferrous sulfide is a dark-gray compound that is brittle
+    - `dark_gray('ferrous sulfide') compound('ferrous sulfide') brittle('ferrous sulfide')`
+- magnesium burns rapidly
+    - `burn_rapidly('magnesium')`
+- gasoline is combustable
+    - `combustable('gasoline')`
+- combustable things burn
+    - `burns(E1) :- combustable(E1) thing(E1)`
+- elements are not compounds
+    - `!compound(E1) :- element(E1). !element(E1) :- compound(E1).`
+- no metal is a nonmetal
+    - `!nonmetal(E1) :- metal(E1)`
+- dark-gray things are not white
+    - `!white(E1) :- dark_gray(E1)`
+- any thing that burns rapidly burns
+    - `burn(E1) :- burn_rapidly(E1)`
+
+The others are variants on these.
+
+To decide how to implement the negative rules, we'll check how they're used.
+
+- magnesium is not a metal
+    - `not(metal('magnesium'))`
+
+- sodium chloride is an element
+    - sem: `resolve_name('sodium chloride', E1) element(E1)`
+    - solving:
+        - `not element($7) :- compound($7)`
+        - `compound($7)`
+
+
+## 2024-09-17
+
+Releases version 0.3. Started replication of Cooper's system. It has sentences that can either be statements of yes/no questions ("magnesium is a metal"). One interpretation is used by the administrator. The other by the end-user. I can do two things:
+
+- create a separate grammar for each role
+- create a context for the grammar rules. perhaps in the form of if-clauses that are part of the rule
+
+I kind of like the last idea.
+
 ## 2024-08-28
 
 I built a caching mechanism in `isolated`. That mainly helps for the borders-borders-borders queries where the same country reoccurs in multiple relations. Many tweaks can be made in the code things faster, but for now the performance will do. All Chat-80 queries together run in 0.23 seconds, which is much slower than in the SWI Prolog implementation, but it is much faster than what I started with (40 sec).
