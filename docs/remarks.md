@@ -1,3 +1,43 @@
+## 2024-09-28
+
+"magnesium is a metal" is simple in both closed world and open world.
+
+"magnesium is not a metal" is simple in closed world. In open world you need to prove `negate(metal($M))`.
+
+I'm adding a predicate `negate` that acts like `not` but operates on a single atom in stead of a list. If `metal($M)` has results then `negate` returns no results. No results here means: false. But if `metal($M)` has no results, this means "I don't know" and `negate` would also need to return "I don't know".
+
+Based on a suggestion of ChatGPT I'm adding a predicate `knows(atoms, E1)` that returns one of 3 values in `E1`: False, True, or "UNKNOWN".
+
+
+## 2024-09-26
+
+magnesium is not a metal
+~metal(magnesium)
+
+Ways to write "not"
+
+~~~python
+    ("!white", E1)
+    ("-white", E1)
+    ("~white", E1)
+    ("not white", E1)
+    ("not", ("white", E1))
+    negate(("white", E1))
+    ("not_white", E1)
+~~~
+
+negate(("white", E1))
+=>
+("not_white", E1)
+
+
+negate(("not_white", E1))
+=>
+("white", E1)
+
+This is about storing negative information. Needs to be stored in a table, with a name. Might as well call it `not_X`.
+
+
 ## 2024-09-21
 
 So Cooper's system presumes open world, but our system is closed world. What to do?
