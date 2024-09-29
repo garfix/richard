@@ -28,12 +28,19 @@ class TestInferenceEngine(unittest.TestCase):
                 InferenceRule(('father', Variable('E1'), Variable('E2')), [
                     ('parent', Variable('E1'), Variable('E2')),
                     ('father', Variable('E1'))
-                ])],
+                ])
+            ],
+            [
+                "childless(E1) :- not(parent(E1, E2)).",
+                InferenceRule(('childless', Variable('E1')), [
+                    ('not', [('parent', Variable('E1'), Variable('E2'))])
+                ])
+            ],
         ]
 
         for test in tests:
             question, answer = test
-            result = parser.parse(question)
+            result, _ = parser.parse(question)
             self.assertEqual(answer, result)
 
 

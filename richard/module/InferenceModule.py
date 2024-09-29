@@ -34,7 +34,9 @@ class InferenceModule(SomeModule):
             for line in rule_file.readlines():
                 if line.strip() == "":
                     continue
-                rule = parser.parse(line)
+                rule, pos = parser.parse(line)
+                if rule is None:
+                    raise Exception("Unable to parse inference: " + line + " on token " + str(pos))
                 self.insert_rule(rule)
 
 
