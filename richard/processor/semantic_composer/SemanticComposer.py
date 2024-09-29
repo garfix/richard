@@ -50,6 +50,9 @@ class SemanticComposer(SomeProcessor):
         semantics, inferences = self.compose(parse_tree, root_variables)
 
         if self.query_optimizer:
+            if not isinstance(semantics, list):
+                raise Exception("Sentence semantics is not a list of atoms: " + str(semantics))
+
             semantics_iterations = self.query_optimizer.optimize(semantics, root_variables)
         else:
             semantics_iterations = {"Semantics": semantics}
