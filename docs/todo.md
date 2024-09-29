@@ -1,7 +1,14 @@
 ## todo
 
-* unit test
-* better error messages
+documentation
+
+* introducing new names
+* assigning synonyms
+* negative atoms
+* ferrous sulfide => sulfide(X) "ferrous sulfide" not just a name, but a declaration as well "some sulfides are brittle"
+* open world / closed world
+* answering using open world
+* store
 
 ## done
 

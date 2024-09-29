@@ -30,6 +30,7 @@ class CoreModule(SomeModule):
             "all": Relation(query_function=self.determiner_all),
             "none": Relation(query_function=self.determiner_none),
             "isolated": Relation(query_function=self.isolated),
+            "store": Relation(query_function=self.store),
         }
 
         self.isolated_queries_cache = {}
@@ -349,3 +350,15 @@ class CoreModule(SomeModule):
         self.isolated_queries_cache[key] = result
 
         return result
+
+
+    # ('store', atom)
+    def store(self, values: list, context: ExecutionContext) -> list[list]:
+        atom = values[0]
+
+        context.solver.write_atom(atom)
+
+        return [
+            [True]
+        ]
+

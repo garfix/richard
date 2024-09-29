@@ -17,7 +17,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.module.InferenceModule import InferenceModule
 from richard.store.MemoryDb import MemoryDb
-from tests.integration.chat80.Chat80DialogContext import Chat80DialogContext
+from .chat80.Chat80DialogContext import Chat80DialogContext
 from .chat80.Chat80Module import Chat80Module
 from .chat80.grammar import get_grammar
 
@@ -25,6 +25,9 @@ from .chat80.grammar import get_grammar
 class TestChat80(unittest.TestCase):
     """
     Replicates a Chat-80 dialog (found here: https://github.com/JanWielemaker/chat80/blob/master/prolog/chat80/demo)
+    CHAT-80 is mainly described in
+    - Efficient Processing of Interactive Relational Database Queries Expressed in Logic - Warren (1981)
+    - An efficient easily adaptable system for interpreting natural language queries - Pereira, Warren (1982)
 
     Topics:
     - long distance dependencies (extraposition)
