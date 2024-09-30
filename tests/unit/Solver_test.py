@@ -23,6 +23,7 @@ class TestModule(SomeModule):
             "river": Relation(query_function=self.simple_entity),
             "country": Relation(query_function=self.simple_entity),
             "contains": Relation(query_function=self.contains),
+            "number_of": Relation(query_function=self.number_of),
         }
 
 
@@ -33,6 +34,13 @@ class TestModule(SomeModule):
 
     def contains(self, values: list, context: ExecutionContext) -> list[list]:
         out_values = self.ds.select("contains", ['country', 'river'], values)
+        return out_values
+
+
+    def number_of(self, values: list, context: ExecutionContext) -> list[list]:
+        out_values = [
+            [None, 2]
+        ]
         return out_values
 
 
@@ -72,6 +80,16 @@ class TestSolver(unittest.TestCase):
             [
                 [('contains', E1, E1)],
                 []
+            ],
+            # number_of returns 2; this doesn't match 3
+            [
+                [('number_of', "river", 3)],
+                []
+            ],
+            # number_of returns 2; but it does match 2
+            [
+                [('number_of', "river", 2)],
+                [{}]
             ],
         ]
 
