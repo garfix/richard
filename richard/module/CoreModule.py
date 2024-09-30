@@ -230,7 +230,7 @@ class CoreModule(SomeModule):
             return []
         else:
             return [
-                [True, None]
+                [None]
             ]
 
 
@@ -251,7 +251,9 @@ class CoreModule(SomeModule):
         count = len(results)
 
         if count == number:
-            return results
+            return [
+                [None, None]
+            ]
         else:
             return []
 
@@ -265,7 +267,9 @@ class CoreModule(SomeModule):
         count = len(results)
 
         if count > number:
-            return results
+            return [
+                [None, None]
+            ]
         else:
             return []
 
@@ -279,7 +283,9 @@ class CoreModule(SomeModule):
         count = len(results)
 
         if count < number:
-            return results
+            return [
+                [None, None]
+            ]
         else:
             return []
 
@@ -323,7 +329,7 @@ class CoreModule(SomeModule):
 
         if count == 0:
             return [
-                [True, None]
+                [None]
             ]
         else:
             return []
@@ -344,7 +350,7 @@ class CoreModule(SomeModule):
             result = []
         else:
             result = [
-                [True]
+                [None]
             ]
 
         self.isolated_queries_cache[key] = result
@@ -359,6 +365,6 @@ class CoreModule(SomeModule):
         context.solver.write_atom(atom)
 
         return [
-            [True]
+            [None]
         ]
 

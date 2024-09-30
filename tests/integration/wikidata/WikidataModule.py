@@ -29,7 +29,7 @@ class WikidataModule(SomeModule):
 
         # person isa human
         out_values = self.ds.select('wdt:P31', [ID, CONSTANT], [person, 'wd:Q5'])
-        return out_values
+        return [[None] for value in out_values]
 
 
     def wikidata_label(self, values: list, context: ExecutionContext) -> list[list]:

@@ -172,10 +172,10 @@ class Chat80Module(SomeModule):
             out_values = self.ds.select(type, ["id", "id"], [name, None])
             if len(out_values) > 0:
                 context.solver.write_atom(('isa', context.arguments[1].name, type))
-                return out_values
+                return [[None, value[1]] for value in out_values]
 
         if name == 'equator':
-            return [['equator', 'equator']]
+            return [[None, 'equator']]
 
 
         raise ProcessingException("Name not found: " + name)

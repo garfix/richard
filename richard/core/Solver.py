@@ -48,6 +48,12 @@ class Solver(SomeSolver):
 
         values = self.find_relation_values(predicate, arguments, binding)
 
+        if not isinstance(values, list):
+            raise Exception("Predicate '" + predicate + "' should return a list")
+
+        if len(values) > 0 and len(values[0]) != len(arguments):
+            raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
+
         results = []
         for v in values:
             # extend the incoming binding
@@ -67,6 +73,9 @@ class Solver(SomeSolver):
                             conflict = True
                         # extend the binding
                         result[arg.name] = v[i]
+                else:
+                    if v[i] is not None and arg != v[i]:
+                        conflict = True
 
             if conflict:
                 continue
