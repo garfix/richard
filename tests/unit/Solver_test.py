@@ -86,7 +86,7 @@ class TestSolver(unittest.TestCase):
                 [('number_of', "river", 3)],
                 []
             ],
-            # number_of returns 2; but it does match 2
+            # number_of returns 2; and it matches
             [
                 [('number_of', "river", 2)],
                 [{}]
