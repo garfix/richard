@@ -121,7 +121,7 @@ class IsolateIndependentParts:
                 isolated.append(atoms[i])
                 isolated.extend(self.isolate_atoms_from_graph(atoms, graph, graph[i], root_variables))
             else:
-                isolated.append(('isolated', [atom] + self.isolate_atoms_from_graph(atoms, graph, graph[i], root_variables)))
+                isolated.append(('$isolated', [atom] + self.isolate_atoms_from_graph(atoms, graph, graph[i], root_variables)))
 
         # isolate the atoms' arguments
         recursive_isolated = [self.isolate_arguments(atom, root_variables) for atom in isolated]

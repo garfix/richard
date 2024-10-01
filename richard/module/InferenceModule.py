@@ -1,3 +1,4 @@
+from richard.core.atoms import get_atom_variables
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface import SomeSolver
@@ -49,9 +50,9 @@ class InferenceModule(SomeModule):
 
 
     def solve_rule(self, rule: InferenceRule, arguments: list, solver: SomeSolver, binding: dict):
-        rule_binding = {}
 
         rule_arguments = rule.head[1:]
+        rule_binding = binding.copy()
 
         for rule_argument, value in zip(rule_arguments, arguments):
             if isinstance(rule_argument, Variable):

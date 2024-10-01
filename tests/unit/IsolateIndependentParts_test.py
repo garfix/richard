@@ -1,14 +1,7 @@
-import pathlib
 import unittest
 
-from richard.core.Model import Model
 from richard.core.constants import E1, E2, E3, E4
-from richard.core.Solver import Solver
-from richard.entity.Variable import Variable
-from richard.module.InferenceModule import InferenceModule
-from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
 from richard.processor.semantic_composer.optimizer.IsolateIndependentParts import IsolateIndependentParts
-from richard.type.InferenceRule import InferenceRule
 
 
 class TestIsolateIndependentParts(unittest.TestCase):
@@ -20,13 +13,13 @@ class TestIsolateIndependentParts(unittest.TestCase):
             [
                 [('a', E1), ('b', E1, E2)],
                 [],
-                [('a', E1), ('isolated', [('b', E1, E2)])]
+                [('a', E1), ('$isolated', [('b', E1, E2)])]
             ],
             # typical case: two isolated parts
             [
                 [('a', E1), ('b', E1, E2), ('c', E2), ('d', E1, E3), ('e', E3)],
                 [],
-                [('a', E1), ('isolated', [('b', E1, E2), ('isolated', [('c', E2)])]), ('isolated', [('d', E1, E3), ('isolated', [('e', E3)])])]
+                [('a', E1), ('$isolated', [('b', E1, E2), ('$isolated', [('c', E2)])]), ('$isolated', [('d', E1, E3), ('$isolated', [('e', E3)])])]
             ],
             # root variable: E2 depends only on E1 but E2 is used in the result
             [
@@ -38,7 +31,7 @@ class TestIsolateIndependentParts(unittest.TestCase):
             [
                 [('contains', E4, E1), ('city', E1), ('has_population', E1, E2), ('=', E3, 1000000), ('>', E2, E3)],
                 [],
-                [('contains', E4, E1), ('isolated', [('city', E1)]), ('has_population', E1, E2), ('=', E3, 1000000), ('isolated', [('>', E2, E3)])]
+                [('contains', E4, E1), ('$isolated', [('city', E1)]), ('has_population', E1, E2), ('=', E3, 1000000), ('$isolated', [('>', E2, E3)])]
             ],
         ]
 
