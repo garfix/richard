@@ -44,3 +44,25 @@ def get_atoms_variables(atoms: list[tuple]) -> list[str]:
 
     return list(variables)
 
+
+def bind_variables(construct: any, binding: dict) -> list:
+    # list
+    if isinstance(construct, list):
+        return [bind_variables(arg, binding) for arg in construct]
+    # tuple
+    elif isinstance(construct, tuple):
+        return tuple([bind_variables(arg, binding) for arg in construct])
+    # variable
+    elif isinstance(construct, Variable):
+        # bound?
+        if construct.name in binding:
+            # add variable value
+            return binding[construct.name]
+        else:
+            # non-bound variable
+            return construct
+    else:
+        # just the value
+        return construct
+
+

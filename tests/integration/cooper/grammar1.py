@@ -5,15 +5,17 @@ from richard.processor.parser.helper.grammar_functions import apply
 def get_grammar1():
     return [
         # sentence
+
+        # X is a Y
         {
             "syn": "s(E1) -> noun(E1) is(E3) a(E4) noun(E2)",
             "sem": lambda noun1, is1, a, noun2: noun1 + noun2 + [('store', ('isa', e1, e2, 'true'))],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
-        # ('isa', $E1, 'nonmetal, "false") :- ('isa', E1, 'metal', "true").
+        # no X is a Y
         {
             "syn": "s(E1) -> 'no' noun(E1) is(E3) a(E4) noun(E2)",
-            "sem": lambda noun1, is1, a, noun2: noun1 + noun2 + [('learn_rule', ('isa', E5, e2, 'false'), [('isa', E5, e1, 'true')])],
+            "sem": lambda noun1, is1, a, noun2: noun1 + noun2 + [('learn_rule', ('isa', E5, E2, 'false'), [('isa', E5, E1, 'true')])],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
 

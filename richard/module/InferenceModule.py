@@ -1,4 +1,4 @@
-from richard.core.atoms import get_atom_variables
+from richard.core.atoms import bind_variables, get_atom_variables
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface import SomeSolver
@@ -105,7 +105,10 @@ class InferenceModule(SomeModule):
     def learn_rule(self, values: list, context: ExecutionContext) -> list[list]:
         head, body = values
 
-        self.insert_rule(InferenceRule(head, body))
+        bound_head = bind_variables(head, context.binding)
+        bound_body = bind_variables(body, context.binding)
+
+        self.insert_rule(InferenceRule(bound_head, bound_body))
 
         return [
             [None, None]
