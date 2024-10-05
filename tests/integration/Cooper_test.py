@@ -139,7 +139,7 @@ class TestCooper(unittest.TestCase):
             ["magnesium is a metal", "True"],
             ["magnesium is not a metal", "False"],
             ["magnesium is a nonmetal", "False"],
-            # ["magnesium is not a nonmetal", "True"],
+            ["magnesium is not a nonmetal", "True"],
             # ["magnesium is a metal that burns rapidly", "True"],
             # ["magnesium is magnesium", "True"],
             # ["some oxides are white", "True"],

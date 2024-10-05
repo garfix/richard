@@ -10,6 +10,12 @@ magnesium is a nonmetal
     A: ('isa', $E1, 'nonmetal, "false") :- ('isa', E1, 'metal', "true").
        ('isa', $M, 'metal', "true")
 
+===
+
+magnesium is not a nonmetal
+    Q: ('isa', $M, 'nonmetal, $R) ('not_3v', $R, $S)
+
+
 ## 2024-10-02
 
 There is another form possible, where each predicate directly includes its three-valued truth value:
