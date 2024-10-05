@@ -1,3 +1,19 @@
+## 2024-10-02
+
+There is another form possible, where each predicate directly includes its three-valued truth value:
+
+    isa(E1, E2, Tv)
+
+To negate it, the this predicate can be used
+
+    not_3v(In, Out)
+
+## 2024-10-01
+
+"magnesium is not a nonmetal". Semantics: `knows(negate(isa($M, $NM), "true"), "true")` where `$M` is the id for magnesium and `$NM` for nonmetal.
+
+    knows(isa($M, $NM), Tv1) negate(Tv1, Tv2)
+
 ## 2024-09-28
 
 "magnesium is a metal" is simple in both closed world and open world.
@@ -7,7 +23,6 @@
 I'm adding a predicate `negate` that acts like `not` but operates on a single atom in stead of a list. If `metal($M)` has results then `negate` returns no results. No results here means: false. But if `metal($M)` has no results, this means "I don't know" and `negate` would also need to return "I don't know".
 
 Based on a suggestion of ChatGPT I'm adding a predicate `knows(atoms, E1)` that returns one of 3 values in `E1`: False, True, or "UNKNOWN".
-
 
 ## 2024-09-26
 

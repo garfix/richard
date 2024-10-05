@@ -51,8 +51,11 @@ class Solver(SomeSolver):
         if not isinstance(values, list):
             raise Exception("Predicate '" + predicate + "' should return a list")
 
-        if len(values) > 0 and len(values[0]) != len(arguments):
-            raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
+        if len(values) > 0:
+            if not isinstance(values[0], list):
+                raise Exception("The results of '" + predicate + "' should be lists")
+            if len(values[0]) != len(arguments):
+                raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
 
         results = []
         for v in values:

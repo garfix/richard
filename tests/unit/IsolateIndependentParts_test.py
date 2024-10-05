@@ -33,6 +33,12 @@ class TestIsolateIndependentParts(unittest.TestCase):
                 [],
                 [('contains', E4, E1), ('$isolated', [('city', E1)]), ('has_population', E1, E2), ('=', E3, 1000000), ('$isolated', [('>', E2, E3)])]
             ],
+            # regression test
+            [
+                [('resolve_name', 'magnesium', E1), ('resolve_name', 'metal', E2), ('isa', E1, E2, E3), ('not_3v', E3, E4)],
+                ['E4'],
+                [('resolve_name', 'magnesium', E1), ('resolve_name', 'metal', E2), ('isa', E1, E2, E3), ('not_3v', E3, E4)],
+            ],
         ]
 
         for test in tests:

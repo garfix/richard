@@ -39,28 +39,43 @@ class IsolateIndependentParts:
         for i, atom in enumerate(atoms):
             if self.is_first_atom_to_contain_root_variable(atom, atoms[:i], root_variables):
                 dependent_atom = None
-            elif self.has_dependencies_to_succeeding_atoms(i, atoms, dependency_graph):
+            elif self.is_needed_by_succeeding_atoms_outside_the_isolation(i, atoms, dependency_graph, root_variables):
                 dependent_atom = None
             else:
                 dependent_atom = self.find_first_dependent_atom(atom, atoms[:i])
 
             if not i in isolation_graph:
                 isolation_graph[i] = []
+
             isolation_graph[dependent_atom].append(i)
 
         return isolation_graph
 
 
-    def has_dependencies_to_succeeding_atoms(self, atom_index: int, atoms: list[tuple], dependency_graph: dict):
+    def is_needed_by_succeeding_atoms_outside_the_isolation(self, atom_index: int, atoms: list[tuple], dependency_graph: dict, root_variables):
 
         if not atom_index in dependency_graph:
             return False
 
+        # check all atoms that depend on this one
         for i in dependency_graph[atom_index]:
+
+            # and succeed it
+            if i < atom_index:
+                continue
+
             atom = atoms[i]
-            dependent_atom_index = self.find_first_dependent_atom(atom, atoms[:i])
-            if dependent_atom_index is not None and dependent_atom_index > atom_index:
+
+            # does the dependent atom contain a root variable?
+            found_root_variables = set(root_variables) & set(get_atom_variables(atom))
+            if len(found_root_variables) > 0:
+                # yes: so we can't isolate this atom
                 return True
+
+            # does the dependent atom have dependencies after this atom
+            for j in dependency_graph[i]:
+                if j > atom_index and j < i:
+                    return True
 
         return False
 

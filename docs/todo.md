@@ -9,6 +9,8 @@ documentation
 * open world / closed world
 * answering using open world
 * store
+* scoped / $isolated
+* `not_3v`
 
 ## done
 
