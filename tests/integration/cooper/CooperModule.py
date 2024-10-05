@@ -14,7 +14,8 @@ class CooperModule(SomeModule):
         self.ds = data_source
         self.relations = {
             "resolve_name": Relation(query_function=self.resolve_name),
-            "negate": Relation(query_function=self.negate),
+            "not_3v": Relation(query_function=self.not_3v),
+            "isa": Relation(query_function=self.isa_query, write_function=self.isa_write),
         }
 
 
@@ -32,52 +33,38 @@ class CooperModule(SomeModule):
             ]
 
 
-    # ('negate', atom)
-    def negate(self, values: list, context: ExecutionContext) -> list[list]:
-        atoms = values[0]
+    # ('not_3v', in, out)
+    def not_3v(self, values: list, context: ExecutionContext) -> list[list]:
 
-        results = context.solver.solve(atoms)
+        value = values[0]
 
-        # negated = list(atoms)
-        # negated[0][0] = "not_" + negated[0][0]
-
-        # results2 = context.solver.solve(negated)
-
-        results2 = []
-
-        if len(results) > 0:
+        if value == 'true':
             return [
-                ['false']
+                [None, 'false']
             ]
-        elif len(results2) > 0:
+        elif value == 'false':
             return [
-                ['true']
+                [None, 'true']
             ]
         else:
             return [
-                ["unknown"]
+                [None, 'unknown']
             ]
 
-    # # ('knows', [body-atoms])
-    # def negate(self, values: list, context: ExecutionContext) -> list[list]:
-    #     atoms = values[0]
 
-    #     results = context.solver.solve([atoms])
+    def isa_query(self, values: list, context: ExecutionContext) -> list[list]:
+        entity, type, truth = values
 
-    #     negated = atoms
-    #     negated[0] = "not_" + negated[0]
+        results = self.ds.select("isa", ["entity", "type", "truth"], [entity, type, truth])
+        if len(results) > 0:
+            return results
+        else:
+            return [
+                [None, None, "unknown"]
+            ]
 
-    #     results2 = context.solver.solve([negated])
 
-    #     if len(results) > 0:
-    #         return [
-    #             [False]
-    #         ]
-    #     elif len(results2) > 0:
-    #         return [
-    #             [True]
-    #         ]
-    #     else:
-    #         return [
-    #             ["UNKNOWN"]
-    #         ]
+    def isa_write(self, values: list, context: ExecutionContext) -> list[list]:
+        entity, type, truth = values
+
+        self.ds.insert("isa", ["entity", "type", "truth"], [entity, type, truth])

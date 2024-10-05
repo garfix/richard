@@ -86,5 +86,7 @@ class SortByCost:
 
             costs.append(cost)
 
-        return sum(costs)
+        # if the predicate occurs in multiple relations, take the maximal cost
+        # (not the sum of the costs, because we don't want to double the cost with 2 simular relations)
+        return max(costs)
 

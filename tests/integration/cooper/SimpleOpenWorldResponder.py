@@ -52,12 +52,12 @@ class SimpleOpenWorldResponder(SomeProcessor):
             if ynu_format == None:
                 raise Exception("The sentence doesn't have a 'format_ynu' inference")
 
-            if len(bindings) == 0:
-                raise Exception("The y/n/u format requires a single result")
-            if len(bindings) > 1:
-                raise Exception("The y/n/u format requires a single result")
-
             answer_variable = ynu_format["Answer"]
+
+            if len(bindings) != 1:
+                results = [binding[answer_variable] for binding in bindings]
+                raise Exception("The y/n/u format requires a single result. Got: " + ", ".join(results))
+
             answer = bindings[0][answer_variable]
 
             if answer == "true":

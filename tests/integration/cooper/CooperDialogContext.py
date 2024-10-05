@@ -6,5 +6,4 @@ class CooperDialogContext(SimpleMemoryModule):
 
     def __init__(self) -> None:
         super().__init__({
-            "isa": Relation(attributes=["entity", "type"]),
         })

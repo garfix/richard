@@ -17,7 +17,9 @@ class InferenceModule(SomeModule):
 
 
     def __init__(self) -> None:
-        self.relations = {}
+        self.relations = {
+             "learn_rule": Relation(query_function=self.learn_rule),
+        }
         self.rules = {}
 
 
@@ -97,3 +99,15 @@ class InferenceModule(SomeModule):
             results.append(result)
 
         return results
+
+
+    # ('learn_rule', head, [body-atoms])
+    def learn_rule(self, values: list, context: ExecutionContext) -> list[list]:
+        head, body = values
+
+        self.insert_rule(InferenceRule(head, body))
+
+        return [
+            [None, None]
+        ]
+

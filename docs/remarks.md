@@ -1,3 +1,15 @@
+## 2024-10-05
+
+no metal is a nonmetal
+    ('isa', $E1, 'nonmetal, "false") :- ('isa', E1, 'metal', "true").
+
+
+magnesium is a nonmetal
+    Q: ('isa', $M, 'nonmetal, $R)
+
+    A: ('isa', $E1, 'nonmetal, "false") :- ('isa', E1, 'metal', "true").
+       ('isa', $M, 'metal', "true")
+
 ## 2024-10-02
 
 There is another form possible, where each predicate directly includes its three-valued truth value:
