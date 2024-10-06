@@ -55,13 +55,15 @@ class SimpleOpenWorldResponder(SomeProcessor):
             answer_variable = ynu_format["Answer"]
             results = [binding[answer_variable] for binding in bindings]
 
-            if len(bindings) != 1:
+            if len(results) > 0:
                 if "true" in results and "false" in results:
                     raise Exception("The y/n/u format requires a single result. Got: " + ", ".join(results))
                 elif "true" in results:
                     results = ["true"]
                 elif "false" in results:
                     results = ["false"]
+            else:
+                results = ['unknown']
 
             answer = results[0]
 

@@ -100,7 +100,7 @@ class TestCooper(unittest.TestCase):
 
         tests1 = [
             ["magnesium is a metal", "OK"],
-            # ["magnesium burns rapidly", "OK"],
+            ["magnesium burns rapidly", "OK"],
             # ["magnesium oxide is a white metallic oxide", "OK"],
             ['oxygen is a nonmetal', 'OK'],
             # ['ferrous sulfide is a dark-gray compound that is brittle', 'OK'],
@@ -140,7 +140,7 @@ class TestCooper(unittest.TestCase):
             ["magnesium is not a metal", "False"],
             ["magnesium is a nonmetal", "False"],
             ["magnesium is not a nonmetal", "True"],
-            # ["magnesium is a metal that burns rapidly", "True"],
+            ["magnesium is a metal that burns rapidly", "True"],
             # ["magnesium is magnesium", "True"],
             # ["some oxides are white", "True"],
             # ["no oxide is white", "False"],
@@ -163,8 +163,8 @@ class TestCooper(unittest.TestCase):
 
         logger = Logger()
         # logger.log_no_tests()
-        # logger.log_all_tests()
-        logger.log_only_last_test()
+        logger.log_all_tests()
+        # logger.log_only_last_test()
         logger.log_products()
         # logger.log_stats()
 

@@ -1,5 +1,6 @@
 
 
+from richard.core.atoms import bind_variables
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
@@ -380,7 +381,7 @@ class CoreModule(SomeModule):
 
     # ('store', atom)
     def store(self, values: list, context: ExecutionContext) -> list[list]:
-        atom = values[0]
+        atom = bind_variables(values[0], context.binding)
 
         context.solver.write_atom(atom)
 
