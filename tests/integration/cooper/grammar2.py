@@ -21,9 +21,14 @@ def get_grammar2():
         },
 
         # vp
-        { "syn": "vp(E1, T1) -> np(E1) is(E3) np(E2)", "sem": lambda np1, is1, np2: np1 + np2 + [('isa', E1, E2, T1)] },
-        { "syn": "vp(E1, T2) -> np(E1) is(E3) 'not' np(E2)", "sem": lambda np1, is1, np2: np1 + np2 + [('isa', E1, E2, T1), ('not_3v', T1, T2)] },
+        { "syn": "vp(E1, T1) -> np(E1) is(E3) a(E4) np(E2)", "sem": lambda np1, is1, a, np2: np1 + np2 + [('isa', E1, E2, T1)] },
+        { "syn": "vp(E1, T2) -> np(E1) is(E3) 'not' a(E4) np(E2)", "sem": lambda np1, is1, a, np2: np1 + np2 + [('isa', E1, E2, T1), ('not_3v', T1, T2)] },
         { "syn": "vp(E1, T3) -> vp(E1, T1) rel_clause(E1, T2)", "sem": lambda vp, rel_clause: vp + rel_clause + [('and_3v', T1, T2, T3)] },
+        { "syn": "vp(E1, T1) -> np(E1) is(E3) np(E2)", "sem": lambda np1, is1, np2: np1 + np2 + [('==', E1, E2)] + [('=', T1, 'true')] },
+
+        # article
+        { "syn": "a(E1) -> 'a'", "sem": lambda: [] },
+        { "syn": "a(E1) -> 'an'", "sem": lambda: [] },
 
         # rel_clause
         { "syn": "rel_clause(E1, T1) -> 'that' verb(E1, T1)", "sem": lambda verb: verb },
@@ -35,7 +40,6 @@ def get_grammar2():
         { "syn": "is(E1) -> 'is'", "sem": lambda: [] },
 
         # np
-        { "syn": "np(E1) -> 'a' proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
         { "syn": "np(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
         # proper noun

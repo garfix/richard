@@ -27,7 +27,7 @@ from .cooper.grammar2 import get_grammar2
 
 class TestCooper(unittest.TestCase):
     """
-    Replicates a dialog of the William S. Cooper's system as described in
+    Replicates a dialog of William S. Cooper's system as described in
     - Fact Retrieval and Deductive Question-Answering Informatlon Retrieval Systems - Cooper (1964)
 
     Topics:
@@ -141,7 +141,8 @@ class TestCooper(unittest.TestCase):
             ["magnesium is a nonmetal", "False"],
             ["magnesium is not a nonmetal", "True"],
             ["magnesium is a metal that burns rapidly", "True"],
-            # ["magnesium is magnesium", "True"],
+            ["magnesium is magnesium", "True"],
+                ["magnesium is hydrogen", "Unable to answer"],
             # ["some oxides are white", "True"],
             # ["no oxide is white", "False"],
             # ["oxides are not white", "False"],
