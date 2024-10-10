@@ -11,6 +11,7 @@ documentation
 * store
 * scoped / $isolated
 * `not_3v`
+* choice? isa(X, Y) vs X() :- Y()
 
 ## done
 

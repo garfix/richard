@@ -21,10 +21,11 @@ def get_grammar2():
         },
 
         # vp
-        { "syn": "vp(E1, T1) -> np(E1) is(E3) a(E4) np(E2)", "sem": lambda np1, is1, a, np2: np1 + np2 + [('isa', E1, E2, T1)] },
-        { "syn": "vp(E1, T2) -> np(E1) is(E3) 'not' a(E4) np(E2)", "sem": lambda np1, is1, a, np2: np1 + np2 + [('isa', E1, E2, T1), ('not_3v', T1, T2)] },
+        { "syn": "vp(E1, T1) -> np(E1, T2) is(E3) a(E4) np(E1, T1)", "sem": lambda np1, is1, a, np2: np1 + np2 },
+        { "syn": "vp(E1, T3) -> np(E1, T2) is(E3) 'not' a(E4) np(E1, T1)", "sem": lambda np1, is1, a, np2: np1 + np2 + [('not_3v', T1, T3)] },
         { "syn": "vp(E1, T3) -> vp(E1, T1) rel_clause(E1, T2)", "sem": lambda vp, rel_clause: vp + rel_clause + [('and_3v', T1, T2, T3)] },
-        { "syn": "vp(E1, T1) -> np(E1) is(E3) np(E2)", "sem": lambda np1, is1, np2: np1 + np2 + [('==', E1, E2)] + [('=', T1, 'true')] },
+        { "syn": "vp(E1, T1) -> np(E1, T1) is(E3) np(E2, T1)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + np1 + np2 + [('==', E1, E2)] },
+        { "syn": "vp(E1, T1) -> 'some' np(E1) are(E3) np(E2)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + np1 + np2 + [('==', E1, E2)] },
 
         # article
         { "syn": "a(E1) -> 'a'", "sem": lambda: [] },
@@ -38,10 +39,18 @@ def get_grammar2():
 
         # copula
         { "syn": "is(E1) -> 'is'", "sem": lambda: [] },
+        { "syn": "are(E1) -> 'are'", "sem": lambda: [] },
 
         # np
-        { "syn": "np(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
+        { "syn": "np(E1, T1) -> noun(E1, T1)", "sem": lambda noun: noun },
+        { "syn": "np(E1, T1) -> adj(E1, T1) np(E1, T1)", "sem": lambda adj, noun: adj + noun },
+
+        { "syn": "np(E1, T1) -> proper_noun(E1, T1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
+
+        # noun
+        { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+        { "syn": "proper_noun(E1, T1) -> token(E1)", "sem": lambda token: token },
     ]

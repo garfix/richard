@@ -16,8 +16,10 @@ class CooperModule(SomeModule):
             "resolve_name": Relation(query_function=self.resolve_name),
             "not_3v": Relation(query_function=self.not_3v),
             "and_3v": Relation(query_function=self.and_3v),
-            "isa": Relation(query_function=self.isa_query, write_function=self.isa_write),
-            "burns_rapidly": Relation(query_function=self.burns_rapidly_query, write_function=self.burns_rapidly_write),
+            "metal": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "element": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "nonmetal": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "burns_rapidly": Relation(query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']),
         }
 
 
@@ -81,38 +83,17 @@ class CooperModule(SomeModule):
             return [[None, None, 'unknown']]
 
 
-    def isa_query(self, values: list, context: ExecutionContext) -> list[list]:
-        entity, type, truth = values
-
-        results = self.ds.select("isa", ["entity", "type", "truth"], [entity, type, truth])
+    def common_query(self, values: list, context: ExecutionContext) -> list[list]:
+        results = self.ds.select(context.predicate, context.relation.attributes, values)
         if len(results) > 0:
             return results
         else:
             return [
-                [None, None, "unknown"]
+                values[:-1] + ["unknown"]
             ]
 
 
-    def isa_write(self, values: list, context: ExecutionContext) -> list[list]:
-        entity, type, truth = values
+    def common_write(self, values: list, context: ExecutionContext) -> list[list]:
+        print(context.predicate, values)
+        self.ds.insert(context.predicate, context.relation.attributes, values)
 
-        self.ds.insert("isa", ["entity", "type", "truth"], [entity, type, truth])
-
-
-
-    def burns_rapidly_query(self, values: list, context: ExecutionContext) -> list[list]:
-        entity, truth = values
-
-        results = self.ds.select("burns_rapidly", ["entity", "truth"], [entity, truth])
-        if len(results) > 0:
-            return results
-        else:
-            return [
-                [None, "unknown"]
-            ]
-
-
-    def burns_rapidly_write(self, values: list, context: ExecutionContext) -> list[list]:
-        entity, truth = values
-
-        self.ds.insert("burns_rapidly", ["entity", "truth"], [entity, truth])

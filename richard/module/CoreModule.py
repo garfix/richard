@@ -379,11 +379,12 @@ class CoreModule(SomeModule):
         return result
 
 
-    # ('store', atom)
+    # ('store', [body-atoms])
     def store(self, values: list, context: ExecutionContext) -> list[list]:
-        atom = bind_variables(values[0], context.binding)
+        atoms = bind_variables(values[0], context.binding)
 
-        context.solver.write_atom(atom)
+        for atom in atoms:
+            context.solver.write_atom(atom)
 
         return [
             [None]
