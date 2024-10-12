@@ -37,7 +37,7 @@ class IsolateIndependentParts:
         isolation_graph = {None: []}
 
         for i, atom in enumerate(atoms):
-            if self.is_first_atom_to_contain_root_variable(atom, atoms[:i], root_variables):
+            if self.atom_contains_root_variables(atom, root_variables):
                 dependent_atom = None
             elif self.is_needed_by_succeeding_atoms_outside_the_isolation(i, atoms, dependency_graph, root_variables):
                 dependent_atom = None
@@ -67,8 +67,7 @@ class IsolateIndependentParts:
             atom = atoms[i]
 
             # does the dependent atom contain a root variable?
-            found_root_variables = set(root_variables) & set(get_atom_variables(atom))
-            if len(found_root_variables) > 0:
+            if self.atom_contains_root_variables(atom, root_variables):
                 # yes: so we can't isolate this atom
                 return True
 
@@ -158,3 +157,5 @@ class IsolateIndependentParts:
         return tuple(isolated_args)
 
 
+    def atom_contains_root_variables(self, atom, root_variables: list[str]):
+        return len(set(root_variables) & set(get_atom_variables(atom)) ) > 0
