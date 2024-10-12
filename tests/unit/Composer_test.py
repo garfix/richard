@@ -1,6 +1,5 @@
 import unittest
 
-from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, E2, Body, Range
@@ -9,7 +8,6 @@ from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.type.SemanticTemplate import SemanticTemplate
 
@@ -76,6 +74,7 @@ class TestComposer(unittest.TestCase):
             { "syn": "s(V) -> np(E1) 'sleeps'", "sem": lambda np: np },
             { "syn": "np(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
             { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+            { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: token1 + ' ' + token2 },
         ]
 
         tokenizer = BasicTokenizer()
@@ -88,12 +87,20 @@ class TestComposer(unittest.TestCase):
             FindOne(composer),
         ])
 
+        # basic
+
         request = SentenceRequest("John sleeps")
         semantics = pipeline.enter(request)
 
         product: BasicParserProduct = request.get_current_product(parser)
         self.assertEqual(product.parse_tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
         self.assertEqual(str(semantics), "John")
+
+        # two tokens
+
+        request = SentenceRequest("John Walker sleeps")
+        semantics = pipeline.enter(request)
+        self.assertEqual(str(semantics), "John Walker")
 
 
     def test_multiple_return_variables(self):
