@@ -53,6 +53,9 @@ def find_state_sequences(chart: Chart, parent_state: ChartState, end_word_positi
     try to match the consequent_index'th consequent of parent_state to a new state, ending in the end_word_position
     and prepend the earlier states. this may result in multiple state sequences
     """
+    if end_word_position == 0:
+        return []
+
     sequences = []
     for state in chart.completed_states[end_word_position]:
         if state.rule.antecedent.equals(parent_state.rule.consequents[consequent_index]):
