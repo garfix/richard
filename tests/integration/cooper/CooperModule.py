@@ -19,6 +19,8 @@ class CooperModule(SomeModule):
             "metal": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "element": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "nonmetal": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "white": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "oxide": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "burns_rapidly": Relation(query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']),
         }
 
@@ -94,6 +96,6 @@ class CooperModule(SomeModule):
 
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
-        print(context.predicate, values)
+        # print(context.predicate, values)
         self.ds.insert(context.predicate, context.relation.attributes, values)
 

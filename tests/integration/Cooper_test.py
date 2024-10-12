@@ -37,6 +37,7 @@ class TestCooper(unittest.TestCase):
     - Learning rules
     - Users with different roles
     - Adverbs ("rapidly")
+    - the name "magnesium oxide" implies that it is an oxide
 
     Cooper's (unnamed) system has a knowledge base that contains information like "ferrous sulfide is a dark-gray compound that is brittle".
     This information is entered as natural language and stored in logical form by a system-user with write-access.
@@ -101,7 +102,7 @@ class TestCooper(unittest.TestCase):
         tests1 = [
             ["magnesium is a metal", "OK"],
             ["magnesium burns rapidly", "OK"],
-            # ["magnesium oxide is a white metallic oxide", "OK"],
+            ["magnesiumoxide is a white metallic oxide", "OK"],
             ['oxygen is a nonmetal', 'OK'],
             # ['ferrous sulfide is a dark-gray compound that is brittle', 'OK'],
             ['iron is a metal', 'OK'],
@@ -143,7 +144,7 @@ class TestCooper(unittest.TestCase):
             ["magnesium is a metal that burns rapidly", "True"],
             ["magnesium is magnesium", "True"],
                 ["magnesium is hydrogen", "Unable to answer"],
-            # ["some oxides are white", "True"],
+            ["some oxides are white", "True"],
             # ["no oxide is white", "False"],
             # ["oxides are not white", "False"],
             # ["magnesium oxide is an oxide", "True"],

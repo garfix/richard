@@ -52,10 +52,12 @@ def get_grammar1():
         # noun
         { "syn": "noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
         { "syn": "noun(E1, T1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
 
         # proper noun
         { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+        { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: token1 + " " + token2 },
     ]
