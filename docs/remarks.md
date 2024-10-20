@@ -1,3 +1,11 @@
+## 2024-10-20
+
+I finally got on track to the right algorithm for David Warren's isolate independent parts. I reread his article of the 20th time and then my eye fell on this little sentence:
+
+"Once the first goal has been solved, the rest of the body breaks down in ... independent parts, neither of which share uninstantiated variables with each other or with the head of the clause"
+
+The algorithm is now simpler, faster, and easier to understand. It is also more in line with the sort by cost algorithm. First find the first atom, then do the rest. It also makes the Chat-80 replication a bit faster even (0.246 > 0.23 s)
+
 ## 2024-10-05
 
 no metal is a nonmetal

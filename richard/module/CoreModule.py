@@ -10,8 +10,6 @@ from richard.type.OrderedSet import OrderedSet
 
 class CoreModule(SomeModule):
 
-    isolated_queries_cache: dict
-
     def __init__(self) -> None:
         self.relations = {
             "==": Relation(query_function=self.equals),
@@ -34,8 +32,6 @@ class CoreModule(SomeModule):
             "$isolated": Relation(query_function=self.isolated),
             "store": Relation(query_function=self.store),
         }
-
-        self.isolated_queries_cache = {}
 
 
     # ('==', E1, E2)
@@ -342,12 +338,8 @@ class CoreModule(SomeModule):
     def isolated(self, values: list, context: ExecutionContext) -> list[list]:
         body = values[0]
 
-        key = str(body) + str(context.binding)
-        if key in self.isolated_queries_cache:
-            return self.isolated_queries_cache[key]
-        else:
-            results = context.solver.solve(body, context.binding)
-            count = len(results)
+        results = context.solver.solve(body, context.binding)
+        count = len(results)
 
         if count == 0:
             result = []
@@ -355,8 +347,6 @@ class CoreModule(SomeModule):
             result = [
                 [None]
             ]
-
-        self.isolated_queries_cache[key] = result
 
         return result
 
