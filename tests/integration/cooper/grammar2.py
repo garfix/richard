@@ -26,6 +26,9 @@ def get_grammar2():
         { "syn": "vp(E1, T3) -> vp(E1, T1) rel_clause(E1, T2)", "sem": lambda vp, rel_clause: vp + rel_clause + [('and_3v', T1, T2, T3)] },
         { "syn": "vp(E1, T1) -> np(E1, T1) is(E3) np(E2, T1)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + np1 + np2 + [('==', E1, E2)] },
         { "syn": "vp(E1, T3) -> 'some' np(E1, T1) are(E3) np(E1, T2)", "sem": lambda np1, are, np2: np1 + np2 + [('and_3v', T1, T2, T3)] },
+        # no oxide is white
+        # if E1 is an oxide and E1 is white, then 'false', else 'unknown'
+        { "syn": "vp(E1, T3) -> 'no' np(E1, T1) is(E3) np(E1, T2)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('not_3v', T2, T3)] },
 
         # article
         { "syn": "a(E1) -> 'a'", "sem": lambda: [] },
@@ -51,6 +54,7 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'white'", "sem": lambda: [('white', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxides'", "sem": lambda: [('oxide', E1, T1)] },
 
         # proper noun

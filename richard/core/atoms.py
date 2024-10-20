@@ -24,12 +24,12 @@ def format_value(value: any, indent: str = "\n") -> str:
     return text
 
 
-def get_atom_variables(atom: tuple) -> list[str]:
+def get_atom_variables(construct: any) -> list[str]:
     variables = set()
-    for arg in atom:
-        if isinstance(arg, Variable):
-            variables.add(arg.name)
-        elif isinstance(arg, list):
+    if isinstance(construct, Variable):
+        variables.add(construct.name)
+    elif isinstance(construct, tuple) or isinstance(construct, list):
+        for arg in construct:
             for v in get_atom_variables(arg):
                 variables.add(v)
 

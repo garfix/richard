@@ -1,5 +1,7 @@
 ## todo
 
+* don't use isolate independent parts for predicates like "store"
+
 documentation
 
 * introducing new names

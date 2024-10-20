@@ -31,13 +31,19 @@ class TestIsolateIndependentParts(unittest.TestCase):
             [
                 [('contains', E4, E1), ('city', E1), ('has_population', E1, E2), ('=', E3, 1000000), ('>', E2, E3)],
                 [],
-                [('contains', E4, E1), ('$isolated', [('city', E1)]), ('has_population', E1, E2), ('=', E3, 1000000), ('$isolated', [('>', E2, E3)])]
+                [('contains', E4, E1), ('$isolated', [('city', E1)]), ('$isolated', [('has_population', E1, E2), ('$isolated', [('=', E3, 1000000), ('$isolated', [('>', E2, E3)])])])]
             ],
             # regression test
             [
                 [('resolve_name', 'magnesium', E1), ('resolve_name', 'metal', E2), ('isa', E1, E2, E3), ('not_3v', E3, E4)],
                 ['E4'],
                 [('resolve_name', 'magnesium', E1), ('resolve_name', 'metal', E2), ('isa', E1, E2, E3), ('not_3v', E3, E4)],
+            ],
+            # regression test
+            [
+                [ ('resolve_name', 'Equator', E2), ('resolve_name', 'Australasia', E3), ('not', [('in', E1, E3)]) ],
+                [],
+                [ ('resolve_name', 'Equator', E2), ('$isolated', [('resolve_name', 'Australasia', E3), ('$isolated', [('not', [('in', E1, E3)])])]) ],
             ],
         ]
 

@@ -145,7 +145,7 @@ class TestCooper(unittest.TestCase):
             ["magnesium is magnesium", "True"],
                 ["magnesium is hydrogen", "Unable to answer"],
             ["some oxides are white", "True"],
-            # ["no oxide is white", "False"],
+            ["no oxide is white", "False"],
             # ["oxides are not white", "False"],
             # ["magnesium oxide is an oxide", "True"],
             # ["every oxide is an oxide", "True"],
