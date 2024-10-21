@@ -14,19 +14,19 @@ def get_grammar1():
 
         # X is a Y
         {
-            "syn": "s(E1) -> noun(E1, T1) is(E3) a(E4) np(E1, T1)",
+            "syn": "s(E1) -> noun(E1, T1) is() a() np(E1, T1)",
             "sem": lambda noun, is1, a, np: [('=', T1, 'true')] + noun + [('store', np)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
         # X is a Y that is Z
         {
-            "syn": "s(E1) -> noun(E1, T1) is(E3) a(E4) np(E1, T1) 'that' is(E4) np(E1, T1)",
+            "syn": "s(E1) -> noun(E1, T1) is() a() np(E1, T1) 'that' is() np(E1, T1)",
             "sem": lambda noun, is1, a, np1, is2, np2: [('=', T1, 'true')] + noun + [('store', np1 + np2)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
         # no X is a Y
         {
-            "syn": "s(E1) -> 'no' noun(E1, T1) is(E3) a(E4) np(E1, T2)",
+            "syn": "s(E1) -> 'no' noun(E1, T1) is() a() np(E1, T2)",
             "sem": lambda noun, is1, a, np: [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', np[0], noun)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
@@ -45,11 +45,11 @@ def get_grammar1():
         { "syn": "verb(E1) -> 'burns' 'rapidly'", "sem": lambda: [('burns_rapidly', E1, 'true')] },
 
         # copula
-        { "syn": "is(E1) -> 'is'", "sem": lambda: [] },
+        { "syn": "is() -> 'is'", "sem": lambda: [] },
 
         # article
-        { "syn": "a(E1) -> 'a'", "sem": lambda: [] },
-        { "syn": "a(E1) -> 'an'", "sem": lambda: [] },
+        { "syn": "a() -> 'a'", "sem": lambda: [] },
+        { "syn": "a() -> 'an'", "sem": lambda: [] },
 
         # adjective
         { "syn": "adj(E1, T1) -> 'white'", "sem": lambda: [('white', E1, T1)] },
