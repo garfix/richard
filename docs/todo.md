@@ -1,6 +1,10 @@
 ## todo
 
-* don't use isolate independent parts for predicates like "store"
+optimize isolate independent parts:
+
+* is it possible to place the independent parts directly after the head atom? faster?
+* isolate the list arguments of an atom (this is not done yet)
+* but: don't use isolate independent parts for predicates like "store"
 
 documentation
 

@@ -1,3 +1,12 @@
+## 2024-10-21
+
+oxides are not white
+
+This means: "all oxides are not white", or "no oxide is white", or "E is an oxide and E is white: is false".
+
+The statement is categoric (holds for all entities), but in order to test it, we need to single out a single entity, or we may end up with some entities that apply and others that don't. So if we say "E is an oxide and E is white", that should not occur, so we state that this is false. If it doesn't occur the response would be "unknown", but if it does occur, the statement is false.
+
+
 ## 2024-10-20
 
 I finally got on track to the right algorithm for David Warren's isolate independent parts. I reread his article of the 20th time and then my eye fell on this little sentence:

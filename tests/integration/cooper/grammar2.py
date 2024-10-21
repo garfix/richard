@@ -29,6 +29,8 @@ def get_grammar2():
         # no oxide is white
         # if E1 is an oxide and E1 is white, then 'false', else 'unknown'
         { "syn": "vp(E1, T3) -> 'no' np(E1, T1) is(E3) np(E1, T2)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('not_3v', T2, T3)] },
+        # oxides are not white
+        { "syn": "vp(E1, T3) -> np(E1, T1) are(E3) 'not' np(E1, T2)", "sem": lambda np1, are, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('not_3v', T2, T3)] },
 
         # article
         { "syn": "a(E1) -> 'a'", "sem": lambda: [] },
