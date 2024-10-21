@@ -61,4 +61,5 @@ def get_grammar2():
 
         # proper noun
         { "syn": "proper_noun(E1, T1) -> token(E1)", "sem": lambda token: token },
+        { "syn": "proper_noun(E1, T1) -> token(E1) token(E1)", "sem": lambda token1, token2: token1 + " " + token2 },
     ]

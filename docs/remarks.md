@@ -6,6 +6,12 @@ This means: "all oxides are not white", or "no oxide is white", or "E is an oxid
 
 The statement is categoric (holds for all entities), but in order to test it, we need to single out a single entity, or we may end up with some entities that apply and others that don't. So if we say "E is an oxide and E is white", that should not occur, so we state that this is false. If it doesn't occur the response would be "unknown", but if it does occur, the statement is false.
 
+===
+
+magnesium oxide is an oxide
+
+
+
 
 ## 2024-10-20
 
