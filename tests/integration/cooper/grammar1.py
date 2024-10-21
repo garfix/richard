@@ -18,6 +18,12 @@ def get_grammar1():
             "sem": lambda noun, is1, a, np: [('=', T1, 'true')] + noun + [('store', np)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # X is a Y that is Z
+        {
+            "syn": "s(E1) -> noun(E1, T1) is(E3) a(E4) np(E1, T1) 'that' is(E4) np(E1, T1)",
+            "sem": lambda noun, is1, a, np1, is2, np2: [('=', T1, 'true')] + noun + [('store', np1 + np2)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
         # no X is a Y
         {
             "syn": "s(E1) -> 'no' noun(E1, T1) is(E3) a(E4) np(E1, T2)",
@@ -47,13 +53,16 @@ def get_grammar1():
 
         # adjective
         { "syn": "adj(E1, T1) -> 'white'", "sem": lambda: [('white', E1, T1)] },
+        { "syn": "adj(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
         { "syn": "adj(E1, T1) -> 'metallic'", "sem": lambda: [('metal', E1, T1)] },
 
         # noun
         { "syn": "noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'compound'", "sem": lambda: [('compound', E1, T1)] },
         { "syn": "noun(E1, T1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
 
 

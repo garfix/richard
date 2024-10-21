@@ -18,8 +18,11 @@ class CooperModule(SomeModule):
             "and_3v": Relation(query_function=self.and_3v),
             "metal": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "element": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "compound": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "nonmetal": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "white": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "dark_gray": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "brittle": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "oxide": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "burns_rapidly": Relation(query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']),
         }

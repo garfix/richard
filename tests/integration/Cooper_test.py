@@ -104,7 +104,7 @@ class TestCooper(unittest.TestCase):
             ["magnesium burns rapidly", "OK"],
             ["magnesium oxide is a white metallic oxide", "OK"],
             ['oxygen is a nonmetal', 'OK'],
-            # ['ferrous sulfide is a dark-gray compound that is brittle', 'OK'],
+            ['ferrous sulfide is a dark-gray compound that is brittle', 'OK'],
             ['iron is a metal', 'OK'],
             ['sulfur is a nonmetal', 'OK'],
             ['gasoline is a fuel', 'OK'],
@@ -148,10 +148,10 @@ class TestCooper(unittest.TestCase):
             ["no oxide is white", "False"],
             ["oxides are not white", "False"],
             ["magnesium oxide is an oxide", "True"],
-            # ["every oxide is an oxide", "True"],
-            # ["ferrous sulfide is dark gray", "True"],
-            # ["ferrous sulfide is a brittle compound", "True"],
-            # ["ferrous sulfide is not brittle", "False"],
+            ["every oxide is an oxide", "True"],
+            ["ferrous sulfide is dark-gray", "True"],
+            ["ferrous sulfide is a brittle compound", "True"],
+            ["ferrous sulfide is not brittle", "False"],
             # ["some sulfides are brittle", "True"], # !
             # ["ferrous sulfide is not a compound that is not dark gray", "True"], # !
             # ["anything that is not a compound is not ferrous sulfide", "True"], # !

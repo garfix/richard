@@ -10,7 +10,23 @@ The statement is categoric (holds for all entities), but in order to test it, we
 
 magnesium oxide is an oxide
 
+simple
 
+===
+
+every oxide is an oxide
+
+With "every" statements, when we test we might find that some oxides are oxides and others aren't; and what to respond then? So we try to find the exception and from failing to find it we conclude that the statement is true. I have to add that this is not really a deduction one can make in an open world hypothesis.
+
+However this is not a usual "every" statement. This one's a priori true. It's a tautology. But to treat it as a tautology we should recognize it as such.
+
+However, howver, this is not what Cooper does. He deduces the fact that every oxide is an oxide from the fact that magnesium oxide is an oxide (11). This deduction can only be made in closed world.
+
+When you read his comments, what he really does is make the tautology, but he says that one can only say something about oxides it there are such things as oxides. And he uses the statement "magnesium oxide is a white metallic oxide" to prove that there are oxides.
+
+Cooper notes: "in Lukasiewicz's formulation, sentences of the form Aa:x and lxx are taken to he tautologously true"
+
+Our library can't express the tautology of the sentence, but is nevertheless able to pass the sentence.
 
 
 ## 2024-10-20
