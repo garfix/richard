@@ -66,6 +66,7 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxides'", "sem": lambda: [('oxide', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'sulfides'", "sem": lambda: [('sulfide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
 
         # proper noun

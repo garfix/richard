@@ -57,16 +57,23 @@ def get_grammar1():
         { "syn": "adj(E1, T1) -> 'metallic'", "sem": lambda: [('metal', E1, T1)] },
 
         # noun
-        { "syn": "noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
-        { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
-        { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
-        { "syn": "noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
-        { "syn": "noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
-        { "syn": "noun(E1, T1) -> 'compound'", "sem": lambda: [('compound', E1, T1)] },
+        { "syn": "noun(E1, T1) -> common_noun(E1, T1)", "sem": lambda common_noun: common_noun },
+        # magnesium
         { "syn": "noun(E1, T1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
+        # ferrous sulfide
+        { "syn": "noun(E1, T1) -> proper_noun(E1) proper_noun(E1)", "sem": lambda proper_noun1, proper_noun2: [('resolve_name', proper_noun1 + " " + proper_noun2, E1)] },
 
+        # common noun
+        { "syn": "common_noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'sulfide'", "sem": lambda: [('sulfide', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'compound'", "sem": lambda: [('compound', E1, T1)] },
 
         # proper noun
         { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
-        { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: token1 + " " + token2 },
+        { "syn": "proper_noun(E1) -> 'oxide'", "sem": lambda: 'oxide', "inf": [("oxide", e1, 'true')],},
+        { "syn": "proper_noun(E1) -> 'sulfide'", "sem": lambda: 'sulfide', "inf": [("sulfide", e1, 'true')],},
     ]

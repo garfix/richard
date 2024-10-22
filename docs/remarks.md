@@ -24,9 +24,23 @@ However, howver, this is not what Cooper does. He deduces the fact that every ox
 
 When you read his comments, what he really does is make the tautology, but he says that one can only say something about oxides it there are such things as oxides. And he uses the statement "magnesium oxide is a white metallic oxide" to prove that there are oxides.
 
-Cooper notes: "in Lukasiewicz's formulation, sentences of the form Aa:x and lxx are taken to he tautologously true"
+Cooper notes: "in Lukasiewicz's formulation, sentences of the form Axx and Ixx are taken to be tautologously true"
 
 Our library can't express the tautology of the sentence, but is nevertheless able to pass the sentence.
+
+===
+
+some sulfides are brittle
+
+Cooper's system deduces from the name "ferrous sulfide" that this is a sulfide.
+
+Can be solved like this:
+
+    { "syn": "noun(E1, T1) -> proper_noun(E1) proper_noun(E1)", "sem": lambda proper_noun1, proper_noun2: [('resolve_name', proper_noun1 + " " + proper_noun2, E1)] },
+    { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+    { "syn": "proper_noun(E1) -> 'sulfide'", "sem": lambda: 'sulfide', "inf": [("sulfide", e1, 'true')],},
+
+That is: "ferrous sulfide" consists of two proper nouns. The first is free-form. The second is from a fixed group, and implies a certain type. That the second name is "sulfide" implies ("inf") that this entity is a sulfide.
 
 
 ## 2024-10-20
