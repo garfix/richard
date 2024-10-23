@@ -6,6 +6,9 @@ from richard.processor.parser.helper.grammar_functions import apply
 T1 = Variable('T1')
 T2 = Variable('T2')
 T3 = Variable('T3')
+T4 = Variable('T4')
+T5 = Variable('T5')
+T6 = Variable('T6')
 
 t1 = ReifiedVariable('T1')
 
@@ -35,6 +38,10 @@ def get_grammar2():
         { "syn": "vp(E1, T3) -> np(E1, T1) is() 'not' np(E1, T2)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('not_3v', T2, T3)] },
         # every oxide is an oxide
         { "syn": "vp(E1, T3) -> 'every' np(E1, T1) is() a() np(E1, T2)", "sem": lambda np1, is1, a, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('and_3v', T1, T2, T3)] },
+        # ferrous sulfide is not a compound that is not dark-gray
+        { "syn": "vp(E1, T6) -> np(E1, T1) is() 'not' a() np(E1, T2) 'that' is() 'not' np(E1, T3) ",
+          "sem": lambda np1, is1, a, np2, is2, np3: np1 + np2 + np3 + [('not_3v', T3, T4), ('and_3v', T2, T4, T5), ('not_3v', T5, T6)]},
+
 
         # article
         { "syn": "a() -> 'a'", "sem": lambda: [] },
