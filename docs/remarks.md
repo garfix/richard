@@ -1,3 +1,11 @@
+## 2024-10-23
+
+anything that is not a compound is not ferrous sulfide
+
+Another "every" sentence, so its reverse should be false
+
+nothing that is not a compound is ferrous sulfide
+
 ## 2024-10-21
 
 oxides are not white

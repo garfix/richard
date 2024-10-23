@@ -154,7 +154,7 @@ class TestCooper(unittest.TestCase):
             ["ferrous sulfide is not brittle", "False"],
             ["some sulfides are brittle", "True"],
             ["ferrous sulfide is not a compound that is not dark-gray", "True"],
-            # ["anything that is not a compound is not ferrous sulfide", "True"], # !
+            ["anything that is not a compound is not ferrous sulfide", "True"],
             # ["no dark gray thing is a sulfide", "False"],
             # ["ferrous sulfide is white", "False"],
             # ["sodium chloride is a compound", "True"],
