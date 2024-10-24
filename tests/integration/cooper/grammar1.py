@@ -51,7 +51,10 @@ def get_grammar1():
         # X's are not Y's
         {
             "syn": "s(E1) -> noun(E1, T1) are() 'not' np(E1, T2)",
-            "sem": lambda noun, are, np: [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', noun[0], np)],
+            "sem": lambda noun, are, np: [
+                ('scoped', [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', noun[0], np)]),
+                ('scoped', [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', np[0], noun)])
+            ],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
 

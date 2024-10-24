@@ -14,6 +14,28 @@ The last rule is ambiguous; it could mean:
 
 and probably both are true, because this is a statement of mutual exclusion. It is the last one that is needed here.
 
+If I only implement the last one, all is well, but if I implement both, like this
+
+        {
+            "syn": "s(E1) -> noun(E1, T1) are() 'not' np(E1, T2)",
+            "sem": lambda noun, are, np: [
+                ('scoped', [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', noun[0], np)]),
+                ('scoped', [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', np[0], noun)])
+            ],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
+
+Execution meets an infinite loop because now `compound()` checks `element()` and `element()` checks `compound()`. It can be solved by reversing the signs of one of them:
+
+                ('scoped', [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', noun[0], np)]),
+                ('scoped', [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', np[0], noun)])
+
+which makes it
+
+* something is not a compound if it is an element
+* something is an element if it is not a compound
+
+
 ## 2024-10-23
 
 anything that is not a compound is not ferrous sulfide
