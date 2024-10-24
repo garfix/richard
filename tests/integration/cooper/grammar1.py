@@ -85,6 +85,13 @@ def get_grammar1():
             "sem": lambda noun, are, np: [('=', T1, 'true'), ('=', T2, 'true'), ('learn_rule', np[0], noun)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # any thing that burns rapidly burns
+        {
+            "syn": "s(E1) -> 'any' 'thing' 'that' verb(E1) verb(E1)",
+            "sem": lambda verb1, verb2: [('=', T1, 'true'), ('=', T2, 'true'), ('learn_rule', verb2[0], verb1)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
+
 
         # np
         { "syn": "np(E1, T1) -> noun(E1, T1)", "sem": lambda noun: noun },
@@ -92,7 +99,9 @@ def get_grammar1():
 
         # verb
         { "syn": "verb(E1) -> 'burn'", "sem": lambda: [('burns', E1, 'true')] },
+        { "syn": "verb(E1) -> 'burns'", "sem": lambda: [('burns', E1, 'true')] },
         { "syn": "verb(E1) -> 'burns' 'rapidly'", "sem": lambda: [('burns_rapidly', E1, 'true')] },
+        { "syn": "verb(E1) -> 'rapidly' 'burns'", "sem": lambda: [('burns_rapidly', E1, 'true')] },
 
         # copula
         { "syn": "is() -> 'is'", "sem": lambda: [] },
