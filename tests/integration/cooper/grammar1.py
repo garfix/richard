@@ -30,6 +30,12 @@ def get_grammar1():
             "sem": lambda noun, is1, a, np: [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', np[0], noun)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # X is not a Y
+        {
+            "syn": "s(E1) -> a() noun(E1, T1) is() 'not' a() np(E1, T2)",
+            "sem": lambda a1, noun, is1, a2, np: [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', np[0], noun)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
         # noun verb
         {
             "syn": "s(E1) -> noun(E1, T1) verb(E1)",
@@ -60,6 +66,12 @@ def get_grammar1():
                 ('scoped', [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', noun[0], np)]),
                 ('scoped', [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', np[0], noun)])
             ],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
+        # X's are Y's
+        {
+            "syn": "s(E1) -> noun(E1, T1) are() np(E1, T2)",
+            "sem": lambda noun, are, np: [('=', T1, 'true'), ('=', T2, 'true'), ('learn_rule', np[0], noun)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
 
