@@ -36,6 +36,12 @@ def get_grammar1():
             "sem": lambda noun, verb: noun + [('store', verb)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # dark-gray things are not white
+        {
+            "syn": "s(E1) -> adj(E1, T1) 'things' are() 'not' adj(E1, T2)",
+            "sem": lambda adj1, are, adj2: [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', adj2[0], adj1)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
 
         # np
         { "syn": "np(E1, T1) -> noun(E1, T1)", "sem": lambda noun: noun },
@@ -46,6 +52,7 @@ def get_grammar1():
 
         # copula
         { "syn": "is() -> 'is'", "sem": lambda: [] },
+        { "syn": "are() -> 'are'", "sem": lambda: [] },
 
         # article
         { "syn": "a() -> 'a'", "sem": lambda: [] },
