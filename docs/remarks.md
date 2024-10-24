@@ -1,3 +1,19 @@
+## 2024-10-24
+
+salt is an element
+
+This is derived from
+
+* salt is a compound
+* elements are not compounds
+
+The last rule is ambiguous; it could mean:
+
+* something is not a compound if it is an element
+* something is not an element if it is a compound
+
+and probably both are true, because this is a statement of mutual exclusion. It is the last one that is needed here.
+
 ## 2024-10-23
 
 anything that is not a compound is not ferrous sulfide

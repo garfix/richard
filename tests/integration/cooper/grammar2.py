@@ -75,6 +75,7 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'compound'", "sem": lambda: [('compound', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'white'", "sem": lambda: [('white', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },

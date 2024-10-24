@@ -48,6 +48,12 @@ def get_grammar1():
             "sem": lambda token1, token2, noun: noun + [('resolve_name', token1 + " " + token2, E2)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # X's are not Y's
+        {
+            "syn": "s(E1) -> noun(E1, T1) are() 'not' np(E1, T2)",
+            "sem": lambda noun, are, np: [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', noun[0], np)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
 
         # np
         { "syn": "np(E1, T1) -> noun(E1, T1)", "sem": lambda noun: noun },
@@ -83,7 +89,9 @@ def get_grammar1():
         { "syn": "common_noun(E1, T1) -> 'sulfide'", "sem": lambda: [('sulfide', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'elements'", "sem": lambda: [('element', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'compound'", "sem": lambda: [('compound', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'compounds'", "sem": lambda: [('compound', E1, T1)] },
 
         # proper noun
         { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
