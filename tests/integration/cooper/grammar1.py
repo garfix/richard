@@ -44,6 +44,11 @@ def get_grammar1():
         },
         # X is Y (X is another name for Y)
         {
+            "syn": "s(E1) -> noun(E1, T1) 'is' noun(E1, T1)",
+            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2,
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
+        {
             "syn": "s(E2) -> token(E1) token(E1) 'is' noun(E2, T1)",
             "sem": lambda token1, token2, noun: noun + [('resolve_name', token1 + " " + token2, E2)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
@@ -90,6 +95,7 @@ def get_grammar1():
         { "syn": "common_noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'sulfide'", "sem": lambda: [('sulfide', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'chloride'", "sem": lambda: [('chloride', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'elements'", "sem": lambda: [('element', E1, T1)] },
@@ -100,4 +106,5 @@ def get_grammar1():
         { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
         { "syn": "proper_noun(E1) -> 'oxide'", "sem": lambda: 'oxide', "inf": [("oxide", e1, 'true')],},
         { "syn": "proper_noun(E1) -> 'sulfide'", "sem": lambda: 'sulfide', "inf": [("sulfide", e1, 'true')],},
+        { "syn": "proper_noun(E1) -> 'chloride'", "sem": lambda: 'chloride', "inf": [("chloride", e1, 'true')],},
     ]

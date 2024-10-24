@@ -25,6 +25,7 @@ class CooperModule(SomeModule):
             "brittle": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "oxide": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "sulfide": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
+            "chloride": Relation(query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']),
             "burns_rapidly": Relation(query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']),
         }
 
