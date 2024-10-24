@@ -42,6 +42,12 @@ def get_grammar1():
             "sem": lambda adj1, are, adj2: [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', adj2[0], adj1)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # X is Y (X is another name for Y)
+        {
+            "syn": "s(E2) -> token(E1) token(E1) 'is' noun(E2, T1)",
+            "sem": lambda token1, token2, noun: noun + [('resolve_name', token1 + " " + token2, E2)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
 
         # np
         { "syn": "np(E1, T1) -> noun(E1, T1)", "sem": lambda noun: noun },

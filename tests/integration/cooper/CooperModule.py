@@ -31,9 +31,14 @@ class CooperModule(SomeModule):
 
     def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
         name = values[0].lower()
+        id = values[1]
 
         out_values = self.ds.select("name", ["name", "id"], [name, None])
         if len(out_values) > 0:
+            # check if given id matches
+            if id is not None:
+                if out_values[0][1] != id:
+                    return []
             return out_values
         else:
             id = context.arguments[1].name

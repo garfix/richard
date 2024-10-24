@@ -24,7 +24,7 @@ def get_grammar2():
         },
 
         # vp
-        { "syn": "vp(E1, T1) -> np(E1, T2) is() a() np(E1, T1)", "sem": lambda np1, is1, a, np2: np1 + np2 },
+        { "syn": "vp(E1, T3) -> np(E1, T2) is() a() np(E1, T1)", "sem": lambda np1, is1, a, np2: np1 + np2 + [('and_3v', T1, T2, T3)] },
         { "syn": "vp(E1, T3) -> np(E1, T2) is() 'not' a() np(E1, T1)", "sem": lambda np1, is1, a, np2: np1 + np2 + [('not_3v', T1, T3)] },
         { "syn": "vp(E1, T3) -> vp(E1, T1) rel_clause(E1, T2)", "sem": lambda vp, rel_clause: vp + rel_clause + [('and_3v', T1, T2, T3)] },
         { "syn": "vp(E1, T3) -> np(E1, T1) is() np(E1, T2)", "sem": lambda np1, is1, np2: np1 + np2 + [('and_3v', T1, T2, T3)] },

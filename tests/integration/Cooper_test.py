@@ -127,7 +127,7 @@ class TestCooper(unittest.TestCase):
             # ['sulfuric acid is a compound', 'OK'],
             # ['elements are not compounds', 'OK'],
             # ['salt is sodium chloride', 'OK'],
-            # ['sodium chloride is salt', 'OK'],
+            ['sodium chloride is salt', 'OK'],
             # ['oxides are compounds', 'OK'],
             # ['metals are metallic', 'OK'],
             ['no metal is a nonmetal', 'OK'],
