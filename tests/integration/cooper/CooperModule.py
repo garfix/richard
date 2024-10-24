@@ -35,13 +35,12 @@ class CooperModule(SomeModule):
 
         out_values = self.ds.select("name", ["name", "id"], [name, None])
         if len(out_values) > 0:
-            # check if given id matches
-            if id is not None:
-                if out_values[0][1] != id:
-                    return []
             return out_values
         else:
-            id = context.arguments[1].name
+            # if id is given, a new name is linked to that id
+            if id is None:
+                # otherwise a new id is created for the name
+                id = context.arguments[1].name
             self.ds.insert("name", ["name", "id", ], [name, id])
             return [
                 [name, id]
