@@ -44,6 +44,9 @@ def get_grammar2():
         # anything that is not a compound is not ferrous sulfide
         { "syn": "vp(E1, T5) -> 'anything' 'that' is() 'not' a() np(E1, T1) is() 'not' np(E1, T2)",
           "sem": lambda is1, a, np1, is2, np2: np1 + np2 + [('not_3v', T1, T3), ('and_3v', T3, T2, T4), ('not_3v', T4, T5)]},
+        # no dark gray thing is a sulfide
+        { "syn": "vp(E1, T4) -> 'no' adj(E1, T1) 'thing' is() a() np(E1, T2)",
+          "sem": lambda adj, is1, a, np: adj + np + [('and_3v', T1, T2, T3), ('not_3v', T3, T4)]},
 
         # article
         { "syn": "a() -> 'a'", "sem": lambda: [] },
@@ -66,6 +69,7 @@ def get_grammar2():
 
         # adjective
         { "syn": "adj(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
+        { "syn": "adj(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
 
         # noun
         { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
@@ -75,6 +79,7 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxides'", "sem": lambda: [('oxide', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'sulfide'", "sem": lambda: [('sulfide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'sulfides'", "sem": lambda: [('sulfide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
 
