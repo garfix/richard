@@ -47,6 +47,10 @@ def get_grammar2():
         # no dark gray thing is a sulfide
         { "syn": "vp(E1, T4) -> 'no' adj(E1, T1) 'thing' is() a() np(E1, T2)",
           "sem": lambda adj, is1, a, np: adj + np + [('and_3v', T1, T2, T3), ('not_3v', T3, T4)]},
+        # gasoline is a fuel that burns
+        { "syn": "vp(E1, T5) -> np(E1, T1) is() a() np(E1, T2) 'that' verb(E1, T3)",
+          "sem": lambda np1, is1, a, np2, verb: np1 + np2 + verb + [('and', T1, T2, T4), ('and_3v', T3, T4, T5)] },
+
 
         # article
         { "syn": "a() -> 'a'", "sem": lambda: [] },
@@ -56,6 +60,7 @@ def get_grammar2():
         { "syn": "rel_clause(E1, T1) -> 'that' verb(E1, T1)", "sem": lambda verb: verb },
 
         # verb
+        { "syn": "verb(E1, T1) -> 'burns'", "sem": lambda: [('burns', E1, T1)] },
         { "syn": "verb(E1, T1) -> 'burns' 'rapidly'", "sem": lambda: [('burns_rapidly', E1, T1)] },
 
         # copula
@@ -83,6 +88,7 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'sulfide'", "sem": lambda: [('sulfide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'sulfides'", "sem": lambda: [('sulfide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'fuel'", "sem": lambda: [('fuel', E1, T1)] },
 
         # proper noun
         { "syn": "proper_noun(E1, T1) -> token(E1)", "sem": lambda token: token },

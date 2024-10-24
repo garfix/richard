@@ -42,16 +42,27 @@ def get_grammar1():
             "sem": lambda noun, verb: noun + [('store', verb)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        {
+            "syn": "s(E1) -> adj(E1, T1) 'things' verb(E1)",
+            "sem": lambda adj, verb: [('=', T1, 'true'), ('=', T2, 'true'), ('learn_rule', verb[0], adj)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
         # dark-gray things are not white
         {
             "syn": "s(E1) -> adj(E1, T1) 'things' are() 'not' adj(E1, T2)",
             "sem": lambda adj1, are, adj2: [('=', T1, 'true'), ('=', T2, 'false'), ('learn_rule', adj2[0], adj1)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # gasoline is combustable
+        {
+            "syn": "s(E1) -> noun(E1, T1) 'is' adj(E1, T1)",
+            "sem": lambda noun, adj: [('=', T1, 'true'), ('=', T2, 'true'), ('learn_rule', adj[0], noun)],
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
         # X is Y (X is another name for Y)
         {
             "syn": "s(E1) -> noun(E1, T1) 'is' noun(E1, T1)",
-            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2,
+            "sem": lambda noun1, noun2: noun1 + noun2,
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
         {
@@ -80,6 +91,7 @@ def get_grammar1():
         { "syn": "np(E1, T1) -> adj(E1, T1) np(E1, T1)", "sem": lambda adj, noun: adj + noun },
 
         # verb
+        { "syn": "verb(E1) -> 'burn'", "sem": lambda: [('burns', E1, 'true')] },
         { "syn": "verb(E1) -> 'burns' 'rapidly'", "sem": lambda: [('burns_rapidly', E1, 'true')] },
 
         # copula
@@ -94,6 +106,7 @@ def get_grammar1():
         { "syn": "adj(E1, T1) -> 'white'", "sem": lambda: [('white', E1, T1)] },
         { "syn": "adj(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
         { "syn": "adj(E1, T1) -> 'metallic'", "sem": lambda: [('metal', E1, T1)] },
+        { "syn": "adj(E1, T1) -> 'combustable'", "sem": lambda: [('combustable', E1, T1)] },
 
         # noun
         { "syn": "noun(E1, T1) -> common_noun(E1, T1)", "sem": lambda common_noun: common_noun },
@@ -104,6 +117,7 @@ def get_grammar1():
 
         # common noun
         { "syn": "common_noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
+        { "syn": "common_noun(E1, T1) -> 'fuel'", "sem": lambda: [('fuel', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "common_noun(E1, T1) -> 'sulfide'", "sem": lambda: [('sulfide', E1, T1)] },

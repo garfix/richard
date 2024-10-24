@@ -4,7 +4,6 @@ import unittest
 from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
-from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -108,9 +107,9 @@ class TestCooper(unittest.TestCase):
             ['iron is a metal', 'OK'],
             ['sulfur is a nonmetal', 'OK'],
             ['gasoline is a fuel', 'OK'],
-            # ['gasoline is combustable', 'OK'],
-            # ['combustable things burn', 'OK'],
-            # ['fuels are combustable', 'OK'],
+            ['gasoline is combustable', 'OK'],
+            ['combustable things burn', 'OK'],
+            ['fuels are combustable', 'OK'],
             ['ice is a solid', 'OK'],
             ['steam is a gas', 'OK'],
             ['magnesium is an element', 'OK'],
@@ -159,7 +158,7 @@ class TestCooper(unittest.TestCase):
             ["sodium chloride is a compound", "True"],
             ["salt is an element", "False"],
             ["sodium chloride is an element", "False"],
-            # ["gasoline is a fuel that burns", "True"],
+            ["gasoline is a fuel that burns", "True"],
         ]
 
         logger = Logger()
