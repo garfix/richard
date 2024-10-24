@@ -158,7 +158,7 @@ class TestCooper(unittest.TestCase):
             ["ferrous sulfide is white", "False"],
             ["sodium chloride is a compound", "True"],
             ["salt is an element", "False"],
-            # ["sodium chloride is an element", "False"],
+            ["sodium chloride is an element", "False"],
             # ["gasoline is a fuel that burns", "True"],
         ]
 
