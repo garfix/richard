@@ -39,7 +39,7 @@ class Chat80Module(SomeModule):
 
 
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select(context.predicate, ["id"], values)
+        return self.ds.select(context.relation.predicate, ["id"], values)
 
 
     def capital(self, values: list, context: ExecutionContext) -> list[list]:
@@ -76,7 +76,7 @@ class Chat80Module(SomeModule):
         }
 
         out_values = []
-        for region in regions[context.predicate]:
+        for region in regions[context.relation.predicate]:
             ids = self.ds.select_column(table, columns, [country_id, region])
             for id in ids:
                 out_values.append([id])

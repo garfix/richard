@@ -24,7 +24,7 @@ class TestModule(SomeModule):
 
 
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select(context.predicate, ['id'], values)
+        out_values = self.ds.select(context.relation.predicate, ['id'], values)
         return out_values
 
 

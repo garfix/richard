@@ -97,7 +97,7 @@ class CooperModule(SomeModule):
 
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
-        results = self.ds.select(context.predicate, context.relation.attributes, values)
+        results = self.ds.select(context.relation.predicate, context.relation.attributes, values)
         if len(results) > 0:
             return results
         else:
@@ -108,5 +108,5 @@ class CooperModule(SomeModule):
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
         # print(context.predicate, values)
-        self.ds.insert(context.predicate, context.relation.attributes, values)
+        self.ds.insert(context.relation.predicate, context.relation.attributes, values)
 

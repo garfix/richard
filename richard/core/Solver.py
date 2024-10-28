@@ -98,7 +98,7 @@ class Solver(SomeSolver):
 
         rows = []
         for relation in relations:
-            context = ExecutionContext(relation, predicate, arguments, binding, self)
+            context = ExecutionContext(relation, arguments, binding, self)
 
             # call the relation's query function
             out_values = relation.query_function(db_values, context)
@@ -137,6 +137,6 @@ class Solver(SomeSolver):
 
         for relation in relations:
             if relation.write_function is not None:
-                context = ExecutionContext(relation, predicate, arguments, {}, self)
+                context = ExecutionContext(relation, arguments, {}, self)
                 relation.write_function(arguments, context)
 
