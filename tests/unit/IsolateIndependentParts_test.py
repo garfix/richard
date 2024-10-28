@@ -13,13 +13,13 @@ class TestIsolateIndependentParts(unittest.TestCase):
             [
                 [('a', E1), ('b', E1, E2)],
                 [],
-                [('a', E1), ('$isolated', [('b', E1, E2)])]
+                [('a', E1), ('scoped', [('b', E1, E2)])]
             ],
             # typical case: two isolated parts
             [
                 [('a', E1), ('b', E1, E2), ('c', E2), ('d', E1, E3), ('e', E3)],
                 [],
-                [('a', E1), ('$isolated', [('b', E1, E2), ('$isolated', [('c', E2)])]), ('$isolated', [('d', E1, E3), ('$isolated', [('e', E3)])])]
+                [('a', E1), ('scoped', [('b', E1, E2), ('scoped', [('c', E2)])]), ('scoped', [('d', E1, E3), ('scoped', [('e', E3)])])]
             ],
             # root variable: E2 depends only on E1 but E2 is used in the result
             [
@@ -31,7 +31,7 @@ class TestIsolateIndependentParts(unittest.TestCase):
             [
                 [('contains', E4, E1), ('city', E1), ('has_population', E1, E2), ('=', E3, 1000000), ('>', E2, E3)],
                 [],
-                [('contains', E4, E1), ('$isolated', [('city', E1)]), ('$isolated', [('has_population', E1, E2), ('$isolated', [('=', E3, 1000000), ('$isolated', [('>', E2, E3)])])])]
+                [('contains', E4, E1), ('scoped', [('city', E1)]), ('scoped', [('has_population', E1, E2), ('scoped', [('=', E3, 1000000), ('scoped', [('>', E2, E3)])])])]
             ],
             # regression test
             [
@@ -43,7 +43,7 @@ class TestIsolateIndependentParts(unittest.TestCase):
             [
                 [ ('resolve_name', 'Equator', E2), ('resolve_name', 'Australasia', E3), ('not', [('in', E1, E3)]) ],
                 [],
-                [ ('resolve_name', 'Equator', E2), ('$isolated', [('resolve_name', 'Australasia', E3), ('$isolated', [('not', [('in', E1, E3)])])]) ],
+                [ ('resolve_name', 'Equator', E2), ('scoped', [('resolve_name', 'Australasia', E3), ('scoped', [('not', [('in', E1, E3)])])]) ],
             ],
         ]
 

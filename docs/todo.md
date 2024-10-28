@@ -1,23 +1,23 @@
 ## todo
 
+documentation
+
+* learn rules
+* assigning synonyms
+* ferrous sulfide => sulfide(X) "ferrous sulfide" not just a name, but a declaration as well "some sulfides are brittle"
+* store
+* scoped / scoped
+* choice? isa(X, Y) vs X() :- Y()
+
+## later
+
+use sqlite3 as default db?
+
 optimize isolate independent parts:
 
 * is it possible to place the independent parts directly after the head atom? faster?
 * isolate the list arguments of an atom (this is not done yet)
 * but: don't use isolate independent parts for predicates like "store"
-
-documentation
-
-* introducing new names
-* assigning synonyms
-* negative atoms
-* ferrous sulfide => sulfide(X) "ferrous sulfide" not just a name, but a declaration as well "some sulfides are brittle"
-* open world / closed world
-* answering using open world
-* store
-* scoped / $isolated
-* `not_3v`
-* choice? isa(X, Y) vs X() :- Y()
 
 ## done
 

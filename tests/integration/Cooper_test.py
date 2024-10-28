@@ -162,7 +162,7 @@ class TestCooper(unittest.TestCase):
         ]
 
         logger = Logger()
-        # logger.log_no_tests()
+        logger.log_no_tests()
         logger.log_all_tests()
         # logger.log_only_last_test()
         logger.log_products()

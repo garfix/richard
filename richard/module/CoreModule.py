@@ -29,7 +29,6 @@ class CoreModule(SomeModule):
             "all": Relation(query_function=self.determiner_all),
             "none": Relation(query_function=self.determiner_none),
             "scoped": Relation(query_function=self.scoped),
-            "$isolated": Relation(query_function=self.isolated),
             "store": Relation(query_function=self.store),
         }
 
@@ -331,24 +330,6 @@ class CoreModule(SomeModule):
             ]
         else:
             return []
-
-
-    # ('$isolated', [body-atoms])
-    # this is a system predicate, and performs caching
-    def isolated(self, values: list, context: ExecutionContext) -> list[list]:
-        body = values[0]
-
-        results = context.solver.solve(body, context.binding)
-        count = len(results)
-
-        if count == 0:
-            result = []
-        else:
-            result = [
-                [None]
-            ]
-
-        return result
 
 
     # ('scoped', [body-atoms])
