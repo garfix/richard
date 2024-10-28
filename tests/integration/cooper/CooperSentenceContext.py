@@ -5,8 +5,8 @@ from richard.module.SimpleMemoryModule import SimpleMemoryModule
 class CooperSentenceContext(SimpleMemoryModule):
 
     def __init__(self) -> None:
-        super().__init__({
-            "format": Relation(attributes=["type"]),
-            "format_ynu": Relation(attributes=["answer"]),
-            "format_canned": Relation(attributes=["response"]),
-        })
+        super().__init__()
+        self.add_relation(Relation("format", attributes=["type"]))
+        self.add_relation(Relation("format_ynu", attributes=["answer"]))
+        self.add_relation(Relation("format_canned", attributes=["response"]))
+

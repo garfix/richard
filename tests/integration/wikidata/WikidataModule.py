@@ -15,13 +15,11 @@ class WikidataModule(SomeModule):
 
 
     def __init__(self, data_source: SomeDataSource) -> None:
-
+        super().__init__()
         self.ds = data_source
-        self.relations = {
-            "wikidata_label": Relation(query_function=self.wikidata_label, relation_size=INFINITE, argument_sizes=[INFINITE, INFINITE]),
-            "wikidata_place_of_birth": Relation(query_function=self.wikidata_place_of_birth, relation_size=INFINITE, argument_sizes=[INFINITE, INFINITE]),
-            "wikidata_person": Relation(query_function=self.wikidata_person, relation_size=INFINITE, argument_sizes=[INFINITE, INFINITE]),
-        }
+        self.add_relation(Relation("wikidata_label", query_function=self.wikidata_label, relation_size=INFINITE, argument_sizes=[INFINITE, INFINITE]))
+        self.add_relation(Relation("wikidata_place_of_birth", query_function=self.wikidata_place_of_birth, relation_size=INFINITE, argument_sizes=[INFINITE, INFINITE]))
+        self.add_relation(Relation("wikidata_person", query_function=self.wikidata_person, relation_size=INFINITE, argument_sizes=[INFINITE, INFINITE]))
 
 
     def wikidata_person(self, values: list, context: ExecutionContext) -> list[list]:

@@ -7,10 +7,8 @@ from richard.type.ExecutionContext import ExecutionContext
 class TestModule(SomeModule):
 
     def __init__(self) -> None:
-
-        self.relations = {
-            "resolve_name": Relation(query_function=self.resolve_name),
-        }
+        super().__init__()
+        self.add_relation(Relation("resolve_name", query_function=self.resolve_name))
 
 
     def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:

@@ -130,11 +130,14 @@ def get_grammar1():
         { "syn": "common_noun(E1, T1) -> 'compounds'", "sem": lambda: [('compound', E1, T1)] },
 
         # proper noun
-        # magnesium
+        # "magnesium"
         { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
-        # ferrous sulfide
+        # "ferrous sulfide"
         { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: [('resolve_name', token1 + " " + token2, E1)] },
-        { "syn": "proper_noun(E1) -> token(E1) 'oxide'", "sem": lambda token: [('resolve_name', token + ' ' + 'oxide', E1)], "inf": [("oxide", e1, 'true')] },
-        { "syn": "proper_noun(E1) -> token(E1) 'sulfide'", "sem": lambda token: [('resolve_name', token + ' ' + 'sulfide', E1)], "inf": [("sulfide", e1, 'true')] },
-        { "syn": "proper_noun(E1) -> token(E1) 'chloride'", "sem": lambda token: [('resolve_name', token + ' ' + 'chloride', E1)], "inf": [("chloride", e1, 'true')] },
+        { "syn": "proper_noun(E1) -> token(E1) main_noun(E1)", "sem": lambda token, main_noun: [('resolve_name', token + ' ' + main_noun, E1)] },
+
+        # the major part a compound noun
+        { "syn": "main_noun(E1) -> 'oxide'", "sem": lambda: 'oxide', "inf": [("oxide", e1, 'true')] },
+        { "syn": "main_noun(E1) -> 'chloride'", "sem": lambda: 'chloride', "inf": [("chloride", e1, 'true')] },
+        { "syn": "main_noun(E1) -> 'sulfide'", "sem": lambda: 'sulfide', "inf": [("sulfide", e1, 'true')] },
     ]

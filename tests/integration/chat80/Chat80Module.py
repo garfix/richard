@@ -13,31 +13,29 @@ class Chat80Module(SomeModule):
 
 
     def __init__(self, data_source: SomeDataSource) -> None:
-
+        super().__init__()
         self.ds = data_source
-        self.relations = {
-            "river": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
-            "country": Relation(query_function=self.simple_entity, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
-            "ocean": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
-            "sea": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
-            "city": Relation(query_function=self.simple_entity, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
-            "continent": Relation(query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]),
-            "capital": Relation(query_function=self.capital, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
-            "borders": Relation(query_function=self.borders, relation_size=LARGE, argument_sizes=[MEDIUM, MEDIUM]),
-            "resolve_name": Relation(query_function=self.resolve_name, relation_size=LARGE, argument_sizes=[LARGE, LARGE]),
-            "of": Relation(query_function=self.of, relation_size=LARGE, argument_sizes=[MEDIUM, MEDIUM]),
-            "size_of": Relation(query_function=self.size_of, relation_size=IGNORED, argument_sizes=[MEDIUM, IGNORED]),
-            "where": Relation(query_function=self.where, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]),
-            "european": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
-            "asian": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
-            "african": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
-            "american": Relation(query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]),
-            "flows_through": Relation(query_function=self.flows_through, relation_size=MEDIUM, argument_sizes=[SMALL, MEDIUM]),
-            "south_of": Relation(query_function=self.south_of, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]),
-            "flows_from_to": Relation(query_function=self.flows_from_to, relation_size=MEDIUM, argument_sizes=[MEDIUM, MEDIUM, MEDIUM]),
-            "contains": Relation(query_function=self.contains, relation_size=MEDIUM, argument_sizes=[MEDIUM, MEDIUM]),
-            "has_population": Relation(query_function=self.has_population, relation_size=MEDIUM, argument_sizes=[MEDIUM, IGNORED]),
-        }
+        self.add_relation(Relation("river", query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]))
+        self.add_relation(Relation("country", query_function=self.simple_entity, relation_size=MEDIUM, argument_sizes=[MEDIUM]))
+        self.add_relation(Relation("ocean", query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]))
+        self.add_relation(Relation("sea", query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]))
+        self.add_relation(Relation("city", query_function=self.simple_entity, relation_size=MEDIUM, argument_sizes=[MEDIUM]))
+        self.add_relation(Relation("continent", query_function=self.simple_entity, relation_size=SMALL, argument_sizes=[SMALL]))
+        self.add_relation(Relation("capital", query_function=self.capital, relation_size=MEDIUM, argument_sizes=[MEDIUM]))
+        self.add_relation(Relation("borders", query_function=self.borders, relation_size=LARGE, argument_sizes=[MEDIUM, MEDIUM]))
+        self.add_relation(Relation("resolve_name", query_function=self.resolve_name, relation_size=LARGE, argument_sizes=[LARGE, LARGE]))
+        self.add_relation(Relation("of", query_function=self.of, relation_size=LARGE, argument_sizes=[MEDIUM, MEDIUM]))
+        self.add_relation(Relation("size_of", query_function=self.size_of, relation_size=IGNORED, argument_sizes=[MEDIUM, IGNORED]))
+        self.add_relation(Relation("where", query_function=self.where, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]))
+        self.add_relation(Relation("european", query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]))
+        self.add_relation(Relation("asian", query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]))
+        self.add_relation(Relation("african", query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]))
+        self.add_relation(Relation("american", query_function=self.some_continent, relation_size=MEDIUM, argument_sizes=[MEDIUM]))
+        self.add_relation(Relation("flows_through", query_function=self.flows_through, relation_size=MEDIUM, argument_sizes=[SMALL, MEDIUM]))
+        self.add_relation(Relation("south_of", query_function=self.south_of, relation_size=IGNORED, argument_sizes=[MEDIUM, MEDIUM]))
+        self.add_relation(Relation("flows_from_to", query_function=self.flows_from_to, relation_size=MEDIUM, argument_sizes=[MEDIUM, MEDIUM, MEDIUM]))
+        self.add_relation(Relation("contains", query_function=self.contains, relation_size=MEDIUM, argument_sizes=[MEDIUM, MEDIUM]))
+        self.add_relation(Relation("has_population", query_function=self.has_population, relation_size=MEDIUM, argument_sizes=[MEDIUM, IGNORED]))
 
 
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:

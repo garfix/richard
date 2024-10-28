@@ -26,15 +26,11 @@ class TestModule(SomeModule):
     ds: SomeDataSource
 
     def __init__(self, data_source: SomeDataSource) -> None:
+        super().__init__()
         self.ds = data_source
-
-
-    def get_relations(self):
-        return {
-            "parent": Relation(query_function=self.parent),
-            "child": Relation(query_function=self.child),
-            "have": Relation(query_function=self.have),
-        }
+        self.add_relation(Relation("parent", query_function=self.parent))
+        self.add_relation(Relation("child", query_function=self.child))
+        self.add_relation(Relation("have", query_function=self.have))
 
 
     def parent(self, values: list, context: ExecutionContext) -> list[list]:

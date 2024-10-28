@@ -17,15 +17,14 @@ class InferenceModule(SomeModule):
 
 
     def __init__(self) -> None:
-        self.relations = {
-             "learn_rule": Relation(query_function=self.learn_rule),
-        }
+        super().__init__()
+        self.add_relation(Relation("learn_rule", query_function=self.learn_rule))
         self.rules = {}
 
 
     def insert_rule(self, rule: InferenceRule):
         predicate = rule.head[0]
-        self.relations[predicate] = Relation(query_function=self.handle_rule)
+        self.add_relation(Relation(predicate, query_function=self.handle_rule))
         if not predicate in self.rules:
             self.rules[predicate] = []
         self.rules[predicate].append(rule)

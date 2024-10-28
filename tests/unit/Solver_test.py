@@ -15,16 +15,12 @@ from richard.type.ExecutionContext import ExecutionContext
 
 class TestModule(SomeModule):
     def __init__(self, data_source: SomeDataSource) -> None:
-
+        super().__init__()
         self.ds = data_source
-
-    def get_relations(self):
-        return {
-            "river": Relation(query_function=self.simple_entity),
-            "country": Relation(query_function=self.simple_entity),
-            "contains": Relation(query_function=self.contains),
-            "number_of": Relation(query_function=self.number_of),
-        }
+        self.add_relation(Relation("river", query_function=self.simple_entity))
+        self.add_relation(Relation("country", query_function=self.simple_entity))
+        self.add_relation(Relation("contains", query_function=self.contains))
+        self.add_relation(Relation("number_of", query_function=self.number_of))
 
 
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:

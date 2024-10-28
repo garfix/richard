@@ -11,26 +11,25 @@ from richard.type.OrderedSet import OrderedSet
 class CoreModule(SomeModule):
 
     def __init__(self) -> None:
-        self.relations = {
-            "==": Relation(query_function=self.equals),
-            ">": Relation(query_function=self.greater_than),
-            "<": Relation(query_function=self.less_than),
-            "arg_min": Relation(query_function=self.arg_min),
-            "arg_max": Relation(query_function=self.arg_max),
-            "sum": Relation(query_function=self.sum),
-            "avg": Relation(query_function=self.avg),
-            "percentage": Relation(query_function=self.percentage),
-            "count": Relation(query_function=self.count),
-            "not": Relation(query_function=self.not_function),
-            "=": Relation(query_function=self.assign),
-            "det_equals": Relation(query_function=self.determiner_equals),
-            "det_greater_than": Relation(query_function=self.determiner_greater_than),
-            "det_less_than": Relation(query_function=self.determiner_less_than),
-            "all": Relation(query_function=self.determiner_all),
-            "none": Relation(query_function=self.determiner_none),
-            "scoped": Relation(query_function=self.scoped),
-            "store": Relation(query_function=self.store),
-        }
+        super().__init__()
+        self.add_relation(Relation("==", query_function=self.equals)),
+        self.add_relation(Relation(">", query_function=self.greater_than)),
+        self.add_relation(Relation("<", query_function=self.less_than)),
+        self.add_relation(Relation("arg_min", query_function=self.arg_min)),
+        self.add_relation(Relation("arg_max", query_function=self.arg_max)),
+        self.add_relation(Relation("sum", query_function=self.sum)),
+        self.add_relation(Relation("avg", query_function=self.avg)),
+        self.add_relation(Relation("percentage", query_function=self.percentage)),
+        self.add_relation(Relation("count", query_function=self.count)),
+        self.add_relation(Relation("not", query_function=self.not_function)),
+        self.add_relation(Relation("=", query_function=self.assign)),
+        self.add_relation(Relation("det_equals", query_function=self.determiner_equals)),
+        self.add_relation(Relation("det_greater_than", query_function=self.determiner_greater_than)),
+        self.add_relation(Relation("det_less_than", query_function=self.determiner_less_than)),
+        self.add_relation(Relation("all", query_function=self.determiner_all)),
+        self.add_relation(Relation("none", query_function=self.determiner_none)),
+        self.add_relation(Relation("scoped", query_function=self.scoped)),
+        self.add_relation(Relation("store", query_function=self.store)),
 
 
     # ('==', E1, E2)

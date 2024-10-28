@@ -1,11 +1,5 @@
 ## todo
 
-documentation
-
-* assigning synonyms
-* ferrous sulfide => sulfide(X) "ferrous sulfide" not just a name, but a declaration as well "some sulfides are brittle"
-* choice? isa(X, Y) vs X() :- Y()
-* predicate inside relation
 
 ## later
 
@@ -39,4 +33,3 @@ optimize isolate independent parts:
 * more access to in-between results of blocks
 * added data sources for Postgres, MySQL, Sqlite3, Sparql
 * simplify the responder
-

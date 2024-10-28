@@ -9,13 +9,15 @@ class SimpleMemoryModule(SomeModule):
 
     ds: MemoryDbDataSource
 
-    def __init__(self, relations: dict[str, Relation]) -> None:
+    def __init__(self) -> None:
+        super().__init__()
         self.ds = MemoryDbDataSource(MemoryDb())
-        self.relations = relations
 
-        for _, relation in relations.items():
-            relation.query_function = self.query
-            relation.write_function = self.write
+
+    def add_relation(self, relation: Relation):
+        self.relations[relation.predicate] = relation
+        relation.query_function = self.query
+        relation.write_function = self.write
 
 
     def query(self, values: list, context: ExecutionContext) -> list[list]:

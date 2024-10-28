@@ -10,7 +10,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
-from tests.unit.atom_executor.TesModule import TestModule
+from tests.unit.atom_executor.TestModule import TestModule
 
 class TestAtomExecutor(unittest.TestCase):
 
