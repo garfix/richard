@@ -61,13 +61,8 @@ def get_grammar1():
         },
         # X is Y (X is another name for Y)
         {
-            "syn": "s(E1) -> noun(E1, T1) 'is' noun(E1, T1)",
-            "sem": lambda noun1, noun2: noun1 + noun2,
-            "inf": [("format", "canned"), ("format_canned", "OK")],
-        },
-        {
-            "syn": "s(E2) -> token(E1) token(E1) 'is' noun(E2, T1)",
-            "sem": lambda token1, token2, noun: noun + [('resolve_name', token1 + " " + token2, E2)],
+            "syn": "s(E1) -> proper_noun(E1) 'is' proper_noun(E1)",
+            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2,
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
         # X's are not Y's
@@ -119,10 +114,7 @@ def get_grammar1():
 
         # noun
         { "syn": "noun(E1, T1) -> common_noun(E1, T1)", "sem": lambda common_noun: common_noun },
-        # magnesium
-        { "syn": "noun(E1, T1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
-        # ferrous sulfide
-        { "syn": "noun(E1, T1) -> proper_noun(E1) proper_noun(E1)", "sem": lambda proper_noun1, proper_noun2: [('resolve_name', proper_noun1 + " " + proper_noun2, E1)] },
+        { "syn": "noun(E1, T1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
 
         # common noun
         { "syn": "common_noun(E1, T1) -> 'nonmetal'", "sem": lambda: [('nonmetal', E1, T1)] },
@@ -138,8 +130,11 @@ def get_grammar1():
         { "syn": "common_noun(E1, T1) -> 'compounds'", "sem": lambda: [('compound', E1, T1)] },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
-        { "syn": "proper_noun(E1) -> 'oxide'", "sem": lambda: 'oxide', "inf": [("oxide", e1, 'true')],},
-        { "syn": "proper_noun(E1) -> 'sulfide'", "sem": lambda: 'sulfide', "inf": [("sulfide", e1, 'true')],},
-        { "syn": "proper_noun(E1) -> 'chloride'", "sem": lambda: 'chloride', "inf": [("chloride", e1, 'true')],},
+        # magnesium
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
+        # ferrous sulfide
+        { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: [('resolve_name', token1 + " " + token2, E1)] },
+        { "syn": "proper_noun(E1) -> token(E1) 'oxide'", "sem": lambda token: [('resolve_name', token + ' ' + 'oxide', E1)], "inf": [("oxide", e1, 'true')] },
+        { "syn": "proper_noun(E1) -> token(E1) 'sulfide'", "sem": lambda token: [('resolve_name', token + ' ' + 'sulfide', E1)], "inf": [("sulfide", e1, 'true')] },
+        { "syn": "proper_noun(E1) -> token(E1) 'chloride'", "sem": lambda token: [('resolve_name', token + ' ' + 'chloride', E1)], "inf": [("chloride", e1, 'true')] },
     ]

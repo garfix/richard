@@ -105,6 +105,9 @@ class InferenceModule(SomeModule):
     def learn_rule(self, values: list, context: ExecutionContext) -> list[list]:
         head, body = values
 
+        if not isinstance(head, tuple):
+            raise Exception("The head of a rule must be a single atom: " + str(head))
+
         bound_head = bind_variables(head, context.binding)
         bound_body = bind_variables(body, context.binding)
 

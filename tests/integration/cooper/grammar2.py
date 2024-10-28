@@ -70,7 +70,7 @@ def get_grammar2():
         # np
         { "syn": "np(E1, T1) -> noun(E1, T1)", "sem": lambda noun: noun },
         { "syn": "np(E1, T1) -> adj(E1, T1) np(E1, T1)", "sem": lambda adj, noun: adj + noun },
-        { "syn": "np(E1, T1) -> proper_noun(E1, T1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1), ('=', T1, 'true')] },
+        { "syn": "np(E1, T1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun + [('=', T1, 'true')] },
 
         # adjective
         { "syn": "adj(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
@@ -91,6 +91,6 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'fuel'", "sem": lambda: [('fuel', E1, T1)] },
 
         # proper noun
-        { "syn": "proper_noun(E1, T1) -> token(E1)", "sem": lambda token: token },
-        { "syn": "proper_noun(E1, T1) -> token(E1) token(E1)", "sem": lambda token1, token2: token1 + " " + token2 },
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
+        { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: [('resolve_name', token1 + " " + token2, E1)] },
     ]

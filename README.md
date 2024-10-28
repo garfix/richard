@@ -16,13 +16,16 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 
 ## Versions
 
+* 0.4 ?
+    * storing facts and learning rules
+    * Cooper's system (1964) demo
 * 0.3 September 2024
     * from function based grammar to atom based grammar
     * inference engine
     * adapters for PostgreSQL, MySQL, Sqlite3, and SPARQL
     * parse tree ordering heuristics
     * David H.D. Warren's query optimization techniques
-    * Chat-80 demo
+    * Chat-80 (1981) demo
     * Wikidata demo
 * 0.2 May 2024
     * set up the pipeline

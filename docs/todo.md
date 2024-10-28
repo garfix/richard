@@ -2,12 +2,10 @@
 
 documentation
 
-* learn rules
 * assigning synonyms
 * ferrous sulfide => sulfide(X) "ferrous sulfide" not just a name, but a declaration as well "some sulfides are brittle"
-* store
-* scoped / scoped
 * choice? isa(X, Y) vs X() :- Y()
+* predicate inside relation
 
 ## later
 

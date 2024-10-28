@@ -249,8 +249,8 @@ def get_grammar():
         { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)],     "inf": [('isa', e1, 'continent')] },
         { "syn": "noun(E1) -> 'continents'",    "sem": lambda: [('continent', E1)],     "inf": [('isa', e1, 'continent')] },
 
-        { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
+        { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
     ]
