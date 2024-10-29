@@ -32,8 +32,6 @@ def get_grammar1():
         },
 
 
-
-
         # noun verb
         {
             "syn": "s() -> noun(E1, T1) verb(E1)",
@@ -46,6 +44,8 @@ def get_grammar1():
             "sem": lambda np, verb: [('=', T1, 'true'), ('=', T2, 'true'), ('learn_rule', verb[0], np)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+
+
         # dark-gray things are not white
         {
             "syn": "s() -> np(E1, T1) are() 'not' adj(E1, T2)",

@@ -34,16 +34,15 @@ def get_grammar2():
         { "syn": "vp(E1, T3) -> 'no' np(E1, T1) is() np(E1, T2)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('not_3v', T2, T3)] },
         # oxides are not white
         { "syn": "vp(E1, T3) -> np(E1, T1) are() 'not' np(E1, T2)", "sem": lambda np1, are, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('not_3v', T2, T3)] },
-        # ferrous sulfide is not brittle
-        { "syn": "vp(E1, T3) -> np(E1, T1) is() 'not' np(E1, T2)", "sem": lambda np1, is1, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('not_3v', T2, T3)] },
         # every oxide is an oxide
         { "syn": "vp(E1, T3) -> 'every' np(E1, T1) is() a() np(E1, T2)", "sem": lambda np1, is1, a, np2: [('=', T1, 'true')] + [('=', T2, 'true')] + np1 + np2 + [('and_3v', T1, T2, T3)] },
         # ferrous sulfide is not a compound that is not dark-gray
         { "syn": "vp(E1, T6) -> np(E1, T1) is() 'not' a() np(E1, T2) 'that' is() 'not' np(E1, T3)",
           "sem": lambda np1, is1, a, np2, is2, np3: np1 + np2 + np3 + [('not_3v', T3, T4), ('and_3v', T2, T4, T5), ('not_3v', T5, T6)]},
+        # ferrous sulfide is not brittle
         # anything that is not a compound is not ferrous sulfide
-        { "syn": "vp(E1, T5) -> 'anything' 'that' is() 'not' a() np(E1, T1) is() 'not' np(E1, T2)",
-          "sem": lambda is1, a, np1, is2, np2: np1 + np2 + [('not_3v', T1, T3), ('and_3v', T3, T2, T4), ('not_3v', T4, T5)]},
+        { "syn": "vp(E1, T4) -> np(E1, T1) is() 'not' np(E1, T2)",
+          "sem": lambda np1, is2, np2: np1 + np2 + [('and_3v', T1, T2, T3), ('not_3v', T3, T4)]},
         # no dark gray thing is a sulfide
         { "syn": "vp(E1, T4) -> 'no' adj(E1, T1) 'thing' is() a() np(E1, T2)",
           "sem": lambda adj, is1, a, np: adj + np + [('and_3v', T1, T2, T3), ('not_3v', T3, T4)]},
@@ -71,6 +70,7 @@ def get_grammar2():
         { "syn": "np(E1, T1) -> noun(E1, T1)", "sem": lambda noun: noun },
         { "syn": "np(E1, T1) -> adj(E1, T1) np(E1, T1)", "sem": lambda adj, noun: adj + noun },
         { "syn": "np(E1, T1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun + [('=', T1, 'true')] },
+        { "syn": "np(E1, T2) -> 'anything' 'that' is() 'not' a() np(E1, T1)", "sem": lambda is1, a, np: np + [('not_3v', T1, T2)] },
 
         # adjective
         { "syn": "adj(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
