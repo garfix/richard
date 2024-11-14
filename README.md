@@ -1,4 +1,4 @@
-![Richard!](richard.jpg)
+![Richard!](richard-logo.png)
 
 A Natural Language Understanding and Execution library for Python
 
