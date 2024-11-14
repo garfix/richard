@@ -7,6 +7,7 @@ from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -54,7 +55,8 @@ class TestWikiData(unittest.TestCase):
         ])
 
         tokenizer = BasicTokenizer()
-        parser = BasicParser(get_grammar(), tokenizer)
+        grammar = SimpleGrammarRulesParser().parse(get_grammar())
+        parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context

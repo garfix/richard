@@ -1,10 +1,10 @@
-import pathlib
 import unittest
 
 from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.module.InferenceModule import InferenceModule
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -19,7 +19,6 @@ from richard.store.MemoryDb import MemoryDb
 from tests.integration.cooper.CooperSentenceContext import CooperSentenceContext
 from tests.integration.cooper.SimpleOpenWorldResponder import SimpleOpenWorldResponder
 from tests.integration.cooper.CooperModule import CooperModule
-from .cooper.CooperDialogContext import CooperDialogContext
 from .cooper.grammar1 import get_grammar1
 from .cooper.grammar2 import get_grammar2
 
@@ -50,24 +49,19 @@ class TestCooper(unittest.TestCase):
 
     def test_cooper(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/cooper/resources/"
-
         inferences = InferenceModule()
-        inferences.import_rules(path + "inferences.pl")
-
         facts = CooperModule(MemoryDbDataSource(MemoryDb()))
         sentence_context = CooperSentenceContext()
-        dialog_context = CooperDialogContext()
 
         model = Model([
             facts,
             inferences,
             sentence_context,
-            dialog_context
         ])
 
         tokenizer = BasicTokenizer()
-        parser = BasicParser(get_grammar1(), tokenizer)
+        grammar1 = SimpleGrammarRulesParser().parse(get_grammar1())
+        parser = BasicParser(grammar1, tokenizer)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
@@ -83,7 +77,8 @@ class TestCooper(unittest.TestCase):
         ])
 
         tokenizer = BasicTokenizer()
-        parser = BasicParser(get_grammar2(), tokenizer)
+        grammar2 = SimpleGrammarRulesParser().parse(get_grammar2())
+        parser = BasicParser(grammar2, tokenizer)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context

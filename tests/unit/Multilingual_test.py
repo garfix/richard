@@ -8,6 +8,7 @@ from richard.processor.language_selector.LanguageSelector import LanguageSelecto
 from richard.processor.language_selector.Multilingual import Multilingual
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestMultilingual(unittest.TestCase):
@@ -16,9 +17,10 @@ class TestMultilingual(unittest.TestCase):
 
         language_selector = LanguageSelector(["en_US", "nl_NL"])
         tokenizer = BasicTokenizer()
+        grammar_parser = SimpleGrammarRulesParser()
 
         parsers = {
-            "nl_NL": BasicParser([
+            "nl_NL": BasicParser(grammar_parser.parse([
                 { "syn": "s(V) -> np(E1) vp(V, E1)" },
                 { "syn": "vp(V, E1) -> verb(V) np(E1)" },
                 { "syn": "np(E1) -> noun(E1)" },
@@ -26,8 +28,8 @@ class TestMultilingual(unittest.TestCase):
                 { "syn": "proper_noun(E1) -> 'john'" },
                 { "syn": "proper_noun(E1) -> 'mary'" },
                 { "syn": "verb(V) -> 'loves'" },
-            ], tokenizer),
-            "en_US": BasicParser([
+            ]), tokenizer),
+            "en_US": BasicParser(grammar_parser.parse([
                 { "syn": "s(V) -> np(E1) vp(V, E1)" },
                 { "syn": "vp(V, E1) -> verb(V) np(E1)" },
                 { "syn": "np(E1) -> noun(E1)" },
@@ -35,7 +37,7 @@ class TestMultilingual(unittest.TestCase):
                 { "syn": "proper_noun(E1) -> 'jan'" },
                 { "syn": "proper_noun(E1) -> 'marie'" },
                 { "syn": "verb(V) -> 'houdt' 'van'" },
-            ], tokenizer)
+            ]), tokenizer)
         }
 
         parser = Multilingual(parsers, language_selector)

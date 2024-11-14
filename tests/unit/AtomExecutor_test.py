@@ -7,6 +7,7 @@ from richard.block.FindOne import FindOne
 from richard.core.constants import E1
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
@@ -21,7 +22,7 @@ class TestAtomExecutor(unittest.TestCase):
         and ends up in the response
         """
 
-        grammar = [
+        simple_grammar = [
             { "syn": "s(E1) -> noun(E1) verb(V)", "sem": lambda noun, verb: noun + verb },
             { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
             { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
@@ -35,6 +36,7 @@ class TestAtomExecutor(unittest.TestCase):
         ])
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)

@@ -1,3 +1,102 @@
+## 2024-11-14
+
+I'm struggling with the grammar rules that create new grammar rules and db tables based on newly introduced nouns in the dialog.
+
+This could be an option:
+
+~~~python
+# introduction of a new common noun
+{ "syn": "common_noun(E1) -> token(E1)", "sem": lambda token: [ (token, E1) ],
+    "exec": lambda token: [
+    ('learn_grammar_rule', GrammarRule(
+        RuleConstituent('common_noun', [E1], POS_TYPE_RELATION), [ RuleConstituent(token, [], POS_TYPE_WORD_FORM) ],
+        sem=[ (token, E1) ])
+    ),
+] },
+~~~
+
+Introduction of a new key, `exec`, of atoms that are not learned (stored, like with `inf`) but directly executed
+
+## 2024-11-05
+
+SIR doesn't distinguish between a concept as an entity and a relation. A word is just is just turned into a datastructure with the word as an identifier.
+
+## 2024-11-04
+
+Every boy is a person
+
+This looks like the equivalent of "A boy is a person". However, a rule-based analysis (`person() :- boy()`) seems to be preferred over a fact based analysis `isa(boy, person)`. It looks like the boy has been introduced already and we're now making a statement about `boy`. Also: "person" has not been defined yet, so we must put it in the built-in grammar. Same for "boy".
+
+===
+
+This could well be asserted, but Rafael states in his dissertation that no nouns are built-in. So we might as well take this along.
+
+## 2024-11-02
+
+To learn new concepts and new relations requires some changes. Suppose you want to say "A boy is a person", without "boy" known yet. You could recognize the token "boy" and create a proper name for the concept. The concept would then be implemented as an object (id). This would make it different from other predicates, which are not objects, but relations. Going forward this way, and allowing the user to learn any concept and relation, the grammar would get populated with proper nouns / tokens, and become more and more abstract. And then we want to learn verbs.
+
+An alternative is to generate grammar rules. "A boy is a person" would then become
+
+    learn_grammar_rule({ "syn": "noun(E1) -> 'boy'", "sem": lambda: [('boy', E1)] })
+    learn_rule(person(E1) :- boy(E1)).
+
+So the sentence means: I introduce a new word/relation, "boy", and I add a relation to another concept.
+
+This way, the `token` categories would be restricted to places where new terms are introduced, in stead of being used all over.
+
+Okay, and what about homonimity (one word, multiple meanings)? One could argue that homonimity is not an issue in a small domain. But thinking ahead, what would solve the naming conflict?
+
+I think, and I know this is unsatisfying, that I will postpone the problem until it actually is a problem. I think we need to introduce some sort of contexts, but what they will look like is not for us now to decide yet.
+
+===
+
+Everything is a concept. There are entities, and relations. Any concept can be implemented as an entity and a relation. Pick one! Proper nouns should refer to objects. These are entities, not relations. Concepts (like "hand") can be either entities and relations. Entity: `isa(h, hand)`; relation: `hand(h)`.
+
+If it is a relation, then the system would need to create tables in order to store these relations.
+
+===
+
+Thinking some more, there really are two fundamentally different ways to deal with concepts: all entities, or (almost all) relations. Let's weigh the pro's and cons:
+
+__all relations__:
+
+* a new noun needs a new relation and a new table in the database
+* a new noun needs a grammar rule
+* the `isa` relation for relations is stored as a rule `person(E1) :- boy(E1)`
+* the `isa` relation for entities is stored as a relation `boy(j)`
+
+__all entities__:
+
+* a new noun creates an entity with a name and an id (`concept(id, name)`)
+* a new noun needs a grammar rule
+* the `isa` relation is stored as a relation `isa(b, p)` both for entities and relations (where b and p are entity ids)
+
+## 2024-10-30
+
+For the next system I'm looking at Bertram Raphael's SIR (1964).
+
+    H: Every boy is a person
+    H: A finger is part of a hand
+    H: Each person has two hands
+    H: John is a boy
+    H: How many fingers does John have?
+    C: How many fingers per hand?
+    H: Every hand has 5 fingers
+    H: How many fingers does John have?
+    C: The answer is 10
+
+Note the computer's reply: How many fingers per hand?
+
+It constructs a clarification question based on missing knowledge.
+
+    H:
+        learn_rule(person(E1) :- boy(E1)).
+        learn_rule(part_of(E1, E2) :- finger(E1), hand(E2)).
+        learn_rule(part_of_number(E2, E1, 2) :- person(E1), hand(E2)).
+        resolve_name("John", E1) store([boy(E1)]).
+        resolve_name("John", E1) finger(E2) part_of_number(E2, E1, E3)
+    H:
+
 ## 2024-10-24
 
 salt is an element

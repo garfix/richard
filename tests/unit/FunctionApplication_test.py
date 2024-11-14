@@ -6,6 +6,7 @@ from richard.block.FindAll import FindAll
 from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
@@ -18,7 +19,7 @@ class TestFunctionApplication(unittest.TestCase):
 
     def test_find_all(self):
 
-        grammar = [
+        simple_grammar = [
             { "syn": "s(E1) -> 'what' 'is' term(E1)", "sem": lambda term: term },
             { "syn": "s(E1) -> 'calculate' term(E1)", "sem": lambda term: term },
             {
@@ -36,6 +37,7 @@ class TestFunctionApplication(unittest.TestCase):
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
 

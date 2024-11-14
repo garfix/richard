@@ -6,5 +6,5 @@ class Chat80DialogContext(SimpleMemoryModule):
 
     def __init__(self) -> None:
         super().__init__()
-        self.add_relation(Relation("isa", attributes=["entity", "type"]))
+        self.add_relation(Relation("isa", arguments=["entity", "type"]))
 

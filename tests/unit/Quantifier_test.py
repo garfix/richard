@@ -9,6 +9,7 @@ from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_executor.AtomExecutorProduct import AtomExecutorProduct
 from richard.store.Record import Record
@@ -63,7 +64,7 @@ class TestQuantification(unittest.TestCase):
         data_source = MemoryDbDataSource(db)
         model = Model([TestModule(data_source)])
 
-        grammar = [
+        simple_grammar = [
             {
                 "syn": "s(V1) -> np(E1) vp_no_sub(E1)",
                 "sem": lambda np, vp_no_sub: apply(np, vp_no_sub)
@@ -99,6 +100,7 @@ class TestQuantification(unittest.TestCase):
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)

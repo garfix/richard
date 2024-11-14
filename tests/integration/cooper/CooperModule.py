@@ -15,21 +15,21 @@ class CooperModule(SomeModule):
         self.add_relation(Relation("resolve_name", query_function=self.resolve_name))
         self.add_relation(Relation("not_3v", query_function=self.not_3v))
         self.add_relation(Relation("and_3v", query_function=self.and_3v))
-        self.add_relation(Relation("metal", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("element", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("compound", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("nonmetal", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("white", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("dark_gray", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("brittle", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("oxide", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("sulfide", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("chloride", query_function=self.common_query, write_function=self.common_write, attributes=['entity', 'truth']))
-        self.add_relation(Relation("fuel", query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']))
-        self.add_relation(Relation("burns", query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']))
-        self.add_relation(Relation("burns_rapidly", query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']))
-        self.add_relation(Relation("combustable", query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']))
-        self.add_relation(Relation("gasoline", query_function=self.common_query, write_function=self.common_write,  attributes=['entity', 'truth']))
+        self.add_relation(Relation("metal", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("element", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("compound", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("nonmetal", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("white", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("dark_gray", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("brittle", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("oxide", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("sulfide", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("chloride", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
+        self.add_relation(Relation("fuel", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
+        self.add_relation(Relation("burns", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
+        self.add_relation(Relation("burns_rapidly", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
+        self.add_relation(Relation("combustable", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
+        self.add_relation(Relation("gasoline", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
 
 
     def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
@@ -97,7 +97,7 @@ class CooperModule(SomeModule):
 
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
-        results = self.ds.select(context.relation.predicate, context.relation.attributes, values)
+        results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
         if len(results) > 0:
             return results
         else:
@@ -108,5 +108,5 @@ class CooperModule(SomeModule):
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
         # print(context.predicate, values)
-        self.ds.insert(context.relation.predicate, context.relation.attributes, values)
+        self.ds.insert(context.relation.predicate, context.relation.arguments, values)
 

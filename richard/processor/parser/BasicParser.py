@@ -21,12 +21,11 @@ class BasicParser(SomeProcessor):
     tree_sorter: SomeParseTreeSortHeuristics
 
 
-    def __init__(self, grammar: SimpleGrammar, tokenizer: SomeProcessor) -> None:
+    def __init__(self, grammar: GrammarRules, tokenizer: SomeProcessor) -> None:
 
         self.tokenizer = tokenizer
 
-        sgrp = SimpleGrammarRulesParser()
-        self.grammar = sgrp.parse(grammar)
+        self.grammar = grammar
         self.parser = EarleyParser()
         self.tree_sorter = BasicParseTreeSortHeuristics()
 

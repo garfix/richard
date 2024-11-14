@@ -6,7 +6,7 @@ class CooperSentenceContext(SimpleMemoryModule):
 
     def __init__(self) -> None:
         super().__init__()
-        self.add_relation(Relation("format", attributes=["type"]))
-        self.add_relation(Relation("format_ynu", attributes=["answer"]))
-        self.add_relation(Relation("format_canned", attributes=["response"]))
+        self.add_relation(Relation("format", arguments=["type"]))
+        self.add_relation(Relation("format_ynu", arguments=["answer"]))
+        self.add_relation(Relation("format_canned", arguments=["response"]))
 

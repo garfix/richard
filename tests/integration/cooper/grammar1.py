@@ -12,12 +12,20 @@ def get_grammar1():
     return [
         # sentence
 
+        # introduce new names
         # X is a Y
         {
-            "syn": "s() -> noun(E1, T1) is() a() np(E1, T1)",
+            "syn": "s() -> proper_noun(E1) is() a() np(E1, T1)",
             "sem": lambda noun, is1, a, np: [('=', T1, 'true')] + noun + [('store', np)],
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
+        # X is Y (X is another name for Y)
+        {
+            "syn": "s() -> proper_noun(E1) 'is' proper_noun(E1)",
+            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2,
+            "inf": [("format", "canned"), ("format_canned", "OK")],
+        },
+
         # no X is a Y
         {
             "syn": "s() -> 'no' noun(E1, T1) is() a() np(E1, T2)",
@@ -56,12 +64,6 @@ def get_grammar1():
         {
             "syn": "s() -> noun(E1, T1) 'is' adj(E1, T1)",
             "sem": lambda noun, adj: [('=', T1, 'true'), ('=', T2, 'true'), ('learn_rule', adj[0], noun)],
-            "inf": [("format", "canned"), ("format_canned", "OK")],
-        },
-        # X is Y (X is another name for Y)
-        {
-            "syn": "s() -> proper_noun(E1) 'is' proper_noun(E1)",
-            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2,
             "inf": [("format", "canned"), ("format_canned", "OK")],
         },
         # X's are not Y's

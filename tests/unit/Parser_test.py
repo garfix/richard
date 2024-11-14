@@ -5,13 +5,14 @@ from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestParser(unittest.TestCase):
 
     def test_parser_process(self):
 
-        grammar = [
+        simple_grammar = [
             { "syn": "s(V) -> np(E1) vp(V, E1)" },
             { "syn": "vp(V, E1) -> verb(V) np(E1)" },
             { "syn": "np(E1) -> noun(E1)" },
@@ -22,6 +23,7 @@ class TestParser(unittest.TestCase):
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
 
         pipeline = Pipeline([
@@ -36,13 +38,14 @@ class TestParser(unittest.TestCase):
 
     def test_quote(self):
 
-        grammar = [
+        simple_grammar = [
             { "syn": "s(V) -> np(E1) '\\'' 's' np(E2)" },
             { "syn": "np(E1) -> 'john'" },
             { "syn": "np(E1) -> 'shoe'" },
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
 
         pipeline = Pipeline([
@@ -57,7 +60,7 @@ class TestParser(unittest.TestCase):
 
 
     def test_syntax_error(self):
-        grammar = [
+        simple_grammar = [
             { "syn": "s(V) => proper_noun(E1) verb(V)" },
             { "syn": "proper_noun(E1) -> 'mary'" },
             { "syn": "verb(V) -> 'walks'" },
@@ -66,6 +69,7 @@ class TestParser(unittest.TestCase):
         tokenizer = BasicTokenizer()
 
         try:
+            grammar = SimpleGrammarRulesParser().parse(simple_grammar)
             parser = BasicParser(grammar, tokenizer)
         except Exception as e:
             self.assertEqual(str(e), "Missing -> operator in 'syn' value: s(V) => proper_noun(E1) verb(V)")

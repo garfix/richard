@@ -6,6 +6,7 @@ from richard.core.constants import E1, E2, Body, Range
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
@@ -14,13 +15,14 @@ from richard.type.SemanticTemplate import SemanticTemplate
 class TestComposer(unittest.TestCase):
 
     def test_missing_sem(self):
-        grammar = [
+        simple_grammar = [
             { "syn": "s(E1) -> proper_noun(E1) verb(V)", "sem": lambda proper_noun, verb: proper_noun + verb },
             { "syn": "proper_noun(E1) -> 'mary'" },
             { "syn": "verb(E1) -> 'walks'" },
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
 
@@ -42,7 +44,7 @@ class TestComposer(unittest.TestCase):
 
     def test_variable_unification(self):
 
-        grammar = [
+        simple_grammar = [
             { "syn": "s(E1) -> np(E1) vp(E1)", "sem": lambda np, vp: apply(np, vp)},
             { "syn": "vp(E1) -> verb(E1, E2) np(E2)", "sem": lambda verb, np: apply(np, verb) },
             { "syn": "verb(E1, E2) -> 'flows' 'to'", "sem": lambda: [('flows', E1, E2)] },
@@ -54,6 +56,7 @@ class TestComposer(unittest.TestCase):
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
 
@@ -70,7 +73,7 @@ class TestComposer(unittest.TestCase):
 
     def test_special_category(self):
 
-        grammar = [
+        simple_grammar = [
             { "syn": "s(V) -> np(E1) 'sleeps'", "sem": lambda np: np },
             { "syn": "np(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
             { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
@@ -78,6 +81,7 @@ class TestComposer(unittest.TestCase):
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
 
@@ -105,13 +109,14 @@ class TestComposer(unittest.TestCase):
 
     def test_multiple_return_variables(self):
 
-        grammar = [
+        simple_grammar = [
             { "syn": "s(E1, E2) -> np(E1) vp(E2)", "sem": lambda np, vp: np + vp },
             { "syn": "np(E1) -> 'john'", "sem": lambda: 'john' },
             { "syn": "vp(E1) -> 'sleeps'", "sem": lambda: 'sleeps' },
         ]
 
         tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
         parser = BasicParser(grammar, tokenizer)
         composer = SemanticComposer(parser)
 

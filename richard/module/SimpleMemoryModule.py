@@ -21,11 +21,11 @@ class SimpleMemoryModule(SomeModule):
 
 
     def query(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select(context.relation.predicate, context.relation.attributes, values)
+        return self.ds.select(context.relation.predicate, context.relation.arguments, values)
 
 
     def write(self, values: list, context: ExecutionContext):
-        self.ds.insert(context.relation.predicate, context.relation.attributes, values)
+        self.ds.insert(context.relation.predicate, context.relation.arguments, values)
 
 
     def clear(self):
