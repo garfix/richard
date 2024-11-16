@@ -1,5 +1,6 @@
 import re
 
+from build.lib.richard.type import SimpleGrammarRule
 from richard.core.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
@@ -29,38 +30,43 @@ class SimpleGrammarRulesParser:
         self.re_variable = re.compile("^[A-Z]\w*$")
 
 
-    def parse(self, simple_grammar: SimpleGrammar):
+    def parse(self, simple_grammar: SimpleGrammar) -> GrammarRules:
         rules = []
 
         for simple_rule in simple_grammar:
-            if not 'syn' in simple_rule:
-                raise Exception("A rule must contain a 'syn' value")
-
-            antecedent, consequents = self.parse_syntax(simple_rule['syn'])
-
-            sem = None
-            if 'sem' in simple_rule:
-                sem = simple_rule['sem']
-
-            exec = None
-            if 'exec' in simple_rule:
-                exec = simple_rule['exec']
-
-            inferences = []
-            if 'inf' in simple_rule:
-                inferences = simple_rule['inf']
-
-            condition = None
-            if 'if' in simple_rule:
-                condition = simple_rule['if']
-
-            boost = 0
-            if 'boost' in simple_rule:
-                boost = simple_rule['boost']
-
-            rules.append(GrammarRule(antecedent, consequents, sem=sem, exec=exec, inferences=inferences, boost=boost, condition=condition))
+            rule = self.parse_simple_rule(simple_rule)
+            rules.append(rule)
 
         return GrammarRules(rules)
+
+
+    def parse_simple_rule(self, simple_rule: SimpleGrammarRule) -> GrammarRule:
+        if not 'syn' in simple_rule:
+            raise Exception("A rule must contain a 'syn' value")
+
+        antecedent, consequents = self.parse_syntax(simple_rule['syn'])
+
+        sem = None
+        if 'sem' in simple_rule:
+            sem = simple_rule['sem']
+
+        exec = None
+        if 'exec' in simple_rule:
+            exec = simple_rule['exec']
+
+        inferences = []
+        if 'inf' in simple_rule:
+            inferences = simple_rule['inf']
+
+        condition = None
+        if 'if' in simple_rule:
+            condition = simple_rule['if']
+
+        boost = 0
+        if 'boost' in simple_rule:
+            boost = simple_rule['boost']
+
+        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, inferences=inferences, boost=boost, condition=condition)
 
 
     def parse_syntax(self, syntax):

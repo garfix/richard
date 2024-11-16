@@ -31,10 +31,10 @@ def get_grammar():
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
 
         # common noun
-        { "syn": "common_noun(E1) -> 'person'", "sem": lambda: [('person', E1, T1)] },
+        { "syn": "common_noun(E1) -> 'person'", "sem": lambda: [('person', E1)] },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token1: [('resolve_name', token1, E1)] },
+        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
 
         # introduction of a new common noun
         { "syn": "common_noun_name(E1) -> token(E1)", "sem": lambda token: token },
@@ -42,11 +42,7 @@ def get_grammar():
         # introduction of a new common noun
         { "syn": "common_noun(E1) -> token(E1)", "sem": lambda token: [ (token, E1) ],
           "exec": lambda token: [
-            ('learn_grammar_rule', GrammarRule(
-                RuleConstituent('common_noun', [E1], POS_TYPE_RELATION), [ RuleConstituent(token, [], POS_TYPE_WORD_FORM) ],
-                sem=[ (token, E1) ])
-            ),
+            ('learn_grammar_rule', { "syn": f"common_noun(E1) -> '{token}'", "sem": lambda: [(token, E1)] }),
             ('add_relation', token, ['id']),
         ] },
-
     ]

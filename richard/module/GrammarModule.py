@@ -6,6 +6,7 @@ from richard.entity.Variable import Variable
 from richard.interface import SomeSolver
 from richard.interface.SomeModule import SomeModule
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
+from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.type.ExecutionContext import ExecutionContext
 from richard.type.InferenceRule import InferenceRule
 
@@ -23,13 +24,14 @@ class GrammarModule(SomeModule):
         self.grammar = grammar
 
 
-    # ('learn_grammar_rule', head, [body-atoms])
+    # ('learn_grammar_rule', simple_rule)
     def learn_grammar_rule(self, values: list, context: ExecutionContext) -> list[list]:
-        rule = values[0]
+        simple_rule = values[0]
 
+        rule = SimpleGrammarRulesParser().parse_simple_rule(simple_rule)
         self.grammar.add_rule(rule)
 
         return [
-            [None, None]
+            [None]
         ]
 

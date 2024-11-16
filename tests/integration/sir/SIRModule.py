@@ -38,5 +38,5 @@ class SIRModule(SomeModule):
         self.add_relation(Relation(predicate, arguments=arguments, query_function=self.common_query, write_function=self.common_write))
 
         return [
-            [None, None, None]
+            [None, None]
         ]
