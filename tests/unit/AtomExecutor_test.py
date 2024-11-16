@@ -4,13 +4,14 @@ from richard.block.TryFirst import TryFirst
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.core.constants import E1
+from richard.core.constants import E1, e1
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
+from tests.unit.atom_executor.TestDialogContext import TestDialogContext
 from tests.unit.atom_executor.TestModule import TestModule
 
 class TestAtomExecutor(unittest.TestCase):
@@ -51,3 +52,59 @@ class TestAtomExecutor(unittest.TestCase):
         output = pipeline.enter(SentenceRequest("John walks"))
 
         self.assertEqual("Name not found: john", output)
+
+
+    def test_inferences(self):
+        """
+        Contains an inference that stores an atom in a data store
+        Contains executable code that stores an atom in a data store
+        """
+
+        simple_grammar = [
+            {
+                "syn": "s(E1) -> noun(E1) 'be'",
+                "sem": lambda noun: noun
+            },
+            {
+                "syn": "s(E1) -> token(E1) 'exist'",
+                "sem": lambda token: [],
+                "exec": lambda token: [('store', [('concept', token.lower())])]
+            },
+            {
+                "syn": "noun(E1) -> 'continents'",
+                "sem": lambda: [('continent', E1)],
+                "inf": [('isa', e1, 'continent')]
+            },
+        ]
+
+        facts = TestModule()
+        dialog_context = TestDialogContext()
+
+        model = Model([
+            facts,
+            dialog_context
+        ])
+
+        tokenizer = BasicTokenizer()
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        parser = BasicParser(grammar, tokenizer)
+        composer = SemanticComposer(parser)
+        executor = AtomExecutor(composer, model)
+
+        pipeline = Pipeline([
+            FindOne(tokenizer),
+            FindOne(parser),
+            TryFirst(composer),
+            TryFirst(executor),
+        ])
+
+        # test the inference
+        pipeline.enter(SentenceRequest("Continents be"))
+        results = dialog_context.ds.select("isa", ['entity', 'type'], [None, None])
+        self.assertEqual(["$1", "continent"], results[0])
+
+        # test the executable code
+        pipeline.enter(SentenceRequest("Continents exist"))
+        results = dialog_context.ds.select("concept", ['type'], [None])
+        self.assertEqual(["continents"], results[0])
+

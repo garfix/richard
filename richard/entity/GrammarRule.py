@@ -7,6 +7,7 @@ class GrammarRule:
     antecedent: RuleConstituent
     consequents: list[RuleConstituent]
     sem: callable
+    exec: callable
     inferences: list[tuple]
     boost: int
     condition: callable
@@ -16,6 +17,7 @@ class GrammarRule:
                  antecedent: RuleConstituent,
                  consequents: list[RuleConstituent],
                  sem: callable = None,
+                 exec: callable = None,
                  inferences: list[tuple] = [],
                  boost: int = 0,
                  condition: callable = None
@@ -23,6 +25,7 @@ class GrammarRule:
         self.antecedent = antecedent
         self.consequents = consequents
         self.sem = sem
+        self.exec = exec
         self.inferences = inferences
         self.boost = boost
         self.condition = condition

@@ -42,6 +42,10 @@ class SimpleGrammarRulesParser:
             if 'sem' in simple_rule:
                 sem = simple_rule['sem']
 
+            exec = None
+            if 'exec' in simple_rule:
+                exec = simple_rule['exec']
+
             inferences = []
             if 'inf' in simple_rule:
                 inferences = simple_rule['inf']
@@ -54,7 +58,7 @@ class SimpleGrammarRulesParser:
             if 'boost' in simple_rule:
                 boost = simple_rule['boost']
 
-            rules.append(GrammarRule(antecedent, consequents, sem=sem, inferences=inferences, boost=boost, condition=condition))
+            rules.append(GrammarRule(antecedent, consequents, sem=sem, exec=exec, inferences=inferences, boost=boost, condition=condition))
 
         return GrammarRules(rules)
 

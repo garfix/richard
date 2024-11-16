@@ -7,6 +7,7 @@ from richard.interface.Product import SomeProduct
 class SemanticComposerProduct(SomeProduct):
     semantics_iterations: dict[str, list[tuple]]
     inferences: list[tuple]
+    executable: callable
     return_variables: list[str]
 
 

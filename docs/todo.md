@@ -4,6 +4,14 @@ SIR
 
 * a user answers with a complete sentence as a response to a clarification sentence
 * learning characteristics of concepts
+* learn_grammar_rule
+* exec
+* create_relation
+
+General
+
+* Use a real database as much as possible.
+* Can I do without the explicit reifications?
 
 ## fundamental
 

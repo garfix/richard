@@ -35,6 +35,9 @@ class AtomExecutor(SomeProcessor):
         for inference in incoming.inferences:
             solver.write_atom(inference)
 
+        # perform executable atoms
+        solver.solve(incoming.executable)
+
         bindings = solver.solve(incoming.get_semantics_last_iteration())
         product = AtomExecutorProduct(bindings, solver.stats)
 
