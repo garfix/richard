@@ -12,6 +12,7 @@ General
 
 * Use a real database as much as possible.
 * Can I do without the explicit reifications?
+* add `common_query` and `common_write` to SomeModule to reduce code duplication
 
 ## fundamental
 

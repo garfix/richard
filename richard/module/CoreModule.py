@@ -351,7 +351,13 @@ class CoreModule(SomeModule):
 
     # ('store', [body-atoms])
     def store(self, values: list, context: ExecutionContext) -> list[list]:
-        atoms = bind_variables(values[0], context.binding)
+
+        unbound_atoms = values[0]
+
+        if not isinstance(unbound_atoms, list):
+            raise Exception(f"'store' expects a list of atoms; given: {unbound_atoms}")
+
+        atoms = bind_variables(unbound_atoms, context.binding)
 
         for atom in atoms:
             context.solver.write_atom(atom)

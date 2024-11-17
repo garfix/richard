@@ -21,6 +21,23 @@ def get_grammar():
             "sem": lambda common_noun1, a2, common_noun2: [('learn_rule', common_noun2[0], common_noun1)],
             "inf": [("format", "canned"), ("format_canned", "I understand")],
         },
+        # A finger is a part of a hand
+        # a statement about classes as entities
+        {
+            "syn": "s() -> a() common_noun_name(E1) 'is' 'a' 'part' 'of' a() common_noun_name(E1)",
+            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2)])],
+            "inf": [("format", "canned"), ("format_canned", "I understand")],
+        },
+        # There are two hands on each person
+        # a statement about classes as quantified entities
+        {
+            "syn": "s() -> 'there' 'are' number(E1) common_noun_name(E2) 'on' 'each' common_noun_name(E3)",
+            "sem": lambda number, common_noun_name1, common_noun_name2: [('store', [('part_of_n', common_noun_name1, common_noun_name2, number)])],
+            "inf": [("format", "canned"), ("format_canned", "I understand")],
+        },
+
+        # number
+        { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
 
         # article
         { "syn": "a() -> 'a'", "sem": lambda: [] },

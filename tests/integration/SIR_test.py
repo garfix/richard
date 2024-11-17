@@ -81,13 +81,17 @@ class TestSIR(unittest.TestCase):
         ])
 
         tests = [
-            # both boy and person are new; fact: isa(boy, person); grammar rule: noun -> boy, noun -> person
+            # both boy and person are new
+            # inference: person :- boy
+            # grammar rules: noun -> boy, noun -> person
+            # relations: boy(id), person(id)
             ['Every boy is a person', 'I understand'],
-            # both finger and hand are new; fact: part_of(finger, hand); grammar rules
-            # ['A finger is a part of a hand', 'I understand'],
+            # both finger and hand are new
+            # inference: part_of(finger, hand) / part_of(E1, E2) :- finger(E1), hand(E2)
+            ['A finger is a part of a hand', 'I understand'],
             #     # ['Each person has two hands', 'The above sentence is ambiguous; please re-phrase it'],
             # # known concepts;
-            # ['There are two hands on each person', 'I understand'],
+            ['There are two hands on each person', 'I understand'],
             # ['How many fingers does John have?', "Don't know whether finger is part of John"],
             # ['John is a boy', 'I understand'],
             # ['How many fingers does John have?', "How many finger per hand?"],

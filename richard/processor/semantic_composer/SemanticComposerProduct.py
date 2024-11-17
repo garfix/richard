@@ -19,6 +19,8 @@ class SemanticComposerProduct(SomeProduct):
 
 
     def log(self, logger: Logger):
+        logger.add_subheader("Executable")
+        logger.add(format_value(self.executable))
         logger.add_subheader("Inferences")
         logger.add(format_value(self.inferences))
         logger.add_subheader("Return variables")

@@ -13,6 +13,8 @@ class SIRModule(SomeModule):
         super().__init__()
         self.ds = data_source
         self.add_relation(Relation("add_relation", query_function=self.create_relation)),
+        self.add_relation(Relation("part_of", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole'])),
+        self.add_relation(Relation("part_of_n", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole', 'number'])),
 
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
@@ -26,7 +28,6 @@ class SIRModule(SomeModule):
 
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
-        # print(context.predicate, values)
         self.ds.insert(context.relation.predicate, context.relation.arguments, values)
 
 
