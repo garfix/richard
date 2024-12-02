@@ -19,7 +19,7 @@ class Record:
             if not name.isidentifier():
                 raise ValueError("The record key '" + name + "' is not an identier")
             if not isinstance(value, float) and not isinstance(value, str) and not isinstance(value, int) and not isinstance(value, list):
-                raise ValueError("A record must be int, float or string: " + str(value) + " for predicate '" + table + "'")
+                raise ValueError(f"A Record can only contain int, float or string values, got {list(self.values.values())} (predicate \"{table}\")")
 
         h = []
         for key, value in values.items():

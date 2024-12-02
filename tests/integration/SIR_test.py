@@ -17,6 +17,7 @@ from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.store.MemoryDb import MemoryDb
+from tests.integration.sir.SIRDialogContext import SIRDialogContext
 from tests.integration.sir.SIRModule import SIRModule
 from tests.integration.sir.SIRSentenceContext import SIRSentenceContext
 from .sir.grammar import get_grammar
@@ -58,12 +59,14 @@ class TestSIR(unittest.TestCase):
         grammar_module = GrammarModule(grammar)
         parser = BasicParser(grammar, tokenizer)
         sentence_context = SIRSentenceContext()
+        dialog_context = SIRDialogContext()
 
         model = Model([
             facts,
             inferences,
             grammar_module,
-            sentence_context
+            sentence_context,
+            dialog_context
         ])
 
         composer = SemanticComposer(parser)
@@ -74,7 +77,7 @@ class TestSIR(unittest.TestCase):
 
         pipeline1 = Pipeline([
             FindOne(tokenizer),
-            FindOne(parser),
+            TryFirst(parser),
             TryFirst(composer),
             TryFirst(executor),
             TryFirst(responder)
@@ -92,7 +95,7 @@ class TestSIR(unittest.TestCase):
             #     # ['Each person has two hands', 'The above sentence is ambiguous; please re-phrase it'],
             # # known concepts;
             ['There are two hands on each person', 'I understand'],
-            # ['How many fingers does John have?', "Don't know whether finger is part of John"],
+            ['How many fingers does John have?', "Don't know whether finger is part of John"],
             # ['John is a boy', 'I understand'],
             # ['How many fingers does John have?', "How many finger per hand?"],
             # ['Every hand has 5 fingers', 'I understand'],

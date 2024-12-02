@@ -4,9 +4,10 @@ SIR
 
 * a user answers with a complete sentence as a response to a clarification sentence
 * learning characteristics of concepts
-* learn_grammar_rule
-* exec
-* create_relation
+* OK learn_grammar_rule
+* OK exec
+* OK create_relation
+* implement het iterator-object
 
 General
 

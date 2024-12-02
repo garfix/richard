@@ -1,3 +1,53 @@
+## 2024-11-29
+
+I was looking for an elegant way to unite the two ways to deal with amounts:
+
+- counting: just count the number of results to find the count
+- looking up: the count is already stored in the database and just needs to be looked up
+
+This sentence exemplifies the problem:
+
+    How many children has Madonna?
+
+In one database this number may be stored as a fixed number, while in another database all children are named individually and they have to be counted to find the answer.
+
+The answer in both cases can be given by the predicate `have` that uses the entity types of `child` and `person`. When all children are listed individually, `have` returns there id's in an array.
+
+Now this is new: when `have` finds the total number in the database, it returns an iterable object that yields a sequence of different id's. When asked for the length, this object returns the number of results.
+
+Why is this an iterable object and not just an array? Because the iterable object can handle large amounts, like 20 billion, without creating an array of that size.
+
+## 2024-11-18
+
+It's time to think about the chain of reasoning needed to answer
+
+    How many fingers does John have?
+
+The sem of the sentence could be
+
+~~~python
+    [ finger(E1), resolve_name('John', E2), ('part_of_n', E1, E2, N) ] -> N
+~~~
+
+or, more in line with previous systems:
+
+~~~python
+    [ ('count', N, [ finger(E1), resolve_name('John', E2), ('have', E2, E1) ]) ] -> N
+~~~
+
+From conceptual knowledge about fingers, hands, and persons, the system needs to answer something about a specific boy.
+
+Starting from the last form, which makes a more elegant grammar, but a more complicated model, we find that the model needs to transform `have(E2, E1)` into `('part_of_n', E1, E2, N)` when `E1` is finger and `E2` is person.
+
+In any case, it's the `('part_of_n', E1, E2, N)` that needs to be resolved, with `E1` a finger entity and `E2` pointing to John.
+
+===
+
+I think `E1` and `E2` need to be filled with class ids. The class `finger` and the class `person`.
+
+    ('part_of_n', 'finger', 'person', N)
+    ('part_of_n', E1, E2, N) :- ('part_of_n', E1, E3, N1), ('part_of_n', E3, E2, N2), ('mul', N1, N2, N)
+
 ## 2024-11-14
 
 I'm struggling with the grammar rules that create new grammar rules and db tables based on newly introduced nouns in the dialog.
@@ -15,7 +65,7 @@ This could be an option:
 ] },
 ~~~
 
-Introduction of a new key, `exec`, of atoms that are not learned (stored, like with `inf`) but directly executed
+Introduction of a new key, `exec`, of atoms that are not learned (stored, like with `inf`) but directly executed.
 
 ## 2024-11-05
 

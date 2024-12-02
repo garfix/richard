@@ -1,4 +1,6 @@
+from richard.entity.ProcessingException import ProcessingException
 from richard.entity.Relation import Relation
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.type.ExecutionContext import ExecutionContext
@@ -12,6 +14,9 @@ class SIRModule(SomeModule):
     def __init__(self, data_source: SomeDataSource) -> None:
         super().__init__()
         self.ds = data_source
+        self.add_relation(Relation("resolve_name", query_function=self.resolve_name))
+        self.add_relation(Relation("finger", query_function=self.finger))
+        self.add_relation(Relation("have", query_function=self.have))
         self.add_relation(Relation("add_relation", query_function=self.create_relation)),
         self.add_relation(Relation("part_of", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole'])),
         self.add_relation(Relation("part_of_n", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole', 'number'])),
@@ -19,12 +24,7 @@ class SIRModule(SomeModule):
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
         results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
-        if len(results) > 0:
-            return results
-        else:
-            return [
-                values[:-1] + ["unknown"]
-            ]
+        return results
 
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
@@ -41,3 +41,74 @@ class SIRModule(SomeModule):
         return [
             [None, None]
         ]
+
+
+    # resolve(name, id)
+    def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
+        name = values[0]
+        variable = context.arguments[1]
+
+        # here a person is just identified by their name
+        # we can infer that it's a person
+        context.solver.write_atom(('isa', variable.name, 'person'))
+
+        return [
+            [None, name]
+        ]
+
+
+    # finger(id)
+    def finger(self, values: list, context: ExecutionContext) -> list[list]:
+
+        # no individual fingers are available, but we must return at least one
+        return [
+            ['a-finger']
+        ]
+
+
+    # have(whole, part)
+    # the verb have is always very abstract, but in this case it also handles with information on the class-level
+    def have(self, values: list, context: ExecutionContext) -> list[list]:
+
+        # solving based on class information
+
+        whole_variable = context.arguments[0]
+        part_variable = context.arguments[1]
+
+        print(values)
+
+        whole_type = None
+        if isinstance(whole_variable, Variable):
+            isa = context.solver.solve1([('isa', whole_variable.name, Variable('Type'))])
+            if isa is not None:
+                whole_type = isa["Type"]
+
+        part_type = None
+        if isinstance(part_variable, Variable):
+            isa = context.solver.solve1([('isa', part_variable.name, Variable('Type'))])
+            if isa is not None:
+                part_type = isa["Type"]
+
+        results = self.ds.select('part_of_n', ['whole', 'part', 'number'], [whole_type, part_type, None])
+
+        if len(results) == 0:
+
+            whole_name = self.get_name(context, whole_variable.name, values[0])
+            part_name = self.get_name(context, part_variable.name, values[1])
+
+            raise ProcessingException(f"Don't know whether {part_name} is part of {whole_name}")
+
+        return results
+
+
+    def get_name(self, context: ExecutionContext, id: str, value):
+        # try to find the class
+        isa = context.solver.solve1([('isa', id, Variable('Type'))])
+        if isa:
+            type = isa["Type"]
+            if type == 'person':
+                return value
+            else:
+                return type
+
+        return None
