@@ -46,11 +46,6 @@ class SIRModule(SomeModule):
     # resolve(name, id)
     def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
         name = values[0]
-        variable = context.arguments[1]
-
-        # here a person is just identified by their name
-        # we can infer that it's a person
-        context.solver.write_atom(('isa', variable.name, 'person'))
 
         return [
             [None, name]
@@ -75,28 +70,18 @@ class SIRModule(SomeModule):
         whole_variable = context.arguments[0]
         part_variable = context.arguments[1]
 
-        print(values)
-
         whole_type = None
         if isinstance(whole_variable, Variable):
-            isa = context.solver.solve1([('isa', whole_variable.name, Variable('Type'))])
-            if isa is not None:
-                whole_type = isa["Type"]
+            whole_type = self.get_name(context, whole_variable.name, values[0])
 
         part_type = None
         if isinstance(part_variable, Variable):
-            isa = context.solver.solve1([('isa', part_variable.name, Variable('Type'))])
-            if isa is not None:
-                part_type = isa["Type"]
+            part_type = self.get_name(context, part_variable.name, values[1])
 
-        results = self.ds.select('part_of_n', ['whole', 'part', 'number'], [whole_type, part_type, None])
+        results = self.ds.select('part_of_n', ['part', 'whole', 'number'], [whole_type, part_type, None])
 
         if len(results) == 0:
-
-            whole_name = self.get_name(context, whole_variable.name, values[0])
-            part_name = self.get_name(context, part_variable.name, values[1])
-
-            raise ProcessingException(f"Don't know whether {part_name} is part of {whole_name}")
+            raise ProcessingException(f"Don't know whether {part_type} is part of {whole_type}")
 
         return results
 
@@ -111,4 +96,5 @@ class SIRModule(SomeModule):
             else:
                 return type
 
-        return None
+        return value
+

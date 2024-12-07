@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from richard.block.TryFirst import TryFirst
@@ -50,7 +51,10 @@ class TestSIR(unittest.TestCase):
 
     def test_sir(self):
 
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/sir/resources/"
+
         inferences = InferenceModule()
+        inferences.import_rules(path + "inferences.pl")
 
         facts = SIRModule(MemoryDbDataSource(MemoryDb()))
 
@@ -96,7 +100,7 @@ class TestSIR(unittest.TestCase):
             # # known concepts;
             ['There are two hands on each person', 'I understand'],
             ['How many fingers does John have?', "Don't know whether finger is part of John"],
-            # ['John is a boy', 'I understand'],
+            ['John is a boy', 'I understand'],
             # ['How many fingers does John have?', "How many finger per hand?"],
             # ['Every hand has 5 fingers', 'I understand'],
             # ['How many fingers does John have?', "The answer is 10"],

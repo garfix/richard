@@ -43,6 +43,12 @@ def get_grammar():
             "sem": lambda common_noun1, common_noun2: common_noun1 + common_noun2 + [('count', E3, [('have', E2, E1)])],
             "inf": [("format", "number"), ("format_number", e3, '')],
         },
+        # John is a boy
+        {
+            "syn": "s() -> proper_noun(E1) 'is' a() common_noun(E2)",
+            "sem": lambda proper_noun, a2, common_noun: proper_noun + common_noun + [('store', [('isa', E1, E2)])],
+            "inf": [("format", "canned"), ("format_canned", "I understand")],
+        },
 
         # number
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
