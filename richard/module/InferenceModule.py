@@ -53,7 +53,8 @@ class InferenceModule(SomeModule):
     def solve_rule(self, rule: InferenceRule, arguments: list, solver: SomeSolver, binding: dict):
 
         rule_arguments = rule.head[1:]
-        rule_binding = binding.copy()
+        # initialize with binding variables that do not affect this rule (but may be used later on)
+        rule_binding = {key: value for (key, value) in binding.items() if key not in rule.get_all_variables()}
 
         for rule_argument, value in zip(rule_arguments, arguments):
             if isinstance(rule_argument, Variable):
@@ -77,6 +78,8 @@ class InferenceModule(SomeModule):
                     if value != rule_argument:
                         # value conflict in head
                         return []
+
+        print(rule_arguments, binding, rule_binding)
 
         bindings = solver.solve(rule.body, rule_binding)
 

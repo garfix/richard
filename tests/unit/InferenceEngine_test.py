@@ -68,6 +68,7 @@ class TestInferenceEngine(unittest.TestCase):
             # bindings are passed
             [[('knows', [('parent', E1, E2)], "true")], {'E1': 'martha'}, [{'E1': 'martha'}]],
             [[('knows', [('parent', E1, E2)], "true")], {'E1': 'magdalena'}, []],
+            [[('ancestor', 'robert', 'antonio')], {'E1': 'robert'}, [{'E1': 'robert'}]],
         ]
 
         for test in tests:
