@@ -78,12 +78,19 @@ class SIRModule(SomeModule):
         if isinstance(part_variable, Variable):
             part_type = self.get_name(context, part_variable.name, values[1])
 
-        results = self.ds.select('part_of_n', ['part', 'whole', 'number'], [whole_type, part_type, None])
+        results = context.solver.solve([('part_of_number', part_type, whole_type, Variable('N'))])
 
         if len(results) == 0:
             raise ProcessingException(f"Don't know whether {part_type} is part of {whole_type}")
 
-        return results
+        number = results[0]['N']
+
+        response = []
+
+        for n in range(number):
+            response.append([None, None])
+
+        return response
 
 
     def get_name(self, context: ExecutionContext, id: str, value):

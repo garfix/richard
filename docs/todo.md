@@ -8,6 +8,9 @@ SIR
 * OK exec
 * OK create_relation
 * implement het iterator-object
+* tokenizer: distinguish between 'finger' and 'fingers'
+* response: the answer is 10
+* responses like: how many finger per hand?
 
 General
 

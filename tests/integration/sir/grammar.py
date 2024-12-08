@@ -17,8 +17,8 @@ def get_grammar():
         # every X is a Y, where X and Y not part of the grammar
         # this is uncommon, is defines a new concept in terms of an another unknown concept
         {
-            "syn": "s() -> 'every' common_noun(E1) 'is' a() common_noun(E1)",
-            "sem": lambda common_noun1, a2, common_noun2: [('learn_rule', common_noun2[0], common_noun1)],
+            "syn": "s() -> 'every' common_noun_name(E1) 'is' a() common_noun_name(E1)",
+            "sem": lambda common_noun_name1, a2, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
             "inf": [("format", "canned"), ("format_canned", "I understand")],
         },
         # A finger is a part of a hand
@@ -45,13 +45,20 @@ def get_grammar():
         },
         # John is a boy
         {
-            "syn": "s() -> proper_noun(E1) 'is' a() common_noun(E2)",
-            "sem": lambda proper_noun, a2, common_noun: proper_noun + common_noun + [('store', [('isa', E1, E2)])],
+            "syn": "s() -> proper_noun(E1) 'is' a() common_noun_name(E2)",
+            "sem": lambda proper_noun, a2, common_noun_name: proper_noun + [('store', [('isa', E1, common_noun_name)])],
+            "inf": [("format", "canned"), ("format_canned", "I understand")],
+        },
+        # Every hand has 5 fingers
+        {
+            "syn": "s() -> 'every' common_noun_name(E2) 'has' number(E1) common_noun_name(E3)",
+            "sem": lambda common_noun_name1, number, common_noun_name2: [('store', [('part_of_n', common_noun_name2, common_noun_name1, number)])],
             "inf": [("format", "canned"), ("format_canned", "I understand")],
         },
 
         # number
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
+        { "syn": "number(E1) -> '5'", "sem": lambda: 5 },
 
         # article
         { "syn": "a() -> 'a'", "sem": lambda: [] },
@@ -70,6 +77,11 @@ def get_grammar():
 
         # introduction of a new common noun
         { "syn": "common_noun_name(E1) -> token(E1)", "sem": lambda token: token },
+
+# todo: solve better!
+{ "syn": "common_noun_name(E1) -> 'fingers'", "sem": lambda: 'finger' },
+{ "syn": "common_noun_name(E1) -> 'hands'", "sem": lambda: 'hand' },
+
 
         # introduction of a new common noun
         { "syn": "common_noun(E1) -> token(E1)", "sem": lambda token: [ (token, E1) ],

@@ -6,10 +6,13 @@ John is a boy                           boy($7) / isa($7, 'boy')
 Every boy is a person                   person(E) :- boy(E) / isa('boy', 'person')
 Every hand has 5 fingers                part_of_n('finger', 'hand', 5)
 
-How many fingers does John have?        have($7, 'a-finger')
-                                        part_of_n('finger', 'John', N);
                                         part_of_n(A, B, N) :- part_of_n(A, C, N1), part_of_n(C, B, N2), mul(N1, N2, N);
                                         part_of_n(A, B, N1) :- isa(A, AA), part_of_n(AA, B, N1);
+
+How many fingers does John have?        have($7, 'a-finger')
+                                        part_of_n('finger', 'John', N);
+                                            part_of_n('finger', 'hand', 5) part_of_n('hand', 'person', 2)
+
 
 ## 2024-11-29
 

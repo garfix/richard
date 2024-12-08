@@ -15,6 +15,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("==", query_function=self.equals)),
         self.add_relation(Relation(">", query_function=self.greater_than)),
         self.add_relation(Relation("<", query_function=self.less_than)),
+        self.add_relation(Relation("multiply", query_function=self.multiply)),
         self.add_relation(Relation("arg_min", query_function=self.arg_min)),
         self.add_relation(Relation("arg_max", query_function=self.arg_max)),
         self.add_relation(Relation("sum", query_function=self.sum)),
@@ -84,6 +85,24 @@ class CoreModule(SomeModule):
         if e1 < e2:
             return [values]
         return []
+
+
+    # ('multiply', E1, E2, E3)
+    # E3 is set to E1 * E2
+    def multiply(self, values: list, context: ExecutionContext) -> list[list]:
+
+        e1 = values[0]
+        e2 = values[1]
+        e3 = e1 * e2
+
+        if e1 is None:
+            raise Exception("* first argument is unbound")
+        if e2 is None:
+            raise Exception("* second argument is unbound")
+
+        return [
+            [None, None, e3]
+        ]
 
 
     # ('count', E1, [body-atoms])
