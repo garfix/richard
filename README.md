@@ -6,7 +6,7 @@ This library is able to turn a sentence in any ordinary human language directly 
 
 The system is completely rule-based, which means that you as a developer have to write the processing pipeline, the grammar and most of the relations. The prize is complete control over the code that is to be executed. The results are accurate, repeatable, and transparent.
 
-In this project, a successor to my earlier [NLI-GO](https://github.com/garfix/nli-go), I will (attempt to) replicate landmark historical NLI systems in a single architecture. Each system provides a different perspective on the field. The subject is complicated (to the point of screaming out loud) and quite out of fashion, but the attitude was and will be: don't dwell on what can't be done, find out what can be done, and make it easier and easier.
+In this project, a successor to my earlier [NLI-GO](https://github.com/garfix/nli-go), I will (attempt to) replicate landmark historical NLI systems in a single architecture. Each system provides a different perspective on the field. The goal is not just to replicate each historical system, but to replicate it in a way that will eventually allow the integration of all these systems. The subject is complicated (to the point of screaming out loud) and quite out of fashion, but the attitude was and will be: don't dwell on what can't be done, find out what can be done, and make it easier and easier.
 
 A good way to get an idea about the system is to look at the demos in the `tests/integration` directory and read the [documentation](https://richard.readthedocs.io/).
 
@@ -18,7 +18,9 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 
 * 0.4 ?
     * storing facts and learning rules
+    * classes and instances
     * Cooper's system (1964) demo
+    * Bertram Rafael's SIR (1964) demo
 * 0.3 September 2024
     * from function based grammar to atom based grammar
     * inference engine

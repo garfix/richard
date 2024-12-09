@@ -11,8 +11,9 @@ Every hand has 5 fingers                part_of_n('finger', 'hand', 5)
 
 How many fingers does John have?        have($7, 'a-finger')
                                         part_of_n('finger', 'John', N);
-                                            part_of_n('finger', 'hand', 5) part_of_n('hand', 'person', 2)
-
+                                            part_of_n('finger', 'hand', N1) part_of_n('hand', 'John', N2)
+                                                                           part_of_n('hand', 'boy', N2)
+                                                                           part_of_n('hand', 'person', N2)
 
 ## 2024-11-29
 

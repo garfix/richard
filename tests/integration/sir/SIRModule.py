@@ -1,5 +1,6 @@
 from richard.entity.ProcessingException import ProcessingException
 from richard.entity.Relation import Relation
+from richard.entity.ResultIterator import ResultIterator
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
@@ -84,11 +85,7 @@ class SIRModule(SomeModule):
             raise ProcessingException(f"Don't know whether {part_type} is part of {whole_type}")
 
         number = results[0]['N']
-
-        response = []
-
-        for n in range(number):
-            response.append([None, None])
+        response = ResultIterator([None, None], number)
 
         return response
 

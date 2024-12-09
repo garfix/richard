@@ -4,6 +4,7 @@ from richard.core.Model import Model
 from richard.core.constants import E1, E2, IGNORED
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.entity.Relation import Relation
+from richard.entity.ResultIterator import ResultIterator
 from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.core.Solver import Solver
@@ -11,6 +12,11 @@ from richard.interface.SomeModule import SomeModule
 from richard.store.MemoryDb import MemoryDb
 from richard.store.Record import Record
 from richard.type.ExecutionContext import ExecutionContext
+
+
+class TestResultIterator(ResultIterator):
+    def __next__(self):
+        raise Exception("As this iterator is only called using 'count', its individual items should not be accessed")
 
 
 class TestModule(SomeModule):
@@ -21,6 +27,7 @@ class TestModule(SomeModule):
         self.add_relation(Relation("country", query_function=self.simple_entity))
         self.add_relation(Relation("contains", query_function=self.contains))
         self.add_relation(Relation("number_of", query_function=self.number_of))
+        self.add_relation(Relation("return_iterator", query_function=self.return_iterator))
 
 
     def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
@@ -38,6 +45,10 @@ class TestModule(SomeModule):
             [None, 2]
         ]
         return out_values
+
+
+    def return_iterator(self, values: list, context: ExecutionContext) -> list[list]:
+        return TestResultIterator([None, 2], 100000000)
 
 
 class TestSolver(unittest.TestCase):
@@ -86,6 +97,11 @@ class TestSolver(unittest.TestCase):
             [
                 [('number_of', "river", 2)],
                 [{}]
+            ],
+            # counting with a ResultIterator
+            [
+                [('count', E1, [('return_iterator',)])],
+                [{'E1': 100000000}]
             ],
         ]
 

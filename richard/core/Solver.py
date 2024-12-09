@@ -1,5 +1,6 @@
 from collections import defaultdict
 from richard.core.Model import Model
+from richard.entity.ResultIterator import ResultIterator
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
 from richard.type.ExecutionContext import ExecutionContext
@@ -47,6 +48,9 @@ class Solver(SomeSolver):
             self.stats[predicate] += 1
 
         values = self.find_relation_values(predicate, arguments, binding)
+
+        if isinstance(values, ResultIterator):
+            return values
 
         if not isinstance(values, list):
             raise Exception("Predicate '" + predicate + "' should return a list")
@@ -102,6 +106,11 @@ class Solver(SomeSolver):
 
             # call the relation's query function
             out_values = relation.query_function(db_values, context)
+
+            if isinstance(out_values, ResultIterator):
+                if len(relations) > 1:
+                    raise Exception("A relation that returns a ResultIterator can't be used in combination with another relation by the same name: " + relation.predicate)
+                return out_values
 
             rows.extend(out_values)
 

@@ -79,8 +79,6 @@ class InferenceModule(SomeModule):
                         # value conflict in head
                         return []
 
-        print(rule_arguments, binding, rule_binding)
-
         bindings = solver.solve(rule.body, rule_binding)
 
         results = []
