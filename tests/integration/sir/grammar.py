@@ -41,7 +41,7 @@ def get_grammar():
         {
             "syn": "s(E3) -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have' '?'",
             "sem": lambda common_noun1, common_noun2: common_noun1 + common_noun2 + [('count', E3, [('have', E2, E1)])],
-            "inf": [("format", "number"), ("format_number", e3, '')],
+            "inf": [("format", "number"), ("format_number", e3, ''), ('format_canned', 'The answer is {}')],
         },
         # John is a boy
         {

@@ -66,6 +66,11 @@ class SimpleResponder(SomeProcessor):
                 response = bindings[0][variable]
                 if unit:
                     response = str(response) + " " + unit
+
+            canned = solver.solve1([('format_canned', Variable('Template'))])
+            if canned != None:
+                response = canned['Template'].replace('{}', str(response))
+
             else:
                 response = "I dont't know"
 
@@ -111,6 +116,10 @@ class SimpleResponder(SomeProcessor):
                 values.append(value)
             values.sort()
             response = ", ".join(values)
+
+            canned = solver.solve1([('format_canned', Variable('Template'))])
+            if canned != None:
+                response = canned['Template'].replace('{}', str(response))
 
         elif type == "canned":
 

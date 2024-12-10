@@ -7,9 +7,9 @@ SIR
 * OK learn_grammar_rule
 * OK exec
 * OK create_relation
-* implement het iterator-object
-* tokenizer: distinguish between 'finger' and 'fingers'
+* OK implement het iterator-object
 * response: the answer is 10
+* tokenizer: distinguish between 'finger' and 'fingers'
 * responses like: how many finger per hand?
 
 General
@@ -37,6 +37,7 @@ optimize isolate independent parts:
 
 ## done
 
+* add ResultIterator
 * can parsing be done faster?
 * document parse tree sort heuristics
 * chat-80 import csv
