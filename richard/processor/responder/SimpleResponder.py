@@ -67,9 +67,9 @@ class SimpleResponder(SomeProcessor):
                 if unit:
                     response = str(response) + " " + unit
 
-            canned = solver.solve1([('format_canned', Variable('Template'))])
-            if canned != None:
-                response = canned['Template'].replace('{}', str(response))
+                canned = solver.solve1([('format_canned', Variable('Template'))])
+                if canned != None:
+                    response = canned['Template'].replace('{}', str(response))
 
             else:
                 response = "I dont't know"
