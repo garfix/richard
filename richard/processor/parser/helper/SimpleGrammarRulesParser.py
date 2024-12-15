@@ -1,7 +1,7 @@
 import re
 
 from build.lib.richard.type import SimpleGrammarRule
-from richard.core.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
+from richard.core.constants import POS_TYPE_REG_EXP, POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.RuleConstituent import RuleConstituent
@@ -21,10 +21,13 @@ class SimpleGrammarRulesParser:
             '->',
             '\(',
             '\)',
+            "/(?:\\\\/|[^/])+/",
             "'(?:\\\\'|[^'])+'",
             '"(?:\\\\"|[^"])+"',
             '[A-Z]\w*',
             '\w+',
+            '\\+',
+            '~',
         ]) + ")")
         self.re_identifier = re.compile("^\w+$")
         self.re_variable = re.compile("^[A-Z]\w*$")
@@ -58,15 +61,11 @@ class SimpleGrammarRulesParser:
         if 'inf' in simple_rule:
             inferences = simple_rule['inf']
 
-        condition = None
-        if 'if' in simple_rule:
-            condition = simple_rule['if']
-
         boost = 0
         if 'boost' in simple_rule:
             boost = simple_rule['boost']
 
-        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, inferences=inferences, boost=boost, condition=condition)
+        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, inferences=inferences, boost=boost)
 
 
     def parse_syntax(self, syntax):
@@ -88,18 +87,39 @@ class SimpleGrammarRulesParser:
         while True:
 
             atom, new_pos = self.parse_atom(tokens, pos)
-            if not atom:
+            if atom:
+                consequents.append(atom)
+            else:
 
-                string, new_pos = self.parse_string(tokens, pos)
-                if not string:
-                    break
-                atom = RuleConstituent(string, [], POS_TYPE_WORD_FORM)
+                regexp, new_pos = self.parse_regexp(tokens, pos)
+                if regexp:
+                    atom = RuleConstituent(regexp, [], POS_TYPE_REG_EXP)
+                    consequents.append(atom)
+                else:
+
+                    string, new_pos = self.parse_string(tokens, pos)
+                    if not string:
+                        break
+
+                    atom = RuleConstituent(string, [], POS_TYPE_WORD_FORM)
+                    consequents.append(atom)
 
             pos = new_pos
-            consequents.append(atom)
+
+            token, new_pos = self.parse_token(tokens, pos)
+            if token == '+':
+                pos = new_pos
+            elif token == '~':
+                atom = RuleConstituent(' ', [], POS_TYPE_WORD_FORM, optional=True)
+                consequents.append(atom)
+                pos = new_pos
+            else:
+                if pos < len(tokens):
+                    atom = RuleConstituent(' ', [], POS_TYPE_WORD_FORM)
+                    consequents.append(atom)
 
         if pos != len(tokens):
-            raise Exception("Could not complete parsing the consequencts: " + syntax)
+            raise Exception("Could not complete parsing the consequents: " + syntax)
 
         return antecedent, consequents
 
@@ -112,6 +132,18 @@ class SimpleGrammarRulesParser:
         if re.match(self.re_variable, token):
             pos = new_pos
             return token, pos
+
+        return None, 0
+
+
+    def parse_regexp(self, tokens: list[str], pos: int):
+        token, new_pos = self.parse_token(tokens, pos)
+        if not token:
+            return None, 0
+
+        if token[0] == '/':
+            pos = new_pos
+            return token[1:-1].replace('\\/', '/'), pos
 
         return None, 0
 

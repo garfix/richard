@@ -15,16 +15,12 @@ from .earley.EarleyParser import EarleyParser
 
 class BasicParser(SomeProcessor):
 
-    tokenizer: SomeProcessor
     grammar: GrammarRules
     parser: EarleyParser
     tree_sorter: SomeParseTreeSortHeuristics
 
 
-    def __init__(self, grammar: GrammarRules, tokenizer: SomeProcessor) -> None:
-
-        self.tokenizer = tokenizer
-
+    def __init__(self, grammar: GrammarRules) -> None:
         self.grammar = grammar
         self.parser = EarleyParser()
         self.tree_sorter = BasicParseTreeSortHeuristics()
@@ -35,8 +31,7 @@ class BasicParser(SomeProcessor):
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
-        incoming: BasicTokenizerProduct = request.get_current_product(self.tokenizer)
-        result = self.parser.parse(self.grammar, incoming.tokens)
+        result = self.parser.parse(self.grammar, request.text)
         sorted_trees = self.tree_sorter.sort_trees(result.products)
         products = [BasicParserProduct(tree) for tree in sorted_trees]
         return ProcessResult(

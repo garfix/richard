@@ -10,7 +10,6 @@ class GrammarRule:
     exec: callable
     inferences: list[tuple]
     boost: int
-    condition: callable
     hash: int
 
     def __init__(self,
@@ -28,7 +27,6 @@ class GrammarRule:
         self.exec = exec
         self.inferences = inferences
         self.boost = boost
-        self.condition = condition
 
         h = [c.hash for c in self.consequents] + [self.antecedent.hash]
         self.hash = hash(tuple(h))

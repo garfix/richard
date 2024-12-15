@@ -1,4 +1,5 @@
-from richard.core.constants import CATEGORY_TOKEN, DELTA, GAMMA, ROOT_CATEGORY, TERMINAL, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
+import re
+from richard.core.constants import DELTA, POS_TYPE_REG_EXP, ROOT_CATEGORY, TERMINAL, NO_SENTENCE, NOT_UNDERSTOOD, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, UNKNOWN_WORD
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.ProcessResult import ProcessResult
@@ -16,9 +17,9 @@ class EarleyParser:
     """
 
 
-    def parse(self, grammar_rules: GrammarRules, tokens: list[str]) -> ProcessResult:
+    def parse(self, grammar_rules: GrammarRules, text: str) -> ProcessResult:
 
-        chart = self.buildChart(grammar_rules, tokens)
+        chart = self.buildChart(grammar_rules, text)
 
         rootNodes = extract_tree_roots(chart)
 
@@ -30,7 +31,7 @@ class EarleyParser:
 
             if nextWord != "":
                 error = UNKNOWN_WORD + " " + nextWord
-            elif len(tokens) == 0:
+            elif len(text) == 0:
                 error = NO_SENTENCE
             else:
                 error = NOT_UNDERSTOOD
@@ -41,13 +42,13 @@ class EarleyParser:
         )
 
 
-    def buildChart(self, grammar_rules: GrammarRules, words):
+    def buildChart(self, grammar_rules: GrammarRules, text: str):
         """
         The body of Earley's algorithm
         """
 
-        chart = Chart(words)
-        wordCount = len(words)
+        chart = Chart(text)
+        charCount = len(text)
 
         # gamma(G) -> delta(D)
         chart.enqueue(chart.build_incomplete_gamma_state(), 0)
@@ -65,7 +66,7 @@ class EarleyParser:
             ))
 
 
-        for i in range(wordCount + 1):
+        for i in range(charCount + 1):
 
             j = 0
             while j < len(chart.states[i]):
@@ -81,7 +82,7 @@ class EarleyParser:
 
                     # if the current word in the sentence has this part-of-speech, then
                     # we add a completed entry to the chart (part-of-speech => word)
-                    if i < wordCount:
+                    if i < charCount:
                         self.scan(chart, state)
                 else:
 
@@ -117,34 +118,36 @@ class EarleyParser:
         """
 
         next_consequent = state.rule.consequents[state.dot_position - 1]
-        next_pos_type = state.rule.consequents[state.dot_position - 1].position_type
         next_variables = state.rule.consequents[state.dot_position - 1].arguments
         end_word_index = state.end_word_index
-        end_word = chart.words[end_word_index]
+        end_word = chart.text[end_word_index]
         lex_item_found = False
-        new_pos_type = POS_TYPE_RELATION
         sem = None
+        length = 1
 
-        # token category
-        if not lex_item_found and next_consequent.predicate == CATEGORY_TOKEN:
-            lex_item_found = True
-            sem = lambda: end_word
-
-        # literal word form
-        if not lex_item_found:
-            if (next_consequent.predicate == end_word.lower()) and (len(next_variables) == 0):
+        # match a regular expression over multiple tokens
+        if next_consequent.position_type == POS_TYPE_REG_EXP:
+            word = self.perform_regexp(chart.text, end_word_index, next_consequent.predicate)
+            if word is not None:
                 lex_item_found = True
-                new_pos_type = POS_TYPE_WORD_FORM
+                sem = lambda: word
+                length = len(word)
+
+        if next_consequent.position_type == POS_TYPE_WORD_FORM:
+            found = self.read_word(chart.text, end_word_index, next_consequent.predicate)
+            if found:
+                lex_item_found = True
+                length = len(next_consequent.predicate)
 
         if lex_item_found:
             rule = GrammarRule(
-                RuleConstituent(next_consequent.predicate, next_variables, new_pos_type),
+                RuleConstituent(next_consequent.predicate, next_variables, next_consequent.position_type),
                 [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
                 sem,
             )
 
-            scanned_state = ChartState(rule, 2, end_word_index, end_word_index+1)
-            chart.enqueue(scanned_state, end_word_index+1)
+            scanned_state = ChartState(rule, 2, end_word_index, end_word_index+length)
+            chart.enqueue(scanned_state, end_word_index+length)
 
 
     def complete(self, chart: Chart, completed_state: ChartState):
@@ -174,14 +177,24 @@ class EarleyParser:
             if charted_state.rule.consequents[dot_position-1].position_type != completed_state.rule.antecedent.position_type:
                 continue
 
-            # check condition
-            if charted_state.rule.condition:
-                next_word = chart.words[charted_state.end_word_index]
-                if not charted_state.rule.condition(next_word):
-                    continue
-
             # create a new state that is a dot-advancement of an older state
             advanced_state = ChartState(rule, dot_position+1, charted_state.start_word_index, completed_state.end_word_index)
 
             # enqueue the new state
             chart.enqueue(advanced_state, completed_state.end_word_index)
+
+
+    def perform_regexp(self, text: str, start_index: int, regexp: str):
+        part = text[start_index:]
+        result = re.match(regexp, part)
+        word = None
+        if result:
+            word = result.group(0)
+
+        return word
+
+
+    def read_word(self, text: str, start_index: int, word: str):
+        part = text[start_index:].lower()
+        return part[:len(word)] == word
+

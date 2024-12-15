@@ -1,3 +1,18 @@
+## 2024-12-15
+
+In order to start using morphological analysis I made quite a big change to the parser. I removed the tokenizer and now treat all characters in the sentence as separate tokens.
+
+## 2024-12-11
+
+I want to write a simple tokenizer that splits "fingers" into "finger" and "s", and "hands" into "hand" and "s", but preferably keeps "has" and "does" as single tokens. Space must be represented explicitly.
+
+Is it possible to do morphology only on nouns? To wait with the process until we know that something is a noun? I did that in NLI-GO, but there I found that I wanted to integrate parsing and morphologizing, but it has many overlaps.
+
+{ "syn": "common_noun_name(E1) -> 'hands'", "sem": lambda: 'hand' },
+{ "syn": "common_noun_name(E1) -> common_noun_name(E1) 's'", "sem": lambda common_noun_name: common_noun_name },
+
+Idea: what if I make the tokenizer produce single characters? And adapt the parser and the grammar accordingly?
+
 ## 2024-12-03
 
 A finger is a part of a hand            part_of('finger', 'hand')

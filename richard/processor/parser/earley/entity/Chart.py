@@ -8,15 +8,15 @@ from .ChartState import ChartState
 class Chart:
     root_category: str
     root_variables: list[str]
-    words: list[str]
+    text: list[str]
     states: list[OrderedSet[ChartState]]
     # all states that were completed, indexed by end word index
     completed_states: dict[int, list[ChartState]]
 
 
-    def __init__(self, words: list[str]) -> None:
-        self.words = words
-        self.states = [OrderedSet() for _ in range(len(words) + 1)]
+    def __init__(self, text: str) -> None:
+        self.text = text
+        self.states = [OrderedSet() for _ in range(len(text) + 1)]
         self.completed_states = {}
 
 
@@ -35,7 +35,7 @@ class Chart:
                 RuleConstituent(GAMMA, ["G"], POS_TYPE_RELATION),
                 [RuleConstituent(DELTA, ["D"], POS_TYPE_RELATION)],
             ),
-            2, 0, len(chart.words))
+            2, 0, len(chart.text))
 
 
     def enqueue(chart, state, position):

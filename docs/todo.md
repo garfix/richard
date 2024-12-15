@@ -8,9 +8,11 @@ SIR
 * OK exec
 * OK create_relation
 * OK implement het iterator-object
-* response: the answer is 10
+* OK response: the answer is 10
 * tokenizer: distinguish between 'finger' and 'fingers'
 * responses like: how many finger per hand?
+* character tokens; exit tokenizer
+* replace all whitespace in the input by single space
 
 General
 
