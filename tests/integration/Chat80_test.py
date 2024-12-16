@@ -15,7 +15,6 @@ from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.module.InferenceModule import InferenceModule
 from richard.store.MemoryDb import MemoryDb
 from .chat80.Chat80DialogContext import Chat80DialogContext

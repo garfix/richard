@@ -14,7 +14,6 @@ from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.store.MemoryDb import MemoryDb
 from tests.integration.cooper.CooperSentenceContext import CooperSentenceContext
 from tests.integration.cooper.SimpleOpenWorldResponder import SimpleOpenWorldResponder
@@ -59,9 +58,8 @@ class TestCooper(unittest.TestCase):
             sentence_context,
         ])
 
-        tokenizer = BasicTokenizer()
         grammar1 = SimpleGrammarRulesParser().parse(get_grammar1())
-        parser = BasicParser(grammar1, tokenizer)
+        parser = BasicParser(grammar1)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
@@ -69,16 +67,14 @@ class TestCooper(unittest.TestCase):
         responder = SimpleResponder(model, executor)
 
         pipeline1 = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),
             TryFirst(responder)
         ])
 
-        tokenizer = BasicTokenizer()
         grammar2 = SimpleGrammarRulesParser().parse(get_grammar2())
-        parser = BasicParser(grammar2, tokenizer)
+        parser = BasicParser(grammar2)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
@@ -86,7 +82,6 @@ class TestCooper(unittest.TestCase):
         responder = SimpleOpenWorldResponder(model, executor)
 
         pipeline2 = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),

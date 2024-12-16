@@ -82,8 +82,7 @@ class Chat80Test(unittest.TestCase):
             dialog_context
         ])
 
-        tokenizer = BasicTokenizer()
-        parser = BasicParser(get_grammar(), tokenizer)
+        parser = BasicParser(get_grammar())
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
@@ -91,7 +90,6 @@ class Chat80Test(unittest.TestCase):
         responder = SimpleResponder(model, executor)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
             TryFirst(executor),

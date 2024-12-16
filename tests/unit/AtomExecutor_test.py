@@ -10,7 +10,6 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from tests.unit.atom_executor.TestDialogContext import TestDialogContext
 from tests.unit.atom_executor.TestModule import TestModule
 
@@ -26,7 +25,7 @@ class TestAtomExecutor(unittest.TestCase):
         simple_grammar = [
             { "syn": "s(E1) -> noun(E1) verb(V)", "sem": lambda noun, verb: noun + verb },
             { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
-            { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
+            { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: token },
             { "syn": "verb(E1) -> 'walks'", "sem": lambda: [('walks', E1)] },
         ]
 
@@ -36,14 +35,12 @@ class TestAtomExecutor(unittest.TestCase):
             facts,
         ])
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),
@@ -66,7 +63,7 @@ class TestAtomExecutor(unittest.TestCase):
                 "sem": lambda noun: noun
             },
             {
-                "syn": "s(E1) -> token(E1) 'exist'",
+                "syn": "s(E1) -> /\w+/ 'exist'",
                 "sem": lambda token: [],
                 "exec": lambda token: [('store', [('concept', token.lower())])]
             },
@@ -85,14 +82,12 @@ class TestAtomExecutor(unittest.TestCase):
             dialog_context
         ])
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),

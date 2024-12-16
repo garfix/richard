@@ -74,7 +74,7 @@ def get_grammar2():
 
         # adjective
         { "syn": "adj(E1, T1) -> 'brittle'", "sem": lambda: [('brittle', E1, T1)] },
-        { "syn": "adj(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
+        { "syn": "adj(E1, T1) -> 'dark-gray'", "sem": lambda: [('dark_gray', E1, T1)] },
 
         # noun
         { "syn": "noun(E1, T1) -> 'metal'", "sem": lambda: [('metal', E1, T1)] },
@@ -82,7 +82,7 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'compound'", "sem": lambda: [('compound', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'element'", "sem": lambda: [('element', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'white'", "sem": lambda: [('white', E1, T1)] },
-        { "syn": "noun(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
+        { "syn": "noun(E1, T1) -> 'dark-gray'", "sem": lambda: [('dark_gray', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxide'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'oxides'", "sem": lambda: [('oxide', E1, T1)] },
         { "syn": "noun(E1, T1) -> 'sulfide'", "sem": lambda: [('sulfide', E1, T1)] },
@@ -91,6 +91,6 @@ def get_grammar2():
         { "syn": "noun(E1, T1) -> 'fuel'", "sem": lambda: [('fuel', E1, T1)] },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
-        { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: [('resolve_name', token1 + " " + token2, E1)] },
+        { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)] },
+        { "syn": "proper_noun(E1) -> /\w+/ /\w+/", "sem": lambda token1, token2: [('resolve_name', token1 + " " + token2, E1)] },
     ]

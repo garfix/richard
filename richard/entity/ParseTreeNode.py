@@ -13,7 +13,7 @@ class ParseTreeNode:
 
     def is_leaf_node(self) -> bool:
         return len(self.children) == 0
-    
+
 
     def __str__(self, indent: str = ""):
         body = ""
@@ -35,19 +35,21 @@ class ParseTreeNode:
             body += child.__str__(newIndent)
 
         return body
-    
+
     def inline_str(self):
         body = ""
         sep = ""
         for i, child in enumerate(self.children):
-            body += sep
-            if child.form != "":
+            if child.form == " ":
+                pass
+            elif child.form != "":
+                body += sep
                 body += child.category + " '" + child.form + "'"
             else:
+                body += sep
                 body += child.inline_str()
             sep = " "
 
         return self.category + "(" + body + ")"
-    
-    
-        
+
+

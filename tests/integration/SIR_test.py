@@ -16,7 +16,6 @@ from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.store.MemoryDb import MemoryDb
 from tests.integration.sir.SIRDialogContext import SIRDialogContext
 from tests.integration.sir.SIRModule import SIRModule
@@ -58,10 +57,9 @@ class TestSIR(unittest.TestCase):
 
         facts = SIRModule(MemoryDbDataSource(MemoryDb()))
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(get_grammar())
         grammar_module = GrammarModule(grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         sentence_context = SIRSentenceContext()
         dialog_context = SIRDialogContext()
 
@@ -79,8 +77,7 @@ class TestSIR(unittest.TestCase):
         executor = AtomExecutor(composer, model)
         responder = SimpleResponder(model, executor)
 
-        pipeline1 = Pipeline([
-            FindOne(tokenizer),
+        pipeline = Pipeline([
             TryFirst(parser),
             TryFirst(composer),
             TryFirst(executor),
@@ -108,12 +105,12 @@ class TestSIR(unittest.TestCase):
         ]
 
         logger = Logger()
-        # logger.log_no_tests()
-        logger.log_only_last_test()
+        logger.log_no_tests()
+        # logger.log_only_last_test()
         # logger.log_all_tests()
-        logger.log_products()
+        # logger.log_products()
 
-        tester = DialogTester(self, tests, pipeline1, logger)
+        tester = DialogTester(self, tests, pipeline, logger)
         tester.run()
 
         print(logger)

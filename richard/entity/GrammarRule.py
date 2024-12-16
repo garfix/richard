@@ -19,7 +19,6 @@ class GrammarRule:
                  exec: callable = None,
                  inferences: list[tuple] = [],
                  boost: int = 0,
-                 condition: callable = None
         ) -> None:
         self.antecedent = antecedent
         self.consequents = consequents

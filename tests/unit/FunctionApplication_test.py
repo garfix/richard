@@ -1,6 +1,5 @@
 import unittest
 
-from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindAll import FindAll
 from richard.block.FindOne import FindOne
@@ -8,7 +7,6 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 
 class TestFunctionApplication(unittest.TestCase):
@@ -36,13 +34,11 @@ class TestFunctionApplication(unittest.TestCase):
             { "syn": "term(E1) -> 'four'", "sem": lambda: 4 },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer)
         ])
@@ -56,7 +52,6 @@ class TestFunctionApplication(unittest.TestCase):
         # test ambiguous sentence with 2 readings (that exposed an error in the parser, now solved)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindAll(parser),
             FindAll(composer)
         ])

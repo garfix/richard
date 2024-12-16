@@ -1,10 +1,10 @@
-from richard.core.constants import CATEGORY_TOKEN
+from richard.core.constants import POS_TYPE_REG_EXP
 from richard.entity.ParseTreeNode import ParseTreeNode
 
 
-class SortByTokenCount:
+class SortByRegExpCount:
     """
-    Less nodes with the category 'token' is better
+    Less nodes based on a regular expression is better
     """
     def sort(self, trees: list[ParseTreeNode]) -> list[ParseTreeNode]:
 
@@ -19,7 +19,9 @@ class SortByTokenCount:
 
 
     def count_tokens(self, node: ParseTreeNode) -> int:
-        count = 1 if node.category == CATEGORY_TOKEN else 0
+        count = 0
+        if node.rule.antecedent.position_type == POS_TYPE_REG_EXP:
+            count = 1
 
         for child in node.children:
             count += self.count_tokens(child)

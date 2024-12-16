@@ -21,7 +21,6 @@ POS_TYPE_REG_EXP = "reg-exp"
 
 CATEGORY_TEXT = "text"
 CATEGORY_PROPER_NOUN = "proper_noun"
-CATEGORY_TOKEN = "token"
 
 E1 = Variable('E1')
 E2 = Variable('E2')

@@ -3,10 +3,8 @@ import unittest
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestParser(unittest.TestCase):
 
@@ -22,41 +20,37 @@ class TestParser(unittest.TestCase):
             { "syn": "verb(V) -> 'loves'" },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser)
         ])
 
         request = SentenceRequest("John loves Mary")
         parse_tree = pipeline.enter(request)
-        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
+        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 
 
     def test_quote(self):
 
         simple_grammar = [
-            { "syn": "s(V) -> np(E1) '\\'' 's' np(E2)" },
+            { "syn": "s(V) -> np(E1)+'\\''+'s' np(E2)" },
             { "syn": "np(E1) -> 'john'" },
             { "syn": "np(E1) -> 'shoe'" },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser)
         ])
 
         request = SentenceRequest("John's shoe")
         parse_tree = pipeline.enter(request)
 
-        self.assertEqual(parse_tree.inline_str(), "s(np(john 'John') ' ''' s 's' np(shoe 'shoe'))")
+        self.assertEqual(parse_tree.inline_str(), "s(np(john 'john') ' ''' s 's' np(shoe 'shoe'))")
 
 
     def test_syntax_error(self):
@@ -66,10 +60,8 @@ class TestParser(unittest.TestCase):
             { "syn": "verb(V) -> 'walks'" },
         ]
 
-        tokenizer = BasicTokenizer()
-
         try:
             grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-            parser = BasicParser(grammar, tokenizer)
+            parser = BasicParser(grammar)
         except Exception as e:
             self.assertEqual(str(e), "Missing -> operator in 'syn' value: s(V) => proper_noun(E1) verb(V)")

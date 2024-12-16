@@ -16,7 +16,6 @@ from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.data_source.WikidataDataSource import WikidataDataSource
 from .wikidata.WikidataModule import WikidataModule
 from .wikidata.grammar import get_grammar
@@ -54,9 +53,8 @@ class TestWikiData(unittest.TestCase):
             wikidata,
         ])
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(get_grammar())
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
@@ -64,7 +62,6 @@ class TestWikiData(unittest.TestCase):
         responder = SimpleResponder(model, executor)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),

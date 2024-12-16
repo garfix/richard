@@ -9,14 +9,12 @@ from richard.processor.language_selector.Multilingual import Multilingual
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 
 class TestMultilingual(unittest.TestCase):
 
     def test_two_languages(self):
 
         language_selector = LanguageSelector(["en_US", "nl_NL"])
-        tokenizer = BasicTokenizer()
         grammar_parser = SimpleGrammarRulesParser()
 
         parsers = {
@@ -28,7 +26,7 @@ class TestMultilingual(unittest.TestCase):
                 { "syn": "proper_noun(E1) -> 'john'" },
                 { "syn": "proper_noun(E1) -> 'mary'" },
                 { "syn": "verb(V) -> 'loves'" },
-            ]), tokenizer),
+            ])),
             "en_US": BasicParser(grammar_parser.parse([
                 { "syn": "s(V) -> np(E1) vp(V, E1)" },
                 { "syn": "vp(V, E1) -> verb(V) np(E1)" },
@@ -37,23 +35,22 @@ class TestMultilingual(unittest.TestCase):
                 { "syn": "proper_noun(E1) -> 'jan'" },
                 { "syn": "proper_noun(E1) -> 'marie'" },
                 { "syn": "verb(V) -> 'houdt' 'van'" },
-            ]), tokenizer)
+            ]))
         }
 
         parser = Multilingual(parsers, language_selector)
 
         pipeline = Pipeline([
             FindOne(language_selector),
-            FindOne(tokenizer),
             FindOne(parser)
         ])
 
         request = SentenceRequest("John loves Mary")
 
         parse_tree: ParseTreeNode = pipeline.enter(request)
-        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
+        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 
         request = SentenceRequest("Jan houdt van Marie")
 
         parse_tree: ParseTreeNode = pipeline.enter(request)
-        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(jan 'Jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'Marie')))))")
+        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(jan 'jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'marie')))))")

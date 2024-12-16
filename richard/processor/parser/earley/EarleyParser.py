@@ -124,6 +124,7 @@ class EarleyParser:
         lex_item_found = False
         sem = None
         length = 1
+        word = None
 
         # match a regular expression over multiple tokens
         if next_consequent.position_type == POS_TYPE_REG_EXP:
@@ -137,12 +138,13 @@ class EarleyParser:
             found = self.read_word(chart.text, end_word_index, next_consequent.predicate)
             if found:
                 lex_item_found = True
-                length = len(next_consequent.predicate)
+                word = next_consequent.predicate
+                length = len(word)
 
         if lex_item_found:
             rule = GrammarRule(
                 RuleConstituent(next_consequent.predicate, next_variables, next_consequent.position_type),
-                [RuleConstituent(end_word, [TERMINAL], POS_TYPE_WORD_FORM)],
+                [RuleConstituent(word, [TERMINAL], POS_TYPE_WORD_FORM)],
                 sem,
             )
 

@@ -39,7 +39,7 @@ def get_grammar():
         # we don't know John, but all that matters is that it's a boy
         # determine 'how many' not by counting but by calculating
         {
-            "syn": "s(E3) -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have' '?'",
+            "syn": "s(E3) -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have'+'?'",
             "sem": lambda common_noun1, common_noun2: common_noun1 + common_noun2 + [('count', E3, [('have', E2, E1)])],
             "inf": [("format", "number"), ("format_number", e3, ''), ('format_canned', 'The answer is {}')],
         },
@@ -73,10 +73,10 @@ def get_grammar():
         { "syn": "common_noun(E1) -> 'fingers'", "sem": lambda: [('finger', E1)],     "inf": [('isa', e1, 'finger')] },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
+        { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)] },
 
         # introduction of a new common noun
-        { "syn": "common_noun_name(E1) -> token(E1)", "sem": lambda token: token },
+        { "syn": "common_noun_name(E1) -> /\w+/", "sem": lambda token: token },
 
 # todo: solve better!
 { "syn": "common_noun_name(E1) -> 'fingers'", "sem": lambda: 'finger' },
@@ -84,7 +84,7 @@ def get_grammar():
 
 
         # introduction of a new common noun
-        { "syn": "common_noun(E1) -> token(E1)", "sem": lambda token: [ (token, E1) ],
+        { "syn": "common_noun(E1) -> /\w+/", "sem": lambda token: [ (token, E1) ],
           "exec": lambda token: [
             ('learn_grammar_rule', { "syn": f"common_noun(E1) -> '{token}'", "sem": lambda: [(token, E1)] }),
             ('add_relation', token, ['id']),

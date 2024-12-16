@@ -8,7 +8,7 @@ def get_grammar():
 
         # sentence
         {
-            "syn": "s(E2) -> 'where' 'was' np(E1) 'born' '?'",
+            "syn": "s(E2) -> 'where' 'was' np(E1) 'born'+'?'",
             "sem": lambda np: apply(np, []) + [('place_of_birth', E1, E2)],
             "inf": [("format", "list"), ("format_list", e2)],
         },
@@ -24,5 +24,5 @@ def get_grammar():
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
+        { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)] },
     ]

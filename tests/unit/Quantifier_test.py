@@ -11,13 +11,11 @@ from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.parser.helper.grammar_functions import apply
-from richard.processor.semantic_executor.AtomExecutorProduct import AtomExecutorProduct
 from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.store.MemoryDb import MemoryDb
 from richard.type.ExecutionContext import ExecutionContext
 from richard.type.SemanticTemplate import SemanticTemplate
@@ -99,14 +97,12 @@ class TestQuantification(unittest.TestCase):
             { "syn": "noun(E1) -> 'children'", "sem": lambda: [('child', E1)] },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor)

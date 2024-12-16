@@ -14,17 +14,31 @@ class TestEarleyParser(unittest.TestCase):
             # s(P1) -> np(E1) vp(P1, E2)
             GrammarRule(
                 RuleConstituent("s", ["P1"], POS_TYPE_RELATION),
-                [RuleConstituent("np", ["E1"], POS_TYPE_RELATION), RuleConstituent("vp", ["P1", "E2"], POS_TYPE_RELATION)],
+                [
+                    RuleConstituent("np", ["E1"], POS_TYPE_RELATION),
+                    RuleConstituent(" ", [], POS_TYPE_WORD_FORM),
+                    RuleConstituent("vp", ["P1", "E2"], POS_TYPE_RELATION)
+                ],
             ),
             # vp(P1, E1) -> verb(P1) np(E1)
             GrammarRule(
                 RuleConstituent("vp", ["P1", "E1"], POS_TYPE_RELATION),
-                [RuleConstituent("verb", ["P1"], POS_TYPE_RELATION), RuleConstituent("np", ["E1"], POS_TYPE_RELATION)],
+                [
+                    RuleConstituent("verb", ["P1"], POS_TYPE_RELATION),
+                    RuleConstituent(" ", [], POS_TYPE_WORD_FORM),
+                    RuleConstituent("np", ["E1"], POS_TYPE_RELATION)
+                ],
             ),
             # superfluous: s(P1) -> np(E1) verb(P1) np(E2)
             GrammarRule(
                 RuleConstituent("s", ["P1"], POS_TYPE_RELATION),
-                [RuleConstituent("np", ["E1"], POS_TYPE_RELATION), RuleConstituent("verb", ["P1"], POS_TYPE_RELATION), RuleConstituent("np", ["E2"], POS_TYPE_RELATION)],
+                [
+                    RuleConstituent("np", ["E1"], POS_TYPE_RELATION),
+                    RuleConstituent(" ", [], POS_TYPE_WORD_FORM),
+                    RuleConstituent("verb", ["P1"], POS_TYPE_RELATION),
+                    RuleConstituent(" ", [], POS_TYPE_WORD_FORM),
+                    RuleConstituent("np", ["E2"], POS_TYPE_RELATION)
+                ],
             ),
             # np(E1) -> noun(E1)
             GrammarRule(
@@ -58,11 +72,11 @@ class TestEarleyParser(unittest.TestCase):
             ),
         ])
         parser = EarleyParser()
-        result = parser.parse(grammarRules, ["John", "loves", "Mary"])
+        result = parser.parse(grammarRules, "John loves Mary")
 
         self.assertEqual(len(result.products), 4)
-        self.assertEqual(result.products[0].inline_str(), "s(np(noun(john 'John')) verb(loves 'loves') np(noun(proper_noun(mary 'Mary'))))")
-        self.assertEqual(result.products[1].inline_str(), "s(np(noun(proper_noun(john 'John'))) verb(loves 'loves') np(noun(proper_noun(mary 'Mary'))))")
-        self.assertEqual(result.products[2].inline_str(), "s(np(noun(john 'John')) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
-        self.assertEqual(result.products[3].inline_str(), "s(np(noun(proper_noun(john 'John'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'Mary')))))")
+        self.assertEqual(result.products[0].inline_str(), "s(np(noun(john 'john')) verb(loves 'loves') np(noun(proper_noun(mary 'mary'))))")
+        self.assertEqual(result.products[1].inline_str(), "s(np(noun(proper_noun(john 'john'))) verb(loves 'loves') np(noun(proper_noun(mary 'mary'))))")
+        self.assertEqual(result.products[2].inline_str(), "s(np(noun(john 'john')) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
+        self.assertEqual(result.products[3].inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 

@@ -13,6 +13,7 @@ SIR
 * responses like: how many finger per hand?
 * character tokens; exit tokenizer
 * replace all whitespace in the input by single space
+* document + and ~ concatenation
 
 General
 

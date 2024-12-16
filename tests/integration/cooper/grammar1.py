@@ -110,7 +110,7 @@ def get_grammar1():
 
         # adjective
         { "syn": "adj(E1, T1) -> 'white'", "sem": lambda: [('white', E1, T1)] },
-        { "syn": "adj(E1, T1) -> 'dark' '-' 'gray'", "sem": lambda: [('dark_gray', E1, T1)] },
+        { "syn": "adj(E1, T1) -> 'dark-gray'", "sem": lambda: [('dark_gray', E1, T1)] },
         { "syn": "adj(E1, T1) -> 'metallic'", "sem": lambda: [('metal', E1, T1)] },
         { "syn": "adj(E1, T1) -> 'combustable'", "sem": lambda: [('combustable', E1, T1)] },
 
@@ -134,10 +134,10 @@ def get_grammar1():
 
         # proper noun
         # "magnesium"
-        { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: [('resolve_name', token, E1)] },
+        { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)] },
         # "ferrous sulfide"
-        { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: [('resolve_name', token1 + " " + token2, E1)] },
-        { "syn": "proper_noun(E1) -> token(E1) main_noun(E1)", "sem": lambda token, main_noun: [('resolve_name', token + ' ' + main_noun, E1)] },
+        { "syn": "proper_noun(E1) -> /\w+/ /\w+/", "sem": lambda token1, token2: [('resolve_name', token1 + " " + token2, E1)] },
+        { "syn": "proper_noun(E1) -> /\w+/ main_noun(E1)", "sem": lambda token, main_noun: [('resolve_name', token + ' ' + main_noun, E1)] },
 
         # the major part a compound noun
         { "syn": "main_noun(E1) -> 'oxide'", "sem": lambda: 'oxide', "inf": [("oxide", e1, 'true')] },

@@ -1,3 +1,4 @@
+import re
 import unittest
 
 from richard.core.Pipeline import Pipeline
@@ -9,7 +10,6 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.processor.tokenizer.BasicTokenizer import BasicTokenizer
 from richard.type.SemanticTemplate import SemanticTemplate
 
 class TestComposer(unittest.TestCase):
@@ -21,13 +21,11 @@ class TestComposer(unittest.TestCase):
             { "syn": "verb(E1) -> 'walks'" },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
         ])
@@ -55,13 +53,11 @@ class TestComposer(unittest.TestCase):
             { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
         ])
@@ -76,17 +72,15 @@ class TestComposer(unittest.TestCase):
         simple_grammar = [
             { "syn": "s(V) -> np(E1) 'sleeps'", "sem": lambda np: np },
             { "syn": "np(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
-            { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
-            { "syn": "proper_noun(E1) -> token(E1) token(E1)", "sem": lambda token1, token2: token1 + ' ' + token2 },
+            { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: token },
+            { "syn": "proper_noun(E1) -> /\w+ \w+/", "sem": lambda token: token },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
         ])
@@ -97,7 +91,7 @@ class TestComposer(unittest.TestCase):
         semantics = pipeline.enter(request)
 
         product: BasicParserProduct = request.get_current_product(parser)
-        self.assertEqual(product.parse_tree.inline_str(), "s(np(proper_noun(token 'John')) sleeps 'sleeps')")
+        self.assertEqual(product.parse_tree.inline_str(), "s(np(proper_noun(\w+ 'John')) sleeps 'sleeps')")
         self.assertEqual(str(semantics), "John")
 
         # two tokens
@@ -115,13 +109,11 @@ class TestComposer(unittest.TestCase):
             { "syn": "vp(E1) -> 'sleeps'", "sem": lambda: 'sleeps' },
         ]
 
-        tokenizer = BasicTokenizer()
         grammar = SimpleGrammarRulesParser().parse(simple_grammar)
-        parser = BasicParser(grammar, tokenizer)
+        parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
         pipeline = Pipeline([
-            FindOne(tokenizer),
             FindOne(parser),
             FindOne(composer),
         ])
@@ -131,3 +123,28 @@ class TestComposer(unittest.TestCase):
         composition = request.get_current_product(composer)
         self.assertEqual(composition.return_variables, ["$1", "$2"])
 
+
+    def test_regexp(self):
+
+        simple_grammar = [
+            { "syn": "s(V) -> 'does' np(E1) 'sleep'~'?'", "sem": lambda np: np },
+            { "syn": "np(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
+            { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: token },
+        ]
+
+        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        parser = BasicParser(grammar)
+        composer = SemanticComposer(parser)
+
+        pipeline = Pipeline([
+            FindOne(parser),
+            FindOne(composer),
+        ])
+
+        # basic
+
+        request = SentenceRequest("Does John sleep?")
+        semantics = pipeline.enter(request)
+
+        product: BasicParserProduct = request.get_current_product(parser)
+        self.assertEqual(str(semantics), "John")

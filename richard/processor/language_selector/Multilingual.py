@@ -8,7 +8,7 @@ from richard.processor.language_selector.LanguageSelectorProduct import Language
 class Multilingual(SomeProcessor):
     """
     This compositing processor takes other processors as input and uses the processor of the active language when asks to `process` input
-    It can be used to combine any combinations of processors, like tokenization processors or parsing processors
+    It can be used to combine any combinations of processors, like parsing processors
     """
 
     processors: dict[str, SomeProcessor]
