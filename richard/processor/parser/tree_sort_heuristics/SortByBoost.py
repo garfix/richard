@@ -9,7 +9,7 @@ class SortByBoost:
 
         results = []
         for tree in trees:
-            score = self.get_boost(tree)
+            score = -self.get_boost(tree)
             results.append({'tree': tree, 'score': score})
 
         results.sort(key=lambda result: result['score'])
@@ -18,5 +18,10 @@ class SortByBoost:
 
 
     def get_boost(self, node: ParseTreeNode) -> int:
-        return -node.rule.boost
+        boost = node.rule.boost
+
+        for child in node.children:
+            boost += self.get_boost(child)
+
+        return boost
 

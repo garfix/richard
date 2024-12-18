@@ -7,7 +7,7 @@ from .entity.ChartState import ChartState
 def extract_tree_roots(chart: Chart):
 
     gamma_state = chart.build_complete_gamma_state()
-    if not gamma_state.end_word_index in chart.completed_states:
+    if not gamma_state.end_char_index in chart.completed_states:
         return []
 
     gamma_nodes = create_trees_for_state(chart, gamma_state)
@@ -45,26 +45,26 @@ def find_child_state_sequences(chart: Chart, parent_state: ChartState) -> list[l
     """
     each state may have multiple sequences of possible children, find them.
     """
-    return find_state_sequences(chart, parent_state, parent_state.end_word_index, len(parent_state.rule.consequents) - 1)
+    return find_state_sequences(chart, parent_state, parent_state.end_char_index, len(parent_state.rule.consequents) - 1)
 
 
-def find_state_sequences(chart: Chart, parent_state: ChartState, end_word_position: int, consequent_index: int):
+def find_state_sequences(chart: Chart, parent_state: ChartState, end_char_index: int, consequent_index: int):
     """
-    try to match the consequent_index'th consequent of parent_state to a new state, ending in the end_word_position
+    try to match the consequent_index'th consequent of parent_state to a new state, ending in the end_char_index
     and prepend the earlier states. this may result in multiple state sequences
     """
-    if end_word_position == 0:
+    if end_char_index == 0:
         return []
 
     sequences = []
-    for state in chart.completed_states[end_word_position]:
+    for state in chart.completed_states[end_char_index]:
         if state.rule.antecedent.equals(parent_state.rule.consequents[consequent_index]):
             if consequent_index == 0:
-                if state.start_word_index == parent_state.start_word_index:
+                if state.start_char_index == parent_state.start_char_index:
                     sequences.append([state])
             else:
                 # find one or more preceding sequences of this state
-                for previous_sequence in find_state_sequences(chart, parent_state, state.start_word_index, consequent_index-1):
+                for previous_sequence in find_state_sequences(chart, parent_state, state.start_char_index, consequent_index-1):
                     sequences.append(previous_sequence + [state])
     return sequences
 

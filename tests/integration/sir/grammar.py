@@ -64,24 +64,17 @@ def get_grammar():
         { "syn": "a() -> 'a'", "sem": lambda: [] },
         { "syn": "a() -> 'an'", "sem": lambda: [] },
 
-        # noun
-        { "syn": "noun(E1) -> common_noun(E1)", "sem": lambda common_noun: common_noun },
-        { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
-
         # common noun
         { "syn": "common_noun(E1) -> 'person'", "sem": lambda: [('person', E1)],      "inf": [('isa', e1, 'person')] },
-        { "syn": "common_noun(E1) -> 'fingers'", "sem": lambda: [('finger', E1)],     "inf": [('isa', e1, 'finger')] },
+        { "syn": "common_noun(E1) -> 'finger'", "sem": lambda: [('finger', E1)],     "inf": [('isa', e1, 'finger')] },
+        { "syn": "common_noun(E1) -> common_noun(E1)+'s'", "sem": lambda common_noun: common_noun },
 
         # proper noun
         { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)] },
 
         # introduction of a new common noun
         { "syn": "common_noun_name(E1) -> /\w+/", "sem": lambda token: token },
-
-# todo: solve better!
-{ "syn": "common_noun_name(E1) -> 'fingers'", "sem": lambda: 'finger' },
-{ "syn": "common_noun_name(E1) -> 'hands'", "sem": lambda: 'hand' },
-
+        { "syn": "common_noun_name(E1) -> /\w+/+'s'", "sem": lambda token: token, 'boost': 1 },
 
         # introduction of a new common noun
         { "syn": "common_noun(E1) -> /\w+/", "sem": lambda token: [ (token, E1) ],

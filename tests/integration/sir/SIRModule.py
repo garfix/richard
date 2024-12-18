@@ -25,6 +25,7 @@ class SIRModule(SomeModule):
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
         results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
+        # print(context.relation.predicate, context.relation.arguments, values, results)
         return results
 
 

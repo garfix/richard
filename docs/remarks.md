@@ -1,3 +1,16 @@
+## 2024-12-17
+
+Starting to analyze words. Attempt to parse "rivers" as "river" + "s":
+
+~~~python
+{ "syn": "common_noun_name(E1) -> /\w+/", "sem": lambda token: token },
+{ "syn": "common_noun_name(E1) -> common_noun_name(E1)+'s'", "sem": lambda common_noun_name: common_noun_name },
+~~~
+
+But this fails because \w+ already includes the "s".
+
+This can be fixed by making the parse create matches for all substrings as well: "rivers", "river", "rive", "riv", "ri", "r"
+
 ## 2024-12-15
 
 In order to start using morphological analysis I made quite a big change to the parser. I removed the tokenizer and now treat all characters in the sentence as separate tokens.

@@ -15,8 +15,8 @@ def find_unknown_word(chart: Chart):
         states = chart.states[i]
         for state in states :
             if state.is_complete():
-                if state.end_word_index > last_understood_index:
-                    last_understood_index = state.end_word_index - 1
+                if state.end_char_index > last_understood_index:
+                    last_understood_index = state.end_char_index - 1
 
     if last_understood_index+1 < len(chart.text):
         nextWord = chart.text[last_understood_index+1]
