@@ -1,3 +1,26 @@
+## 2024-12-21
+
+H: How many fingers does John have?
+C: Don't know whether finger is part of John
+H: John is a boy
+C: I understand
+H: How many fingers does John have?
+C: How many finger per hand?
+
+It is the last question that I'm dealing with now. The first question was handled by the predicate `have` which was top-level. The second question digs deeper and the lack of knowledge is in the inference rules. They're currently unable to respond to lack of results.
+
+It's not as simple as a single predicate that fails. A successful response may come across many failing predicates along the way.
+
+An option would be to count all tries of a predicate. When all tries fail, make the remark. Only if such a remark is set.
+
+===
+
+The problem is a bit different. In the SIR dialog the computer is first told "A finger is a part of a hand", so the computer knows that. And it needs that information for the last question, but it can only use the information when it is "extended" with the number (5). In my implementation this is a different predicate. The point is: the system asks for the missing constant in the predicate `part_of_n('finger', 'hand', N)`: `N` is as yet unknown.
+
+I can store both predicates `part_of` and `part_of_n`. Always theck the `part_of` first. If it succeeds and the second one fails, ask for the second one.
+
+Okay, now it overreacts and asks for the number of fingers on the first call of "There are two hands on each person". I can "fix" this by reversing the order of the inference consequents.
+
 ## 2024-12-17
 
 Starting to analyze words. Attempt to parse "rivers" as "river" + "s":

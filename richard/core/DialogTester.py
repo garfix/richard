@@ -67,10 +67,10 @@ class DialogTester:
                 error = result != answer
 
                 if log_this or error:
-                    self.logger.add_key_value('Computer', answer)
+                    self.logger.add_key_value('Computer', result)
                     self.logger.add_comment(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
-                self.test_case.assertEqual(answer, result)
+                self.test_case.assertEqual(result, answer)
 
             except Exception as e:
                 print(self.logger)

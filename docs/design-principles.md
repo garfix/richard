@@ -12,4 +12,6 @@ Things to keep in mind when extending the framework
 * A block is a processing step that can have multiple possible results or interpretations
 * Each block has zero or more steps. Each step can have a implementation that can set via setter-injection. No default steps are set, to ensure backward-compatibility.
 * Keep external dependencies to a minimum. Use optional dependencies when possible.
+* Expose shortcomings, rather than to smooth-talk over them (this is a hard one)
+
 

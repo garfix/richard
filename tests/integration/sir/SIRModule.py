@@ -20,17 +20,36 @@ class SIRModule(SomeModule):
         self.add_relation(Relation("have", query_function=self.have))
         self.add_relation(Relation("add_relation", query_function=self.create_relation)),
         self.add_relation(Relation("part_of", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole'])),
-        self.add_relation(Relation("part_of_n", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole', 'number'])),
+        self.add_relation(Relation("part_of_n", query_function=self.part_of_n, write_function=self.common_write, arguments=['part', 'whole', 'number'])),
 
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
         results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
-        # print(context.relation.predicate, context.relation.arguments, values, results)
         return results
 
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
         self.ds.insert(context.relation.predicate, context.relation.arguments, values)
+
+
+    def part_of_n(self, values: list, context: ExecutionContext) -> list[list]:
+        part_variable = context.arguments[0]
+        whole_variable = context.arguments[1]
+
+        results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
+
+        if len(results) == 0:
+            whole_type = None
+            if isinstance(whole_variable, Variable):
+                whole_type = self.get_name(context, whole_variable.name, values[1])
+
+            part_type = None
+            if isinstance(part_variable, Variable):
+                part_type = self.get_name(context, part_variable.name, values[0])
+
+            raise ProcessingException(f"How many {part_type} per {whole_type}?")
+
+        return results
 
 
     # ('create_relation', predicate, arguments)

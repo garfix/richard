@@ -98,16 +98,15 @@ class TestSIR(unittest.TestCase):
             ['There are two hands on each person', 'I understand'],
             ['How many fingers does John have?', "Don't know whether finger is part of John"],
             ['John is a boy', 'I understand'],
-# todo
-# ['How many fingers does John have?', "How many finger per hand?"],
+            ['How many fingers does John have?', "How many finger per hand?"],
             ['Every hand has 5 fingers', 'I understand'],
             ['How many fingers does John have?', "The answer is 10"],
         ]
 
         logger = Logger()
-        # logger.log_no_tests()
+        logger.log_no_tests()
         # logger.log_only_last_test()
-        logger.log_all_tests()
+        # logger.log_all_tests()
         logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)

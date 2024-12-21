@@ -32,7 +32,7 @@ def get_grammar():
         # a statement about classes as quantified entities
         {
             "syn": "s() -> 'there' 'are' number(E1) common_noun_name(E2) 'on' 'each' common_noun_name(E3)",
-            "sem": lambda number, common_noun_name1, common_noun_name2: [('store', [('part_of_n', common_noun_name1, common_noun_name2, number)])],
+            "sem": lambda number, common_noun_name1, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2), ('part_of_n', common_noun_name1, common_noun_name2, number)])],
             "inf": [("format", "canned"), ("format_canned", "I understand")],
         },
         # How many fingers does John have?
@@ -52,7 +52,7 @@ def get_grammar():
         # Every hand has 5 fingers
         {
             "syn": "s() -> 'every' common_noun_name(E2) 'has' number(E1) common_noun_name(E3)",
-            "sem": lambda common_noun_name1, number, common_noun_name2: [('store', [('part_of_n', common_noun_name2, common_noun_name1, number)])],
+            "sem": lambda common_noun_name1, number, common_noun_name2: [('store', [('part_of', common_noun_name2, common_noun_name1), ('part_of_n', common_noun_name2, common_noun_name1, number)])],
             "inf": [("format", "canned"), ("format_canned", "I understand")],
         },
 

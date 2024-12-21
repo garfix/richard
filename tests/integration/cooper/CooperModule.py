@@ -107,6 +107,5 @@ class CooperModule(SomeModule):
 
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
-        # print(context.predicate, values)
         self.ds.insert(context.relation.predicate, context.relation.arguments, values)
 

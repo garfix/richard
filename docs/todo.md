@@ -9,11 +9,14 @@ SIR
 * OK create_relation
 * OK implement het iterator-object
 * OK response: the answer is 10
-* tokenizer: distinguish between 'finger' and 'fingers'
+* OK tokenizer: distinguish between 'finger' and 'fingers'
+* OK character tokens; exit tokenizer
+* OK document + and ~ concatenation
 * responses like: how many finger per hand?
-* character tokens; exit tokenizer
+* doc: clarification: ask for a bit of information in order to complete the inference
 * replace all whitespace in the input by single space
-* document + and ~ concatenation
+* simplify the grammar
+* more SIR sentences?
 
 General
 
@@ -40,6 +43,7 @@ optimize isolate independent parts:
 
 ## done
 
+* characters as tokens; exit tokenizer
 * add ResultIterator
 * can parsing be done faster?
 * document parse tree sort heuristics
