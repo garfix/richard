@@ -1,3 +1,4 @@
+import re
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
@@ -27,7 +28,11 @@ class BasicParser(SomeProcessor):
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
-        result = self.parser.parse(self.grammar, request.text)
+        # replace whitespace sequences by single space
+        source_text = re.sub('\s+', ' ', request.text)
+
+        result = self.parser.parse(self.grammar, source_text)
+
         sorted_trees = self.tree_sorter.sort_trees(result.products)
         products = [BasicParserProduct(tree) for tree in sorted_trees]
         return ProcessResult(

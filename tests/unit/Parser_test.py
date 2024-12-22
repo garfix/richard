@@ -47,7 +47,8 @@ class TestParser(unittest.TestCase):
             FindOne(parser)
         ])
 
-        request = SentenceRequest("John's shoe")
+        # note: two spaces
+        request = SentenceRequest("John's  shoe")
         parse_tree = pipeline.enter(request)
 
         self.assertEqual(parse_tree.inline_str(), "s(np(john 'john') ' ''' s 's' np(shoe 'shoe'))")

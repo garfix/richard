@@ -4,6 +4,7 @@ import unittest
 from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
+from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.GrammarModule import GrammarModule
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
@@ -19,7 +20,6 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.store.MemoryDb import MemoryDb
 from tests.integration.sir.SIRDialogContext import SIRDialogContext
 from tests.integration.sir.SIRModule import SIRModule
-from tests.integration.sir.SIRSentenceContext import SIRSentenceContext
 from .sir.grammar import get_grammar
 
 
@@ -60,7 +60,7 @@ class TestSIR(unittest.TestCase):
         grammar = SimpleGrammarRulesParser().parse(get_grammar())
         grammar_module = GrammarModule(grammar)
         parser = BasicParser(grammar)
-        sentence_context = SIRSentenceContext()
+        sentence_context = BasicSentenceContext()
         dialog_context = SIRDialogContext()
 
         model = Model([
@@ -107,7 +107,7 @@ class TestSIR(unittest.TestCase):
         logger.log_no_tests()
         # logger.log_only_last_test()
         # logger.log_all_tests()
-        logger.log_products()
+        # logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)
         tester.run()

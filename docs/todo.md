@@ -1,16 +1,5 @@
 ## todo
 
-SIR
-
-* a user answers with a complete sentence as a response to a clarification sentence
-* learning characteristics of concepts
-* OK implement het iterator-object
-* OK tokenizer: distinguish between 'finger' and 'fingers'
-* OK character tokens; exit tokenizer
-* OK document + and ~ concatenation
-* doc: clarification: ask for a bit of information in order to complete the inference
-* replace all whitespace in the input by single space
-* simplify the grammar
 * more SIR sentences?
 
 General
@@ -28,7 +17,7 @@ The alternative can also be to introduce new (lexical) grammar rules.
 But what about homonimity? A concept name with multiple meanings? "bank"
 Also, when introducing new concepts by name, morpheme analysis is necessary: split "oxides" into "oxide" and "s"
 
-## later
+## isolation of independent parts
 
 optimize isolate independent parts:
 
