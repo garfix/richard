@@ -1,3 +1,4 @@
+from typing import Callable
 from richard.core.constants import POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.RuleConstituent import RuleConstituent
 
@@ -6,18 +7,18 @@ class GrammarRule:
 
     antecedent: RuleConstituent
     consequents: list[RuleConstituent]
-    sem: callable
-    exec: callable
-    inferences: list[tuple]
+    sem: Callable
+    exec: Callable
+    inferences: list[tuple] | Callable
     boost: int
     hash: int
 
     def __init__(self,
                  antecedent: RuleConstituent,
                  consequents: list[RuleConstituent],
-                 sem: callable = None,
-                 exec: callable = None,
-                 inferences: list[tuple] = [],
+                 sem: Callable = None,
+                 exec: Callable = None,
+                 inferences: list[tuple] | Callable = [],
                  boost: int = 0,
         ) -> None:
         self.antecedent = antecedent

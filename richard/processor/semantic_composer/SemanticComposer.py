@@ -79,7 +79,6 @@ class SemanticComposer(SomeProcessor):
         inferences = []
         executable = []
 
-        inferences.extend(node.rule.inferences)
 
         for child, consequent in zip(node.children, node.rule.consequents):
             if not child.is_leaf_node():
@@ -97,6 +96,11 @@ class SemanticComposer(SomeProcessor):
         # create the executable atoms of this node by executing its function, passing the values of its children as arguments
         if node.rule.exec:
             executable = node.rule.exec(*child_semantics)
+
+        if callable(node.rule.inferences):
+            inferences.extend(node.rule.inferences(*child_semantics))
+        else:
+            inferences.extend(node.rule.inferences)
 
         # extend the map with variables found in the result of the semantics function
         self.extend_map_with_semantics(map, semantics)

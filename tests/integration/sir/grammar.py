@@ -65,8 +65,7 @@ def get_grammar():
         { "syn": "a() -> 'an'", "sem": lambda: [] },
 
         # common noun
-        { "syn": "common_noun(E1) -> 'person'", "sem": lambda: [('person', E1)],      "inf": [('isa', e1, 'person')] },
-        { "syn": "common_noun(E1) -> 'finger'", "sem": lambda: [('finger', E1)],     "inf": [('isa', e1, 'finger')] },
+        { "syn": "common_noun(E1) -> /\w+/", "sem": lambda token: [(token, E1)], "inf": lambda token: [('isa', e1, token)] },
         { "syn": "common_noun(E1) -> common_noun(E1)+'s'", "sem": lambda common_noun: common_noun },
 
         # proper noun
@@ -75,11 +74,4 @@ def get_grammar():
         # introduction of a new common noun
         { "syn": "common_noun_name(E1) -> /\w+/", "sem": lambda token: token },
         { "syn": "common_noun_name(E1) -> /\w+/+'s'", "sem": lambda token: token, 'boost': 1 },
-
-        # introduction of a new common noun
-        { "syn": "common_noun(E1) -> /\w+/", "sem": lambda token: [ (token, E1) ],
-          "exec": lambda token: [
-            ('learn_grammar_rule', { "syn": f"common_noun(E1) -> '{token}'", "sem": lambda: [(token, E1)] }),
-            ('add_relation', token, ['id']),
-        ] },
     ]

@@ -4,15 +4,10 @@ SIR
 
 * a user answers with a complete sentence as a response to a clarification sentence
 * learning characteristics of concepts
-* OK learn_grammar_rule
-* OK exec
-* OK create_relation
 * OK implement het iterator-object
-* OK response: the answer is 10
 * OK tokenizer: distinguish between 'finger' and 'fingers'
 * OK character tokens; exit tokenizer
 * OK document + and ~ concatenation
-* responses like: how many finger per hand?
 * doc: clarification: ask for a bit of information in order to complete the inference
 * replace all whitespace in the input by single space
 * simplify the grammar
@@ -43,6 +38,8 @@ optimize isolate independent parts:
 
 ## done
 
+* learn_grammar_rule
+* directly execute code
 * characters as tokens; exit tokenizer
 * add ResultIterator
 * can parsing be done faster?
