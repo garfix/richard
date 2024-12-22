@@ -4,6 +4,7 @@ import pathlib
 from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
+from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.responder.SimpleResponder import SimpleResponder
@@ -17,7 +18,6 @@ from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
 from richard.module.InferenceModule import InferenceModule
 from richard.store.MemoryDb import MemoryDb
-from .chat80.Chat80DialogContext import Chat80DialogContext
 from .chat80.Chat80Module import Chat80Module
 from .chat80.grammar import get_grammar
 
@@ -60,7 +60,7 @@ class TestChat80(unittest.TestCase):
         inferences.import_rules(path + "inferences.pl")
 
         sentence_context = BasicSentenceContext()
-        dialog_context = Chat80DialogContext()
+        dialog_context = BasicDialogContext()
 
         model = Model([
             facts,

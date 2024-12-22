@@ -234,20 +234,17 @@ def get_grammar():
         { "syn": "adj(E1) -> 'asian'", "sem": lambda: [('asian', E1)] },
 
         # noun
-        { "syn": "noun(E1) -> 'river'",         "sem": lambda: [('river', E1)],         "inf": [('isa', e1, 'river')] },
-        { "syn": "noun(E1) -> 'rivers'",        "sem": lambda: [('river', E1)],         "inf": [('isa', e1, 'river')] },
-        { "syn": "noun(E1) -> 'capital'",       "sem": lambda: [('capital', E1)],       "inf": [('isa', e1, 'city')] },
-        { "syn": "noun(E1) -> 'capitals'",      "sem": lambda: [('capital', E1)],       "inf": [('isa', e1, 'city')] },
-        { "syn": "noun(E1) -> 'ocean'",         "sem": lambda: [('ocean', E1)],         "inf": [('isa', e1, 'ocean')] },
-        { "syn": "noun(E1) -> 'oceans'",        "sem": lambda: [('ocean', E1)],         "inf": [('isa', e1, 'ocean')] },
-        { "syn": "noun(E1) -> 'country'",       "sem": lambda: [('country', E1)],       "inf": [('isa', e1, 'country')] },
-        { "syn": "noun(E1) -> 'countries'",     "sem": lambda: [('country', E1)],       "inf": [('isa', e1, 'country')] },
-        { "syn": "noun(E1) -> 'sea'",           "sem": lambda: [('sea', E1)],           "inf": [('isa', e1, 'sea')] },
-        { "syn": "noun(E1) -> 'seas'",          "sem": lambda: [('sea', E1)],           "inf": [('isa', e1, 'sea')] },
-        { "syn": "noun(E1) -> 'city'",          "sem": lambda: [('city', E1)],          "inf": [('isa', e1, 'city')] },
-        { "syn": "noun(E1) -> 'cities'",        "sem": lambda: [('city', E1)],          "inf": [('isa', e1, 'city')] },
-        { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)],     "inf": [('isa', e1, 'continent')] },
-        { "syn": "noun(E1) -> 'continents'",    "sem": lambda: [('continent', E1)],     "inf": [('isa', e1, 'continent')] },
+        { "syn": "noun(E1) -> 'river'",         "sem": lambda: [('river', E1)],         "inf": [('dialog_isa', e1, 'river')] },
+        { "syn": "noun(E1) -> 'capital'",       "sem": lambda: [('capital', E1)],       "inf": [('dialog_isa', e1, 'city')] },
+        { "syn": "noun(E1) -> 'ocean'",         "sem": lambda: [('ocean', E1)],         "inf": [('dialog_isa', e1, 'ocean')] },
+        { "syn": "noun(E1) -> 'country'",       "sem": lambda: [('country', E1)],       "inf": [('dialog_isa', e1, 'country')] },
+        { "syn": "noun(E1) -> 'countries'",     "sem": lambda: [('country', E1)],       "inf": [('dialog_isa', e1, 'country')] },
+        { "syn": "noun(E1) -> 'sea'",           "sem": lambda: [('sea', E1)],           "inf": [('dialog_isa', e1, 'sea')] },
+        { "syn": "noun(E1) -> 'city'",          "sem": lambda: [('city', E1)],          "inf": [('dialog_isa', e1, 'city')] },
+        { "syn": "noun(E1) -> 'cities'",        "sem": lambda: [('city', E1)],          "inf": [('dialog_isa', e1, 'city')] },
+        { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)],     "inf": [('dialog_isa', e1, 'continent')] },
+        # plurals: ignore 's'
+        { "syn": "noun(E1) -> noun(E1)+'s'",    "sem": lambda noun: noun },
 
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
 
