@@ -1,6 +1,4 @@
 from richard.core.constants import E1, E2, E3, E4, E5, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, e1, e2, e3, Body, Range
-from richard.entity.GrammarRule import GrammarRule
-from richard.entity.RuleConstituent import RuleConstituent
 from richard.entity.Variable import Variable
 from richard.processor.parser.helper.grammar_functions import apply
 

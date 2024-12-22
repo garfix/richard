@@ -1,3 +1,4 @@
+import re
 from richard.core.constants import IGNORED
 
 
@@ -18,6 +19,9 @@ class Relation:
         relation_size: str = IGNORED,
         argument_sizes: list[str] = [],
     ) -> None:
+        if not re.fullmatch('[\w_]+', predicate):
+            raise Exception('Predicate is not a word: ' + predicate)
+
         self.predicate = predicate
         self.query_function = query_function
         self.relation_size = relation_size

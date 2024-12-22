@@ -97,7 +97,7 @@ def get_grammar():
         },
         {
             "syn": "s(E1) -> 'which' nbar(E1)+'\\''+'s' np(E2) 'is' np(E3)+ '?'",
-            "sem": lambda nbar, np1, np2: nbar + apply(np1, [('of', E2, E1)] + apply(np2, [('==', E2, E3)])),
+            "sem": lambda nbar, np1, np2: nbar + apply(np1, [('of', E2, E1)] + apply(np2, [('equals', E2, E3)])),
             "inf": [("format", "list"), ("format_list", e1)],
         },
         {
@@ -141,10 +141,10 @@ def get_grammar():
         { "syn": "tv(E1, E2) -> 'bordered'", "sem": lambda: [('borders', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'contains'", "sem": lambda: [('contains', E1, E2)] },
         { "syn": "tv(E1, E2) -> 'flow' 'through'", "sem": lambda: [('flows_through', E1, E2)] },
-        { "syn": "tv(E1, E2) -> 'exceeds'", "sem": lambda: [('>', E1, E2)] },
+        { "syn": "tv(E1, E2) -> 'exceeds'", "sem": lambda: [('greater_than', E1, E2)] },
 
         { "syn": "tv_continuous(E1, E2) -> 'bordering'", "sem": lambda: [('borders', E1, E2)] },
-        { "syn": "tv_continuous(E1, E2) -> 'exceeding'", "sem": lambda: [('>', E1, E2)] },
+        { "syn": "tv_continuous(E1, E2) -> 'exceeding'", "sem": lambda: [('greater_than', E1, E2)] },
 
         # ditransitive verbs
         { "syn": "dtv(E1, E2, E3) -> 'flows' 'into'", "sem": lambda: [('flows_from_to', E1, E2, E3)] },
@@ -174,7 +174,7 @@ def get_grammar():
         { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar:
             SemanticTemplate([Body], apply(det, nbar + attr, Body)) },
         { "syn": "np(E1) -> number(E1)", "sem": lambda number:
-            SemanticTemplate([Body], [('=', E1, number)] + Body) },
+            SemanticTemplate([Body], [('let', E1, number)] + Body) },
 
         # det
         { "syn": "det(E1) -> 'a'", "sem": lambda:

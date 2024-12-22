@@ -5,7 +5,6 @@ from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.module.BasicSentenceContext import BasicSentenceContext
-from richard.module.GrammarModule import GrammarModule
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.responder.SimpleResponder import SimpleResponder
@@ -14,11 +13,9 @@ from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import Ba
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
-from richard.block.FindOne import FindOne
 from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
 from richard.store.MemoryDb import MemoryDb
-from tests.integration.sir.SIRDialogContext import SIRDialogContext
 from tests.integration.sir.SIRModule import SIRModule
 from .sir.grammar import get_grammar
 
@@ -58,17 +55,13 @@ class TestSIR(unittest.TestCase):
         facts = SIRModule(MemoryDbDataSource(MemoryDb()))
 
         grammar = SimpleGrammarRulesParser().parse(get_grammar())
-        grammar_module = GrammarModule(grammar)
         parser = BasicParser(grammar)
         sentence_context = BasicSentenceContext()
-        dialog_context = SIRDialogContext()
 
         model = Model([
             facts,
             inferences,
-            grammar_module,
-            sentence_context,
-            dialog_context
+            sentence_context
         ])
 
         composer = SemanticComposer(parser)

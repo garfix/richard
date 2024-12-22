@@ -12,9 +12,9 @@ class CoreModule(SomeModule):
 
     def __init__(self) -> None:
         super().__init__()
-        self.add_relation(Relation("==", query_function=self.equals)),
-        self.add_relation(Relation(">", query_function=self.greater_than)),
-        self.add_relation(Relation("<", query_function=self.less_than)),
+        self.add_relation(Relation("equals", query_function=self.equals)),
+        self.add_relation(Relation("greater_than", query_function=self.greater_than)),
+        self.add_relation(Relation("less_than", query_function=self.less_than)),
         self.add_relation(Relation("multiply", query_function=self.multiply)),
         self.add_relation(Relation("arg_min", query_function=self.arg_min)),
         self.add_relation(Relation("arg_max", query_function=self.arg_max)),
@@ -23,7 +23,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("percentage", query_function=self.percentage)),
         self.add_relation(Relation("count", query_function=self.count)),
         self.add_relation(Relation("not", query_function=self.not_function)),
-        self.add_relation(Relation("=", query_function=self.assign)),
+        self.add_relation(Relation("let", query_function=self.assign)),
         self.add_relation(Relation("det_equals", query_function=self.determiner_equals)),
         self.add_relation(Relation("det_greater_than", query_function=self.determiner_greater_than)),
         self.add_relation(Relation("det_less_than", query_function=self.determiner_less_than)),
