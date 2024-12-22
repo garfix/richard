@@ -18,7 +18,6 @@ class SIRModule(SomeModule):
         self.add_relation(Relation("resolve_name", query_function=self.resolve_name))
         self.add_relation(Relation("finger", query_function=self.finger))
         self.add_relation(Relation("have", query_function=self.have))
-        self.add_relation(Relation("add_relation", query_function=self.create_relation)),
         self.add_relation(Relation("part_of", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole'])),
         self.add_relation(Relation("part_of_n", query_function=self.part_of_n, write_function=self.common_write, arguments=['part', 'whole', 'number'])),
         self.add_relation(Relation("isa", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'type'])),
