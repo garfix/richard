@@ -23,7 +23,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("percentage", query_function=self.percentage)),
         self.add_relation(Relation("count", query_function=self.count)),
         self.add_relation(Relation("not", query_function=self.not_function)),
-        self.add_relation(Relation("let", query_function=self.assign)),
+        self.add_relation(Relation("let", query_function=self.let)),
         self.add_relation(Relation("det_equals", query_function=self.determiner_equals)),
         self.add_relation(Relation("det_greater_than", query_function=self.determiner_greater_than)),
         self.add_relation(Relation("det_less_than", query_function=self.determiner_less_than)),
@@ -33,7 +33,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("store", query_function=self.store)),
 
 
-    # ('==', E1, E2)
+    # ('equals', E1, E2)
     def equals(self, values: list, context: ExecutionContext) -> list[list]:
 
         e1 = values[0]
@@ -53,7 +53,7 @@ class CoreModule(SomeModule):
         return []
 
 
-    # ('>', E1, E2)
+    # ('greater_than', E1, E2)
     # E1 and E2 must be bound
     def greater_than(self, values: list, context: ExecutionContext) -> list[list]:
 
@@ -70,7 +70,7 @@ class CoreModule(SomeModule):
         return []
 
 
-    # ('<', E1, E2)
+    # ('less_than', E1, E2)
     # E1 and E2 must be bound
     def less_than(self, values: list, context: ExecutionContext) -> list[list]:
 
@@ -249,8 +249,8 @@ class CoreModule(SomeModule):
             ]
 
 
-    # ('=', E1, 5)
-    def assign(self, values: list, context: ExecutionContext) -> list[list]:
+    # ('let', E1, 5)
+    def let(self, values: list, context: ExecutionContext) -> list[list]:
 
         return [
             [values[1], values[1]]

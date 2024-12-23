@@ -1,7 +1,5 @@
 SimpleGrammarRule = dict({
-    'syn': str, 
+    'syn': str,
     'sem': callable,
-    'inf': list,
-    'intents': list[str],
-    'if': callable
+    'inf': list
 })
