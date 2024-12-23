@@ -131,8 +131,9 @@ class Chat80Module(SomeModule):
         flows = self.ds.select('river', ['id', 'flows_through'], [None, None])
         out_values = []
         for id, flows_through in flows:
-            db_to = flows_through[0]
-            db_from = flows_through[1:2]
+            flows_through_elements = flows_through.split("|")
+            db_to = flows_through_elements[0]
+            db_from = flows_through_elements[1:2]
             if query_river is None or id == query_river:
                 if query_to is None or query_to == db_to:
                     if query_from is None or query_from in db_from:

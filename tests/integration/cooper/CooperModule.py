@@ -36,7 +36,7 @@ class CooperModule(SomeModule):
         name = values[0].lower()
         id = values[1]
 
-        out_values = self.ds.select("name", ["name", "id"], [name, None])
+        out_values = self.ds.select("entity", ["name", "id"], [name, None])
         if len(out_values) > 0:
             return out_values
         else:
@@ -44,7 +44,7 @@ class CooperModule(SomeModule):
             if id is None:
                 # otherwise a new id is created for the name
                 id = context.arguments[1].name
-            self.ds.insert("name", ["name", "id", ], [name, id])
+            self.ds.insert("entity", ["name", "id", ], [name, id])
             return [
                 [name, id]
             ]

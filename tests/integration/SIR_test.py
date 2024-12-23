@@ -1,9 +1,11 @@
 import pathlib
+import sqlite3
 import unittest
 
 from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
+from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
@@ -13,9 +15,7 @@ from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import Ba
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
-from richard.store.MemoryDb import MemoryDb
 from tests.integration.sir.SIRModule import SIRModule
 from .sir.grammar import get_grammar
 
@@ -49,10 +49,18 @@ class TestSIR(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/sir/resources/"
 
+        connection = sqlite3.connect(':memory:')
+        cursor = connection.cursor()
+
+        cursor.execute("CREATE TABLE isa (entity TEXT, type TEXT)")
+        cursor.execute("CREATE TABLE part_of (part TEXT, whole TEXT)")
+        cursor.execute("CREATE TABLE part_of_n (part TEXT, whole TEXT, number INTEGER)")
+
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
 
-        facts = SIRModule(MemoryDbDataSource(MemoryDb()))
+        data_source = Sqlite3DataSource(connection)
+        facts = SIRModule(data_source)
 
         grammar = SimpleGrammarRulesParser().parse(get_grammar())
         parser = BasicParser(grammar)

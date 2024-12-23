@@ -1,9 +1,12 @@
+import sqlite3
 import unittest
 import pathlib
 
 from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
+from richard.data_source.CsvImporter import CsvImporter
+from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
@@ -14,10 +17,8 @@ from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
 from richard.module.InferenceModule import InferenceModule
-from richard.store.MemoryDb import MemoryDb
 from .chat80.Chat80Module import Chat80Module
 from .chat80.grammar import get_grammar
 
@@ -44,17 +45,43 @@ class TestChat80(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/resources/"
 
-        db = MemoryDb()
-        db.import_csv('continent', path + "continent.csv")
-        db.import_csv('ocean', path + "ocean.csv")
-        db.import_csv('sea', path + "sea.csv")
-        db.import_csv('river', path + "river.csv")
-        db.import_csv('city', path + "city.csv")
-        db.import_csv('country', path + "country.csv")
-        db.import_csv('contains', path + "contains.csv")
-        db.import_csv('borders', path + "borders.csv")
+        connection = sqlite3.connect(':memory:')
+        cursor = connection.cursor()
+        cursor.execute("CREATE TABLE IF NOT EXISTS continent (id TEXT PRIMARY KEY)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS ocean (id TEXT PRIMARY KEY)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS sea (id TEXT PRIMARY KEY)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS river (id TEXT PRIMARY KEY, flows_through TEXT)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS city (id TEXT PRIMARY KEY, country TEXT, population INTEGER)")
+        cursor.execute("""
+                       CREATE TABLE IF NOT EXISTS country (
+                        id TEXT PRIMARY KEY,
+                        region TEXT,
+                        lat REAL, long REAL,
+                        area_div_1000 INTEGER, area_mod_1000 INTEGER,
+                        population INTEGER, population_mod_1000000_div_1000 INTEGER,
+                        capital TEXT,
+                        currency TEXT
+                    )""")
+        cursor.execute("CREATE TABLE IF NOT EXISTS contains (whole TEXT, part TEXT)")
+        cursor.execute("CREATE TABLE IF NOT EXISTS borders (country_id1 TEXT, country_id2 TEXT)")
 
-        facts = Chat80Module(MemoryDbDataSource(db))
+        cursor.execute("CREATE INDEX borders_country_id1 ON borders (country_id1)");
+        cursor.execute("CREATE INDEX borders_country_id2 ON borders (country_id2)");
+        cursor.execute("CREATE INDEX contains_whole ON contains (whole)");
+        cursor.execute("CREATE INDEX contains_part ON contains (part)");
+
+        data_source = Sqlite3DataSource(connection)
+        facts = Chat80Module(data_source)
+
+        csv_importer = CsvImporter()
+        csv_importer.import_table_from_file('continent', path + "continent.csv", data_source)
+        csv_importer.import_table_from_file('ocean', path + "ocean.csv", data_source)
+        csv_importer.import_table_from_file('sea', path + "sea.csv", data_source)
+        csv_importer.import_table_from_file('river', path + "river.csv", data_source)
+        csv_importer.import_table_from_file('city', path + "city.csv", data_source)
+        csv_importer.import_table_from_file('country', path + "country.csv", data_source)
+        csv_importer.import_table_from_file('contains', path + "contains.csv", data_source)
+        csv_importer.import_table_from_file('borders', path + "borders.csv", data_source)
 
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")

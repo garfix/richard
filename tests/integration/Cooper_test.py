@@ -1,8 +1,10 @@
+import sqlite3
 import unittest
 
 from richard.block.TryFirst import TryFirst
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
+from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.responder.SimpleResponder import SimpleResponder
@@ -12,9 +14,7 @@ from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
 from richard.processor.parser.BasicParser import BasicParser
-from richard.store.MemoryDb import MemoryDb
 from tests.integration.cooper.CooperSentenceContext import CooperSentenceContext
 from tests.integration.cooper.SimpleOpenWorldResponder import SimpleOpenWorldResponder
 from tests.integration.cooper.CooperModule import CooperModule
@@ -48,8 +48,32 @@ class TestCooper(unittest.TestCase):
 
     def test_cooper(self):
 
+        connection = sqlite3.connect(':memory:')
+        cursor = connection.cursor()
+
+        # note: same entity may have multiple names
+        cursor.execute("CREATE TABLE entity (id TEXT, name TEXT)")
+
+        cursor.execute("CREATE TABLE metal (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE element (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE compound (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE nonmetal (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE white (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE dark_gray (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE brittle (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE oxide (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE sulfide (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE chloride (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE fuel (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE burns (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE burns_rapidly (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE combustable (entity TEXT PRIMARY KEY, truth TEXT)")
+        cursor.execute("CREATE TABLE gasoline (entity TEXT PRIMARY KEY, truth TEXT)")
+
+        data_source = Sqlite3DataSource(connection)
+        facts = CooperModule(data_source)
+
         inferences = InferenceModule()
-        facts = CooperModule(MemoryDbDataSource(MemoryDb()))
         sentence_context = CooperSentenceContext()
 
         model = Model([
@@ -155,7 +179,7 @@ class TestCooper(unittest.TestCase):
         logger.log_no_tests()
         # logger.log_all_tests()
         # logger.log_only_last_test()
-        logger.log_products()
+        # logger.log_products()
         # logger.log_stats()
 
         tester = DialogTester(self, tests1, pipeline1, logger)

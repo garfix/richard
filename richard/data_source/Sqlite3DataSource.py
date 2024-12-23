@@ -22,3 +22,10 @@ class Sqlite3DataSource(SomeDataSource):
         select = ','.join(columns)
         cursor.execute(f"SELECT {select} FROM {table} WHERE {where}", variables)
         return [list(row) for row in (cursor.fetchall())]
+
+
+    def insert(self, table: str, columns: list[str], values: list):
+        cursor = self.connection.cursor()
+        column_string = ','.join(columns)
+        place_holders = ", ".join(['?' for v in values])
+        cursor.execute(f"INSERT OR IGNORE INTO {table} ({column_string}) VALUES ({place_holders})", values)

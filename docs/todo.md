@@ -5,16 +5,10 @@
 General
 
 * Use a real database as much as possible.
-* add `common_query` and `common_write` to SomeModule to reduce code duplication
-* documentation: add a section with techniques, in stead of modules
 
-## fundamental
+## module
 
-When concepts are added at runtime (by introducing names), isa(E1, E2) would be better than a(E2) :- b(E1), right? Find out.
-The alternative can be that predicates are added at runtime: "dogs are mammals": `('mammal', E1) :- ('dog', E1).`
-The alternative can also be to introduce new (lexical) grammar rules.
-But what about homonimity? A concept name with multiple meanings? "bank"
-Also, when introducing new concepts by name, morpheme analysis is necessary: split "oxides" into "oxide" and "s"
+* (?) add `common_query` and `common_write` to SomeModule to reduce code duplication
 
 ## isolation of independent parts
 
