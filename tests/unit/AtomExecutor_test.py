@@ -95,11 +95,11 @@ class TestAtomExecutor(unittest.TestCase):
 
         # test the inference
         pipeline.enter(SentenceRequest("Continents be"))
-        results = dialog_context.ds.select("isa", ['entity', 'type'], [None, None])
+        results = dialog_context.data_source.select("isa", ['entity', 'type'], [None, None])
         self.assertEqual(["$1", "continent"], results[0])
 
         # test the executable code
         pipeline.enter(SentenceRequest("Continents exist"))
-        results = dialog_context.ds.select("concept", ['type'], [None])
+        results = dialog_context.data_source.select("concept", ['type'], [None])
         self.assertEqual(["continents"], results[0])
 

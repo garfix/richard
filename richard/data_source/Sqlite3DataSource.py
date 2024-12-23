@@ -29,3 +29,7 @@ class Sqlite3DataSource(SomeDataSource):
         column_string = ','.join(columns)
         place_holders = ", ".join(['?' for v in values])
         cursor.execute(f"INSERT OR IGNORE INTO {table} ({column_string}) VALUES ({place_holders})", values)
+
+
+    def clear(self):
+        raise Exception('clear not implemented')

@@ -15,7 +15,7 @@ class SomeDataSource(ABC):
             Note that same columns are both used in the "select" and the "where"
             Note that if a value is None, it must be omitted from the "where"
         """
-        pass
+        raise Exception('select not implemented')
 
 
     def select_column(self, table: str, columns: list[str], values: list) -> list:
@@ -23,4 +23,8 @@ class SomeDataSource(ABC):
 
 
     def insert(self, table: str, columns: list[str], values: list):
-        pass
+        raise Exception('insert not implemented')
+
+
+    def clear(self):
+        raise Exception('clear not implemented')

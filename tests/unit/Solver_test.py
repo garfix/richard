@@ -1,16 +1,14 @@
+import sqlite3
 import unittest
 
 from richard.core.Model import Model
-from richard.core.constants import E1, E2, IGNORED
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
+from richard.core.constants import E1, E2
+from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.entity.Relation import Relation
 from richard.entity.ResultIterator import ResultIterator
-from richard.interface import SomeSolver
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.core.Solver import Solver
 from richard.interface.SomeModule import SomeModule
-from richard.store.MemoryDb import MemoryDb
-from richard.store.Record import Record
 from richard.type.ExecutionContext import ExecutionContext
 
 
@@ -55,17 +53,25 @@ class TestSolver(unittest.TestCase):
 
     def test_solver(self):
 
-        db = MemoryDb()
-        db.insert(Record('river', {'id': 'amazon'}))
-        db.insert(Record('river', {'id': 'brahmaputra'}))
+        connection = sqlite3.connect(':memory:')
+        cursor = connection.cursor()
+        data_source = Sqlite3DataSource(connection)
 
-        db.insert(Record('country', {'id': 'brasil'}))
-        db.insert(Record('country', {'id': 'india'}))
+        # note: same entity may have multiple names
+        cursor.execute("CREATE TABLE river (id TEXT)")
+        cursor.execute("CREATE TABLE country (id TEXT)")
+        cursor.execute("CREATE TABLE contains (country TEXT, river TEXT)")
 
-        db.insert(Record('contains', {'country': 'brasil', 'river': 'amazon'}))
-        db.insert(Record('contains', {'country': 'india', 'river': 'brahmaputra'}))
+        data_source.insert('river', ['id'], ['amazon'])
+        data_source.insert('river', ['id'], ['brahmaputra'])
 
-        data_source = MemoryDbDataSource(db)
+        data_source.insert('country', ['id'], ['brasil'])
+        data_source.insert('country', ['id'], ['india'])
+
+        data_source.insert('contains', ['country', 'river'], ['brasil', 'amazon'])
+        data_source.insert('contains', ['country', 'river'], ['india', 'brahmaputra'])
+
+
         model = Model([TestModule(data_source)])
         solver = Solver(model)
 

@@ -76,22 +76,21 @@ class SimpleResponder(SomeProcessor):
 
         elif type == "table":
 
-            table_format = solver.solve1([('format_table', Variable('Variables'), Variable('Units'))])
-            if table_format == None:
+            table_format = solver.solve([('format_table', Variable('Variable'), Variable('Unit'))])
+            if len(table_format) == 0:
                 raise Exception("The sentence doesn't have a 'format_table' inference")
-
-            variables = table_format["Variables"]
-            units = table_format["Units"]
 
             response = []
             for binding in bindings:
 
                 row = []
-                for variable, unit in zip(variables, units):
+                for column_format in table_format:
+                    variable = column_format["Variable"]
+                    unit = column_format["Unit"]
                     value = binding[variable]
                     if isinstance(value, float):
                         value = str(int(value))
-                    if unit:
+                    if unit != '':
                         value = str(value) + " " + unit
                     row.append(value)
                 response.append(row)

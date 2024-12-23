@@ -1,17 +1,22 @@
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
+import sqlite3
+from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
-from richard.store.MemoryDb import MemoryDb
 from richard.type.ExecutionContext import ExecutionContext
 
 
 class SimpleMemoryModule(SomeModule):
 
-    ds: MemoryDbDataSource
+    data_source: Sqlite3DataSource
 
     def __init__(self) -> None:
         super().__init__()
-        self.ds = MemoryDbDataSource(MemoryDb())
+        self.clear()
+
+
+    def clear(self):
+        connection = sqlite3.connect(':memory:')
+        self.data_source = Sqlite3DataSource(connection)
 
 
     def add_relation(self, relation: Relation):
@@ -21,12 +26,8 @@ class SimpleMemoryModule(SomeModule):
 
 
     def query(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select(context.relation.predicate, context.relation.arguments, values)
+        return self.data_source.select(context.relation.predicate, context.relation.arguments, values)
 
 
     def write(self, values: list, context: ExecutionContext):
-        self.ds.insert(context.relation.predicate, context.relation.arguments, values)
-
-
-    def clear(self):
-        self.ds.clear()
+        self.data_source.insert(context.relation.predicate, context.relation.arguments, values)

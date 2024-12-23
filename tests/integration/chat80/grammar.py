@@ -52,7 +52,7 @@ def get_grammar():
         {
             "syn": "s(E1, E2) -> 'what' 'are' 'the' noun(E1) 'of' np(E2)+ '?'",
             "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
-            "inf": [("format", "table"), ("format_table", [e2, e1], [None, None])],
+            "inf": [("format", "table"), ("format_table", e2, ''), ('format_table', e1, '')],
             "boost": 1
         },
         {
@@ -63,12 +63,12 @@ def get_grammar():
         {
             "syn": "s(E1, E3) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3)+ '?'",
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
-            "inf": [("format", "table"), ("format_table", [e3, e1], [None, 'ksqmiles'])],
+            "inf": [("format", "table"), ("format_table", e3, ''), ('format_table', e1, 'ksqmiles')],
         },
         {
             "syn": "s(E2, E3) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2)+ '?'",
             "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))],
-            "inf": [("format", "table"), ("format_table", [e2, e3], [None, None])],
+            "inf": [("format", "table"), ("format_table", e2, ''), ('format_table', e3, '')],
         },
         {
             "syn": "s(E2) -> 'where' 'is' np(E1)+ '?'",

@@ -2,10 +2,6 @@
 
 * more SIR sentences?
 
-General
-
-* Use a real database as much as possible.
-
 ## module
 
 * (?) add `common_query` and `common_write` to SomeModule to reduce code duplication

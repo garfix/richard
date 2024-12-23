@@ -1,3 +1,4 @@
+import sqlite3
 import unittest
 
 from richard.block.TryFirst import TryFirst
@@ -5,18 +6,16 @@ from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, E2, Body, Range
-from richard.data_source.MemoryDbDataSource import MemoryDbDataSource
+from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.parser.helper.grammar_functions import apply
-from richard.store.Record import Record
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
-from richard.store.MemoryDb import MemoryDb
 from richard.type.ExecutionContext import ExecutionContext
 from richard.type.SemanticTemplate import SemanticTemplate
 
@@ -51,15 +50,20 @@ class TestQuantification(unittest.TestCase):
 
     def test_quantification(self):
 
-        db = MemoryDb()
-        db.insert(Record('has_child', {'parent': 'mary', 'child': 'lucy'}))
-        db.insert(Record('has_child', {'parent': 'mary', 'child': 'bonny'}))
-        db.insert(Record('has_child', {'parent': 'barbara', 'child': 'john'}))
-        db.insert(Record('has_child', {'parent': 'barbara', 'child': 'chuck'}))
-        db.insert(Record('has_child', {'parent': 'william', 'child': 'oswald'}))
-        db.insert(Record('has_child', {'parent': 'william', 'child': 'bertrand'}))
+        connection = sqlite3.connect(':memory:')
+        cursor = connection.cursor()
+        data_source = Sqlite3DataSource(connection)
 
-        data_source = MemoryDbDataSource(db)
+        # note: same entity may have multiple names
+        cursor.execute("CREATE TABLE has_child (parent TEXT, child TEXT)")
+
+        data_source.insert('has_child', ['parent', 'child'], ['mary', 'lucy'])
+        data_source.insert('has_child', ['parent', 'child'], ['mary', 'bonny'])
+        data_source.insert('has_child', ['parent', 'child'], ['barbara', 'john'])
+        data_source.insert('has_child', ['parent', 'child'], ['barbara', 'chuck'])
+        data_source.insert('has_child', ['parent', 'child'], ['william', 'oswald'])
+        data_source.insert('has_child', ['parent', 'child'], ['william', 'bertrand'])
+
         model = Model([TestModule(data_source)])
 
         simple_grammar = [
