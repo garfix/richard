@@ -50,8 +50,15 @@ class SimpleResponder(SomeProcessor):
 
             if len(bindings) > 0:
                 response = "yes"
+                canned = solver.solve1([('format_yes', Variable('Template'))])
+                if canned != None:
+                    response = canned['Template'].replace('{}', str(response))
             else:
                 response = "no"
+
+                canned = solver.solve1([('format_no', Variable('Template'))])
+                if canned != None:
+                    response = canned['Template'].replace('{}', str(response))
 
         elif type == "number":
 

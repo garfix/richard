@@ -11,28 +11,50 @@ T3 = Variable('T3')
 def get_grammar():
     return [
         # sentence
+        {
+            "syn": "s() -> statement()",
+            "sem": lambda statement: statement,
+            "inf": [("format", "canned"), ("format_canned", "I understand")],
+        },
+
+        # statements
 
         # every X is a Y, where X and Y not part of the grammar
         # this is uncommon, is defines a new concept in terms of an another unknown concept
         {
-            "syn": "s() -> 'every' common_noun_name(E1) 'is' a() common_noun_name(E1)",
-            "sem": lambda common_noun_name1, a2, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
-            "inf": [("format", "canned"), ("format_canned", "I understand")],
+            "syn": "statement() -> 'every' common_noun_name(E1) 'is' a() common_noun_name(E1)",
+            "sem": lambda common_noun_name1, a, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
+        },
+        # any X is an example of a Y
+        {
+            "syn": "statement() -> 'any' common_noun_name(E1) 'is' 'an' 'example' 'of' a() common_noun_name(E1)",
+            "sem": lambda common_noun_name1, a, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
         },
         # A finger is a part of a hand
         # a statement about classes as entities
         {
-            "syn": "s() -> a() common_noun_name(E1) 'is' 'a' 'part' 'of' a() common_noun_name(E1)",
+            "syn": "statement() -> a() common_noun_name(E1) 'is' 'a' 'part' 'of' a() common_noun_name(E1)",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2)])],
-            "inf": [("format", "canned"), ("format_canned", "I understand")],
         },
         # There are two hands on each person
         # a statement about classes as quantified entities
         {
-            "syn": "s() -> 'there' 'are' number(E1) common_noun_name(E2) 'on' 'each' common_noun_name(E3)",
+            "syn": "statement() -> 'there' 'are' number(E1) common_noun_name(E2) 'on' 'each' common_noun_name(E3)",
             "sem": lambda number, common_noun_name1, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2), ('part_of_n', common_noun_name1, common_noun_name2, number)])],
-            "inf": [("format", "canned"), ("format_canned", "I understand")],
         },
+        # John is a boy
+        {
+            "syn": "statement() -> proper_noun(E1) 'is' a() common_noun_name(E2)",
+            "sem": lambda proper_noun, a2, common_noun_name: proper_noun + [('store', [('isa', E1, common_noun_name)])],
+        },
+        # Every hand has 5 fingers
+        {
+            "syn": "statement() -> 'every' common_noun_name(E2) 'has' number(E1) common_noun_name(E3)",
+            "sem": lambda common_noun_name1, number, common_noun_name2: [('store', [('part_of', common_noun_name2, common_noun_name1), ('part_of_n', common_noun_name2, common_noun_name1, number)])],
+        },
+
+        # questions
+
         # How many fingers does John have?
         # we don't know John, but all that matters is that it's a boy
         # determine 'how many' not by counting but by calculating
@@ -41,17 +63,11 @@ def get_grammar():
             "sem": lambda common_noun1, common_noun2: common_noun1 + common_noun2 + [('count', E3, [('have', E2, E1)])],
             "inf": [("format", "number"), ("format_number", e3, ''), ('format_canned', 'The answer is {}')],
         },
-        # John is a boy
+        # Is a X a Y?
         {
-            "syn": "s() -> proper_noun(E1) 'is' a() common_noun_name(E2)",
-            "sem": lambda proper_noun, a2, common_noun_name: proper_noun + [('store', [('isa', E1, common_noun_name)])],
-            "inf": [("format", "canned"), ("format_canned", "I understand")],
-        },
-        # Every hand has 5 fingers
-        {
-            "syn": "s() -> 'every' common_noun_name(E2) 'has' number(E1) common_noun_name(E3)",
-            "sem": lambda common_noun_name1, number, common_noun_name2: [('store', [('part_of', common_noun_name2, common_noun_name1), ('part_of_n', common_noun_name2, common_noun_name1, number)])],
-            "inf": [("format", "canned"), ("format_canned", "I understand")],
+            "syn": "s() -> 'is' a() common_noun_name(E1) a() common_noun_name(E2)~'?'",
+            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('instance_of', common_noun_name1, common_noun_name2)],
+            "inf": [("format", "y/n"), ("format_no", "Insufficient information")],
         },
 
         # number
@@ -63,13 +79,15 @@ def get_grammar():
         { "syn": "a() -> 'an'", "sem": lambda: [] },
 
         # common noun
-        { "syn": "common_noun(E1) -> /\w+/", "sem": lambda token: [(token, E1)], "inf": lambda token: [('isa', e1, token)] },
-        { "syn": "common_noun(E1) -> common_noun(E1)+'s'", "sem": lambda common_noun: common_noun },
+        {
+            "syn": "common_noun(E1) -> common_noun_name(E1)",
+            "sem": lambda common_noun_name: [(common_noun_name, E1)], "inf": lambda common_noun_name: [('isa', e1, common_noun_name)]
+        },
 
         # proper noun
         { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)] },
 
         # introduction of a new common noun
-        { "syn": "common_noun_name(E1) -> /\w+/", "sem": lambda token: token },
-        { "syn": "common_noun_name(E1) -> /\w+/+'s'", "sem": lambda token: token, 'boost': 1 },
+        { "syn": "common_noun_name(E1) -> /\w+(-\w+)*/", "sem": lambda token: token },
+        { "syn": "common_noun_name(E1) -> common_noun_name(E1)+'s'", "sem": lambda common_noun_name: common_noun_name, 'boost': 1 },
     ]

@@ -93,7 +93,7 @@ class TestSIR(unittest.TestCase):
         ])
 
         tests = [
-            # note: this is just a subset of the sample sentences the SIR paper provides
+            # number
             ['Every boy is a person', 'I understand'],
             ['A finger is a part of a hand', 'I understand'],
             ['There are two hands on each person', 'I understand'],
@@ -102,13 +102,21 @@ class TestSIR(unittest.TestCase):
             ['How many fingers does John have?', "How many finger per hand?"],
             ['Every hand has 5 fingers', 'I understand'],
             ['How many fingers does John have?', "The answer is 10"],
+
+            # set-inclusion
+            ['Every keypunch-operator is a girl', 'I understand'],
+            ['Any girl is an example of a person', 'I understand'],
+            ['Is a keypunch-operator a person?', 'yes'],
+            ['Is a person a person?', 'yes'],
+            # ['Is a person a girl?', 'Sometimes'],
+            # ['Is a monkey a keypunch-operator?', 'Insufficient information'],
         ]
 
         logger = Logger()
         logger.log_no_tests()
-        # logger.log_only_last_test()
-        # logger.log_all_tests()
-        # logger.log_products()
+        logger.log_only_last_test()
+        logger.log_all_tests()
+        logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)
         tester.run()

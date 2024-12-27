@@ -14,6 +14,8 @@ class BasicSentenceContext(SimpleMemoryModule):
         self.add_relation(Relation("format_table", arguments=["variable", "unit"]))
         self.add_relation(Relation("format_number", arguments=["variable", "unit"]))
         self.add_relation(Relation("format_canned", arguments=["response"]))
+        self.add_relation(Relation("format_no", arguments=["response"]))
+        self.add_relation(Relation("format_yes", arguments=["response"]))
 
 
     def clear(self):
@@ -26,3 +28,5 @@ class BasicSentenceContext(SimpleMemoryModule):
         cursor.execute("CREATE TABLE format_table (variable TEXT, unit TEXT)")
         cursor.execute("CREATE TABLE format_number (variable TEXT, unit TEXT)")
         cursor.execute("CREATE TABLE format_canned (response TEXT)")
+        cursor.execute("CREATE TABLE format_no (response TEXT)")
+        cursor.execute("CREATE TABLE format_yes (response TEXT)")
