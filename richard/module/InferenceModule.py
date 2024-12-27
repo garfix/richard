@@ -57,33 +57,38 @@ class InferenceModule(SomeModule):
         rule_binding = {key: value for (key, value) in binding.items() if key not in rule.get_all_variables()}
 
         for rule_argument, value in zip(rule_arguments, arguments):
+
+            if isinstance(value, Variable) and value.name in binding:
+                bound_value = binding[value.name]
+            else:
+                bound_value = value
+
             if isinstance(rule_argument, Variable):
                 # bind variable
-                if isinstance(value, Variable):
-                    # A / E1
-                    if value.name in binding:
-                        rule_binding[rule_argument.name] = binding[value.name]
+                if isinstance(bound_value, Variable):
+                    # A = E1
+                    pass
                 else:
-                    # A / 'john'
+                    # A = 'john'
                     # check for conflicts
                     if rule_argument.name in rule_binding:
-                        if rule_binding[rule_argument.name] != value:
+                        if rule_binding[rule_argument.name] != bound_value:
                             return []
-                    rule_binding[rule_argument.name] = value
+                    rule_binding[rule_argument.name] = bound_value
             else:
-                if isinstance(value, Variable):
-                    # 'john' / E1
-                    # check for conflicts
-                    if value.name in binding:
-                        if binding[value.name] != rule_argument:
-                            return []
+                if isinstance(bound_value, Variable):
+                    # 'john' = E1
+                    pass
                 else:
-                    # 'john' / 'susan'
-                    if value != rule_argument:
-                        # value conflict in head
+                    # 'john' = 'susan'
+                    # check for conflicts
+                    if bound_value != rule_argument:
                         return []
 
-        bindings = solver.solve(rule.body, rule_binding)
+        if len(rule.body) == 0:
+            bindings = [ rule_binding ]
+        else:
+            bindings = solver.solve(rule.body, rule_binding)
 
         results = []
 
@@ -94,6 +99,10 @@ class InferenceModule(SomeModule):
             for rule_argument, value in zip(rule_arguments, arguments):
                 if isinstance(value, Variable):
                     if isinstance(rule_argument, Variable):
+                        # check if the results are not bound (completely)
+                        # this happens when r(X). is matches against r(Y).
+                        if not rule_argument.name in solution:
+                            return []
                         result.append(solution[rule_argument.name])
                     else:
                         result.append(rule_argument)
