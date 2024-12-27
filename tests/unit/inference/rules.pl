@@ -8,3 +8,5 @@ grand_parent(X, Y) :- parent(X, Z), parent(Z, Y).
 knows(A, "true") :- scoped(A).
 ancestor(X, Y) :- parent(X, Y).
 ancestor(X, Y) :- parent(X, Z), ancestor(Z, Y).
+related(X, Y) :- ancestor(X, Y).
+related(X, X).

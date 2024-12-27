@@ -69,6 +69,9 @@ class TestInferenceEngine(unittest.TestCase):
             [[('knows', [('parent', E1, E2)], "true")], {'E1': 'martha'}, [{'E1': 'martha'}]],
             [[('knows', [('parent', E1, E2)], "true")], {'E1': 'magdalena'}, []],
             [[('ancestor', 'robert', 'antonio')], {'E1': 'robert'}, [{'E1': 'robert'}]],
+            [[('related', 'robert', 'antonio')], {'A': 1}, [{'A': 1}]],
+            [[('related', 'robert', 'robert')], {'A': 2}, [{'A': 2}]],
+            [[('related', 'robert', 'xantippe')], {'A': 3}, []],
         ]
 
         for test in tests:

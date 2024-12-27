@@ -65,11 +65,15 @@ class InferenceModule(SomeModule):
                         rule_binding[rule_argument.name] = binding[value.name]
                 else:
                     # A / 'john'
+                    # check for conflicts
+                    if rule_argument.name in rule_binding:
+                        if rule_binding[rule_argument.name] != value:
+                            return []
                     rule_binding[rule_argument.name] = value
             else:
-                # check for conflicts
                 if isinstance(value, Variable):
                     # 'john' / E1
+                    # check for conflicts
                     if value.name in binding:
                         if binding[value.name] != rule_argument:
                             return []
