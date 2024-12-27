@@ -1,6 +1,21 @@
 ## todo
 
-* more SIR sentences?
+* Read SIR thesis whole
+* more SIR sentences
+    * a. SET-INCLUSION ("sometimes")
+    * b. SET-MEMBERSHIP (except: "the boy" without knowing what it refers to)
+    * c. EQUIVALENCE no (depends on "the man" which has no reference)
+    * d. OWNERSHIP
+    * e. OWNERSHIP, SPECIFIC
+    * f. PART-WHOLE, GENERAL
+    * g. PART-WHOLE, SPECIFIC
+    * h. NUMBER (done!)
+    * i. LEFT-TO-RIGHT POSITION
+* more SIR sentences
+    * a. EXCEPTION PRINCIPLE
+    * b. RESOLVING AMBIGUITIES
+    * c. STREAMLINING LINKAGES
+
 
 ## module
 

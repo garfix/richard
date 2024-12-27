@@ -17,6 +17,7 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 ## Versions
 
 * 0.4 ?
+    * use sqlite3 for all examples and memory stores
     * storing facts and learning rules
     * classes and instances
     * Cooper's system (1964) demo

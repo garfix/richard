@@ -33,8 +33,6 @@ class TestSIR(unittest.TestCase):
     - part-whole relationship (finger part of hand)
     - numeric quantity associated with the part-whole relationship (hand has 5 fingers)
     - set-membership (Fido is a dog)
-    - left-to-right spatial relations
-    - ownership
 
     It displays both the entity and the relation aspect of the same concept.
 
@@ -49,6 +47,8 @@ class TestSIR(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/sir/resources/"
 
+        # create a database
+
         connection = sqlite3.connect(':memory:')
         cursor = connection.cursor()
 
@@ -56,15 +56,22 @@ class TestSIR(unittest.TestCase):
         cursor.execute("CREATE TABLE part_of (part TEXT, whole TEXT)")
         cursor.execute("CREATE TABLE part_of_n (part TEXT, whole TEXT, number INTEGER)")
 
-        inferences = InferenceModule()
-        inferences.import_rules(path + "inferences.pl")
-
         data_source = Sqlite3DataSource(connection)
         facts = SIRModule(data_source)
 
+        # define some inference rules
+
+        inferences = InferenceModule()
+        inferences.import_rules(path + "inferences.pl")
+
+        # sentence scoped facts
+
+        sentence_context = BasicSentenceContext()
+
+        # define the pipeline
+
         grammar = SimpleGrammarRulesParser().parse(get_grammar())
         parser = BasicParser(grammar)
-        sentence_context = BasicSentenceContext()
 
         model = Model([
             facts,
@@ -86,16 +93,9 @@ class TestSIR(unittest.TestCase):
         ])
 
         tests = [
-            # both boy and person are new
-            # inference: person :- boy
-            # grammar rules: noun -> boy, noun -> person
-            # relations: boy(id), person(id)
+            # note: this is just a subset of the sample sentences the SIR paper provides
             ['Every boy is a person', 'I understand'],
-            # both finger and hand are new
-            # inference: part_of(finger, hand) / part_of(E1, E2) :- finger(E1), hand(E2)
             ['A finger is a part of a hand', 'I understand'],
-            #     # ['Each person has two hands', 'The above sentence is ambiguous; please re-phrase it'],
-            # # known concepts;
             ['There are two hands on each person', 'I understand'],
             ['How many fingers does John have?', "Don't know whether finger is part of John"],
             ['John is a boy', 'I understand'],
