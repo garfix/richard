@@ -239,7 +239,7 @@ If I only implement the last one, all is well, but if I implement both, like thi
                 ('scoped', [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', noun[0], np)]),
                 ('scoped', [('=', T1, 'false'), ('=', T2, 'true'), ('learn_rule', np[0], noun)])
             ],
-            "inf": [("format", "canned"), ("format_canned", "OK")],
+            "dialog": [("format", "canned"), ("format_canned", "OK")],
         },
 
 Execution meets an infinite loop because now `compound()` checks `element()` and `element()` checks `compound()`. It can be solved by reversing the signs of one of them:
@@ -301,9 +301,9 @@ Can be solved like this:
 
     { "syn": "noun(E1, T1) -> proper_noun(E1) proper_noun(E1)", "sem": lambda proper_noun1, proper_noun2: [('resolve_name', proper_noun1 + " " + proper_noun2, E1)] },
     { "syn": "proper_noun(E1) -> token(E1)", "sem": lambda token: token },
-    { "syn": "proper_noun(E1) -> 'sulfide'", "sem": lambda: 'sulfide', "inf": [("sulfide", e1, 'true')],},
+    { "syn": "proper_noun(E1) -> 'sulfide'", "sem": lambda: 'sulfide', "dialog": [("sulfide", e1, 'true')],},
 
-That is: "ferrous sulfide" consists of two proper nouns. The first is free-form. The second is from a fixed group, and implies a certain type. That the second name is "sulfide" implies ("inf") that this entity is a sulfide.
+That is: "ferrous sulfide" consists of two proper nouns. The first is free-form. The second is from a fixed group, and implies a certain type. That the second name is "sulfide" implies ("dialog") that this entity is a sulfide.
 
 
 ## 2024-10-20

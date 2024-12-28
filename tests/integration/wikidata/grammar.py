@@ -10,7 +10,7 @@ def get_grammar():
         {
             "syn": "s(E2) -> 'where' 'was' np(E1) 'born'+'?'",
             "sem": lambda np: apply(np, []) + [('place_of_birth', E1, E2)],
-            "inf": [("format", "list"), ("format_list", e2)],
+            "dialog": [("format", "list"), ("format_list", e2)],
         },
 
         # nbar

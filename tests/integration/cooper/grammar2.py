@@ -20,7 +20,7 @@ def get_grammar2():
         {
             "syn": "s(T1) -> vp(E1, T1)",
             "sem": lambda vp: vp,
-            "inf": [("format", "y/n/u"), ("format_ynu", t1)],
+            "dialog": [("format", "y/n/u"), ("format_ynu", t1)],
         },
 
         # vp

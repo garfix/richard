@@ -14,7 +14,7 @@ def get_grammar():
         {
             "syn": "s() -> statement()",
             "sem": lambda statement: statement,
-            "inf": [("format", "canned"), ("format_canned", "I understand")],
+            "dialog": [("format", "canned"), ("format_canned", "I understand")],
         },
 
         # statements
@@ -67,13 +67,13 @@ def get_grammar():
         {
             "syn": "s(E3) -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have'+'?'",
             "sem": lambda common_noun1, common_noun2: common_noun1 + common_noun2 + [('count', E3, [('have', E2, E1)])],
-            "inf": [("format", "number"), ("format_number", e3, ''), ('format_canned', 'The answer is {}')],
+            "dialog": [("format", "number"), ("format_number", e3, ''), ('format_canned', 'The answer is {}')],
         },
         # Is a X a Y?
         {
             "syn": "s() -> 'is' a() common_noun_name(E1) a() common_noun_name(E2)~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('two_way_instance_of', common_noun_name1, common_noun_name2, E3)],
-            "inf": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
+            "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
                     ("format_switch_value", 'sometimes', 'Sometimes'),
                     ("format_switch_value", 'yes', 'Yes')
                 ],
@@ -82,7 +82,7 @@ def get_grammar():
         {
             "syn": "s() -> 'is' common_noun_name(E1) a() common_noun_name(E2)~'?'",
             "sem": lambda proper_noun, a, common_noun_name: [('instance_of', proper_noun, common_noun_name)],
-            "inf": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
+            "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
         },
 
         # number
@@ -96,7 +96,7 @@ def get_grammar():
         # common noun
         {
             "syn": "common_noun(E1) -> common_noun_name(E1)",
-            "sem": lambda common_noun_name: [(common_noun_name, E1)], "inf": lambda common_noun_name: [('isa', e1, common_noun_name)]
+            "sem": lambda common_noun_name: [(common_noun_name, E1)], "dialog": lambda common_noun_name: [('isa', e1, common_noun_name)]
         },
 
         # proper noun

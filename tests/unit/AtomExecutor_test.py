@@ -70,7 +70,7 @@ class TestAtomExecutor(unittest.TestCase):
             {
                 "syn": "noun(E1) -> 'continents'",
                 "sem": lambda: [('continent', E1)],
-                "inf": [('isa', e1, 'continent')]
+                "dialog": [('isa', e1, 'continent')]
             },
         ]
 

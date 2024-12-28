@@ -97,10 +97,10 @@ class SemanticComposer(SomeProcessor):
         if node.rule.exec:
             executable = node.rule.exec(*child_semantics)
 
-        if callable(node.rule.inferences):
-            inferences.extend(node.rule.inferences(*child_semantics))
+        if callable(node.rule.dialog):
+            inferences.extend(node.rule.dialog(*child_semantics))
         else:
-            inferences.extend(node.rule.inferences)
+            inferences.extend(node.rule.dialog)
 
         # extend the map with variables found in the result of the semantics function
         self.extend_map_with_semantics(map, semantics)

@@ -9,7 +9,7 @@ class GrammarRule:
     consequents: list[RuleConstituent]
     sem: Callable
     exec: Callable
-    inferences: list[tuple] | Callable
+    dialog: list[tuple] | Callable
     boost: int
     hash: int
 
@@ -18,14 +18,14 @@ class GrammarRule:
                  consequents: list[RuleConstituent],
                  sem: Callable = None,
                  exec: Callable = None,
-                 inferences: list[tuple] | Callable = [],
+                 dialog: list[tuple] | Callable = [],
                  boost: int = 0,
         ) -> None:
         self.antecedent = antecedent
         self.consequents = consequents
         self.sem = sem
         self.exec = exec
-        self.inferences = inferences
+        self.dialog = dialog
         self.boost = boost
 
         h = [c.hash for c in self.consequents] + [self.antecedent.hash]

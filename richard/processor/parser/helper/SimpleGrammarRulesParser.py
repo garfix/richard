@@ -57,15 +57,15 @@ class SimpleGrammarRulesParser:
         if 'exec' in simple_rule:
             exec = simple_rule['exec']
 
-        inferences = []
-        if 'inf' in simple_rule:
-            inferences = simple_rule['inf']
+        dialog = []
+        if 'dialog' in simple_rule:
+            dialog = simple_rule['dialog']
 
         boost = 0
         if 'boost' in simple_rule:
             boost = simple_rule['boost']
 
-        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, inferences=inferences, boost=boost)
+        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, dialog=dialog, boost=boost)
 
 
     def parse_syntax(self, syntax):
