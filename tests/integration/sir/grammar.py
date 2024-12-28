@@ -30,6 +30,11 @@ def get_grammar():
             "syn": "statement() -> 'any' common_noun_name(E1) 'is' 'an' 'example' 'of' a() common_noun_name(E1)",
             "sem": lambda common_noun_name1, a, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
         },
+        # An IBM-7094 is a computer
+        {
+            "syn": "statement() -> a() common_noun_name(E1) 'is' a() common_noun_name(E1)",
+            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
+        },
         # A finger is a part of a hand
         # a statement about classes as entities
         {
@@ -43,6 +48,7 @@ def get_grammar():
             "sem": lambda number, common_noun_name1, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2), ('part_of_n', common_noun_name1, common_noun_name2, number)])],
         },
         # John is a boy
+        # Max is an IBM-7094
         {
             "syn": "statement() -> proper_noun(E1) 'is' a() common_noun_name(E2)",
             "sem": lambda proper_noun, a2, common_noun_name: proper_noun + [('store', [('isa', E1, common_noun_name)])],
@@ -72,6 +78,12 @@ def get_grammar():
                     ("format_switch_value", 'yes', 'Yes')
                 ],
         },
+        # Is Max a computer?
+        {
+            "syn": "s() -> 'is' common_noun_name(E1) a() common_noun_name(E2)~'?'",
+            "sem": lambda proper_noun, a, common_noun_name: [('instance_of', proper_noun, common_noun_name)],
+            "inf": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
+        },
 
         # number
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
@@ -88,9 +100,9 @@ def get_grammar():
         },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)] },
+        { "syn": "proper_noun(E1) -> /[\w\d]+(-[\w\d]+)*/", "sem": lambda token: [('resolve_name', token, E1)] },
 
         # introduction of a new common noun
-        { "syn": "common_noun_name(E1) -> /\w+(-\w+)*/", "sem": lambda token: token },
+        { "syn": "common_noun_name(E1) -> /[\w\d]+(-[\w\d]+)*/", "sem": lambda token: token },
         { "syn": "common_noun_name(E1) -> common_noun_name(E1)+'s'", "sem": lambda common_noun_name: common_noun_name, 'boost': 1 },
     ]

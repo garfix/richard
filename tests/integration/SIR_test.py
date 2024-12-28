@@ -110,6 +110,11 @@ class TestSIR(unittest.TestCase):
             ['Is a person a person?', 'Yes'],
             ['Is a person a girl?', 'Sometimes'],
             ['Is a monkey a keypunch-operator?', 'Insufficient information'],
+
+            # set-membership
+            ['Max is an IBM-7094', 'I understand'],
+            ['An IBM-7094 is a computer', 'I understand'],
+            ['Is Max a computer?', 'Yes'],
         ]
 
         logger = Logger()
