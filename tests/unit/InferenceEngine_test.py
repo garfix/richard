@@ -72,7 +72,8 @@ class TestInferenceEngine(unittest.TestCase):
             [[('related', 'robert', 'antonio')], {'A': 1}, [{'A': 1}]],
             [[('related', 'robert', 'robert')], {'A': 2}, [{'A': 2}]],
             [[('related', 'robert', 'xantippe')], {'A': 3}, []],
-            [[('related', E1, E1)], {}, []],
+            [[('related', E1, E1)], {}, [{'E1': 'jennifer'}]],
+            [[('related', E1, E1)], {'E1': 'jennifer'}, [{'E1': 'jennifer'}]],
         ]
 
         for test in tests:

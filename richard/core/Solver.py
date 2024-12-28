@@ -101,6 +101,8 @@ class Solver(SomeSolver):
         db_values = self.model_values_2_db_values(arguments, binding)
 
         rows = []
+        stringed_values = {}
+
         for relation in relations:
             context = ExecutionContext(relation, arguments, binding, self)
 
@@ -112,7 +114,12 @@ class Solver(SomeSolver):
                     raise Exception("A relation that returns a ResultIterator can't be used in combination with another relation by the same name: " + relation.predicate)
                 return out_values
 
-            rows.extend(out_values)
+            # deduplicate results
+            for out_value in out_values:
+                stringed_value = str(out_value)
+                if stringed_value not in stringed_values:
+                    stringed_values[stringed_value] = out_value
+                    rows.append(out_value)
 
         return rows
 

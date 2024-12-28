@@ -10,3 +10,5 @@ ancestor(X, Y) :- parent(X, Y).
 ancestor(X, Y) :- parent(X, Z), ancestor(Z, Y).
 related(X, Y) :- ancestor(X, Y).
 related(X, X).
+related('jennifer', 'jennifer').
+related('jennifer', 'david').

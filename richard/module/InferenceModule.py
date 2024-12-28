@@ -34,7 +34,11 @@ class InferenceModule(SomeModule):
         parser = SimpleInferenceRuleParser()
         with open(path) as rule_file:
             for line in rule_file.readlines():
+                # empty line
                 if line.strip() == "":
+                    continue
+                # comment line
+                if line.strip()[0] == "#":
                     continue
                 rule, pos = parser.parse(line)
                 if rule is None:
