@@ -80,8 +80,8 @@ def get_grammar():
         },
         # Is Max a computer?
         {
-            "syn": "s() -> 'is' common_noun_name(E1) a() common_noun_name(E2)~'?'",
-            "sem": lambda proper_noun, a, common_noun_name: [('instance_of', proper_noun, common_noun_name)],
+            "syn": "s() -> 'is' proper_noun(E1) a() common_noun_name(E2)~'?'",
+            "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('instance_of', E1, common_noun_name)],
             "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
         },
 
