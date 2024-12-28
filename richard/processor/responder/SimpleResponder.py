@@ -127,6 +127,26 @@ class SimpleResponder(SomeProcessor):
             if canned != None:
                 response = canned['Template'].replace('{}', str(response))
 
+        elif type == "switch":
+
+            switch_format = solver.solve1([('format_switch', Variable('Variable'), Variable('Default'))])
+            if switch_format == None:
+                raise Exception("The sentence doesn't have a 'format_switch' inference")
+
+            if len(bindings) > 1:
+                raise Exception("A switch must return just a single result")
+
+            variable = switch_format["Variable"]
+            response = switch_format["Default"]
+
+            if len(bindings) > 0:
+                value = bindings[0][variable]
+                switch_format_values = solver.solve([('format_switch_value', Variable('Value'), Variable('Template'))])
+                for switch_format_value in switch_format_values:
+                    if switch_format_value['Value'] == value:
+                        response = switch_format_value['Template']
+                        break
+
         elif type == "canned":
 
             canned_format = solver.solve1([('format_canned', Variable('Response'))])

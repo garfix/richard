@@ -16,6 +16,8 @@ class BasicSentenceContext(SimpleMemoryModule):
         self.add_relation(Relation("format_canned", arguments=["response"]))
         self.add_relation(Relation("format_no", arguments=["response"]))
         self.add_relation(Relation("format_yes", arguments=["response"]))
+        self.add_relation(Relation("format_switch", arguments=["variable", "default_template"]))
+        self.add_relation(Relation("format_switch_value", arguments=["value", "template"]))
 
 
     def clear(self):
@@ -30,3 +32,5 @@ class BasicSentenceContext(SimpleMemoryModule):
         cursor.execute("CREATE TABLE format_canned (response TEXT)")
         cursor.execute("CREATE TABLE format_no (response TEXT)")
         cursor.execute("CREATE TABLE format_yes (response TEXT)")
+        cursor.execute("CREATE TABLE format_switch (variable TEXT, default_template TEXT)")
+        cursor.execute("CREATE TABLE format_switch_value (value TEXT, template TEXT)")

@@ -66,8 +66,11 @@ def get_grammar():
         # Is a X a Y?
         {
             "syn": "s() -> 'is' a() common_noun_name(E1) a() common_noun_name(E2)~'?'",
-            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('instance_of', common_noun_name1, common_noun_name2)],
-            "inf": [("format", "y/n"), ("format_no", "Insufficient information")],
+            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('two_way_instance_of', common_noun_name1, common_noun_name2, E3)],
+            "inf": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
+                    ("format_switch_value", 'sometimes', 'Sometimes'),
+                    ("format_switch_value", 'yes', 'Yes')
+                ],
         },
 
         # number

@@ -106,10 +106,10 @@ class TestSIR(unittest.TestCase):
             # set-inclusion
             ['Every keypunch-operator is a girl', 'I understand'],
             ['Any girl is an example of a person', 'I understand'],
-            ['Is a keypunch-operator a person?', 'yes'],
-            ['Is a person a person?', 'yes'],
-            # ['Is a person a girl?', 'Sometimes'],
-            # ['Is a monkey a keypunch-operator?', 'Insufficient information'],
+            ['Is a keypunch-operator a person?', 'Yes'],
+            ['Is a person a person?', 'Yes'],
+            ['Is a person a girl?', 'Sometimes'],
+            ['Is a monkey a keypunch-operator?', 'Insufficient information'],
         ]
 
         logger = Logger()
