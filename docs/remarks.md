@@ -1,3 +1,21 @@
+## 2024-12-29
+
+About synonymy: SIR talks about John and Jack. At some point it says: John is Jack", so John and Jack are synonyms.
+
+Synonymy is a recurring problem. Lately I solved it by making the two entities share the same id. But this doesn't always work. If John is Jack, then John get's Jack's id. But what if John had been introduced before? Then it would already have an id. This is what I encountered.
+
+    John is a boy.
+    Jack is a dope.
+    John is Jack.
+
+The problem with the single id is also that the person could already have two id's in an existing database.
+
+In the night the idea occurred to me that I could use the `isa` relationship even for these kinds of problems: John isa Jack. John and Jack could keep there individual id's and John would inherit all of Jack's `isa` properties.
+
+Problem: as the relationship is bidirectional, I could also add: Jack isa John. This would create infinite recursion, and that would need to be solved.
+
+For now, I added the relation `equals` and let the inference rules take care of the logic.
+
 ## 2024-12-21
 
 H: How many fingers does John have?

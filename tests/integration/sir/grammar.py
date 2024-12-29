@@ -49,6 +49,7 @@ def get_grammar():
         },
         # John is a boy
         # Max is an IBM-7094
+        # Jack is a dope
         {
             "syn": "statement() -> proper_noun(E1) 'is' a() common_noun_name(E2)",
             "sem": lambda proper_noun, a2, common_noun_name: proper_noun + [('store', [('isa', E1, common_noun_name)])],
@@ -58,6 +59,12 @@ def get_grammar():
             "syn": "statement() -> 'every' common_noun_name(E2) 'has' number(E1) common_noun_name(E3)",
             "sem": lambda common_noun_name1, number, common_noun_name2: [('store', [('part_of', common_noun_name2, common_noun_name1), ('part_of_n', common_noun_name2, common_noun_name1, number)])],
         },
+        # John is Jack
+        {
+            "syn": "statement() -> proper_noun(E1) 'is' proper_noun(E2)",
+            # "sem": lambda proper_noun1, proper_noun2: proper_noun2 + proper_noun1,
+            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2 + [('store', [('equals', E1, E2)])],
+        },
 
         # questions
 
@@ -66,7 +73,7 @@ def get_grammar():
         # determine 'how many' not by counting but by calculating
         {
             "syn": "s(E3) -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have'+'?'",
-            "sem": lambda common_noun1, common_noun2: common_noun1 + common_noun2 + [('count', E3, [('have', E2, E1)])],
+            "sem": lambda common_noun1, proper_noun: common_noun1 + proper_noun + [('count', E3, [('have', E2, E1)])],
             "dialog": [("format", "number"), ("format_number", e3, ''), ('format_canned', 'The answer is {}')],
         },
         # Is a X a Y?
@@ -79,6 +86,7 @@ def get_grammar():
                 ],
         },
         # Is Max a computer?
+        # Is John a dope?
         {
             "syn": "s() -> 'is' proper_noun(E1) a() common_noun_name(E2)~'?'",
             "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('instance_of', E1, common_noun_name)],

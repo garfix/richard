@@ -53,6 +53,7 @@ class TestSIR(unittest.TestCase):
         cursor = connection.cursor()
 
         cursor.execute("CREATE TABLE isa (entity TEXT, type TEXT)")
+        cursor.execute("CREATE TABLE equals (entity1 TEXT, entity2 TEXT)")
         cursor.execute("CREATE TABLE part_of (part TEXT, whole TEXT)")
         cursor.execute("CREATE TABLE part_of_n (part TEXT, whole TEXT, number INTEGER)")
 
@@ -115,12 +116,30 @@ class TestSIR(unittest.TestCase):
             ['Max is an IBM-7094', 'I understand'],
             ['An IBM-7094 is a computer', 'I understand'],
             ['Is Max a computer?', 'Yes'],
+            # the rest of the section is semantically questionable (missing referent)
+            # ['The boy is an MIT-student', 'I understand'], # G02840 is a boy
+            # ['Every MIT-student is a bright-person', 'I understand'],
+            # ['Is the boy a bright-person', 'Yes'],
+            # ['John is a boy', 'I understand'],
+            # ['Is the boy a bright-person', 'Which boy?'], # G02840 John
+
+            # equivalence
+            # commented out sentences are semantically questionable (missing referent)
+            # ['The man is a jerk', 'I understand'], # G02840 is the man
+            ['Jack is a dope', 'I understand'],
+            ['John is Jack', 'I understand'],
+            ['Is John a dope?', 'Yes'],
+            # ['Is the man a dope?', 'Insufficient information'],
+            # ['John is the man', 'I understand'],
+            # ['Is the man a dope?', 'Yes'],
+            # ['Jim is a man', 'I understand'],
+            # ['Is the man a dope?', 'Which man?'], # G02840 Jim
         ]
 
         logger = Logger()
         logger.log_no_tests()
         logger.log_only_last_test()
-        logger.log_all_tests()
+        # logger.log_all_tests()
         logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)
