@@ -27,41 +27,41 @@ def get_grammar():
         # every X is a Y, where X and Y not part of the grammar
         # this is uncommon, is defines a new concept in terms of an another unknown concept
         {
-            "syn": "statement() -> 'every' common_noun_name(E1) 'is' a() common_noun_name(E1)",
+            "syn": "statement() -> 'every' common_noun_name() 'is' a() common_noun_name()",
             "sem": lambda common_noun_name1, a, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
         },
         # any X is an example of a Y
         {
-            "syn": "statement() -> 'any' common_noun_name(E1) 'is' 'an' 'example' 'of' a() common_noun_name(E1)",
+            "syn": "statement() -> 'any' common_noun_name() 'is' 'an' 'example' 'of' a() common_noun_name()",
             "sem": lambda common_noun_name1, a, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
         },
         # An IBM-7094 is a computer
         {
-            "syn": "statement() -> a() common_noun_name(E1) 'is' a() common_noun_name(E1)",
+            "syn": "statement() -> a() common_noun_name() 'is' a() common_noun_name()",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('isa', common_noun_name1, common_noun_name2)])],
         },
         # A finger is a part of a hand
         # a statement about classes as entities
         {
-            "syn": "statement() -> a() common_noun_name(E1) 'is' 'a' 'part' 'of' a() common_noun_name(E1)",
+            "syn": "statement() -> a() common_noun_name() 'is' 'a' 'part' 'of' a() common_noun_name()",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2)])],
         },
         # There are two hands on each person
         # a statement about classes as quantified entities
         {
-            "syn": "statement() -> 'there' 'are' number(E1) common_noun_name(E2) 'on' 'each' common_noun_name(E3)",
+            "syn": "statement() -> 'there' 'are' number(E1) common_noun_name() 'on' 'each' common_noun_name()",
             "sem": lambda number, common_noun_name1, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2), ('part_of_n', common_noun_name1, common_noun_name2, number)])],
         },
         # John is a boy
         # Max is an IBM-7094
         # Jack is a dope
         {
-            "syn": "statement() -> proper_noun(E1) 'is' a() common_noun_name(E2)",
+            "syn": "statement() -> proper_noun(E1) 'is' a() common_noun_name()",
             "sem": lambda proper_noun, a2, common_noun_name: proper_noun + [('store', [('isa', E1, common_noun_name)])],
         },
         # Every hand has 5 fingers
         {
-            "syn": "statement() -> 'every' common_noun_name(E2) 'has' number(E1) common_noun_name(E3)",
+            "syn": "statement() -> 'every' common_noun_name() 'has' number(E1) common_noun_name()",
             "sem": lambda common_noun_name1, number, common_noun_name2: [('store', [('part_of', common_noun_name2, common_noun_name1), ('part_of_n', common_noun_name2, common_noun_name1, number)])],
         },
         # John is Jack
@@ -71,7 +71,7 @@ def get_grammar():
         },
         # Every fireman owns a pair-of-red-suspenders
         {
-            "syn": "statement() -> 'every' common_noun_name(E1) own() a() common_noun_name(E2)",
+            "syn": "statement() -> 'every' common_noun_name() own() a() common_noun_name()",
             "sem": lambda common_noun_name1, own, a, common_noun_name2: [('store', [('own', common_noun_name1, common_noun_name2)])],
         },
 
@@ -88,7 +88,7 @@ def get_grammar():
         },
         # Is a X a Y?
         {
-            "syn": "s() -> 'is' a() common_noun_name(E1) a() common_noun_name(E2)~'?'",
+            "syn": "s() -> 'is' a() common_noun_name() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('two_way_instance_of', common_noun_name1, common_noun_name2, E3)],
             "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
                     ("format_switch_value", 'sometimes', 'Sometimes'),
@@ -98,12 +98,12 @@ def get_grammar():
         # Is Max a computer?
         # Is John a dope?
         {
-            "syn": "yes_no() -> 'is' proper_noun(E1) a() common_noun_name(E2)~'?'",
+            "syn": "yes_no() -> 'is' proper_noun(E1) a() common_noun_name()~'?'",
             "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('instance_of', E1, common_noun_name)],
         },
         # Does a doctor own a pair-of-red-suspenders?
         {
-            "syn": "yes_no() -> 'does' a() common_noun_name(E1) own() a() common_noun_name(E2)~'?'",
+            "syn": "yes_no() -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('own', common_noun_name1, common_noun_name2)],
         },
 
@@ -121,7 +121,7 @@ def get_grammar():
 
         # common noun
         {
-            "syn": "common_noun(E1) -> common_noun_name(E1)",
+            "syn": "common_noun(E1) -> common_noun_name()",
             "sem": lambda common_noun_name: [(common_noun_name, E1)], "dialog": lambda common_noun_name: [('isa', e1, common_noun_name)]
         },
 
@@ -129,6 +129,6 @@ def get_grammar():
         { "syn": "proper_noun(E1) -> /[\w\d]+(-[\w\d]+)*/", "sem": lambda token: [('resolve_name', token, E1)] },
 
         # introduction of a new common noun
-        { "syn": "common_noun_name(E1) -> /[\w\d]+(-[\w\d]+)*/", "sem": lambda token: token },
-        { "syn": "common_noun_name(E1) -> common_noun_name(E1)+'s'", "sem": lambda common_noun_name: common_noun_name, 'boost': 1 },
+        { "syn": "common_noun_name() -> /[\w\d]+(-[\w\d]+)*/", "sem": lambda token: token },
+        { "syn": "common_noun_name() -> common_noun_name()+'s'", "sem": lambda common_noun_name: common_noun_name, 'boost': 1 },
     ]
