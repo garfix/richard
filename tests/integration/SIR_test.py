@@ -56,6 +56,7 @@ class TestSIR(unittest.TestCase):
         cursor.execute("CREATE TABLE equals (entity1 TEXT, entity2 TEXT)")
         cursor.execute("CREATE TABLE part_of (part TEXT, whole TEXT)")
         cursor.execute("CREATE TABLE part_of_n (part TEXT, whole TEXT, number INTEGER)")
+        cursor.execute("CREATE TABLE own (person TEXT, thing TEXT)")
 
         data_source = Sqlite3DataSource(connection)
         facts = SIRModule(data_source)
@@ -134,6 +135,14 @@ class TestSIR(unittest.TestCase):
             # ['Is the man a dope?', 'Yes'],
             # ['Jim is a man', 'I understand'],
             # ['Is the man a dope?', 'Which man?'], # G02840 Jim
+
+            # ownership, general
+            ['Every fireman owns a pair-of-red-suspenders', 'I understand'],
+            # the following sentence is unrealistic
+            # ['Does a pair-of-red-suspenders own a pair-of-red-suspenders?', 'No, they are the same'],
+            ['Does a doctor own a pair-of-red-suspenders?', 'Insufficient information'],
+            ['A firechief is a fireman', 'I understand'],
+            ['Does a firechief own a pair-of-red-suspenders?', 'Yes'],
         ]
 
         logger = Logger()

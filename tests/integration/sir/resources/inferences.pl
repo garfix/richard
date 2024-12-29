@@ -22,3 +22,6 @@ instance_of_proper(A, B) :- isa(A, C), instance_of_proper(C, B).
 two_way_instance_of(A, B, 'yes') :- instance_of(A, B).
 # is a person a girl?
 two_way_instance_of(A, B, 'sometimes') :- instance_of_proper(B, A).
+
+# A firechief is a fireman. Does a firechief own a pair-of-red-suspenders?
+own(A, B) :- instance_of_proper(A, AA), own(AA, B).

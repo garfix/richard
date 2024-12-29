@@ -16,6 +16,11 @@ def get_grammar():
             "sem": lambda statement: statement,
             "dialog": [("format", "canned"), ("format_canned", "I understand")],
         },
+        {
+            "syn": "s() -> yes_no()",
+            "sem": lambda yes_no: yes_no,
+            "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "Insufficient information")],
+        },
 
         # statements
 
@@ -62,9 +67,14 @@ def get_grammar():
         # John is Jack
         {
             "syn": "statement() -> proper_noun(E1) 'is' proper_noun(E2)",
-            # "sem": lambda proper_noun1, proper_noun2: proper_noun2 + proper_noun1,
             "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2 + [('store', [('equals', E1, E2)])],
         },
+        # Every fireman owns a pair-of-red-suspenders
+        {
+            "syn": "statement() -> 'every' common_noun_name(E1) own() a() common_noun_name(E2)",
+            "sem": lambda common_noun_name1, own, a, common_noun_name2: [('store', [('own', common_noun_name1, common_noun_name2)])],
+        },
+
 
         # questions
 
@@ -88,9 +98,13 @@ def get_grammar():
         # Is Max a computer?
         # Is John a dope?
         {
-            "syn": "s() -> 'is' proper_noun(E1) a() common_noun_name(E2)~'?'",
+            "syn": "yes_no() -> 'is' proper_noun(E1) a() common_noun_name(E2)~'?'",
             "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('instance_of', E1, common_noun_name)],
-            "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
+        },
+        # Does a doctor own a pair-of-red-suspenders?
+        {
+            "syn": "yes_no() -> 'does' a() common_noun_name(E1) own() a() common_noun_name(E2)~'?'",
+            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('own', common_noun_name1, common_noun_name2)],
         },
 
         # number
@@ -100,6 +114,10 @@ def get_grammar():
         # article
         { "syn": "a() -> 'a'", "sem": lambda: [] },
         { "syn": "a() -> 'an'", "sem": lambda: [] },
+
+        # verb
+        { "syn": "own() -> 'own'", "sem": lambda: [] },
+        { "syn": "own() -> 'owns'", "sem": lambda: [] },
 
         # common noun
         {
