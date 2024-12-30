@@ -1,3 +1,10 @@
+# part-of
+part_of_x(A, B) :- instance_of_proper(A, AA), part_of_x(AA, B).
+part_of_x(A, B) :- instance_of_proper(B, BB), part_of_x(A, BB).
+
+part_of_x(A, B) :- part_of(A, B).
+part_of_x(A, B) :- part_of(A, C), part_of_x(C, B).
+
 # number objects involved in a part-of relationship
 part_of_number(A, B, N) :- part_of(A, B), part_of_n(A, B, N).
 part_of_number(A, B, N) :- part_of(C, B), part_of_n(C, B, N1), part_of_number(A, C, N2), multiply(N1, N2, N).

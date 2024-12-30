@@ -120,6 +120,11 @@ def get_grammar():
             "syn": "yes_no() -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('two_way_own', common_noun_name1, common_noun_name2)],
         },
+        # Is a nostril part of a professor?
+        {
+            "syn": "yes_no() -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
+            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('part_of_x', common_noun_name1, common_noun_name2)],
+        },
 
         # number
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
