@@ -162,10 +162,9 @@ class TestSIR(unittest.TestCase):
             ['A professor is a teacher', 'I understand'],
             ['A teacher is a person', 'I understand'],
             ['Is a nostril part of a professor?', 'Yes'],
-            # the following sentence is unrealistic
-            # ['Is a nose part of a nose?', 'No, part means proper subpart'],
+            ['Is a nose part of a nose?', 'No, part means proper subpart'],
             ['A person is a living-creature', 'I understand'],
-            # ['Is a nostril part of a living-creature?', 'Sometimes'],
+            ['Is a nostril part of a living-creature?', 'Sometimes'],
             # ['Is a living-creature part of a nose?', 'No, nose is sometimes part of living-creature'],
         ]
 

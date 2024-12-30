@@ -94,9 +94,20 @@ def get_grammar():
         # Is a X a Y?
         {
             "syn": "s(E3) -> 'is' a() common_noun_name() a() common_noun_name()~'?'",
-            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('two_way_instance_of', common_noun_name1, common_noun_name2, E3)],
+            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('sentence_isa', common_noun_name1, common_noun_name2, E3)],
             "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
                     ("format_switch_value", 'sometimes', 'Sometimes'),
+                    ("format_switch_value", 'yes', 'Yes')
+                ],
+        },
+        # Is a nostril part of a professor?
+        # Is a nostril part of a living-creature?
+        {
+            "syn": "s() -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
+            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('sentence_part_of', common_noun_name1, common_noun_name2, E1)],
+            "dialog": [("format", "switch"), ("format_switch", e1, 'Insufficient information'),
+                    ("format_switch_value", 'sometimes', 'Sometimes'),
+                    ("format_switch_value", 'improper', 'No, part means proper subpart'),
                     ("format_switch_value", 'yes', 'Yes')
                 ],
         },
@@ -112,18 +123,13 @@ def get_grammar():
         # Does Alfred own a slide-rule?
         {
             "syn": "yes_no() -> 'does' proper_noun(E1) own() a() common_noun_name()~'?'",
-            "sem": lambda proper_noun, own, a, common_noun_name: proper_noun + [('one_way_own', E1, common_noun_name)],
+            "sem": lambda proper_noun, own, a, common_noun_name: proper_noun + [('sentence_own', E1, common_noun_name)],
         },
         # Does a doctor own a pair-of-red-suspenders?
         # Does an engineering-student own a log-log-decitrig?
         {
             "syn": "yes_no() -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
-            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('two_way_own', common_noun_name1, common_noun_name2)],
-        },
-        # Is a nostril part of a professor?
-        {
-            "syn": "yes_no() -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
-            "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('part_of_x', common_noun_name1, common_noun_name2)],
+            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('sentence_own', common_noun_name1, common_noun_name2)],
         },
 
         # number
