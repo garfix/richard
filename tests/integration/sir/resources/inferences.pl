@@ -11,6 +11,9 @@ sentence_part_of(A, A, "improper").
 # is a
 # is a girl a person?
 sentence_isa(A, B, 'yes') :- proper_isa(A, B).
+# equality: John is Jack
+sentence_isa(A, B, "yes") :- equals(A, C), proper_isa(C, B).
+sentence_isa(A, B, "yes") :- equals(C, A), proper_isa(C, B).
 # is a person a girl?
 sentence_isa(A, B, 'sometimes') :- proper_isa(B, A).
 # is a person a person?
@@ -22,8 +25,8 @@ sentence_own(A, B) :- proper_own(A, B).
 # A tech-man is an engineering-student
 # Alfred owns a log-log-decitrig
 # Does an engineering-student own a log-log-decitrig?
-sentence_own(A, B) :- proper_isa(AA, A),  own(AA, B).
-sentence_own(A, B) :- proper_isa(BB, B),  own(A, BB).
+sentence_own(A, B) :- proper_isa(AA, A), own(AA, B).
+sentence_own(A, B) :- proper_isa(BB, B), own(A, BB).
 
 
 
@@ -42,15 +45,8 @@ part_of_number(A, B, N) :- part_of(C, B), part_of_n(C, B, N1), part_of_number(A,
 part_of_number(A, B, N) :- proper_isa(A, AA), part_of_number(AA, B, N).
 part_of_number(A, B, N) :- proper_isa(B, BB), part_of_number(A, BB, N).
 
-# set-membership and set-inclusion
-instance_of(A, B) :- proper_isa(A, B).
-# equality: John is Jack
-instance_of(A, B) :- equals(A, C), proper_isa(C, B).
-instance_of(A, B) :- equals(C, A), proper_isa(C, B).
-
-# direct isa
+# isa
 proper_isa(A, B) :- isa(A, B).
-# indirect isa
 proper_isa(A, B) :- isa(A, C), proper_isa(C, B).
 
 # Every fireman owns a pair-of-red-suspenders. A firechief is a fireman. Does a firechief own a pair-of-red-suspenders?

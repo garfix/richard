@@ -117,8 +117,13 @@ def get_grammar():
         # Is Max a computer?
         # Is John a dope?
         {
-            "syn": "yes_no() -> 'is' proper_noun(E1) a() common_noun_name()~'?'",
-            "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('instance_of', E1, common_noun_name)],
+            "syn": "s(E3) -> 'is' proper_noun(E1) a() common_noun_name()~'?'",
+            "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('sentence_isa', E1, common_noun_name, E3)],
+            "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
+                    ("format_switch_value", 'sometimes', 'Sometimes'),
+                    ("format_switch_value", 'improper', 'No, part means proper subpart'),
+                    ("format_switch_value", 'yes', 'Yes')
+                ],
         },
         # Does Alfred own a slide-rule?
         {
