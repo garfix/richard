@@ -23,5 +23,15 @@ two_way_instance_of(A, B, 'yes') :- instance_of(A, B).
 # is a person a girl?
 two_way_instance_of(A, B, 'sometimes') :- instance_of_proper(B, A).
 
-# A firechief is a fireman. Does a firechief own a pair-of-red-suspenders?
-own(A, B) :- instance_of_proper(A, AA), own(AA, B).
+# Every fireman owns a pair-of-red-suspenders. A firechief is a fireman. Does a firechief own a pair-of-red-suspenders?
+one_way_own(A, B) :- instance_of_proper(A, AA), own(AA, B).
+# Alfred owns a log-log-decitrig. A log-log-decitrig is a slide-rule. Does Alfred own a slide-rule?
+one_way_own(A, B) :- instance_of_proper(BB, B), own(A, BB).
+# Alfred is a tech-man
+# A tech-man is an engineering-student
+# Alfred owns a log-log-decitrig
+# Does an engineering-student own a log-log-decitrig?
+
+two_way_own(A, B) :- one_way_own(A, B).
+two_way_own(A, B) :- instance_of_proper(AA, A),  own(AA, B).
+two_way_own(A, B) :- instance_of_proper(BB, B),  own(A, BB).

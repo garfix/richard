@@ -143,6 +143,18 @@ class TestSIR(unittest.TestCase):
             ['Does a doctor own a pair-of-red-suspenders?', 'Insufficient information'],
             ['A firechief is a fireman', 'I understand'],
             ['Does a firechief own a pair-of-red-suspenders?', 'Yes'],
+
+            # ownership, specific
+            ['Alfred owns a log-log-decitrig', 'I understand'],
+            ['A log-log-decitrig is a slide-rule', 'I understand'],
+            ['Does Alfred own a slide-rule?', 'Yes'],
+            ['Every engineering-student owns a slide-rule', 'I understand'],
+            ['Vernon is a tech-man', 'I understand'],
+            ['A tech-man is an engineering-student', 'I understand'],
+            ['Does Vernon own a slide-rule?', 'Yes'],
+            ['Does an engineering-student own a log-log-decitrig?', 'Insufficient information'],
+            ['Alfred is a tech-man', 'I understand'],
+            ['Does an engineering-student own a log-log-decitrig?', 'Yes'],
         ]
 
         logger = Logger()

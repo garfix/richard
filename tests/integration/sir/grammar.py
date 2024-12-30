@@ -74,6 +74,11 @@ def get_grammar():
             "syn": "statement() -> 'every' common_noun_name() own() a() common_noun_name()",
             "sem": lambda common_noun_name1, own, a, common_noun_name2: [('store', [('own', common_noun_name1, common_noun_name2)])],
         },
+        # Alfred owns a log-log-decitrig
+        {
+            "syn": "statement() -> proper_noun(E1) own() a() common_noun_name()",
+            "sem": lambda proper_noun, own, a, common_noun_name: proper_noun + [('store', [('own', E1, common_noun_name)])],
+        },
 
 
         # questions
@@ -101,10 +106,16 @@ def get_grammar():
             "syn": "yes_no() -> 'is' proper_noun(E1) a() common_noun_name()~'?'",
             "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('instance_of', E1, common_noun_name)],
         },
+        # Does Alfred own a slide-rule?
+        {
+            "syn": "yes_no() -> 'does' proper_noun(E1) own() a() common_noun_name()~'?'",
+            "sem": lambda proper_noun, own, a, common_noun_name: proper_noun + [('one_way_own', E1, common_noun_name)],
+        },
         # Does a doctor own a pair-of-red-suspenders?
+        # Does an engineering-student own a log-log-decitrig?
         {
             "syn": "yes_no() -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
-            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('own', common_noun_name1, common_noun_name2)],
+            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('two_way_own', common_noun_name1, common_noun_name2)],
         },
 
         # number
@@ -126,9 +137,11 @@ def get_grammar():
         },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> /[\w\d]+(-[\w\d]+)*/", "sem": lambda token: [('resolve_name', token, E1)] },
+        { "syn": "proper_noun(E1) -> name()", "sem": lambda name: [('resolve_name', name, E1)] },
 
         # introduction of a new common noun
-        { "syn": "common_noun_name() -> /[\w\d]+(-[\w\d]+)*/", "sem": lambda token: token },
+        { "syn": "common_noun_name() -> name()", "sem": lambda name: name },
         { "syn": "common_noun_name() -> common_noun_name()+'s'", "sem": lambda common_noun_name: common_noun_name, 'boost': 1 },
+
+        { "syn": "name() -> /\w[\w\d]+(-[\w\d]+)*/", "sem": lambda token: token },
     ]
