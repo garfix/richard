@@ -8,6 +8,69 @@ from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGramm
 
 class TestParser(unittest.TestCase):
 
+    def test_rules_parser(self):
+
+        tests = [
+            {
+                'rule': {"syn": "s(V) -> np(E1) vp(V, E1)"},
+                'variants': [
+                    "s(V) -> np(E1) ' ' vp(V, E1)",
+                ]
+            },
+            {
+                'rule': {"syn": "s(V) -> np(E1) + vp(V, E1)"},
+                'variants': [
+                    "s(V) -> np(E1) vp(V, E1)",
+                ]
+            },
+            {
+                'rule': {"syn": "s(V) -> np(E1) ~ vp(V, E1)"},
+                'variants': [
+                    "s(V) -> np(E1) ' ' vp(V, E1)",
+                    "s(V) -> np(E1) vp(V, E1)",
+                ]
+            },
+            {
+                'rule': {"syn": "s(V) -> np(E1) 'too'? vp(V, E1)"},
+                'variants': [
+                    "s(V) -> np(E1) ' ' 'too' ' ' vp(V, E1)",
+                    "s(V) -> np(E1) ' ' vp(V, E1)",
+                ]
+            },
+            {
+                'rule': {"syn": "s(V) -> np(E1)+'too'? vp(V, E1)"},
+                'variants': [
+                    "s(V) -> np(E1) 'too' ' ' vp(V, E1)",
+                    "s(V) -> np(E1) ' ' vp(V, E1)",
+                ]
+            },
+            {
+                'rule': {"syn": "s(V) -> 'too'? np(E1) vp(V, E1)"},
+                'variants': [
+                    "s(V) -> 'too' ' ' np(E1) ' ' vp(V, E1)",
+                    "s(V) -> np(E1) ' ' vp(V, E1)",
+                ]
+            },
+        ]
+
+
+        for test in tests:
+            grammar = SimpleGrammarRulesParser().parse([test['rule']])
+            rules = [str(rule) for rule in grammar.index['s'][1]]
+            self.assertEqual(rules, test['variants'])
+
+        # rule = { "syn": "s(V) -> np(E1) 'so'? vp(V, E1)" }
+        # grammar = SimpleGrammarRulesParser().parse([rule])
+        # rules = [str(rule) for rule in grammar.index['s'][1]]
+        # self.assertEqual(rules, ["s(V) -> np(E1) ' ' 'so' ' ' vp(V, E1)", "s(V) -> np(E1) ' ' vp(V, E1)"])
+
+
+        # rule = { "syn": "s(V) -> np(E1)+'so'?~vp(V, E1)" }
+        # grammar = SimpleGrammarRulesParser().parse([rule])
+        # rules = [str(rule) for rule in grammar.index['s'][1]]
+        # self.assertEqual(rules, ["s(V) -> np(E1) 'so' ' ' vp(V, E1)", "s(V) -> np(E1) ' ' vp(V, E1)"])
+
+
     def test_parser_process(self):
 
         simple_grammar = [

@@ -10,7 +10,7 @@ T3 = Variable('T3')
 
 def get_grammar():
     return [
-        # sentence
+        # sentences
         {
             "syn": "s() -> statement()",
             "sem": lambda statement: statement,
@@ -43,7 +43,7 @@ def get_grammar():
         # A finger is a part of a hand
         # a statement about classes as entities
         {
-            "syn": "statement() -> a() common_noun_name() 'is' 'a' 'part' 'of' a() common_noun_name()",
+            "syn": "statement() -> a() common_noun_name() 'is' 'a'? 'part' 'of' a() common_noun_name()",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2)])],
         },
         # There are two hands on each person
@@ -93,13 +93,16 @@ def get_grammar():
         },
         # Is a X a Y?
         {
-            "syn": "s() -> 'is' a() common_noun_name() a() common_noun_name()~'?'",
+            "syn": "s(E3) -> 'is' a() common_noun_name() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('two_way_instance_of', common_noun_name1, common_noun_name2, E3)],
             "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
                     ("format_switch_value", 'sometimes', 'Sometimes'),
                     ("format_switch_value", 'yes', 'Yes')
                 ],
         },
+
+        # Yes/no questions
+
         # Is Max a computer?
         # Is John a dope?
         {

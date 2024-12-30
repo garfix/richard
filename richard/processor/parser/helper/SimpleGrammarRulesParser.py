@@ -5,7 +5,6 @@ from richard.core.constants import POS_TYPE_REG_EXP, POS_TYPE_RELATION, POS_TYPE
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.RuleConstituent import RuleConstituent
-from richard.entity.Variable import Variable
 from richard.type.SimpleGrammar import SimpleGrammar
 
 
@@ -17,6 +16,7 @@ class SimpleGrammarRulesParser:
 
     def __init__(self) -> None:
         self.re_tokens = re.compile("(" + "|".join([
+            '\\?',
             ',',
             '->',
             '\(',
@@ -88,11 +88,13 @@ class SimpleGrammarRulesParser:
 
             atom, new_pos = self.parse_atom(tokens, pos)
             if atom:
+                pos = new_pos
                 consequents.append(atom)
             else:
 
                 regexp, new_pos = self.parse_regexp(tokens, pos)
                 if regexp:
+                    pos = new_pos
                     atom = RuleConstituent(regexp, [], POS_TYPE_REG_EXP)
                     consequents.append(atom)
                 else:
@@ -101,21 +103,26 @@ class SimpleGrammarRulesParser:
                     if not string:
                         break
 
-                    atom = RuleConstituent(string, [], POS_TYPE_WORD_FORM)
-                    consequents.append(atom)
+                    pos = new_pos
+                    optional = False
+                    found, new_pos = self.parse_optional_marker(tokens, pos)
+                    if found:
+                        pos = new_pos
+                        optional = True
 
-            pos = new_pos
+                    atom = RuleConstituent(string, [], POS_TYPE_WORD_FORM, optional=optional)
+                    consequents.append(atom)
 
             token, new_pos = self.parse_token(tokens, pos)
             if token == '+':
                 pos = new_pos
             elif token == '~':
-                atom = RuleConstituent(' ', [], POS_TYPE_WORD_FORM, optional=True)
+                atom = RuleConstituent(' ', [], POS_TYPE_WORD_FORM, optional=True, separator=True)
                 consequents.append(atom)
                 pos = new_pos
             else:
                 if pos < len(tokens):
-                    atom = RuleConstituent(' ', [], POS_TYPE_WORD_FORM)
+                    atom = RuleConstituent(' ', [], POS_TYPE_WORD_FORM, separator=True)
                     consequents.append(atom)
 
         if pos != len(tokens):
@@ -207,6 +214,18 @@ class SimpleGrammarRulesParser:
             return token, pos
 
         return None, 0
+
+
+    def parse_optional_marker(self, tokens: list[str], pos: int):
+        token, new_pos = self.parse_token(tokens, pos)
+        if not token:
+            return False, 0
+
+        if token == '?':
+            pos = new_pos
+            return True, pos
+
+        return False, 0
 
 
     def parse_token(self, tokens: list[str], pos: int):

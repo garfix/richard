@@ -155,6 +155,17 @@ class TestSIR(unittest.TestCase):
             ['Does an engineering-student own a log-log-decitrig?', 'Insufficient information'],
             ['Alfred is a tech-man', 'I understand'],
             ['Does an engineering-student own a log-log-decitrig?', 'Yes'],
+
+            # part-whole, general
+            ['A nose is part of a person', 'I understand'],
+            # ['A nostril is part of a nose', 'I understand'],
+            # ['A professor is a teacher', 'I understand'],
+            # ['A teacher is a person', 'I understand'],
+            # ['Is a nostril part of a professor?', 'Yes'],
+            # ['Is a nose part of a nose?', 'No, part means proper subpart'],
+            # ['A person is a living-creature', 'I understand'],
+            # ['Is a nostril part of a living-creature?', 'Sometimes'],
+            # ['Is a living-creature part of a nose?', 'No, nose is sometimes part of living-creature'],
         ]
 
         logger = Logger()

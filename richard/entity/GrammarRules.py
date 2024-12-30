@@ -1,5 +1,4 @@
 import copy
-from richard.core.constants import POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 
 
@@ -15,7 +14,6 @@ class GrammarRules:
 
 
     def add_rule(self, rule: GrammarRule):
-
         antecedent = rule.antecedent.predicate
         argument_count = len(rule.antecedent.arguments)
 
@@ -59,10 +57,25 @@ class GrammarRules:
             return variants
 
         consequent = rule.consequents[index]
+        look_ahead_consequent = rule.consequents[index+1] if index+1 < len(rule.consequents) else None
 
-        new_variants = [v + [consequent] for v in variants]
+        skip = 1
 
-        if consequent.optional:
+        # 'the'?_...
+        if index == 0 and consequent.optional and not consequent.separator and look_ahead_consequent and look_ahead_consequent.separator:
+            new_variants = [v + [consequent, look_ahead_consequent] for v in variants]
             new_variants.extend(variants)
+            skip = 2
+        # ... _'the'? ...
+        elif consequent.separator and look_ahead_consequent and look_ahead_consequent.optional and not look_ahead_consequent.separator:
+            new_variants = [v + [consequent, look_ahead_consequent] for v in variants]
+            new_variants.extend(variants)
+            skip = 2
+        # ... ~ ...
+        elif consequent.optional:
+            new_variants = [v + [consequent] for v in variants]
+            new_variants.extend(variants)
+        else:
+            new_variants = [v + [consequent] for v in variants]
 
-        return self.create_rule_variants_rest(rule, index+1, new_variants)
+        return self.create_rule_variants_rest(rule, index+skip, new_variants)

@@ -8,14 +8,16 @@ class RuleConstituent:
     arguments: list[str]
     position_type: PositionType
     optional: bool
+    separator: bool
     hash: int
 
 
-    def __init__(self, predicate: str, arguments: list[str], position_type: PositionType, optional: bool = False):
+    def __init__(self, predicate: str, arguments: list[str], position_type: PositionType, optional: bool = False, separator: bool = False):
         self.predicate = predicate
         self.arguments = arguments
         self.position_type = position_type
         self.optional = optional
+        self.separator = separator
 
         h = [c for c in arguments] + [self.predicate, self.position_type]
         self.hash = hash(tuple(h))
