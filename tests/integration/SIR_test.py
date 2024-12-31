@@ -164,7 +164,7 @@ class TestSIR(unittest.TestCase):
             ['Is a nose part of a nose?', 'No, part means proper subpart'],
             ['A person is a living-creature', 'I understand'],
             ['Is a nostril part of a living-creature?', 'Sometimes'],
-            # ['Is a living-creature part of a nose?', 'No, nose is sometimes part of living-creature'],
+            ['Is a living-creature part of a nose?', 'No, but the reverse is sometimes true'], # No, nose is sometimes part of living-creature
         ]
 
         logger = Logger()

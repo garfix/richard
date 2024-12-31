@@ -7,6 +7,8 @@ sentence_part_of(A, B, "yes") :- proper_part_of(A, B).
 sentence_part_of(A, B, "sometimes") :- proper_isa(BB, B), proper_part_of(A, BB).
 # Is a nose part of a nose?
 sentence_part_of(A, A, "improper").
+# Is a living-creature part of a nose?
+sentence_part_of(A, B, "reverse_sometimes") :- proper_isa(AA, A), proper_part_of(B, AA).
 
 # is a
 # is a girl a person?
