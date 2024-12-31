@@ -22,12 +22,14 @@ sentence_isa(A, A, 'yes').
 # own
 sentence_own(A, B) :- proper_own(A, B).
 # own in some cases, but not all
-sentence_some_own(A, B) :- proper_own(A, B).
+sentence_some_own(A, B, 'yes') :- proper_own(A, B).
 # Alfred is a tech-man
 # A tech-man is an engineering-student
 # Alfred owns a log-log-decitrig
 # Does an engineering-student own a log-log-decitrig?
-sentence_some_own(A, B) :- proper_isa(AA, A), own(AA, B).
+sentence_some_own(A, B, 'yes') :- proper_isa(AA, A), own(AA, B).
+# Does a pair-of-red-suspenders own a pair-of-red-suspenders?
+sentence_some_own(A, A, 'improper').
 
 
 

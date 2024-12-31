@@ -138,8 +138,7 @@ class TestSIR(unittest.TestCase):
 
             # ownership, general
             ['Every fireman owns a pair-of-red-suspenders', 'I understand'],
-            # the following sentence is unrealistic
-            # ['Does a pair-of-red-suspenders own a pair-of-red-suspenders?', 'No, they are the same'],
+            ['Does a pair-of-red-suspenders own a pair-of-red-suspenders?', 'No, they are the same'],
             ['Does a doctor own a pair-of-red-suspenders?', 'Insufficient information'],
             ['A firechief is a fireman', 'I understand'],
             ['Does a firechief own a pair-of-red-suspenders?', 'Yes'],

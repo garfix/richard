@@ -133,9 +133,14 @@ def get_grammar():
         # Does a doctor own a pair-of-red-suspenders?
         # Does a firechief own a pair-of-red-suspenders?
         # Does an engineering-student own a log-log-decitrig?
+        # Does a pair-of-red-suspenders own a pair-of-red-suspenders?
         {
-            "syn": "yes_no() -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
-            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('sentence_some_own', common_noun_name1, common_noun_name2)],
+            "syn": "s(E3) -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
+            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('sentence_some_own', common_noun_name1, common_noun_name2, E3)],
+            "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
+                    ("format_switch_value", 'improper', 'No, they are the same'),
+                    ("format_switch_value", 'yes', 'Yes')
+                ],
         },
 
         # number
