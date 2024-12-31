@@ -21,23 +21,23 @@ sentence_isa(A, A, 'yes').
 
 # own
 sentence_own(A, B) :- proper_own(A, B).
+# own in some cases, but not all
+sentence_some_own(A, B) :- proper_own(A, B).
 # Alfred is a tech-man
 # A tech-man is an engineering-student
 # Alfred owns a log-log-decitrig
 # Does an engineering-student own a log-log-decitrig?
-sentence_own(A, B) :- proper_isa(AA, A), own(AA, B).
-sentence_own(A, B) :- proper_isa(BB, B), own(A, BB).
+sentence_some_own(A, B) :- proper_isa(AA, A), own(AA, B).
 
 
 
 # implementations
 
 # part-of
-proper_part_of(A, B) :- proper_isa(A, AA), proper_part_of(AA, B).
-proper_part_of(A, B) :- proper_isa(B, BB), proper_part_of(A, BB).
-
 proper_part_of(A, B) :- part_of(A, B).
 proper_part_of(A, B) :- part_of(A, C), proper_part_of(C, B).
+proper_part_of(A, B) :- proper_isa(A, AA), proper_part_of(AA, B).
+proper_part_of(A, B) :- proper_isa(B, BB), proper_part_of(A, BB).
 
 # part-of with number
 part_of_number(A, B, N) :- part_of(A, B), part_of_n(A, B, N).
@@ -49,8 +49,10 @@ part_of_number(A, B, N) :- proper_isa(B, BB), part_of_number(A, BB, N).
 proper_isa(A, B) :- isa(A, B).
 proper_isa(A, B) :- isa(A, C), proper_isa(C, B).
 
+#own
+proper_own(A, B) :- own(A, B).
 # Every fireman owns a pair-of-red-suspenders. A firechief is a fireman. Does a firechief own a pair-of-red-suspenders?
-proper_own(A, B) :- proper_isa(A, AA), own(AA, B).
+proper_own(A, B) :- proper_isa(A, AA), proper_own(AA, B).
 # Alfred owns a log-log-decitrig. A log-log-decitrig is a slide-rule. Does Alfred own a slide-rule?
-proper_own(A, B) :- proper_isa(BB, B), own(A, BB).
+proper_own(A, B) :- proper_isa(BB, B), proper_own(A, BB).
 

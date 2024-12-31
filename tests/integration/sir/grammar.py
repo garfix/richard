@@ -131,10 +131,11 @@ def get_grammar():
             "sem": lambda proper_noun, own, a, common_noun_name: proper_noun + [('sentence_own', E1, common_noun_name)],
         },
         # Does a doctor own a pair-of-red-suspenders?
+        # Does a firechief own a pair-of-red-suspenders?
         # Does an engineering-student own a log-log-decitrig?
         {
             "syn": "yes_no() -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
-            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('sentence_own', common_noun_name1, common_noun_name2)],
+            "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('sentence_some_own', common_noun_name1, common_noun_name2)],
         },
 
         # number
