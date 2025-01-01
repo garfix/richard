@@ -53,13 +53,13 @@ part_of_number(A, B, N) :- proper_isa(B, BB), part_of_number(A, BB, N).
 proper_isa(A, B) :- isa(A, B).
 proper_isa(A, B) :- isa(A, C), proper_isa(C, B).
 
+# isa including identity
 full_isa(A, A).
 full_isa(A, B) :- proper_isa(A, B).
 
 #own
-proper_own(A, B) :- own(A, B).
 # Every fireman owns a pair-of-red-suspenders. A firechief is a fireman. Does a firechief own a pair-of-red-suspenders?
-proper_own(A, B) :- proper_isa(A, AA), proper_own(AA, B).
 # Alfred owns a log-log-decitrig. A log-log-decitrig is a slide-rule. Does Alfred own a slide-rule?
-proper_own(A, B) :- proper_isa(BB, B), proper_own(A, BB).
+# find generalizations of A, find specializations of B
+proper_own(A, B) :- full_isa(A, AA), full_isa(BB, B), own(AA, BB).
 
