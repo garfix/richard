@@ -95,16 +95,6 @@ class TestSIR(unittest.TestCase):
         ])
 
         tests = [
-            # number
-            ['Every boy is a person', 'I understand'],
-            ['A finger is a part of a hand', 'I understand'],
-            ['There are two hands on each person', 'I understand'],
-            ['How many fingers does John have?', "Don't know whether finger is part of John"],
-            ['John is a boy', 'I understand'],
-            ['How many fingers does John have?', "How many finger per hand?"],
-            ['Every hand has 5 fingers', 'I understand'],
-            ['How many fingers does John have?', "The answer is 10"],
-
             # set-inclusion
             ['Every keypunch-operator is a girl', 'I understand'],
             ['Any girl is an example of a person', 'I understand'],
@@ -179,6 +169,16 @@ class TestSIR(unittest.TestCase):
             ['Every coffee-house-customer is a beatnik', 'I understand'],
             ['Buzz is a coffee-house-customer', 'I understand'],
             ['Is a beard part of Buzz?', 'Yes'],
+
+            # number
+            ['Every boy is a person', 'I understand'],
+            ['A finger is a part of a hand', 'I understand'],
+            ['There are two hands on each person', 'I understand'],
+            ['How many fingers does John have?', "Don't know whether finger is part of John"],
+            ['John is a boy', 'I understand'],
+            ['How many fingers does John have?', "How many finger per hand?"],
+            ['Every hand has 5 fingers', 'I understand'],
+            ['How many fingers does John have?', "The answer is 10"],
         ]
 
         logger = Logger()
