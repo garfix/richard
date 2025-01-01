@@ -46,6 +46,11 @@ def get_grammar():
             "syn": "statement() -> a() common_noun_name() 'is' 'a'? 'part' 'of' a() common_noun_name()",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2)])],
         },
+        # A van-dyke is part of Ferren
+        {
+            "syn": "statement() -> a() common_noun_name() 'is' 'a'? 'part' 'of' proper_noun(E1)",
+            "sem": lambda a1, common_noun_name, proper_noun: proper_noun + [('store', [('part_of', common_noun_name, E1)])],
+        },
         # There are two hands on each person
         # a statement about classes as quantified entities
         {
@@ -104,8 +109,19 @@ def get_grammar():
         # Is a nostril part of a living-creature?
         # Is a living-creature part of a nose?
         {
-            "syn": "s() -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
+            "syn": "s(E1) -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('sentence_part_of', common_noun_name1, common_noun_name2, E1)],
+            "dialog": [("format", "switch"), ("format_switch", e1, 'Insufficient information'),
+                    ("format_switch_value", 'sometimes', 'Sometimes'),
+                    ("format_switch_value", 'reverse_sometimes', 'No, but the reverse is sometimes true'),
+                    ("format_switch_value", 'improper', 'No, part means proper subpart'),
+                    ("format_switch_value", 'yes', 'Yes')
+                ],
+        },
+        # Is a beard part of Ferren?
+        {
+            "syn": "s(E1) -> 'is' a() common_noun_name() 'a'? 'part' 'of' proper_noun(E2)~'?'",
+            "sem": lambda a1, common_noun_name, proper_noun: proper_noun + [('sentence_part_of', common_noun_name, E2, E1)],
             "dialog": [("format", "switch"), ("format_switch", e1, 'Insufficient information'),
                     ("format_switch_value", 'sometimes', 'Sometimes'),
                     ("format_switch_value", 'reverse_sometimes', 'No, but the reverse is sometimes true'),

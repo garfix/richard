@@ -38,10 +38,10 @@ sentence_some_own(A, A, 'improper').
 # implementations
 
 # part-of
-proper_part_of(A, B) :- part_of(A, B).
+# find specializations of A, find generalizations of B
+proper_part_of(A, B) :- full_isa(AA, A), full_isa(B, BB), part_of(AA, BB).
 proper_part_of(A, B) :- part_of(A, C), proper_part_of(C, B).
-proper_part_of(A, B) :- proper_isa(A, AA), proper_part_of(AA, B).
-proper_part_of(A, B) :- proper_isa(B, BB), proper_part_of(A, BB).
+
 
 # part-of with number
 part_of_number(A, B, N) :- part_of(A, B), part_of_n(A, B, N).
@@ -52,6 +52,9 @@ part_of_number(A, B, N) :- proper_isa(B, BB), part_of_number(A, BB, N).
 # isa
 proper_isa(A, B) :- isa(A, B).
 proper_isa(A, B) :- isa(A, C), proper_isa(C, B).
+
+full_isa(A, A).
+full_isa(A, B) :- proper_isa(A, B).
 
 #own
 proper_own(A, B) :- own(A, B).

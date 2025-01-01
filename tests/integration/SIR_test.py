@@ -165,6 +165,20 @@ class TestSIR(unittest.TestCase):
             ['A person is a living-creature', 'I understand'],
             ['Is a nostril part of a living-creature?', 'Sometimes'],
             ['Is a living-creature part of a nose?', 'No, but the reverse is sometimes true'], # No, nose is sometimes part of living-creature
+
+            # part-whole, specific
+            ['A van-dyke is part of Ferren', 'I understand'],
+            ['A van-dyke is a beard', 'I understand'],
+            ['Is a beard part of Ferren?', 'Yes'],
+            # ['A crt is a display-device', 'I understand'],
+            # ['A crt is part of the PDP-1', 'I understand'],
+            # ['Sam is the PDP-1', 'I understand'],
+            # ['A screen is part of every display-device', 'I understand'],
+            # ['Is a screen part of Sam?', 'Yes'],
+            # ['A beard is part of a beatnik', 'I understand'],
+            # ['Every coffee-house-customer is a beatnik', 'I understand'],
+            # ['Buzz is a coffee-house-customer', 'I understand'],
+            # ['Is a beard part of Buzz?', 'Yes'],
         ]
 
         logger = Logger()
