@@ -21,7 +21,7 @@ class SIRModule(SomeModule):
         self.add_relation(Relation("part_of", query_function=self.common_query, write_function=self.common_write, arguments=['part', 'whole'])),
         self.add_relation(Relation("part_of_n", query_function=self.part_of_n, write_function=self.common_write, arguments=['part', 'whole', 'number'])),
         self.add_relation(Relation("isa", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'type'])),
-        self.add_relation(Relation("equals", query_function=self.common_query, write_function=self.common_write, arguments=['entity1', 'entity2'])),
+        self.add_relation(Relation("identical", query_function=self.common_query, write_function=self.common_write, arguments=['entity1', 'entity2'])),
         self.add_relation(Relation("own", query_function=self.common_query, write_function=self.common_write, arguments=['person', 'thing'])),
 
 

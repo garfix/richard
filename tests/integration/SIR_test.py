@@ -53,7 +53,7 @@ class TestSIR(unittest.TestCase):
         cursor = connection.cursor()
 
         cursor.execute("CREATE TABLE isa (entity TEXT, type TEXT)")
-        cursor.execute("CREATE TABLE equals (entity1 TEXT, entity2 TEXT)")
+        cursor.execute("CREATE TABLE identical (entity1 TEXT, entity2 TEXT)")
         cursor.execute("CREATE TABLE part_of (part TEXT, whole TEXT)")
         cursor.execute("CREATE TABLE part_of_n (part TEXT, whole TEXT, number INTEGER)")
         cursor.execute("CREATE TABLE own (person TEXT, thing TEXT)")
@@ -170,22 +170,22 @@ class TestSIR(unittest.TestCase):
             ['A van-dyke is part of Ferren', 'I understand'],
             ['A van-dyke is a beard', 'I understand'],
             ['Is a beard part of Ferren?', 'Yes'],
-            # ['A crt is a display-device', 'I understand'],
-            # ['A crt is part of the PDP-1', 'I understand'],
-            # ['Sam is the PDP-1', 'I understand'],
-            # ['A screen is part of every display-device', 'I understand'],
-            # ['Is a screen part of Sam?', 'Yes'],
-            # ['A beard is part of a beatnik', 'I understand'],
-            # ['Every coffee-house-customer is a beatnik', 'I understand'],
-            # ['Buzz is a coffee-house-customer', 'I understand'],
-            # ['Is a beard part of Buzz?', 'Yes'],
+            ['A crt is a display-device', 'I understand'],
+            ['A crt is part of the PDP-1', 'I understand'],
+            ['Sam is the PDP-1', 'I understand'],
+            ['A screen is part of every display-device', 'I understand'],
+            ['Is a screen part of Sam?', 'Yes'],
+            ['A beard is part of a beatnik', 'I understand'],
+            ['Every coffee-house-customer is a beatnik', 'I understand'],
+            ['Buzz is a coffee-house-customer', 'I understand'],
+            ['Is a beard part of Buzz?', 'Yes'],
         ]
 
         logger = Logger()
         logger.log_no_tests()
         logger.log_only_last_test()
         logger.log_all_tests()
-        logger.log_products()
+        # logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)
         tester.run()

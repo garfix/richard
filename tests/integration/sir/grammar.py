@@ -46,6 +46,11 @@ def get_grammar():
             "syn": "statement() -> a() common_noun_name() 'is' 'a'? 'part' 'of' a() common_noun_name()",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2)])],
         },
+        # A screen is part of every display-device
+        {
+            "syn": "statement() -> a() common_noun_name() 'is' 'a'? 'part' 'of' 'every' common_noun_name()",
+            "sem": lambda a1, common_noun_name1, common_noun_name2: [('store', [('part_of', common_noun_name1, common_noun_name2)])],
+        },
         # A van-dyke is part of Ferren
         {
             "syn": "statement() -> a() common_noun_name() 'is' 'a'? 'part' 'of' proper_noun(E1)",
@@ -72,7 +77,7 @@ def get_grammar():
         # John is Jack
         {
             "syn": "statement() -> proper_noun(E1) 'is' proper_noun(E2)",
-            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2 + [('store', [('equals', E1, E2)])],
+            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2 + [('store', [('identical', E1, E2)])],
         },
         # Every fireman owns a pair-of-red-suspenders
         {
@@ -180,7 +185,7 @@ def get_grammar():
         },
 
         # proper noun
-        { "syn": "proper_noun(E1) -> name()", "sem": lambda name: [('resolve_name', name, E1)] },
+        { "syn": "proper_noun(E1) -> 'the'? name()", "sem": lambda name: [('resolve_name', name, E1)] },
 
         # introduction of a new common noun
         { "syn": "common_noun_name() -> name()", "sem": lambda name: name },
