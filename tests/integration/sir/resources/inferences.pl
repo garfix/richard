@@ -37,18 +37,6 @@ sentence_some_own(A, A, 'improper').
 
 # implementations
 
-# part-of
-# find specializations of A, find generalizations of B
-proper_part_of(A, B) :- full_isa(AA, A), full_isa(B, BB), part_of(AA, BB).
-proper_part_of(A, B) :- part_of(A, C), proper_part_of(C, B).
-
-
-# part-of with number
-part_of_number(A, B, N) :- part_of(A, B), part_of_n(A, B, N).
-part_of_number(A, B, N) :- part_of(C, B), part_of_n(C, B, N1), part_of_number(A, C, N2), multiply(N1, N2, N).
-part_of_number(A, B, N) :- proper_isa(A, AA), part_of_number(AA, B, N).
-part_of_number(A, B, N) :- proper_isa(B, BB), part_of_number(A, BB, N).
-
 # isa
 proper_isa(A, B) :- isa(A, B).
 proper_isa(A, B) :- isa(A, C), proper_isa(C, B).
@@ -62,4 +50,23 @@ full_isa(A, B) :- proper_isa(A, B).
 # Alfred owns a log-log-decitrig. A log-log-decitrig is a slide-rule. Does Alfred own a slide-rule?
 # find generalizations of A, find specializations of B
 proper_own(A, B) :- full_isa(A, AA), full_isa(BB, B), own(AA, BB).
+
+# part-of
+# find specializations of A, find generalizations of B
+proper_part_of(A, B) :- full_isa(AA, A), full_isa(B, BB), part_of(AA, BB).
+# part-of is transitive
+proper_part_of(A, B) :- full_isa(A, AA), part_of(AA, C), proper_part_of(C, B).
+
+# # part-of with number
+# part_of_number(A, B, N) :- part_of(A, B), part_of_n(A, B, N).
+# # part-of is transitive
+# part_of_number(A, B, N) :- part_of(C, B), part_of_n(C, B, N1), part_of_number(A, C, N2), multiply(N1, N2, N).
+# part_of_number(A, B, N) :- proper_isa(A, AA), part_of_number(AA, B, N).
+# part_of_number(A, B, N) :- proper_isa(B, BB), part_of_number(A, BB, N).
+
+
+# part-of with number
+part_of_number(A, B, N) :- full_isa(AA, A), full_isa(B, BB), part_of(AA, BB), part_of_n(AA, BB, N).
+# part-of is transitive
+part_of_number(A, B, N) :- full_isa(B, BB),  part_of(C, BB), part_of_n(C, BB, N1), part_of_number(A, C, N2), multiply(N1, N2, N).
 
