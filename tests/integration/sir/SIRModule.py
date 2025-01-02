@@ -23,6 +23,8 @@ class SIRModule(SomeModule):
         self.add_relation(Relation("isa", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'type'])),
         self.add_relation(Relation("identical", query_function=self.common_query, write_function=self.common_write, arguments=['entity1', 'entity2'])),
         self.add_relation(Relation("own", query_function=self.common_query, write_function=self.common_write, arguments=['person', 'thing'])),
+        self.add_relation(Relation("just_left_of", query_function=self.common_query, write_function=self.common_write, arguments=['thing1', 'thing2'])),
+        self.add_relation(Relation("left_of", query_function=self.common_query, write_function=self.common_write, arguments=['thing1', 'thing2'])),
 
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:

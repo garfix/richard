@@ -89,6 +89,11 @@ def get_grammar():
             "syn": "statement() -> proper_noun(E1) own() a() common_noun_name()",
             "sem": lambda proper_noun, own, a, common_noun_name: proper_noun + [('store', [('own', E1, common_noun_name)])],
         },
+        # The telephone is just to the right of the book
+        {
+            "syn": "statement() -> proper_noun(E1) 'is' preposition(E1, E2) proper_noun(E2)",
+            "sem": lambda proper_noun1, preposition, proper_noun2: proper_noun1 + proper_noun2 + [('store', preposition)],
+        },
 
 
         # questions
@@ -165,6 +170,12 @@ def get_grammar():
                     ("format_switch_value", 'yes', 'Yes')
                 ],
         },
+        # Is the pad just to the right of the book?
+        {
+            "syn": "s() -> 'is' proper_noun(E1) preposition(E1, E2) proper_noun(E2)~'?'",
+            "sem": lambda proper_noun1, preposition, proper_noun2: proper_noun1 + proper_noun2 + preposition,
+            "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
+        },
 
         # number
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
@@ -183,6 +194,12 @@ def get_grammar():
             "syn": "common_noun(E1) -> common_noun_name()",
             "sem": lambda common_noun_name: [(common_noun_name, E1)], "dialog": lambda common_noun_name: [('isa', e1, common_noun_name)]
         },
+
+        # preposition
+        { "syn": "preposition(E1, E2) -> 'just' 'to' 'the' 'left' 'of'", "sem": lambda: [('just_left_of', E1, E2)] },
+        { "syn": "preposition(E1, E2) -> 'just' 'to' 'the' 'right' 'of'", "sem": lambda: [('just_left_of', E2, E1)] },
+        { "syn": "preposition(E1, E2) -> 'to' 'the' 'left' 'of'", "sem": lambda: [('left_of', E1, E2)] },
+        { "syn": "preposition(E1, E2) -> 'to' 'the' 'right' 'of'", "sem": lambda: [('left_of', E2, E1)] },
 
         # proper noun
         { "syn": "proper_noun(E1) -> 'the'? name()", "sem": lambda name: [('resolve_name', name, E1)] },

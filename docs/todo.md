@@ -15,7 +15,8 @@
     * a. EXCEPTION PRINCIPLE
     * b. RESOLVING AMBIGUITIES
     * c. STREAMLINING LINKAGES
-
+* create dialog variables for `the X`
+* move the create table statements into the modules
 
 ## module
 
