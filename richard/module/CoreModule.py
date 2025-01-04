@@ -31,6 +31,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("none", query_function=self.determiner_none)),
         self.add_relation(Relation("scoped", query_function=self.scoped)),
         self.add_relation(Relation("store", query_function=self.store)),
+        self.add_relation(Relation("destructure", query_function=self.destructure)),
 
 
     # ('equals', E1, E2)
@@ -239,6 +240,7 @@ class CoreModule(SomeModule):
         body = values[0]
 
         results = context.solver.solve(body, context.binding)
+        # print(values, context.binding, results)
         count = len(results)
 
         if count > 0:
@@ -385,3 +387,40 @@ class CoreModule(SomeModule):
             [None]
         ]
 
+
+    # ('destructure', body-atoms, term, term, term...)
+    # for example: ('destructure', Atom, 'just_left_of', A, B)
+    def destructure(self, values: list, context: ExecutionContext) -> list[list]:
+
+        unbound_atoms = values[0]
+        atoms = bind_variables(unbound_atoms, context.binding)
+        atom = atoms[0]
+        structure = context.arguments[1:]
+        fail_structure = [None] + [None] * len(structure)
+
+        # print('---')
+        # print(atom)
+        # print(structure)
+
+        if len(atom) != len(structure):
+            print('fail a', atom, structure)
+            return [ fail_structure ]
+
+        result = [None]
+        for atom_term, structure_term in zip(atom, structure):
+            if atom_term == structure_term:
+                new_term = structure_term
+            else:
+                if isinstance(structure_term, Variable):
+                    new_term = atom_term
+                else:
+                    print('fail b', atom_term, structure_term)
+                    return [ fail_structure ]
+
+            result.append(new_term)
+
+        # print(result)
+
+        return [
+            result
+        ]

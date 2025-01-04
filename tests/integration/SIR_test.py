@@ -190,16 +190,16 @@ class TestSIR(unittest.TestCase):
             ['Is the book to the left of the pad?', 'Yes'],
             ['The pad is to the right of the telephone', 'I understand'],
             ['The pad is to the left of the telephone', 'The above statement is impossible'],
-            # ['The ash-tray is to the left of the book', 'I understand'],
-            # ['The pencil is to the left of the pad', 'I understand'],
-            # ['The paper is to the right of the book', 'I understand'],
+            ['The ash-tray is to the left of the book', 'I understand'],
+            ['The pencil is to the left of the pad', 'I understand'],
+            ['The paper is to the right of the book', 'I understand'],
             # ['Where is the pad?', 'Just to the right of the telephone'], # Somewhere to the right of the following .. (pencil)
             # ['What is the position of the pad?', 'The left-to-right order is as follows: ash-tray (book telephone pad) paper)'], # To further specify the positionsyou must indicate wherethe pencil iswith respect to the ash-tray
             # ['The book is just to the right of the ash-tray', 'I understand'],
             # ['What is the position of the pad?', 'The left-to-right order is as follows: pencil (ash-tray book telephone pad) paper)'],
             # ['A telephone is an audio-transducer', 'I understand'],
-            # ['A diafragm is part of an audio-transducer', 'I understand'],
-            # ['Where is a diafragm?', 'Just to the left of the pad. Justto the right of the book.'], # Somewhere to the left of the following... (paper)
+            # ['A diaphragm is part of an audio-transducer', 'I understand'],
+            # ['Where is a diaphragm?', 'Just to the left of the pad. Justto the right of the book.'], # Somewhere to the left of the following... (paper)
         ]
 
         logger = Logger()

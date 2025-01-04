@@ -17,10 +17,14 @@
     * c. STREAMLINING LINKAGES
 * create dialog variables for `the X`
 * move the create table statements into the modules
+* document
+    * destructure
+    * not
 
 ## module
 
 * (?) add `common_query` and `common_write` to SomeModule to reduce code duplication
+* turn destructure2 into a more generic way of destructuring, using an array for the structure
 
 ## isolation of independent parts
 
