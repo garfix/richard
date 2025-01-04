@@ -19,7 +19,6 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 * 0.4 ?
     * use sqlite3 for all examples and memory stores
     * storing facts and learning rules
-    * classes and instances
     * Cooper's system (1964) demo
     * Bertram Rafael's SIR (1964) demo
     * integrate tokenizer into parser to enable morphological analysis

@@ -33,6 +33,7 @@ sentence_some_own(A, B, 'yes') :- proper_isa(AA, A), own(AA, B).
 sentence_some_own(A, A, 'improper').
 
 # claim
+# NB the order is important, because `store` changes the state
 sentence_claim(Atom, "impossible") :- not(check_claim(Atom)).
 sentence_claim(Atom, "ok") :- check_claim(Atom), store(Atom).
 

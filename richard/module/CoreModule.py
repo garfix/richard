@@ -398,12 +398,7 @@ class CoreModule(SomeModule):
         structure = context.arguments[1:]
         fail_structure = [None] + [None] * len(structure)
 
-        # print('---')
-        # print(atom)
-        # print(structure)
-
         if len(atom) != len(structure):
-            print('fail a', atom, structure)
             return [ fail_structure ]
 
         result = [None]
@@ -414,12 +409,9 @@ class CoreModule(SomeModule):
                 if isinstance(structure_term, Variable):
                     new_term = atom_term
                 else:
-                    print('fail b', atom_term, structure_term)
                     return [ fail_structure ]
 
             result.append(new_term)
-
-        # print(result)
 
         return [
             result
