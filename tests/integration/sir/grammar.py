@@ -1,11 +1,4 @@
-from richard.core.constants import E1, E2, E3, E4, E5, POS_TYPE_RELATION, POS_TYPE_WORD_FORM, e1, e2, e3, Body, Range
-from richard.entity.Variable import Variable
-from richard.processor.parser.helper.grammar_functions import apply
-
-
-T1 = Variable('T1')
-T2 = Variable('T2')
-T3 = Variable('T3')
+from richard.core.constants import E1, E2, E3, e1, e2, e3
 
 
 def get_grammar():
@@ -180,6 +173,12 @@ def get_grammar():
             "sem": lambda proper_noun1, preposition, proper_noun2: proper_noun1 + proper_noun2 + preposition,
             "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
         },
+        # Where is the pad?
+        # {
+        #     "syn": "s(E1) -> 'where' 'is' proper_noun(E1)~'?'",
+        #     "sem": lambda proper_noun: proper_noun + [('sentence_where', E1, E2)],
+        #     "dialog": [("format", "free"), ("format_free", e2)],
+        # },
 
         # number
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },

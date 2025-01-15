@@ -5,7 +5,6 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeParseTreeSortHeuristics import SomeParseTreeSortHeuristics
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
-from richard.type.SimpleGrammar import SimpleGrammar
 from .tree_sort_heuristics.BasicParseTreeSortHeuristics import BasicParseTreeSortHeuristics
 from .earley.EarleyParser import EarleyParser
 

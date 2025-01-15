@@ -1,10 +1,10 @@
 import re
 
-from build.lib.richard.type import SimpleGrammarRule
 from richard.core.constants import POS_TYPE_REG_EXP, POS_TYPE_RELATION, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.RuleConstituent import RuleConstituent
+from richard.type.SimpleGrammarRule import SimpleGrammarRule
 from richard.type.SimpleGrammar import SimpleGrammar
 
 

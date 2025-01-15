@@ -37,6 +37,10 @@ sentence_some_own(A, A, 'improper').
 sentence_claim(Atom, "impossible") :- not(check_claim(Atom)).
 sentence_claim(Atom, "ok") :- check_claim(Atom), store(Atom).
 
+# where
+# sentence_where(A, Answer) :- let(Answer, answer_where(A)).
+# sentence_where(A, Answer) :- just_left_of(A, B), let(Answer, just_left_of(A, B)).
+
 
 
 # implementations

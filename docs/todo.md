@@ -19,12 +19,30 @@
 * move the create table statements into the modules
 * document
     * destructure
-    * not
 
 ## module
 
 * (?) add `common_query` and `common_write` to SomeModule to reduce code duplication
 * turn destructure2 into a more generic way of destructuring, using an array for the structure
+
+## inferences
+
+* create the inference structure that the second set of goals is only tried if the first fails (syntax yet unknown)
+
+~~~
+or:
+    sentence_claim(Atom, "impossible") :- not(check_claim(Atom)).
+    sentence_claim(Atom, "ok") :- check_claim(Atom), store(Atom).
+~~~
+
+this would be a possible implementation, but it is not clear
+
+~~~
+sentence_claim(Atom, Result) :- or(
+    not(check_claim(Atom)), let(Result, "impossible"),
+    store(Atom), let(Result, "ok")
+).
+~~~
 
 ## isolation of independent parts
 

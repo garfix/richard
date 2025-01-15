@@ -199,7 +199,7 @@ class TestSIR(unittest.TestCase):
             # ['What is the position of the pad?', 'The left-to-right order is as follows: pencil (ash-tray book telephone pad) paper)'],
             # ['A telephone is an audio-transducer', 'I understand'],
             # ['A diaphragm is part of an audio-transducer', 'I understand'],
-            # ['Where is a diaphragm?', 'Just to the left of the pad. Justto the right of the book.'], # Somewhere to the left of the following... (paper)
+            # ['Where is a diaphragm?', 'Just to the left of the pad. Just to the right of the book.'], # Somewhere to the left of the following... (paper)
         ]
 
         logger = Logger()
