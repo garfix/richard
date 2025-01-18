@@ -1,6 +1,7 @@
 from richard.block.Succeed import Succeed
 from richard.entity.ControlBlock import ControlBlock
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.interface.SomeGenerator import SomeGenerator
 
 
 class Pipeline:
@@ -13,11 +14,13 @@ class Pipeline:
     """
 
     blocks: list[ControlBlock]
+    generator: SomeGenerator
 
 
-    def __init__(self, blocks: list[ControlBlock]):
+    def __init__(self, blocks: list[ControlBlock], generator: SomeGenerator = None):
 
         self.blocks = blocks
+        self.generator = generator
 
         # this blocks is added last, so that the other blocks don't need to check if there's a next one
         terminal = Succeed(None)

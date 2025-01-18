@@ -42,10 +42,10 @@ class SentenceRequest:
 
 
     def exec_process(self, processor: SomeProcessor) -> ProcessResult:
-        try:
-            result = processor.process(self)
-        except ProcessingException as e:
-            result = ProcessResult([], e.error)
+        # try:
+        result = processor.process(self)
+        # except ProcessingException as e:
+            # result = ProcessResult([], e.error)
 
         self.logger.add_process_result(processor, result)
         return result

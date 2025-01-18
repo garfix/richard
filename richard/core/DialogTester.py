@@ -5,6 +5,7 @@ import time
 
 from richard.core.Pipeline import Pipeline
 from richard.core.Logger import ALL, LAST, Logger
+from richard.entity.ProcessingException import ProcessingException
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.responder.SimpleResponderProduct import SimpleResponderProduct
 
@@ -59,18 +60,26 @@ class DialogTester:
 
                 start_time = time.perf_counter()
 
-                # send the request through the pipeline
-                result = self.pipeline.enter(request)
+                try:
+                    # send the request through the pipeline
+                    self.pipeline.enter(request)
 
-                end_time = time.perf_counter()
+                    end_time = time.perf_counter()
 
-                error = result != answer
+                    output = ''
+                    if self.pipeline.generator:
+                        output = self.pipeline.generator.generate_output()
+
+                except ProcessingException as e:
+                    output = str(e)
+
+                error = output != answer
 
                 if log_this or error:
-                    self.logger.add_key_value('Computer', result)
+                    self.logger.add_key_value('Computer', output)
                     self.logger.add_comment(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
-                self.test_case.assertEqual(result, answer)
+                self.test_case.assertEqual(output, answer)
 
             except Exception as e:
                 print(self.logger)

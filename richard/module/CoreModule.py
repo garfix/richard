@@ -422,12 +422,9 @@ class CoreModule(SomeModule):
     # ('or', body-atoms, body-atoms, body-atoms, body-atoms...)
     def or_function(self, values: list, context: ExecutionContext) -> list[list]:
 
-        print('start', values)
-
         for unbound_atoms in values:
 
             results = context.solver.solve(unbound_atoms, context.binding)
-            print(len(results), unbound_atoms)
             if len(results) > 0:
                 return [
                     [None] * len(values)

@@ -3,21 +3,22 @@ import sqlite3
 import unittest
 
 from richard.block.TryFirst import TryFirst
+from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
-from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
-from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.processor.parser.BasicParser import BasicParser
+from tests.integration.sir.SIRSentenceContext import SIRSentenceContext
 from tests.integration.sir.SIRModule import SIRModule
-from .sir.grammar import get_grammar
+from tests.integration.sir.write_grammar import get_write_grammar
+from .sir.read_grammar import get_read_grammar
 
 
 class TestSIR(unittest.TestCase):
@@ -70,12 +71,12 @@ class TestSIR(unittest.TestCase):
 
         # sentence scoped facts
 
-        sentence_context = BasicSentenceContext()
+        sentence_context = SIRSentenceContext()
 
         # define the pipeline
 
-        grammar = SimpleGrammarRulesParser().parse(get_grammar())
-        parser = BasicParser(grammar)
+        read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
+        parser = BasicParser(read_grammar)
 
         model = Model([
             facts,
@@ -87,14 +88,18 @@ class TestSIR(unittest.TestCase):
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
-        responder = SimpleResponder(model, executor)
 
-        pipeline = Pipeline([
-            TryFirst(parser),
-            TryFirst(composer),
-            TryFirst(executor),
-            TryFirst(responder)
-        ])
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
+        generator = BasicGenerator(write_grammar, model)
+
+        pipeline = Pipeline(
+            [
+                TryFirst(parser),
+                TryFirst(composer),
+                TryFirst(executor),
+            ],
+            generator=generator
+        )
 
         tests = [
             # set-inclusion
