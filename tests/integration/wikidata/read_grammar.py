@@ -3,14 +3,13 @@ from richard.processor.parser.helper.grammar_functions import apply
 from richard.type.SemanticTemplate import SemanticTemplate
 
 
-def get_grammar():
+def get_read_grammar():
     return [
 
         # sentence
         {
             "syn": "s(E2) -> 'where' 'was' np(E1) 'born'+'?'",
-            "sem": lambda np: apply(np, []) + [('place_of_birth', E1, E2)],
-            "dialog": [("format", "list"), ("format_list", e2)],
+            "sem": lambda np: apply(np, []) + [('place_of_birth', E1, E2), ('sentence_report', E2)],
         },
 
         # nbar

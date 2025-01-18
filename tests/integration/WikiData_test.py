@@ -3,12 +3,12 @@ import unittest
 
 
 from richard.block.TryFirst import TryFirst
+from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
-from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
@@ -17,8 +17,10 @@ from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.data_source.WikidataDataSource import WikidataDataSource
+from tests.integration.wikidata.write_grammar import get_write_grammar
+from .wikidata.WikiDataSentenceContext import WikiDataSentenceContext
 from .wikidata.WikidataModule import WikidataModule
-from .wikidata.grammar import get_grammar
+from .wikidata.read_grammar import get_read_grammar
 
 
 class TestWikiData(unittest.TestCase):
@@ -43,8 +45,9 @@ class TestWikiData(unittest.TestCase):
         # map domain predicates to one or more Wikidata predicates
         inferences = InferenceModule()
         inferences.import_rules(path + "mapping.pl")
+        inferences.import_rules(path + "sentences.pl")
 
-        sentence_context = BasicSentenceContext()
+        sentence_context = WikiDataSentenceContext()
         wikidata = WikidataModule(WikidataDataSource(result_cache_path=result_cache_path))
 
         model = Model([
@@ -53,28 +56,29 @@ class TestWikiData(unittest.TestCase):
             wikidata,
         ])
 
-        grammar = SimpleGrammarRulesParser().parse_read_grammar(get_grammar())
-        parser = BasicParser(grammar)
+        read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
+        parser = BasicParser(read_grammar)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
-        responder = SimpleResponder(model, executor)
+
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
+        generator = BasicGenerator(write_grammar, model)
 
         pipeline = Pipeline([
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),
-            TryFirst(responder)
-        ])
+        ], generator=generator)
 
         tests = [
             ["Where was madonna born?", "Bay City"],
         ]
 
         logger = Logger()
-        logger.log_no_tests()
-        # logger.log_products()
+        # logger.log_no_tests()
+        logger.log_products()
         # logger.log_stats()
 
         tester = DialogTester(self, tests, pipeline, logger)
