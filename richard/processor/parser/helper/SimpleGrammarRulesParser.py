@@ -33,25 +33,29 @@ class SimpleGrammarRulesParser:
         self.re_variable = re.compile("^[A-Z]\w*$")
 
 
-    def parse(self, simple_grammar: SimpleGrammar) -> GrammarRules:
+    def parse(self, simple_grammar: SimpleGrammar, write_rules: bool = True) -> GrammarRules:
         rules = []
 
         for simple_rule in simple_grammar:
-            rule = self.parse_simple_rule(simple_rule)
+            rule = self.parse_simple_rule(simple_rule, write_rules)
             rules.append(rule)
 
         return GrammarRules(rules)
 
 
-    def parse_simple_rule(self, simple_rule: SimpleGrammarRule) -> GrammarRule:
+    def parse_simple_rule(self, simple_rule: SimpleGrammarRule, write_rules: bool = True) -> GrammarRule:
         if not 'syn' in simple_rule:
             raise Exception("A rule must contain a 'syn' value")
 
         antecedent, consequents = self.parse_syntax(simple_rule['syn'])
 
         sem = None
-        if 'sem' in simple_rule:
-            sem = simple_rule['sem']
+        if write_rules:
+            if 'if' in simple_rule:
+                sem = simple_rule['if']
+        else:
+            if 'sem' in simple_rule:
+                sem = simple_rule['sem']
 
         exec = None
         if 'exec' in simple_rule:

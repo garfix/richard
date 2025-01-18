@@ -1,5 +1,11 @@
 ## todo
 
+* generate output
+    * create unit test for sentence generator
+    * the simple responder should now use a grammar
+    * responder not just part of the pipeline anymore, rather part of the client
+    * the sentence context is used to store buffered output
+    * apply to all tests
 * Read SIR thesis whole
 * more SIR sentences
     * a. SET-INCLUSION ("sometimes")
