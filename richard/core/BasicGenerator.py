@@ -1,3 +1,4 @@
+from richard.core.Model import Model
 from richard.core.Solver import Solver
 from richard.core.constants import CATEGORY_TEXT, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
@@ -11,9 +12,9 @@ class BasicGenerator(SomeGenerator):
     solver: Solver
 
 
-    def __init__(self, grammar: GrammarRules, solver: Solver):
+    def __init__(self, grammar: GrammarRules, model: Model):
         self.grammar = grammar
-        self.solver = solver
+        self.solver = Solver(model)
 
 
     def generate_output(self):

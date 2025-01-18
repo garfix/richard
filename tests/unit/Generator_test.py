@@ -58,9 +58,8 @@ class TestGenerator(unittest.TestCase):
             { "syn": "named_number(E1) -> 'two'", "if": [('equals', E1, 2)] },
         ]
 
-        write_grammar = SimpleGrammarRulesParser().parse(raw_grammar, write_rules=True)
-        solver = Solver(model)
-        generator = BasicGenerator(write_grammar, solver)
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(raw_grammar)
+        generator = BasicGenerator(write_grammar, model)
 
         tests = [
             {
@@ -81,6 +80,7 @@ class TestGenerator(unittest.TestCase):
             },
         ]
 
+        solver = Solver(model)
 
         for test in tests:
             sentence_context.clear()

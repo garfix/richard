@@ -16,25 +16,36 @@ class TestInferenceEngine(unittest.TestCase):
         parser = SimpleInferenceRuleParser()
 
         tests = [
-            ["river('amazon').", InferenceRule(('river', 'amazon'), [])],
-            ["river('amazon').", InferenceRule(('river', 'amazon'), [])],
-            ["mountain('Dante\\'s peak').", InferenceRule(('mountain', "Dante's peak"), [])],
-            ['person("Robert \\"Bobby\\" Brown").', InferenceRule(('person', 'Robert "Bobby" Brown'), [])],
-            ['river().', InferenceRule(('river',), [])],
-            ["population('france', 43).", InferenceRule(('population', 'france', 43), [])],
-            ["constant('pi', 3.14159265359).", InferenceRule(('constant', 'pi', 3.14159265359), [])],
+            ["river('amazon').", [InferenceRule(('river', 'amazon'), [])]],
+            # with comment
+            ["river('amazon')\n\t#remark\n.", [InferenceRule(('river', 'amazon'), [])]],
+            ["mountain('Dante\\'s peak').", [InferenceRule(('mountain', "Dante's peak"), [])]],
+            ['person("Robert \\"Bobby\\" Brown").', [InferenceRule(('person', 'Robert "Bobby" Brown'), [])]],
+            ['river().', [InferenceRule(('river',), [])]],
+            ["population('france', 43).", [InferenceRule(('population', 'france', 43), [])]],
+            ["constant('pi', 3.14159265359).", [InferenceRule(('constant', 'pi', 3.14159265359), [])]],
             [
                 "father(E1, E2) :- parent(E1, E2), father(E1).",
-                InferenceRule(('father', Variable('E1'), Variable('E2')), [
+                [InferenceRule(('father', Variable('E1'), Variable('E2')), [
                     ('parent', Variable('E1'), Variable('E2')),
                     ('father', Variable('E1'))
-                ])
+                ])]
             ],
             [
                 "childless(E1) :- not(parent(E1, E2)).",
-                InferenceRule(('childless', Variable('E1')), [
+                [InferenceRule(('childless', Variable('E1')), [
                     ('not', [('parent', Variable('E1'), Variable('E2'))])
-                ])
+                ])]
+            ],
+            # grouped atoms with parenthesis
+            [
+                "switch(E1) :- or((a(1), b(2)), (c(3), d(4))).",
+                [InferenceRule(('switch', Variable('E1')), [
+                    ('or',
+                        [('a', 1), ('b', 2)],
+                        [('c', 3), ('d', 4)],
+                    )
+                ])]
             ],
         ]
 

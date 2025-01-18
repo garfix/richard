@@ -25,6 +25,8 @@
 * move the create table statements into the modules
 * document
     * destructure
+    * or
+    * grouped atoms with parens
 
 ## module
 

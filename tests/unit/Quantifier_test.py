@@ -101,7 +101,7 @@ class TestQuantification(unittest.TestCase):
             { "syn": "noun(E1) -> 'children'", "sem": lambda: [('child', E1)] },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)

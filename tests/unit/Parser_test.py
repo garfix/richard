@@ -55,7 +55,7 @@ class TestParser(unittest.TestCase):
 
 
         for test in tests:
-            grammar = SimpleGrammarRulesParser().parse([test['rule']])
+            grammar = SimpleGrammarRulesParser().parse_read_grammar([test['rule']])
             rules = [str(rule) for rule in grammar.index['s'][1]]
             self.assertEqual(rules, test['variants'])
 
@@ -83,7 +83,7 @@ class TestParser(unittest.TestCase):
             { "syn": "verb(V) -> 'loves'" },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
 
         pipeline = Pipeline([
@@ -103,7 +103,7 @@ class TestParser(unittest.TestCase):
             { "syn": "np(E1) -> 'shoe'" },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
 
         pipeline = Pipeline([
@@ -125,7 +125,7 @@ class TestParser(unittest.TestCase):
         ]
 
         try:
-            grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+            grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
             parser = BasicParser(grammar)
         except Exception as e:
             self.assertEqual(str(e), "Missing -> operator in 'syn' value: s(V) => proper_noun(E1) verb(V)")

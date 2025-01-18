@@ -82,7 +82,7 @@ class TestCooper(unittest.TestCase):
             sentence_context,
         ])
 
-        grammar1 = SimpleGrammarRulesParser().parse(get_grammar1())
+        grammar1 = SimpleGrammarRulesParser().parse_read_grammar(get_grammar1())
         parser = BasicParser(grammar1)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
@@ -97,7 +97,7 @@ class TestCooper(unittest.TestCase):
             TryFirst(responder)
         ])
 
-        grammar2 = SimpleGrammarRulesParser().parse(get_grammar2())
+        grammar2 = SimpleGrammarRulesParser().parse_read_grammar(get_grammar2())
         parser = BasicParser(grammar2)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)

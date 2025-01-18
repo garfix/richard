@@ -18,7 +18,7 @@ class TestMultilingual(unittest.TestCase):
         grammar_parser = SimpleGrammarRulesParser()
 
         parsers = {
-            "nl_NL": BasicParser(grammar_parser.parse([
+            "nl_NL": BasicParser(grammar_parser.parse_read_grammar([
                 { "syn": "s(V) -> np(E1) vp(V, E1)" },
                 { "syn": "vp(V, E1) -> verb(V) np(E1)" },
                 { "syn": "np(E1) -> noun(E1)" },
@@ -27,7 +27,7 @@ class TestMultilingual(unittest.TestCase):
                 { "syn": "proper_noun(E1) -> 'mary'" },
                 { "syn": "verb(V) -> 'loves'" },
             ])),
-            "en_US": BasicParser(grammar_parser.parse([
+            "en_US": BasicParser(grammar_parser.parse_read_grammar([
                 { "syn": "s(V) -> np(E1) vp(V, E1)" },
                 { "syn": "vp(V, E1) -> verb(V) np(E1)" },
                 { "syn": "np(E1) -> noun(E1)" },

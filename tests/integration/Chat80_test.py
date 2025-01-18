@@ -94,7 +94,7 @@ class TestChat80(unittest.TestCase):
             dialog_context
         ])
 
-        grammar = SimpleGrammarRulesParser().parse(get_grammar())
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(get_grammar())
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)

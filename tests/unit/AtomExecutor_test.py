@@ -35,7 +35,7 @@ class TestAtomExecutor(unittest.TestCase):
             facts,
         ])
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
@@ -82,7 +82,7 @@ class TestAtomExecutor(unittest.TestCase):
             dialog_context
         ])
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)

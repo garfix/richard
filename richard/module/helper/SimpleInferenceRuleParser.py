@@ -24,6 +24,7 @@ class SimpleInferenceRuleParser:
             '"(?:\\\\"|[^"])+"',
             '[A-Z]\w*',
             '\w+',
+            '#.*\n',
         ]) + ")")
         self.re_identifier = re.compile("^\w+$")
         self.re_variable = re.compile("^[A-Z]\w*$")
@@ -33,9 +34,26 @@ class SimpleInferenceRuleParser:
 
     def parse(self, text: str):
 
+        rules = []
         tokens = re.findall(self.re_tokens, text)
-
         pos = 0
+
+        while True:
+            rule, new_pos = self.parse_rule(tokens, pos)
+            if rule:
+                rules.append(rule)
+                pos = new_pos
+            else:
+                break
+
+        if pos != len(tokens):
+            return None, new_pos
+
+        return rules, None
+
+
+    def parse_rule(self, tokens: list[str], pos: int):
+
         antecedent, new_pos = self.parse_atom(tokens, pos)
         if not antecedent:
             return None, new_pos
@@ -56,13 +74,24 @@ class SimpleInferenceRuleParser:
             return None, new_pos
         pos = new_pos
 
-        if pos != len(tokens):
-            return None, new_pos
-
-        return InferenceRule(antecedent, consequents), 0
+        return InferenceRule(antecedent, consequents), pos
 
 
     def parse_atoms(self, tokens: list[str], pos: int):
+        atoms, new_pos = self.parse_ungrouped_atoms(tokens, pos)
+        if atoms:
+            pos = new_pos
+            return atoms, pos
+
+        atoms, new_pos = self.parse_grouped_atoms(tokens, pos)
+        if atoms:
+            pos = new_pos
+            return atoms, pos
+
+        return None, pos
+
+
+    def parse_ungrouped_atoms(self, tokens: list[str], pos: int):
         atoms = []
 
         while True:
@@ -77,6 +106,25 @@ class SimpleInferenceRuleParser:
             if comma != ",":
                 break
             pos = new_pos
+
+        return atoms, pos
+
+
+    def parse_grouped_atoms(self, tokens: list[str], pos: int):
+        open, new_pos = self.parse_token(tokens, pos)
+        if open != "(":
+            return None, new_pos
+        pos = new_pos
+
+        atoms, new_pos = self.parse_atoms(tokens, pos)
+        if not atoms:
+            return None, new_pos
+        pos = new_pos
+
+        open, new_pos = self.parse_token(tokens, pos)
+        if open != ")":
+            return None, new_pos
+        pos = new_pos
 
         return atoms, pos
 
@@ -159,5 +207,10 @@ class SimpleInferenceRuleParser:
     def parse_token(self, tokens: list[str], pos: int):
         if pos >= len(tokens):
             return None, pos
+
+        # skip comment
+        token = tokens[pos]
+        if token[0] == '#':
+            return self.parse_token(tokens, pos+1)
 
         return tokens[pos], pos + 1

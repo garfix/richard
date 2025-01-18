@@ -33,16 +33,11 @@ class InferenceModule(SomeModule):
     def import_rules(self, path: str):
         parser = SimpleInferenceRuleParser()
         with open(path) as rule_file:
-            for line in rule_file.readlines():
-                # empty line
-                if line.strip() == "":
-                    continue
-                # comment line
-                if line.strip()[0] == "#":
-                    continue
-                rule, pos = parser.parse(line)
-                if rule is None:
-                    raise Exception("Unable to parse inference: " + line + " on token " + str(pos))
+            content = rule_file.read()
+            rules, pos = parser.parse(content)
+            if pos is not None:
+                 raise Exception("Unable to parse inference on token " + str(pos))
+            for rule in rules:
                 self.insert_rule(rule)
 
 

@@ -32,6 +32,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("scoped", query_function=self.scoped)),
         self.add_relation(Relation("store", query_function=self.store)),
         self.add_relation(Relation("destructure", query_function=self.destructure)),
+        self.add_relation(Relation("or", query_function=self.or_function)),
 
 
     # ('equals', E1, E2)
@@ -416,3 +417,20 @@ class CoreModule(SomeModule):
         return [
             result
         ]
+
+
+    # ('or', body-atoms, body-atoms, body-atoms, body-atoms...)
+    def or_function(self, values: list, context: ExecutionContext) -> list[list]:
+
+        print('start', values)
+
+        for unbound_atoms in values:
+
+            results = context.solver.solve(unbound_atoms, context.binding)
+            print(len(results), unbound_atoms)
+            if len(results) > 0:
+                return [
+                    [None] * len(values)
+                ]
+
+        return []

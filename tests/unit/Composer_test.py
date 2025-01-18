@@ -21,7 +21,7 @@ class TestComposer(unittest.TestCase):
             { "syn": "verb(E1) -> 'walks'" },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
@@ -53,7 +53,7 @@ class TestComposer(unittest.TestCase):
             { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
@@ -76,7 +76,7 @@ class TestComposer(unittest.TestCase):
             { "syn": "proper_noun(E1) -> /\w+ \w+/", "sem": lambda token: token },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
@@ -109,7 +109,7 @@ class TestComposer(unittest.TestCase):
             { "syn": "vp(E1) -> 'sleeps'", "sem": lambda: 'sleeps' },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
@@ -132,7 +132,7 @@ class TestComposer(unittest.TestCase):
             { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: token },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 

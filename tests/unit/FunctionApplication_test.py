@@ -34,7 +34,7 @@ class TestFunctionApplication(unittest.TestCase):
             { "syn": "term(E1) -> 'four'", "sem": lambda: 4 },
         ]
 
-        grammar = SimpleGrammarRulesParser().parse(simple_grammar)
+        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
