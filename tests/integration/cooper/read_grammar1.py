@@ -8,7 +8,7 @@ T2 = Variable('T2')
 T3 = Variable('T3')
 
 
-def get_grammar1():
+def get_read_grammar1():
     return [
         # sentence
 
@@ -16,27 +16,23 @@ def get_grammar1():
         # X is a Y
         {
             "syn": "s() -> proper_noun(E1) is() a() np(E1, T1)",
-            "sem": lambda noun, is1, a, np: [('let', T1, 'true')] + noun + [('store', np)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda noun, is1, a, np: [('let', T1, 'true')] + noun + [('sentence_tell', np)],
         },
         # X is Y (X is another name for Y)
         {
             "syn": "s() -> proper_noun(E1) 'is' proper_noun(E1)",
-            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2,
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda proper_noun1, proper_noun2: [('sentence_tell', proper_noun1 + proper_noun2)],
         },
 
         # no X is a Y
         {
             "syn": "s() -> 'no' noun(E1, T1) is() a() np(E1, T2)",
-            "sem": lambda noun, is1, a, np: [('let', T1, 'true'), ('let', T2, 'false'), ('learn_rule', np[0], noun)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda noun, is1, a, np: [('let', T1, 'true'), ('let', T2, 'false'), ('sentence_learn', np[0], noun)],
         },
         # a X is not a Y
         {
             "syn": "s() -> a() noun(E1, T1) is() 'not' a() np(E1, T2)",
-            "sem": lambda a1, noun, is1, a2, np: [('let', T1, 'true'), ('let', T2, 'false'), ('learn_rule', np[0], noun)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda a1, noun, is1, a2, np: [('let', T1, 'true'), ('let', T2, 'false'), ('sentence_learn', np[0], noun)],
         },
 
 
@@ -44,48 +40,41 @@ def get_grammar1():
         {
             "syn": "s() -> noun(E1, T1) verb(E1)",
             "sem": lambda noun, verb: noun + [('store', verb)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
         },
         # combustable things burn
         {
             "syn": "s() -> np(E1, T1) verb(E1)",
-            "sem": lambda np, verb: [('let', T1, 'true'), ('let', T2, 'true'), ('learn_rule', verb[0], np)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda np, verb: [('let', T1, 'true'), ('let', T2, 'true'), ('sentence_learn', verb[0], np)],
         },
 
 
         # dark-gray things are not white
         {
             "syn": "s() -> np(E1, T1) are() 'not' adj(E1, T2)",
-            "sem": lambda np, are, adj2: [('let', T1, 'true'), ('let', T2, 'false'), ('learn_rule', adj2[0], np)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda np, are, adj2: [('let', T1, 'true'), ('let', T2, 'false'), ('sentence_learn', adj2[0], np)],
         },
         # gasoline is combustable
         {
             "syn": "s() -> noun(E1, T1) 'is' adj(E1, T1)",
-            "sem": lambda noun, adj: [('let', T1, 'true'), ('let', T2, 'true'), ('learn_rule', adj[0], noun)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda noun, adj: [('let', T1, 'true'), ('let', T2, 'true'), ('sentence_learn', adj[0], noun)],
         },
         # X's are not Y's
         {
             "syn": "s() -> noun(E1, T1) are() 'not' np(E1, T2)",
             "sem": lambda noun, are, np: [
-                ('scoped', [('let', T1, 'false'), ('let', T2, 'true'), ('learn_rule', noun[0], np)]),
-                ('scoped', [('let', T1, 'true'), ('let', T2, 'false'), ('learn_rule', np[0], noun)])
+                ('scoped', [('let', T1, 'false'), ('let', T2, 'true'), ('sentence_learn', noun[0], np)]),
+                ('scoped', [('let', T1, 'true'), ('let', T2, 'false'), ('sentence_learn', np[0], noun)])
             ],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
         },
         # X's are Y's
         {
             "syn": "s() -> noun(E1, T1) are() np(E1, T2)",
-            "sem": lambda noun, are, np: [('let', T1, 'true'), ('let', T2, 'true'), ('learn_rule', np[0], noun)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda noun, are, np: [('let', T1, 'true'), ('let', T2, 'true'), ('sentence_learn', np[0], noun)],
         },
         # any thing that burns rapidly burns
         {
             "syn": "s() -> 'any' 'thing' 'that' verb(E1) verb(E1)",
-            "sem": lambda verb1, verb2: [('let', T1, 'true'), ('let', T2, 'true'), ('learn_rule', verb2[0], verb1)],
-            "dialog": [("format", "canned"), ("format_canned", "OK")],
+            "sem": lambda verb1, verb2: [('let', T1, 'true'), ('let', T2, 'true'), ('sentence_learn', verb2[0], verb1)],
         },
 
 

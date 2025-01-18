@@ -13,14 +13,14 @@ T6 = Variable('T6')
 t1 = ReifiedVariable('T1')
 
 # This grammar uses variables not only to link regular entities, but truth values as well
-def get_grammar2():
+def get_read_grammar2():
     return [
 
         # sentence
         {
             "syn": "s(T1) -> vp(E1, T1)",
-            "sem": lambda vp: vp,
-            "dialog": [("format", "y/n/u"), ("format_ynu", t1)],
+            "sem": lambda vp: vp + [('sentence_check', T1)],
+            # "dialog": [("format", "y/n/u"), ("format_ynu", t1)],
         },
 
         # vp

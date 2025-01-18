@@ -9,9 +9,7 @@ class CooperSentenceContext(SimpleMemoryModule):
 
         self.clear()
 
-        self.add_relation(Relation("format", arguments=["type"]))
-        self.add_relation(Relation("format_ynu", arguments=["answer"]))
-        self.add_relation(Relation("format_canned", arguments=["response"]))
+        self.add_relation(Relation("output_type", arguments=["type"]))
 
 
     def clear(self):
@@ -19,6 +17,4 @@ class CooperSentenceContext(SimpleMemoryModule):
 
         cursor = self.data_source.connection.cursor()
 
-        cursor.execute("CREATE TABLE format (type TEXT)")
-        cursor.execute("CREATE TABLE format_ynu (answer TEXT)")
-        cursor.execute("CREATE TABLE format_canned (response TEXT)")
+        cursor.execute("CREATE TABLE output_type (type TEXT)")

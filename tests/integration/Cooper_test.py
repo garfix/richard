@@ -1,13 +1,14 @@
+import pathlib
 import sqlite3
 import unittest
 
 from richard.block.TryFirst import TryFirst
+from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
-from richard.processor.responder.SimpleResponder import SimpleResponder
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
@@ -15,11 +16,11 @@ from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
-from tests.integration.cooper.CooperSentenceContext import CooperSentenceContext
-from tests.integration.cooper.SimpleOpenWorldResponder import SimpleOpenWorldResponder
-from tests.integration.cooper.CooperModule import CooperModule
-from .cooper.grammar1 import get_grammar1
-from .cooper.grammar2 import get_grammar2
+from .cooper.CooperSentenceContext import CooperSentenceContext
+from .cooper.CooperModule import CooperModule
+from .cooper.write_grammar import get_write_grammar
+from .cooper.read_grammar1 import get_read_grammar1
+from .cooper.read_grammar2 import get_read_grammar2
 
 
 class TestCooper(unittest.TestCase):
@@ -48,6 +49,8 @@ class TestCooper(unittest.TestCase):
 
     def test_cooper(self):
 
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/cooper/resources/"
+
         connection = sqlite3.connect(':memory:')
         cursor = connection.cursor()
 
@@ -70,10 +73,14 @@ class TestCooper(unittest.TestCase):
         cursor.execute("CREATE TABLE combustable (entity TEXT PRIMARY KEY, truth TEXT)")
         cursor.execute("CREATE TABLE gasoline (entity TEXT PRIMARY KEY, truth TEXT)")
 
+        # define some inference rules
+
+        inferences = InferenceModule()
+        inferences.import_rules(path + "inferences.pl")
+
         data_source = Sqlite3DataSource(connection)
         facts = CooperModule(data_source)
 
-        inferences = InferenceModule()
         sentence_context = CooperSentenceContext()
 
         model = Model([
@@ -82,35 +89,34 @@ class TestCooper(unittest.TestCase):
             sentence_context,
         ])
 
-        grammar1 = SimpleGrammarRulesParser().parse_read_grammar(get_grammar1())
+        grammar1 = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar1())
         parser = BasicParser(grammar1)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
-        responder = SimpleResponder(model, executor)
+
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
+        generator = BasicGenerator(write_grammar, model)
 
         pipeline1 = Pipeline([
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),
-            TryFirst(responder)
-        ])
+        ], generator=generator)
 
-        grammar2 = SimpleGrammarRulesParser().parse_read_grammar(get_grammar2())
+        grammar2 = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar2())
         parser = BasicParser(grammar2)
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
-        responder = SimpleOpenWorldResponder(model, executor)
 
         pipeline2 = Pipeline([
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),
-            TryFirst(responder)
-        ])
+        ], generator=generator)
 
         tests1 = [
             ["magnesium is a metal", "OK"],
@@ -177,7 +183,7 @@ class TestCooper(unittest.TestCase):
 
         logger = Logger()
         logger.log_no_tests()
-        # logger.log_all_tests()
+        logger.log_all_tests()
         # logger.log_only_last_test()
         # logger.log_products()
         # logger.log_stats()
