@@ -28,7 +28,8 @@ sentence_isa(A, B) :- or(
 ).
 
 # count
-sentence_count(Atoms) :- count(C, Atoms), store(output_type('count'), output_count(C)).
+# not(output_type(T)) means: no output has been produced yet
+sentence_count(Atoms) :- count(C, Atoms), not(output_type(T)), store(output_type('count'), output_count(C)).
 
 # yes/no
 sentence_yn(Atoms) :- or(

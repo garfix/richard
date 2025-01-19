@@ -1,4 +1,4 @@
-from richard.core.constants import E1
+from richard.core.constants import E1, E2
 
 
 def get_write_grammar():
@@ -43,5 +43,13 @@ def get_write_grammar():
         {
             "syn": "s(E1) -> 'The answer is' text(E1)",
             "if": [('output_type', 'count'), ('output_count', E1)],
+        },
+        {
+            "syn": "s(E1) -> 'How many' text(E1) 'per' text(E2)+'?'",
+            "if": [('output_type', 'how_many'), ('output_how_many', E1, E2)],
+        },
+        {
+            "syn": "s(E1) -> 'Don\\'t know whether' text(E1) 'is part of' text(E2)",
+            "if": [('output_type', 'dont_know_part_of'), ('output_dont_know_part_of', E1, E2)],
         },
     ]

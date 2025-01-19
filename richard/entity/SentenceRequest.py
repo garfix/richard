@@ -1,5 +1,4 @@
 from richard.core.Logger import ALL, Logger, nullLogger
-from richard.entity.ProcessingException import ProcessingException
 from richard.entity.ProcessResult import ProcessResult
 from richard.interface.Product import SomeProduct
 from richard.interface.SomeProcessor import SomeProcessor
@@ -42,10 +41,7 @@ class SentenceRequest:
 
 
     def exec_process(self, processor: SomeProcessor) -> ProcessResult:
-        # try:
         result = processor.process(self)
-        # except ProcessingException as e:
-            # result = ProcessResult([], e.error)
 
         self.logger.add_process_result(processor, result)
         return result

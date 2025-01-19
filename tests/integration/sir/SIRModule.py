@@ -1,4 +1,3 @@
-from richard.entity.ProcessingException import ProcessingException
 from richard.entity.Relation import Relation
 from richard.entity.ResultIterator import ResultIterator
 from richard.entity.Variable import Variable
@@ -51,7 +50,8 @@ class SIRModule(SomeModule):
             if isinstance(part_variable, Variable):
                 part_type = self.get_name(context, part_variable.name, values[0])
 
-            raise ProcessingException(f"How many {part_type} per {whole_type}?")
+            # produce output
+            context.solver.solve([('store', [('output_type', 'how_many'), ('output_how_many', part_type, whole_type)])])
 
         return results
 
@@ -106,7 +106,9 @@ class SIRModule(SomeModule):
         results = context.solver.solve([('part_of_number', part_type, whole_type, Variable('N'))])
 
         if len(results) == 0:
-            raise ProcessingException(f"Don't know whether {part_type} is part of {whole_type}")
+            # produce output
+            context.solver.solve([('store', [('output_type', 'dont_know_part_of'), ('output_dont_know_part_of', part_type, whole_type)])])
+            return ResultIterator([None, None], 0)
 
         number = results[0]['N']
         response = ResultIterator([None, None], number)

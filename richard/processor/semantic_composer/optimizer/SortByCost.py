@@ -42,8 +42,9 @@ class SortByCost:
         replaced = False
         for i, arg in enumerate(atom):
             if isinstance(arg, list):
-                atom_as_list[i] = self.sort(arg, model, bound_variables)
-                replaced = True
+                if len(arg) > 0 and isinstance(arg[0], tuple):
+                    atom_as_list[i] = self.sort(arg, model, bound_variables)
+                    replaced = True
         if replaced:
             return tuple(atom_as_list)
         else:

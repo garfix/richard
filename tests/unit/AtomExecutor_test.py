@@ -1,28 +1,31 @@
 import unittest
 
 from richard.block.TryFirst import TryFirst
+from richard.core.BasicGenerator import BasicGenerator
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, e1
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
+from tests.unit.atom_executor.write_grammar import get_write_grammar
 from tests.unit.atom_executor.TestDialogContext import TestDialogContext
 from tests.unit.atom_executor.TestModule import TestModule
 
 class TestAtomExecutor(unittest.TestCase):
 
-    def test_processing_exception(self):
+    def test_produce_exception_output(self):
         """
-        resolve_name fails to find "John" and throws a ProcessingException
+        resolve_name fails to find "John" and produces output
         It's error is passed to the ProcessingResult and the BlockResult
         and ends up in the response
         """
 
-        simple_grammar = [
+        read_grammar = [
             { "syn": "s(E1) -> noun(E1) verb(V)", "sem": lambda noun, verb: noun + verb },
             { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
             { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: token },
@@ -30,23 +33,29 @@ class TestAtomExecutor(unittest.TestCase):
         ]
 
         facts = TestModule()
+        sentence_context = BasicSentenceContext()
 
         model = Model([
             facts,
+            sentence_context,
         ])
 
-        grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
-        parser = BasicParser(grammar)
+        read_grammar = SimpleGrammarRulesParser().parse_read_grammar(read_grammar)
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
+        parser = BasicParser(read_grammar)
         composer = SemanticComposer(parser)
+        composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
+        generator = BasicGenerator(write_grammar, model)
 
         pipeline = Pipeline([
             FindOne(parser),
             TryFirst(composer),
             TryFirst(executor),
-        ])
+        ], generator=generator)
 
-        output = pipeline.enter(SentenceRequest("John walks"))
+        pipeline.enter(SentenceRequest("John walks"))
+        output = generator.generate_output()
 
         self.assertEqual("Name not found: john", output)
 
