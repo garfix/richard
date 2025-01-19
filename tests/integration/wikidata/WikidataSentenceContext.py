@@ -2,7 +2,7 @@ from richard.entity.Relation import Relation
 from richard.module.SimpleMemoryModule import SimpleMemoryModule
 
 
-class WikiDataSentenceContext(SimpleMemoryModule):
+class WikidataSentenceContext(SimpleMemoryModule):
 
     def __init__(self) -> None:
         super().__init__()

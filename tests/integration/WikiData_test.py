@@ -18,7 +18,7 @@ from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.data_source.WikidataDataSource import WikidataDataSource
 from tests.integration.wikidata.write_grammar import get_write_grammar
-from .wikidata.WikiDataSentenceContext import WikiDataSentenceContext
+from .wikidata.WikidataSentenceContext import WikidataSentenceContext
 from .wikidata.WikidataModule import WikidataModule
 from .wikidata.read_grammar import get_read_grammar
 
@@ -47,7 +47,7 @@ class TestWikiData(unittest.TestCase):
         inferences.import_rules(path + "mapping.pl")
         inferences.import_rules(path + "sentences.pl")
 
-        sentence_context = WikiDataSentenceContext()
+        sentence_context = WikidataSentenceContext()
         wikidata = WikidataModule(WikidataDataSource(result_cache_path=result_cache_path))
 
         model = Model([
@@ -77,8 +77,8 @@ class TestWikiData(unittest.TestCase):
         ]
 
         logger = Logger()
-        # logger.log_no_tests()
-        logger.log_products()
+        logger.log_no_tests()
+        # logger.log_products()
         # logger.log_stats()
 
         tester = DialogTester(self, tests, pipeline, logger)
