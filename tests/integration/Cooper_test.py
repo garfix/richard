@@ -7,6 +7,7 @@ from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
+from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -16,7 +17,6 @@ from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
-from .cooper.CooperSentenceContext import CooperSentenceContext
 from .cooper.CooperModule import CooperModule
 from .cooper.write_grammar import get_write_grammar
 from .cooper.read_grammar1 import get_read_grammar1
@@ -81,7 +81,7 @@ class TestCooper(unittest.TestCase):
         data_source = Sqlite3DataSource(connection)
         facts = CooperModule(data_source)
 
-        sentence_context = CooperSentenceContext()
+        sentence_context = BasicSentenceContext()
 
         model = Model([
             facts,

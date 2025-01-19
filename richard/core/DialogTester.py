@@ -45,7 +45,7 @@ class DialogTester:
         last = self.tests[-1] if len(self.tests) > 0 else None
         for i, test in enumerate(self.tests):
 
-            question, answer = test
+            question, expected = test
 
             log_this = self.logger.which_tests == ALL or (self.logger.which_tests == LAST and test == last)
             self.logger.is_last_test = log_this
@@ -67,13 +67,13 @@ class DialogTester:
                 if self.pipeline.generator:
                     output = self.pipeline.generator.generate_output()
 
-                error = output != answer
+                error = output != expected
 
                 if log_this or error:
                     self.logger.add_key_value('Computer', output)
                     self.logger.add_comment(str(ceil((end_time - start_time) * 1000)) + " msecs")
 
-                self.test_case.assertEqual(output, answer)
+                self.test_case.assertEqual(output, expected)
 
             except Exception as e:
                 print(self.logger)

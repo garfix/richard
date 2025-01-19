@@ -33,6 +33,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("store", query_function=self.store)),
         self.add_relation(Relation("destructure", query_function=self.destructure)),
         self.add_relation(Relation("or", query_function=self.or_function)),
+        self.add_relation(Relation("find_all", query_function=self.find_all)),
 
 
     # ('equals', E1, E2)
@@ -431,3 +432,33 @@ class CoreModule(SomeModule):
                 ]
 
         return []
+
+
+    # ('findall', variable, body-atoms, result-variable)
+    # ('findall', [variable, variable...], body-atoms, result-variable)
+    # Creates a list of all values of variable found by running body-atoms
+    # There can be a list of variables, in which case a list of combinations is returned
+    # Returned value is placed in result-variable
+    def find_all(self, values: list, context: ExecutionContext) -> list[list]:
+
+        variable = values[0]
+        body = values[1]
+        is_list = isinstance(variable, list)
+
+        result = []
+        for binding in context.solver.solve(body, context.binding):
+            if is_list:
+                item = []
+                for v in variable:
+                    if v.name in binding:
+                        item.append(binding[v.name])
+                    else:
+                        item.append(None)
+                result.append(item)
+            else:
+                if variable.name in binding:
+                    result.append(binding[variable.name])
+
+        return [
+            [None, None, result]
+        ]

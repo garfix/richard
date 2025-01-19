@@ -14,12 +14,12 @@ class TestSentenceContext(BasicSentenceContext):
         self.add_relation(Relation("output_object", arguments=["predication", "object"]))
 
 
-    def clear(self):
-        super().clear()
+    # def clear(self):
+    #     super().clear()
 
-        cursor = self.data_source.connection.cursor()
+        # cursor = self.data_source.connection.cursor()
 
-        cursor.execute("CREATE TABLE output_predicate (predication TEXT, predicate TEXT)")
-        cursor.execute("CREATE TABLE output_subject (predication TEXT, subject TEXT)")
-        cursor.execute("CREATE TABLE output_object (predication TEXT, object TEXT)")
+        # cursor.execute("CREATE TABLE output_predicate (predication TEXT, predicate TEXT)")
+        # cursor.execute("CREATE TABLE output_subject (predication TEXT, subject TEXT)")
+        # cursor.execute("CREATE TABLE output_object (predication TEXT, object TEXT)")
 
