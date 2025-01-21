@@ -5,17 +5,17 @@ from richard.type.SemanticTemplate import SemanticTemplate
 
 
 
-def get_grammar():
+def get_read_grammar():
     return [
 
         # sentence
         {
-            "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1)+ '?'",
+            "syn": "s(E1) -> 'does' np(E1) vp_nosub_obj(E1) + '?'",
             "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
             "dialog": [("format", "y/n")],
         },
         {
-            "syn": "s(E1) -> 'is' 'there' np(E1)+ '?'",
+            "syn": "s(E1) -> 'is' 'there' np(E1) + '?'",
             "sem": lambda np: apply(np, []),
             "dialog": [("format", "y/n")],
         },
@@ -25,93 +25,93 @@ def get_grammar():
             "dialog": [("format", "y/n")],
         },
         {
-            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there'+'?'",
-            "sem": lambda nbar: nbar,
-            "dialog": [("format", "list"), ("format_list", e1)],
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' + '?'",
+            "sem": lambda nbar: [('sentence_list', e1, nbar)],
+            # "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' pp(E1)+ '?'",
+            "syn": "s(E1) -> 'what' nbar(E1) 'are' 'there' pp(E1) + '?'",
             "sem": lambda nbar, pp: nbar + pp,
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'what' 'is' np(E1)+ '?'",
+            "syn": "s(E1) -> 'what' 'is' np(E1) + '?'",
             "sem": lambda np: apply(np, []),
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'what' 'are' np(E1)+ '?'",
+            "syn": "s(E1) -> 'what' 'are' np(E1) + '?'",
             "sem": lambda np: apply(np, []),
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1)+ '?'",
+            "syn": "s(E1) -> 'what' 'are' np(E1) vp_noobj_sub_iob(E1) + '?'",
             "sem": lambda np, vp_noobj_sub_iob: apply(np, vp_noobj_sub_iob),
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1, E2) -> 'what' 'are' 'the' noun(E1) 'of' np(E2)+ '?'",
-            "sem": lambda noun, np: noun + [('of', E1, E2)] + apply(np, []),
-            "dialog": [("format", "table"), ("format_table", e2, ''), ('format_table', e1, '')],
+            "syn": "s(E1, E2) -> 'what' 'are' 'the' noun(E1) 'of' np(E2) + '?'",
+            "sem": lambda noun, np: [('sentence_table', [e2, e1], ['suf1', 'suf2'], noun + [('of', E1, E2)] + apply(np, []))],
+            # "dialog": [("format", "table"), ("format_table", e2, ''), ('format_table', e1, '')],
             "boost": 1
         },
         {
-            "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2)+ '?'",
+            "syn": "s(E1) -> 'what' 'is' 'the' 'total' 'area' 'of' np(E2) + '?'",
             "sem": lambda np: [("sum", E1, E3, apply(np, []) + [('size_of', E2, E3)])],
             "dialog": [("format", "number"), ("format_number", e1, "ksqmiles")],
         },
         {
-            "syn": "s(E1, E3) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3)+ '?'",
+            "syn": "s(E1, E3) -> 'what' 'is' 'the' 'average' 'area' 'of' np(E2) preposition(E2, E3) 'each' nbar(E3) + '?'",
             "sem": lambda np, preposition, nbar: nbar + [('avg', E1, E4, apply(np, preposition) + [('size_of', E2, E4)])],
             "dialog": [("format", "table"), ("format_table", e3, ''), ('format_table', e1, 'ksqmiles')],
         },
         {
-            "syn": "s(E2, E3) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2)+ '?'",
+            "syn": "s(E2, E3) -> 'what' 'percentage' 'of' np(E1) tv(E1, E2) 'each' nbar(E2) + '?'",
             "sem": lambda np, tv, nbar: nbar + [('percentage', E3, apply(np, tv), apply(np, []))],
             "dialog": [("format", "table"), ("format_table", e2, ''), ('format_table', e3, '')],
         },
         {
-            "syn": "s(E2) -> 'where' 'is' np(E1)+ '?'",
+            "syn": "s(E2) -> 'where' 'is' np(E1) + '?'",
             "sem": lambda np: apply(np, []) + [('where', E1, E2)],
             "dialog": [("format", "list"), ("format_list", e2)],
         },
         {
-            "syn": "s(E2) -> 'how' 'large' 'is' np(E1)+ '?'",
+            "syn": "s(E2) -> 'how' 'large' 'is' np(E1) + '?'",
             "sem": lambda np: apply(np, []) + [('size_of', E1, E2)],
             "dialog": [("format", "number"), ("format_number", e2, "ksqmiles")],
         },
         {
-            "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1)+ '?'",
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' adjp(E1) + '?'",
             "sem": lambda nbar, adjp: nbar + adjp,
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1)+ '?'",
+            "syn": "s(E1) -> 'which' nbar(E1) 'are' vp_noobj_sub(E1) + '?'",
             "sem": lambda nbar, vp_noobj_sub: nbar + vp_noobj_sub,
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'which' 'is' np(E1)+ '?'",
+            "syn": "s(E1) -> 'which' 'is' np(E1) + '?'",
             "sem": lambda np: apply(np, []),
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'which' nbar(E1)+'\\''+'s' np(E2) 'is' np(E3)+ '?'",
+            "syn": "s(E1) -> 'which' nbar(E1)+'\\''+'s' np(E2) 'is' np(E3) + '?'",
             "sem": lambda nbar, np1, np2: nbar + apply(np1, [('of', E2, E1)] + apply(np2, [('equals', E2, E3)])),
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1)+ '?'",
+            "syn": "s(E1) -> 'which' np(E1) vp_nosub_obj(E1) + '?'",
             "sem": lambda np, vp_nosub_obj: apply(np, vp_nosub_obj),
             "dialog": [("format", "list"), ("format_list", e1)],
         },
         {
-            "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2)+ '?'",
+            "syn": "s(E1) -> 'how' 'many' nbar(E2) vp_noobj_sub(E2) + '?'",
             "sem": lambda nbar, vp_noobj_sub: [('count', E1, nbar + vp_noobj_sub)],
             "dialog": [("format", "number"), ("format_number", e1, '')],
         },
         {
-            "syn": "s(E1) -> 'bye'+'.'",
+            "syn": "s(E1) -> 'bye' + '.'",
             "sem": lambda: [],
             "dialog": [("format", "canned"), ("format_canned", "Cheerio.")],
         },

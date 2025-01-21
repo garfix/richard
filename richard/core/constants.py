@@ -20,7 +20,7 @@ POS_TYPE_WORD_FORM = "word-form"
 POS_TYPE_REG_EXP = "reg-exp"
 
 CATEGORY_TEXT = "text"
-CATEGORY_RAW = "raw"
+CATEGORY_FORMAT = "format"
 CATEGORY_PROPER_NOUN = "proper_noun"
 
 E1 = Variable('E1')

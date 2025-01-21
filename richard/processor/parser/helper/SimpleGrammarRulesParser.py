@@ -66,8 +66,12 @@ class SimpleGrammarRulesParser:
                 sem = simple_rule['sem']
 
         exec = None
-        if 'exec' in simple_rule:
-            exec = simple_rule['exec']
+        if write_rules:
+            if 'format' in simple_rule:
+                exec = simple_rule['format']
+        else:
+            if 'exec' in simple_rule:
+                exec = simple_rule['exec']
 
         dialog = []
         if 'dialog' in simple_rule:

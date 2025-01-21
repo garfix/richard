@@ -1,6 +1,6 @@
 from richard.core.Model import Model
 from richard.core.Solver import Solver
-from richard.core.constants import CATEGORY_TEXT, POS_TYPE_WORD_FORM
+from richard.core.constants import CATEGORY_FORMAT, CATEGORY_TEXT, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.interface.SomeGenerator import SomeGenerator
@@ -19,7 +19,13 @@ class BasicGenerator(SomeGenerator):
 
     def generate_output(self):
         words = self.generate_node([], "s", None)
-        return "".join(words)
+        all_text = list(filter(lambda word: isinstance(word, str), words))
+        if len(words) == 1:
+            return words[0]
+        elif len(all_text) == len(words):
+              return "".join(words)
+        else:
+            return words
 
 
     def generate_node(self, used_rules: list[int], antecedent_cat: str, antecedent_val: any) -> list[str]:
@@ -33,8 +39,8 @@ class BasicGenerator(SomeGenerator):
             used_rules.append(hash)
 
             for i, consequent in enumerate(rule.consequents):
-                consequent_val = self.get_consequent_value(rule, i, binding)
-                consequent = self.generate_single_consequent(used_rules, consequent.predicate, consequent_val, rule.consequents[i].position_type)
+                consequent_vals = self.get_consequent_values(rule, i, binding)
+                consequent = self.generate_single_consequent(rule, used_rules, consequent.predicate, consequent_vals, rule.consequents[i].position_type)
                 words.extend(consequent)
 
                 # todo?
@@ -45,17 +51,23 @@ class BasicGenerator(SomeGenerator):
         return words
 
 
-    def get_consequent_value(self, rule: GrammarRule, i: int, binding: dict) -> any:
-        consequent_value = ""
+    def get_consequent_values(self, rule: GrammarRule, i: int, binding: dict) -> any:
+        consequent_values = []
 
-        if rule.consequents[i].position_type != POS_TYPE_WORD_FORM:
-            consequent_variable = rule.consequents[i].arguments[0]
-            if consequent_variable in binding:
-                consequent_value = binding[consequent_variable]
-            else:
+        consequent = rule.consequents[i]
+        for a in range(len(consequent.arguments)):
+            if consequent.position_type == POS_TYPE_WORD_FORM:
                 consequent_value = ""
+            else:
+                consequent_variable = consequent.arguments[a]
+                if consequent_variable in binding:
+                    consequent_value = binding[consequent_variable]
+                else:
+                    consequent_value = ""
 
-        return consequent_value
+            consequent_values.append(consequent_value)
+
+        return consequent_values
 
 
     def find_rule(self, used_rules: list, antecedent_cat: str, antecedent_val: any):
@@ -104,15 +116,18 @@ class BasicGenerator(SomeGenerator):
         return result_rule, binding, found
 
 
-    def generate_single_consequent(self, used_rules: list[str], category: str, value: any, position_type: str) -> list[str]:
+    def generate_single_consequent(self, rule: GrammarRule, used_rules: list[str], category: str, values: list[any], position_type: str) -> list[str]:
 
         words = []
 
         if position_type == POS_TYPE_WORD_FORM:
             words.append(category)
         elif category == CATEGORY_TEXT:
-            words.append(str(value))
+            words.append(str(values[0]))
+        elif category == CATEGORY_FORMAT:
+            result = rule.exec(*values)
+            words.append(result)
         else:
-            words = self.generate_node(used_rules, category, value)
+            words = self.generate_node(used_rules, category, values[0])
 
         return words

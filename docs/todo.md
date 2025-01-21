@@ -28,6 +28,9 @@
     * or
     * grouped atoms with parens
     * replace processing exception with store output
+    * generate
+    * format
+
 
 ## module
 

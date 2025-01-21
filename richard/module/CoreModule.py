@@ -434,8 +434,8 @@ class CoreModule(SomeModule):
         return []
 
 
-    # ('findall', variable, body-atoms, result-variable)
-    # ('findall', [variable, variable...], body-atoms, result-variable)
+    # ('findall', variable-name, body-atoms, result-variable)
+    # ('findall', [variable-name, variable-name...], body-atoms, result-variable)
     # Creates a list of all values of variable found by running body-atoms
     # There can be a list of variables, in which case a list of combinations is returned
     # Returned value is placed in result-variable
@@ -450,14 +450,14 @@ class CoreModule(SomeModule):
             if is_list:
                 item = []
                 for v in variable:
-                    if v.name in binding:
-                        item.append(binding[v.name])
+                    if v in binding:
+                        item.append(binding[v])
                     else:
                         item.append(None)
                 result.append(item)
             else:
-                if variable.name in binding:
-                    result.append(binding[variable.name])
+                if variable in binding:
+                    result.append(binding[variable])
 
         return [
             [None, None, result]

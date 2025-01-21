@@ -39,6 +39,7 @@ class AtomExecutor(SomeProcessor):
         solver.solve(incoming.executable)
 
         bindings = solver.solve(incoming.get_semantics_last_iteration())
+
         product = AtomExecutorProduct(bindings, solver.stats)
 
         return ProcessResult([product], "")
