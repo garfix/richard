@@ -46,7 +46,7 @@ class TestSIR(unittest.TestCase):
 
     def test_sir(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/sir/resources/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/sir/"
 
         # create a database
 

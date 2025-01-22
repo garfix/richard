@@ -34,6 +34,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("destructure", query_function=self.destructure)),
         self.add_relation(Relation("or", query_function=self.or_function)),
         self.add_relation(Relation("find_all", query_function=self.find_all)),
+        self.add_relation(Relation("find_one", query_function=self.find_one)),
 
 
     # ('equals', E1, E2)
@@ -446,6 +447,7 @@ class CoreModule(SomeModule):
         is_list = isinstance(variable, list)
 
         result = []
+
         for binding in context.solver.solve(body, context.binding):
             if is_list:
                 item = []
@@ -454,11 +456,33 @@ class CoreModule(SomeModule):
                         item.append(binding[v])
                     else:
                         item.append(None)
-                result.append(item)
+                # skip duplicates
+                if not item in result:
+                    result.append(item)
             else:
+                # skip duplicates
                 if variable in binding:
-                    result.append(binding[variable])
+                    item = binding[variable]
+                    if not item in result:
+                        result.append(item)
 
         return [
             [None, None, result]
         ]
+
+
+    # ('find_one', variable-name, body-atoms, result-variable)
+    # ('fine_one', [variable-name, variable-name...], body-atoms, result-variable)
+    # Returns only the first value (values) of the results.
+    # Useful if you know there's only one result and you're don't want a list
+    # There can be a list of variables, in which case a list of combinations is returned
+    # Returned value is placed in result-variable
+    def find_one(self, values: list, context: ExecutionContext) -> list[list]:
+
+        results = self.find_all(values, context)
+        if len(results) == 0:
+            return []
+        else:
+            return [
+                [None, None, results[0][2][0]]
+            ]

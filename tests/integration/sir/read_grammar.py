@@ -7,12 +7,10 @@ def get_read_grammar():
         {
             "syn": "s() -> statement()",
             "sem": lambda statement: statement,
-            # "dialog": [("format", "canned"), ("format_canned", "I understand")],
         },
         {
             "syn": "s() -> yes_no()",
             "sem": lambda yes_no: yes_no,
-            # "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "Insufficient information")],
         },
 
         # statements
@@ -86,10 +84,6 @@ def get_read_grammar():
         {
             "syn": "s(E3) -> proper_noun(E1) 'is' preposition(E1, E2) proper_noun(E2)",
             "sem": lambda proper_noun1, preposition, proper_noun2: proper_noun1 + proper_noun2 + [('sentence_claim', preposition)],
-            # "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
-            #         ("format_switch_value", 'impossible', 'The above statement is impossible'),
-            #         ("format_switch_value", 'ok', 'I understand')
-            #     ],
         },
 
 
@@ -101,16 +95,11 @@ def get_read_grammar():
         {
             "syn": "s(E3) -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have'+'?'",
             "sem": lambda common_noun1, proper_noun: common_noun1 + proper_noun + [('sentence_count', [('have', E2, E1)])],
-            # "dialog": [("format", "number"), ("format_number", e3, ''), ('format_canned', 'The answer is {}')],
         },
         # Is a X a Y?
         {
             "syn": "s(E3) -> 'is' a() common_noun_name() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('sentence_isa', common_noun_name1, common_noun_name2)],
-            # "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
-            #         ("format_switch_value", 'sometimes', 'Sometimes'),
-            #         ("format_switch_value", 'yes', 'Yes')
-            #     ],
         },
         # Is a nostril part of a professor?
         # Is a nostril part of a living-creature?
@@ -118,23 +107,11 @@ def get_read_grammar():
         {
             "syn": "s(E1) -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('sentence_part_of', common_noun_name1, common_noun_name2)],
-            # "dialog": [("format", "switch"), ("format_switch", e1, 'Insufficient information'),
-            #         ("format_switch_value", 'sometimes', 'Sometimes'),
-            #         ("format_switch_value", 'reverse_sometimes', 'No, but the reverse is sometimes true'),
-            #         ("format_switch_value", 'improper', 'No, part means proper subpart'),
-            #         ("format_switch_value", 'yes', 'Yes')
-            #     ],
         },
         # Is a beard part of Ferren?
         {
             "syn": "s(E1) -> 'is' a() common_noun_name() 'a'? 'part' 'of' proper_noun(E2)~'?'",
             "sem": lambda a1, common_noun_name, proper_noun: proper_noun + [('sentence_part_of', common_noun_name, E2)],
-            # "dialog": [("format", "switch"), ("format_switch", e1, 'Insufficient information'),
-            #         ("format_switch_value", 'sometimes', 'Sometimes'),
-            #         ("format_switch_value", 'reverse_sometimes', 'No, but the reverse is sometimes true'),
-            #         ("format_switch_value", 'improper', 'No, part means proper subpart'),
-            #         ("format_switch_value", 'yes', 'Yes')
-            #     ],
         },
 
         # Yes/no questions
@@ -144,11 +121,6 @@ def get_read_grammar():
         {
             "syn": "s(E3) -> 'is' proper_noun(E1) a() common_noun_name()~'?'",
             "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('sentence_isa', E1, common_noun_name)],
-            # "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
-            #         ("format_switch_value", 'sometimes', 'Sometimes'),
-            #         ("format_switch_value", 'improper', 'No, part means proper subpart'),
-            #         ("format_switch_value", 'yes', 'Yes')
-            #     ],
         },
         # Does Alfred own a slide-rule?
         {
@@ -162,16 +134,11 @@ def get_read_grammar():
         {
             "syn": "s(E3) -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('sentence_some_own', common_noun_name1, common_noun_name2)],
-            # "dialog": [("format", "switch"), ("format_switch", e3, 'Insufficient information'),
-            #         ("format_switch_value", 'improper', 'No, they are the same'),
-            #         ("format_switch_value", 'yes', 'Yes')
-            #     ],
         },
         # Is the pad just to the right of the book?
         {
             "syn": "s() -> 'is' proper_noun(E1) preposition(E1, E2) proper_noun(E2)~'?'",
             "sem": lambda proper_noun1, preposition, proper_noun2: [('sentence_yn', proper_noun1 + proper_noun2 + preposition)],
-            # "dialog": [("format", "y/n"), ("format_yes", "Yes"), ("format_no", "No")],
         },
         # Where is the pad?
         # {

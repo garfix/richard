@@ -40,7 +40,7 @@ class TestGenerator(unittest.TestCase):
             },
             {
                 "syn": "s(E1) -> named_number(E1)",
-                "if": [('output_type', 'number'), ('output_number', E1)]
+                "if": [('output_type', 'scalar'), ('output_value', E1)]
             },
             {
                 "syn": "vp(E1) -> verb(E1) np(E2)",
@@ -75,7 +75,7 @@ class TestGenerator(unittest.TestCase):
                 "output": "Jane married John"
             },
             {
-                'atoms': [('output_type', 'number'), ('output_number', 2)],
+                'atoms': [('output_type', 'scalar'), ('output_value', 2)],
                 "output": "two"
             },
         ]

@@ -49,7 +49,7 @@ class TestCooper(unittest.TestCase):
 
     def test_cooper(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/cooper/resources/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/cooper/"
 
         connection = sqlite3.connect(':memory:')
         cursor = connection.cursor()

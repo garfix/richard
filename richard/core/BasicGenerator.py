@@ -1,6 +1,6 @@
 from richard.core.Model import Model
 from richard.core.Solver import Solver
-from richard.core.constants import CATEGORY_FORMAT, CATEGORY_TEXT, POS_TYPE_WORD_FORM
+from richard.core.constants import CATEGORY_FORMAT, CATEGORY_TEXT, CATEGORY_VALUE, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.interface.SomeGenerator import SomeGenerator
@@ -122,6 +122,8 @@ class BasicGenerator(SomeGenerator):
 
         if position_type == POS_TYPE_WORD_FORM:
             words.append(category)
+        elif category == CATEGORY_VALUE:
+            words.append(values[0])
         elif category == CATEGORY_TEXT:
             words.append(str(values[0]))
         elif category == CATEGORY_FORMAT:

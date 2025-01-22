@@ -20,7 +20,6 @@ def get_read_grammar2():
         {
             "syn": "s(T1) -> vp(E1, T1)",
             "sem": lambda vp: vp + [('sentence_check', T1)],
-            # "dialog": [("format", "y/n/u"), ("format_ynu", t1)],
         },
 
         # vp

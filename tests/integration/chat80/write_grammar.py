@@ -9,18 +9,63 @@ def get_write_grammar():
             "if": [('output_type', 'ok')],
         },
         {
+            "syn": "s(E1) -> 'yes'",
+            "if": [('output_type', 'yes')],
+        },
+        {
+            "syn": "s(E1) -> 'no'",
+            "if": [('output_type', 'no')],
+        },
+        {
+            "syn": "s(E1) -> value(E1)",
+            "if": [('output_type', 'value'), ('output_value', E1)],
+        },
+        {
+            "syn": "s(E1) -> text(E1) text(E2)",
+            "if": [('output_type', 'value_with_unit'), ('output_value_with_unit', E1, E2)],
+        },
+        {
             "syn": "s(E1) -> format(E1)",
             "if": [('output_type', 'list'), ('output_list', E1)],
-            "format": lambda elements: ", ".join(elements),
+            "format": lambda elements: format_list(elements),
         },
         {
             "syn": "s(E1) -> format(E1, E2)",
             "if": [('output_type', 'table'), ('output_table', E1, E2)],
             "format": lambda results, units: format_table(results, units),
         },
+        {
+            "syn": "s(E1) -> 'Cheerio.'",
+            "if": [('output_type', 'close_conversation')],
+        },
     ]
 
 
+def format_list(elements):
+    elements.sort()
+    return ", ".join(elements)
+
+
 def format_table(table, units):
-    response = sorted(table, key = lambda row: row[0])
+    sorted_table = sorted(table, key = lambda row: row[0])
+    response = []
+    for row in sorted_table:
+        item = []
+        for (i, value) in enumerate(row):
+            item.append(format_cell(value, units[i]))
+        response.append(item)
     return response
+
+
+def format_cell(value, unit):
+    if isinstance(value, float):
+        formatted =  str(int(value))
+    else:
+        formatted = value
+
+    if unit != '':
+        formatted += f" {unit}"
+
+    return formatted
+
+
