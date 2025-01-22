@@ -162,8 +162,8 @@ class TestChat80(unittest.TestCase):
 
         logger = Logger()
         logger.log_no_tests()
-        logger.log_all_tests()
-        logger.log_products()
+        # logger.log_all_tests()
+        # logger.log_products()
         # logger.log_stats()
 
         tester = DialogTester(self, tests, pipeline, logger)
