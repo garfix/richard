@@ -36,7 +36,7 @@ class InferenceModule(SomeModule):
             content = rule_file.read()
             rules, pos = parser.parse(content)
             if pos is not None:
-                 raise Exception("Unable to parse inference on token " + str(pos))
+                raise Exception("Unable to parse inference on token " + str(pos) + " in file " + path)
             for rule in rules:
                 self.insert_rule(rule)
 

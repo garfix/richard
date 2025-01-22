@@ -67,6 +67,7 @@ class TestSIR(unittest.TestCase):
         # define some inference rules
 
         inferences = InferenceModule()
+        inferences.import_rules(path + "intents.pl")
         inferences.import_rules(path + "inferences.pl")
 
         # sentence scoped facts

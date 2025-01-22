@@ -46,6 +46,8 @@ class SimpleInferenceRuleParser:
             else:
                 break
 
+        pos = self.eat_trailing_comments(tokens, pos)
+
         if pos != len(tokens):
             return None, new_pos
 
@@ -214,3 +216,11 @@ class SimpleInferenceRuleParser:
             return self.parse_token(tokens, pos+1)
 
         return tokens[pos], pos + 1
+
+
+    def eat_trailing_comments(self, tokens: list[str], pos: int):
+        token, new_pos = self.parse_token(tokens, pos)
+        if token == None:
+            pos = new_pos
+
+        return pos
