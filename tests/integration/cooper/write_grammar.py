@@ -5,19 +5,19 @@ def get_write_grammar():
     return [
         # sentences
         {
-            "syn": "s(E1) -> 'OK'",
+            "syn": "s() -> 'OK'",
             "if": [('output_type', 'ok')],
         },
         {
-            "syn": "s(E1) -> 'True'",
+            "syn": "s() -> 'True'",
             "if": [('output_type', 'true')],
         },
         {
-            "syn": "s(E1) -> 'False'",
+            "syn": "s() -> 'False'",
             "if": [('output_type', 'false')],
         },
         {
-            "syn": "s(E1) -> 'Unable to answer'",
+            "syn": "s() -> 'Unable to answer'",
             "if": [('output_type', 'unknown')],
         },
     ]

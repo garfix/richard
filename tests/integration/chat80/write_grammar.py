@@ -5,37 +5,37 @@ def get_write_grammar():
     return [
         # sentences
         {
-            "syn": "s(E1) -> 'OK'",
+            "syn": "s() -> 'OK'",
             "if": [('output_type', 'ok')],
         },
         {
-            "syn": "s(E1) -> 'yes'",
+            "syn": "s() -> 'yes'",
             "if": [('output_type', 'yes')],
         },
         {
-            "syn": "s(E1) -> 'no'",
+            "syn": "s() -> 'no'",
             "if": [('output_type', 'no')],
         },
         {
-            "syn": "s(E1) -> value(E1)",
+            "syn": "s() -> value(E1)",
             "if": [('output_type', 'value'), ('output_value', E1)],
         },
         {
-            "syn": "s(E1) -> text(E1) text(E2)",
+            "syn": "s() -> text(E1) text(E2)",
             "if": [('output_type', 'value_with_unit'), ('output_value_with_unit', E1, E2)],
         },
         {
-            "syn": "s(E1) -> format(E1)",
+            "syn": "s() -> format(E1)",
             "if": [('output_type', 'list'), ('output_list', E1)],
             "format": lambda elements: format_list(elements),
         },
         {
-            "syn": "s(E1) -> format(E1, E2)",
+            "syn": "s() -> format(E1, E2)",
             "if": [('output_type', 'table'), ('output_table', E1, E2)],
             "format": lambda results, units: format_table(results, units),
         },
         {
-            "syn": "s(E1) -> 'Cheerio.'",
+            "syn": "s() -> 'Cheerio.'",
             "if": [('output_type', 'close_conversation')],
         },
     ]

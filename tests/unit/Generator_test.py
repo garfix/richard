@@ -27,19 +27,19 @@ class TestGenerator(unittest.TestCase):
 
         raw_grammar = [
             {
-                "syn": "s(E1) -> 'OK'",
+                "syn": "s() -> 'OK'",
                 "if": [('output_type', 'ok')]
             },
             {
-                "syn": "s(E1) -> 'The above sentence is impossible'",
+                "syn": "s() -> 'The above sentence is impossible'",
                 "if": [('output_type', 'impossible')]
             },
             {
-                "syn": "s(E1) -> np(E2) vp(E1)",
+                "syn": "s() -> np(E2) vp(E1)",
                 "if": [('output_type', 'declarative'), ('output_subject', E1, E2)]
             },
             {
-                "syn": "s(E1) -> named_number(E1)",
+                "syn": "s() -> named_number(E1)",
                 "if": [('output_type', 'scalar'), ('output_value', E1)]
             },
             {

@@ -18,22 +18,22 @@ class BasicGenerator(SomeGenerator):
 
 
     def generate_output(self):
-        return self.generate_node([], "s", None, False)
+        return self.generate_node([], "s", [], False)
 
 
-    def generate_node(self, used_rules: list[int], antecedent_cat: str, antecedent_val: any, optional: bool) -> list[str]:
+    def generate_node(self, used_rules: list[int], antecedent_cat: str, antecedent_values: list[any], optional: bool) -> list[str]:
 
         words = []
-        rule, binding, found = self.find_rule(used_rules, antecedent_cat, antecedent_val)
+        rule, binding, found = self.find_rule(used_rules, antecedent_cat, antecedent_values)
 
         if found:
 
             hash = rule.hash
             used_rules.append(hash)
 
-            for i, consequent_result in enumerate(rule.consequents):
+            for i, consequent in enumerate(rule.consequents):
                 consequent_vals = self.get_consequent_values(rule, i, binding)
-                consequent_result = self.generate_single_consequent(rule, used_rules, consequent_result.predicate, consequent_vals, rule.consequents[i].position_type, consequent_result.optional)
+                consequent_result = self.generate_single_consequent(rule, used_rules, consequent.predicate, consequent_vals, rule.consequents[i].position_type, consequent.optional)
                 words.append(consequent_result)
 
                 # todo?
@@ -42,7 +42,7 @@ class BasicGenerator(SomeGenerator):
 
         else:
             if not optional:
-                raise Exception(f"No rule found for {antecedent_cat}: {antecedent_val}")
+                raise Exception(f"No rule found for {antecedent_cat}: {antecedent_values}")
 
         # combine the child results
         all_text = list(filter(lambda word: isinstance(word, str), words))
@@ -82,13 +82,13 @@ class BasicGenerator(SomeGenerator):
         return consequent_values
 
 
-    def find_rule(self, used_rules: list, antecedent_cat: str, antecedent_val: any):
+    def find_rule(self, used_rules: list, antecedent_cat: str, antecedent_values: list[any]):
 
         found = False
         result_rule = None
         binding = {}
 
-        rules = self.grammar.find_rules(antecedent_cat, 1)
+        rules = self.grammar.find_rules(antecedent_cat, len(antecedent_values))
 
         for rule in rules:
 
@@ -96,12 +96,14 @@ class BasicGenerator(SomeGenerator):
             # syn: s(E1) -> np(E2) vp(E1)
             # if: [('output_type', 'declarative'), ('output_subject', E1, E2)]
 
-            rule_antecedent_variable = rule.antecedent.arguments[0]
+            # rule_antecedent_variable = rule.antecedent.arguments[0]
             binding = {}
+            for rule_antecedent_variable, antecedent_value in zip(rule.antecedent.arguments, antecedent_values):
+                binding[rule_antecedent_variable] = antecedent_value
 
             # start the binding with the antecedent variable (in the example: E1)
-            if antecedent_val is not None:
-                binding[rule_antecedent_variable] = antecedent_val
+            # if antecedent_values is not None:
+            #     binding[rule_antecedent_variable] = antecedent_values
 
             if not rule.sem:
                 # no condition
@@ -139,6 +141,6 @@ class BasicGenerator(SomeGenerator):
         elif category == CATEGORY_FORMAT:
             result = rule.exec(*values)
         else:
-            result = self.generate_node(used_rules, category, values[0], optional)
+            result = self.generate_node(used_rules, category, values, optional)
 
         return result
