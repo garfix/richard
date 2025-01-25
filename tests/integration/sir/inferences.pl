@@ -32,6 +32,9 @@ part_of_number(A, B, N) :- full_isa(B, BB), part_of(C, BB), part_of(A, C), part_
 # left_of is transitive
 left_of(A, B) :- just_left_of(A, B).
 left_of(A, B) :- just_left_of(A, C), left_of(C, B).
+left_of(A, B) :- just_left_of(C, B), left_of(A, C).
+
+somewhere_left_of(A, B) :- left_of(A, B), not(just_left_of(A, B)).
 
 check_claim(Atom) :- destructure(Atom, 'just_left_of', A, B), check_just_left_of(A, B).
 check_claim(Atom) :- destructure(Atom, 'left_of', A, B), check_left_of(A, B).

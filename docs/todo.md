@@ -32,6 +32,7 @@
     * format
     * generate rules: optional atoms '?'
     * generate rules: post
+    * generate rules: the order of the rules matters!
 
 
 ## module

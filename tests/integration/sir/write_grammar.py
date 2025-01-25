@@ -1,5 +1,7 @@
 from richard.core.constants import E1, E2
+from richard.entity.Variable import Variable
 
+List1 = Variable('List')
 
 def get_write_grammar():
     return [
@@ -57,15 +59,24 @@ def get_write_grammar():
             "post": lambda out: out.strip()
         },
         {
-            "syn": "custom() -> just_left_of(E1)? just_right_of(E1)?",
+            "syn": "custom() -> just_left_of(E1)? just_right_of(E1)? right_of(E1)?",
             "if": [('output_type', 'location'), ('output_location', E1)],
         },
         {
-            "syn": "just_left_of(E1) -> 'Just to the left of the' text(E2)",
+            "syn": "just_left_of(E1) -> 'Just to the left of the' text(E2)+'.'",
             "if": [('just_left_of', E1, E2)],
         },
         {
-            "syn": "just_right_of(E1) -> 'Just to the right of the' text(E2)",
+            "syn": "just_right_of(E1) -> 'Just to the right of the' text(E2)+'.'",
             "if": [('just_left_of', E2, E1)],
         },
+        {
+            "syn": "right_of(E1) -> 'Somewhere to the right of the following ..' format(List)",
+            "if": [('find_all', 'E2', [('somewhere_left_of', E2, E1)], List1)],
+            "format": lambda elements: format_list(elements)
+        },
     ]
+
+
+def format_list(elements):
+    return "(" + ", ".join(elements) + ")"
