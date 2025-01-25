@@ -30,6 +30,8 @@
     * replace processing exception with store output
     * generate
     * format
+    * generate rules: optional atoms '?'
+    * generate rules: post
 
 
 ## module

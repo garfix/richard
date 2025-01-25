@@ -52,4 +52,17 @@ def get_write_grammar():
             "syn": "s(E1) -> 'Don\\'t know whether' text(E1) 'is part of' text(E2)",
             "if": [('output_type', 'dont_know_part_of'), ('output_dont_know_part_of', E1, E2)],
         },
+        {
+            "syn": "s(E1) -> just_left_of(E1)? just_right_of(E1)?",
+            "if": [('output_type', 'location'), ('output_location', E1)],
+            "post": lambda out: out.strip()
+        },
+        {
+            "syn": "just_left_of(E1) -> 'Just to the left of the' text(E2)",
+            "if": [('just_left_of', E1, E2)],
+        },
+        {
+            "syn": "just_right_of(E1) -> 'Just to the right of the' text(E2)",
+            "if": [('just_left_of', E2, E1)],
+        },
     ]

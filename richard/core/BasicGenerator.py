@@ -18,37 +18,49 @@ class BasicGenerator(SomeGenerator):
 
 
     def generate_output(self):
-        words = self.generate_node([], "s", None)
-        all_text = list(filter(lambda word: isinstance(word, str), words))
-        if len(words) == 1:
-            return words[0]
-        elif len(all_text) == len(words):
-              return "".join(words)
-        else:
-            return words
+        return self.generate_node([], "s", None, False)
 
 
-    def generate_node(self, used_rules: list[int], antecedent_cat: str, antecedent_val: any) -> list[str]:
+    def generate_node(self, used_rules: list[int], antecedent_cat: str, antecedent_val: any, optional: bool) -> list[str]:
 
         words = []
-        rule, binding, ok = self.find_rule(used_rules, antecedent_cat, antecedent_val)
+        rule, binding, found = self.find_rule(used_rules, antecedent_cat, antecedent_val)
 
-        if ok:
+        if found:
 
             hash = rule.hash
             used_rules.append(hash)
 
-            for i, consequent in enumerate(rule.consequents):
+            for i, consequent_result in enumerate(rule.consequents):
                 consequent_vals = self.get_consequent_values(rule, i, binding)
-                consequent = self.generate_single_consequent(rule, used_rules, consequent.predicate, consequent_vals, rule.consequents[i].position_type)
-                words.extend(consequent)
+                consequent_result = self.generate_single_consequent(rule, used_rules, consequent_result.predicate, consequent_vals, rule.consequents[i].position_type, consequent_result.optional)
+                words.append(consequent_result)
 
                 # todo?
                 # if consequentValue.IsId() && !consequentValue.Equals(antecedentValue) {
                 #     generator.state.MarkGenerated(consequentValue)
 
+        else:
+            if not optional:
+                raise Exception(f"No rule found for {antecedent_cat}: {antecedent_val}")
 
-        return words
+        # combine the child results
+        all_text = list(filter(lambda word: isinstance(word, str), words))
+        if len(all_text) == len(words):
+              # all strings: concatencate
+              result = "".join(words)
+        elif len(words) == 1:
+            # single value: pick it
+            result = words[0]
+        else:
+            # return a list of values (rare)
+            result = words
+
+        # postprocess (strip, capitalize first letter)
+        if rule and rule.post:
+            return rule.post(result)
+        else:
+            return result
 
 
     def get_consequent_values(self, rule: GrammarRule, i: int, binding: dict) -> any:
@@ -116,20 +128,17 @@ class BasicGenerator(SomeGenerator):
         return result_rule, binding, found
 
 
-    def generate_single_consequent(self, rule: GrammarRule, used_rules: list[str], category: str, values: list[any], position_type: str) -> list[str]:
-
-        words = []
+    def generate_single_consequent(self, rule: GrammarRule, used_rules: list[str], category: str, values: list[any], position_type: str, optional: bool) -> list[str]:
 
         if position_type == POS_TYPE_WORD_FORM:
-            words.append(category)
+            result = category
         elif category == CATEGORY_VALUE:
-            words.append(values[0])
+            result = values[0]
         elif category == CATEGORY_TEXT:
-            words.append(str(values[0]))
+            result = str(values[0])
         elif category == CATEGORY_FORMAT:
             result = rule.exec(*values)
-            words.append(result)
         else:
-            words = self.generate_node(used_rules, category, values[0])
+            result = self.generate_node(used_rules, category, values[0], optional)
 
-        return words
+        return result

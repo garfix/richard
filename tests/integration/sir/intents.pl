@@ -60,7 +60,6 @@ intent_claim(Atom, "impossible") :- not(check_claim(Atom)), store(output_type('i
 intent_claim(Atom) :- check_claim(Atom), store(Atom), store(output_type('understand')).
 
 # where
-# intent_where(A, Answer) :- let(Answer, answer_where(A)).
-# intent_where(A, Answer) :- just_left_of(A, B), let(Answer, just_left_of(A, B)).
-
-
+intent_where(Variable, Body) :-
+    find_one(Variable, Body, Object),
+    store(output_type('location'), output_location(Object)).

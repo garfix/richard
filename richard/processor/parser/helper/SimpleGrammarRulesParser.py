@@ -55,7 +55,7 @@ class SimpleGrammarRulesParser:
         if not 'syn' in simple_rule:
             raise Exception("A rule must contain a 'syn' value")
 
-        antecedent, consequents = self.parse_syntax(simple_rule['syn'])
+        antecedent, consequents = self.parse_syntax(simple_rule['syn'], write_rules)
 
         sem = None
         if write_rules:
@@ -73,6 +73,11 @@ class SimpleGrammarRulesParser:
             if 'exec' in simple_rule:
                 exec = simple_rule['exec']
 
+        post = None
+        if write_rules:
+            if 'post' in simple_rule:
+                post = simple_rule['post']
+
         dialog = []
         if 'dialog' in simple_rule:
             dialog = simple_rule['dialog']
@@ -81,10 +86,10 @@ class SimpleGrammarRulesParser:
         if 'boost' in simple_rule:
             boost = simple_rule['boost']
 
-        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, dialog=dialog, boost=boost)
+        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, post=post, dialog=dialog, boost=boost)
 
 
-    def parse_syntax(self, syntax):
+    def parse_syntax(self, syntax: str, write_rules: bool):
 
         tokens = re.findall(self.re_tokens, syntax)
 
@@ -106,6 +111,13 @@ class SimpleGrammarRulesParser:
             if atom:
                 pos = new_pos
                 consequents.append(atom)
+
+                if write_rules:
+                    found, new_pos = self.parse_optional_marker(tokens, pos)
+                    if found:
+                        pos = new_pos
+                        atom.optional = True
+
             else:
 
                 regexp, new_pos = self.parse_regexp(tokens, pos)

@@ -480,7 +480,7 @@ class CoreModule(SomeModule):
     def find_one(self, values: list, context: ExecutionContext) -> list[list]:
 
         results = self.find_all(values, context)
-        if len(results) == 0:
+        if len(results[0][2]) == 0:
             return []
         else:
             return [
