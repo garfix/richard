@@ -11,3 +11,6 @@ class SIRSentenceContext(BasicSentenceContext):
         self.add_relation(Relation("output_how_many", arguments=["type1", "type2"]))
         self.add_relation(Relation("output_dont_know_part_of", arguments=["type1", "type2"]))
         self.add_relation(Relation("output_location", arguments=["object"]))
+
+        # helper to use `left of` in the "broader sense" using transitivity
+        self.add_relation(Relation("context", arguments=["type"]))

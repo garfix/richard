@@ -30,9 +30,16 @@ part_of_number(A, B, N) :- full_isa(B, BB), part_of(C, BB), part_of(A, C), part_
 
 # position
 # left_of is transitive
-left_of(A, B) :- just_left_of(A, B).
-left_of(A, B) :- just_left_of(A, C), left_of(C, B).
-left_of(A, B) :- just_left_of(C, B), left_of(A, C).
+left_of(A, B) :- context('question'), just_left_of(A, B).
+left_of(A, B) :- context('question'), just_left_of(A, C), left_of(C, B).
+left_of(A, B) :- context('question'), just_left_of(C, B), left_of(A, C).
+# if A is part of B, it has the same position as B
+# todo: can use `proper_part_of`
+just_left_of(A, B) :- part_of(A, C), isa(D, C), just_left_of(D, B).
+just_left_of(B, A) :- part_of(A, C), isa(D, C), just_left_of(B, D).
+left_of(A, B) :- part_of(A, C), isa(D, C), left_of(D, B).
+left_of(B, A) :- part_of(A, C), isa(D, C), left_of(B, D).
+
 
 somewhere_left_of(A, B) :- left_of(A, B), not(just_left_of(A, B)).
 

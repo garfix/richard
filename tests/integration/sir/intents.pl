@@ -56,10 +56,14 @@ intent_some_own(A, B) :- or(
 
 # claim
 # NB the order is important, because `store` changes the state
-intent_claim(Atom, "impossible") :- not(check_claim(Atom)), store(output_type('impossible')).
+intent_claim(Atom) :- not(check_claim(Atom)), store(output_type('impossible')).
 intent_claim(Atom) :- check_claim(Atom), store(Atom), store(output_type('understand')).
 
 # where
 intent_where(Variable, Body) :-
     find_one(Variable, Body, Object),
     store(output_type('location'), output_location(Object)).
+
+# position
+intent_position() :-
+    store(output_type('position')).

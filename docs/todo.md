@@ -33,6 +33,7 @@
     * generate rules: optional atoms '?'
     * generate rules: post
     * generate rules: the order of the rules matters!
+    * describe the technique of `context('question')`
 
 
 ## module

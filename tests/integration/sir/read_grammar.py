@@ -93,24 +93,24 @@ def get_read_grammar():
         # we don't know John, but all that matters is that it's a boy
         # determine 'how many' not by counting but by calculating
         {
-            "syn": "s(E3) -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have'+'?'",
+            "syn": "s() -> 'how' 'many' common_noun(E1) 'does' proper_noun(E2) 'have'+'?'",
             "sem": lambda common_noun1, proper_noun: common_noun1 + proper_noun + [('intent_count', [('have', E2, E1)])],
         },
         # Is a X a Y?
         {
-            "syn": "s(E3) -> 'is' a() common_noun_name() a() common_noun_name()~'?'",
+            "syn": "s() -> 'is' a() common_noun_name() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('intent_isa', common_noun_name1, common_noun_name2)],
         },
         # Is a nostril part of a professor?
         # Is a nostril part of a living-creature?
         # Is a living-creature part of a nose?
         {
-            "syn": "s(E1) -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
+            "syn": "s() -> 'is' a() common_noun_name() 'a'? 'part' 'of' a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, a2, common_noun_name2: [('intent_part_of', common_noun_name1, common_noun_name2)],
         },
         # Is a beard part of Ferren?
         {
-            "syn": "s(E1) -> 'is' a() common_noun_name() 'a'? 'part' 'of' proper_noun(E2)~'?'",
+            "syn": "s() -> 'is' a() common_noun_name() 'a'? 'part' 'of' proper_noun(E2)~'?'",
             "sem": lambda a1, common_noun_name, proper_noun: proper_noun + [('intent_part_of', common_noun_name, E2)],
         },
 
@@ -119,7 +119,7 @@ def get_read_grammar():
         # Is Max a computer?
         # Is John a dope?
         {
-            "syn": "s(E3) -> 'is' proper_noun(E1) a() common_noun_name()~'?'",
+            "syn": "s() -> 'is' proper_noun(E1) a() common_noun_name()~'?'",
             "sem": lambda proper_noun, a, common_noun_name: proper_noun + [('intent_isa', E1, common_noun_name)],
         },
         # Does Alfred own a slide-rule?
@@ -132,18 +132,24 @@ def get_read_grammar():
         # Does an engineering-student own a log-log-decitrig?
         # Does a pair-of-red-suspenders own a pair-of-red-suspenders?
         {
-            "syn": "s(E3) -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
+            "syn": "s() -> 'does' a() common_noun_name() own() a() common_noun_name()~'?'",
             "sem": lambda a1, common_noun_name1, own, a2, common_noun_name2: [('intent_some_own', common_noun_name1, common_noun_name2)],
         },
         # Is the pad just to the right of the book?
         {
             "syn": "s() -> 'is' proper_noun(E1) preposition(E1, E2) proper_noun(E2)~'?'",
             "sem": lambda proper_noun1, preposition, proper_noun2: [('intent_yn', proper_noun1 + proper_noun2 + preposition)],
+            "dialog": [('context', 'question')]
         },
         # Where is the pad?
         {
-            "syn": "s(E1) -> 'where' 'is' proper_noun(E1)~'?'",
+            "syn": "s() -> 'where' 'is' proper_noun(E1)~'?'",
             "sem": lambda proper_noun: [('intent_where', e1, proper_noun)],
+        },
+        # What is the position of the pad?
+        {
+            "syn": "s() -> 'what' 'is' 'the' 'position' 'of' proper_noun(E1)~'?'",
+            "sem": lambda proper_noun: [('intent_position',)],
         },
 
         # number

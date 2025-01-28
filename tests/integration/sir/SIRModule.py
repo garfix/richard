@@ -25,6 +25,10 @@ class SIRModule(SomeModule):
         self.add_relation(Relation("just_left_of", query_function=self.common_query, write_function=self.common_write, arguments=['thing1', 'thing2'])),
         self.add_relation(Relation("left_of", query_function=self.common_query, write_function=self.common_write, arguments=['thing1', 'thing2'])),
 
+        # used in write_grammar.py
+        self.add_relation(Relation("position_description", query_function=self.position_description, arguments=['description'])),
+
+
 
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
         results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
@@ -127,4 +131,11 @@ class SIRModule(SomeModule):
                 return type
 
         return value
+
+
+    # used in write_grammar.py to create complex output
+    def position_description(self, values: list, context: ExecutionContext) -> list[list]:
+        return [
+            ['<the ordered list>']
+        ]
 

@@ -198,20 +198,28 @@ class TestSIR(unittest.TestCase):
             ['The pad is to the left of the telephone', 'The above statement is impossible'],
             ['The ash-tray is to the left of the book', 'I understand'],
             ['The pencil is to the left of the pad', 'I understand'],
-            ['The paper is to the right of the book', 'I understand'],
-            ['Where is the pad?', 'Just to the right of the telephone. Somewhere to the right of the following .. (pencil, book, ash-tray)'], # Original: (pencil)
-            # ['What is the position of the pad?', 'The left-to-right order is as follows: ash-tray (book telephone pad) paper)'], # To further specify the positionsyou must indicate wherethe pencil iswith respect to the ash-tray
-            # ['The book is just to the right of the ash-tray', 'I understand'],
-            # ['What is the position of the pad?', 'The left-to-right order is as follows: pencil (ash-tray book telephone pad) paper)'],
-            # ['A telephone is an audio-transducer', 'I understand'],
-            # ['A diaphragm is part of an audio-transducer', 'I understand'],
-            # ['Where is a diaphragm?', 'Just to the left of the pad. Just to the right of the book.'], # Somewhere to the left of the following... (paper)
+            ['The paper is to the right of the telephone', 'I understand'],
+            # note: extra space
+            ['Where is the pad?', 'Just to the right of the telephone.  Somewhere to the right of the following .. (pencil)'],
+            # The result of the following sentence should be
+            # 'The left-to-right order is as follows: ash-tray (book telephone pad) paper.'
+            # 'To further specify the positions you must indicate where the pencil is with respect to the ash-tray'
+            # The algorithm to generate the output that is described in the paper is not worked out, because it is a lot of work to implement it
+            # However, the example here shows how it could be done
+            ['What is the position of the pad?', 'The left-to-right order is as follows: <the ordered list>'],
+            ['The book is just to the right of the ash-tray', 'I understand'],
+            # the result of the following sentence should be
+            # 'The left-to-right order is as follows: pencil (ash-tray book telephone pad) paper)'
+            ['What is the position of the pad?', 'The left-to-right order is as follows: <the ordered list>'],
+            ['A telephone is an audio-transducer', 'I understand'],
+            ['A diaphragm is part of an audio-transducer', 'I understand'],
+            ['Where is the diaphragm?', 'Just to the left of the pad. Just to the right of the book. Somewhere to the left of the following .. (paper)']
         ]
 
         logger = Logger()
         logger.log_no_tests()
         logger.log_only_last_test()
-        # logger.log_all_tests()
+        logger.log_all_tests()
         logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)
