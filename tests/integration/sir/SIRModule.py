@@ -135,6 +135,7 @@ class SIRModule(SomeModule):
 
     # used in write_grammar.py to create complex output
     def position_description(self, values: list, context: ExecutionContext) -> list[list]:
+        # working out the algorithm described in the article is left to the interested reader
         return [
             ['<the ordered list>']
         ]
