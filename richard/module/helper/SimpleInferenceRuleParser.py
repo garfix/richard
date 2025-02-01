@@ -1,5 +1,6 @@
 import re
 
+from richard.core.constants import DISJUNCTION
 from richard.entity.Variable import Variable
 from richard.type.InferenceRule import InferenceRule
 
@@ -15,6 +16,7 @@ class SimpleInferenceRuleParser:
         self.re_tokens = re.compile("(" + "|".join([
             '\.',
             ',',
+            ';',
             ':-',
             '\(',
             '\)',
@@ -90,6 +92,11 @@ class SimpleInferenceRuleParser:
             pos = new_pos
             return atoms, pos
 
+        atoms, new_pos = self.parse_disjuncted_atoms(tokens, pos)
+        if atoms:
+            pos = new_pos
+            return atoms, pos
+
         return None, pos
 
 
@@ -129,6 +136,37 @@ class SimpleInferenceRuleParser:
         pos = new_pos
 
         return atoms, pos
+
+
+    def parse_disjuncted_atoms(self, tokens: list[str], pos: int):
+        open, new_pos = self.parse_token(tokens, pos)
+        if open != "(":
+            return None, new_pos
+        pos = new_pos
+
+        disjuncts = []
+
+        while True:
+
+            atoms, new_pos = self.parse_atoms(tokens, pos)
+            if not atoms:
+                return None, new_pos
+            pos = new_pos
+            disjuncts.append(atoms)
+
+            semicolon, new_pos = self.parse_token(tokens, pos)
+            if semicolon != ";":
+                break
+            pos = new_pos
+
+        open, new_pos = self.parse_token(tokens, pos)
+        if open != ")":
+            return None, new_pos
+        pos = new_pos
+
+        disjunction = (DISJUNCTION, disjuncts)
+
+        return [disjunction], pos
 
 
     def parse_atom(self, tokens: list[str], pos: int):

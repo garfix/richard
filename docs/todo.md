@@ -4,6 +4,8 @@ NOT_UNDERSTOOD = "Sorry, I don't understand"
 
 ^ write output
 
+remove or()
+
 * generate output
     * create unit test for sentence generator
     * the simple responder should now use a grammar
@@ -29,7 +31,7 @@ NOT_UNDERSTOOD = "Sorry, I don't understand"
 * move the create table statements into the modules
 * document
     * destructure
-    * or
+    * or as ;
     * grouped atoms with parens
     * replace processing exception with store output
     * generate

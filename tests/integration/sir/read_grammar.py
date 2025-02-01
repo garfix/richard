@@ -65,6 +65,12 @@ def get_read_grammar():
             "syn": "statement() -> 'every' common_noun_name() 'has' number(E1) common_noun_name()",
             "sem": lambda common_noun_name1, number, common_noun_name2: [('intent_teach', [('part_of', common_noun_name2, common_noun_name1), ('part_of_n', common_noun_name2, common_noun_name1, number)])],
         },
+        # Tom has nine fingers
+        # Dick has one hand
+        {
+            "syn": "statement() -> proper_noun(E1) 'has' number(E1) common_noun_name()",
+            "sem": lambda proper_noun, number, common_noun_name: proper_noun + [('intent_teach', [('part_of', common_noun_name, E1), ('part_of_n', common_noun_name, E1, number)])],
+        },
         # John is Jack
         {
             "syn": "statement() -> proper_noun(E1) 'is' proper_noun(E2)",
@@ -153,7 +159,9 @@ def get_read_grammar():
         },
 
         # number
+        { "syn": "number(E1) -> 'one'", "sem": lambda: 1 },
         { "syn": "number(E1) -> 'two'", "sem": lambda: 2 },
+        { "syn": "number(E1) -> 'nine'", "sem": lambda: 9 },
         { "syn": "number(E1) -> '5'", "sem": lambda: 5 },
 
         # article

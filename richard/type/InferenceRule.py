@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-
-from richard.entity.RuleConstituent import RuleConstituent
-from richard.entity.Variable import Variable
+from richard.core.atoms import get_atoms_variables
 
 
 @dataclass(frozen=True)
@@ -19,14 +17,7 @@ class InferenceRule:
 
     def get_all_variables(self) -> list[str]:
         variables = []
-
-        for arg in self.head[1:]:
-            if isinstance(arg, Variable):
-                variables.append(arg.name)
-
-        for atom in self.body:
-            for arg in atom[1:]:
-                if isinstance(arg, Variable):
-                    variables.append(arg.name)
+        variables.extend(get_atoms_variables(self.head))
+        variables.extend(get_atoms_variables(self.body))
 
         return variables

@@ -49,3 +49,5 @@ UNKNOWN = 500
 IGNORED = 'ignored'
 
 RESOLVE_NAME = 'resolve_name'
+
+DISJUNCTION = '$disjunction'

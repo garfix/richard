@@ -12,3 +12,7 @@ related(X, Y) :- ancestor(X, Y).
 related(X, X).
 related('jennifer', 'jennifer').
 related('jennifer', 'david').
+family(X, Y) :- (
+    grand_parent(X, Y)
+;   parent(X, Y)
+).

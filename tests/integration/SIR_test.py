@@ -213,13 +213,24 @@ class TestSIR(unittest.TestCase):
             ['What is the position of the pad?', 'The left-to-right order is as follows: <the ordered list>'],
             ['A telephone is an audio-transducer', 'I understand'],
             ['A diaphragm is part of an audio-transducer', 'I understand'],
-            ['Where is the diaphragm?', 'Just to the left of the pad. Just to the right of the book. Somewhere to the left of the following .. (paper)']
+            ['Where is the diaphragm?', 'Just to the left of the pad. Just to the right of the book. Somewhere to the left of the following .. (paper)'],
+
+            # exception principle
+            ['Tom is a boy', 'I understand'],
+            ['Dick is a boy', 'I understand'],
+            ['Harry is a boy', 'I understand'],
+            ['Tom has nine fingers', 'I understand'],
+            ['Dick has one hand', 'I understand'],
+            ['How many fingers does Tom have?', "The answer is 9"],
+            ['How many fingers does Dick have?', "The answer is 5"],
+            ['How many fingers does Harry have?', "The answer is 10"],
+            ['How many fingers does Joe have?', "Don't know whether finger is part of Joe"],
         ]
 
         logger = Logger()
         logger.log_no_tests()
         logger.log_only_last_test()
-        logger.log_all_tests()
+        # logger.log_all_tests()
         logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)

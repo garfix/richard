@@ -1,5 +1,6 @@
 from collections import defaultdict
 from richard.core.Model import Model
+from richard.core.constants import DISJUNCTION
 from richard.entity.ResultIterator import ResultIterator
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
@@ -47,6 +48,9 @@ class Solver(SomeSolver):
                 self.stats[predicate] = 0
             self.stats[predicate] += 1
 
+        if predicate == DISJUNCTION:
+            return self.solve_disjunction(atom[1], binding)
+
         values = self.find_relation_values(predicate, arguments, binding)
 
         if isinstance(values, ResultIterator):
@@ -90,6 +94,13 @@ class Solver(SomeSolver):
             results.append(result)
 
         return results
+
+    def solve_disjunction(self, disjuncts: list[list[tuple]], binding: dict):
+        for disjunct in disjuncts:
+            results = self.solve(disjunct, binding)
+            if len(results) > 0:
+                return results
+        return []
 
 
     def find_relation_values(self, predicate: str, arguments: list, binding: dict) -> list[list]:

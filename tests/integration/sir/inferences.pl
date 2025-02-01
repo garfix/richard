@@ -24,9 +24,16 @@ proper_part_of(A, B) :- full_isa(AA, A), full_isa(B, BB), part_of(AA, BB).
 proper_part_of(A, B) :- full_isa(A, AA), part_of(AA, C), proper_part_of(C, B).
 
 # part-of with number
-part_of_number(A, B, N) :- full_isa(AA, A), full_isa(B, BB), part_of(AA, BB), part_of_n(AA, BB, N).
-# part-of is transitive
-part_of_number(A, B, N) :- full_isa(B, BB), part_of(C, BB), part_of(A, C), part_of_n(C, BB, N1), part_of_number(A, C, N2), multiply(N1, N2, N).
+part_of_number(A, B, N) :- (
+    # direct, non inheriting
+    part_of(A, B), part_of_n(A, B, N)
+;   # direct, inheriting
+    full_isa(AA, A), full_isa(B, BB), part_of(AA, BB), part_of_n(AA, BB, N)
+;   # transitive, non inheriting
+    part_of(C, B), part_of(A, C), part_of_n(C, B, N1), part_of_number(A, C, N2), multiply(N1, N2, N)
+;   # transitive, inheriting
+    full_isa(B, BB), part_of(C, BB), part_of(A, C), part_of_n(C, BB, N1), part_of_number(A, C, N2), multiply(N1, N2, N)
+).
 
 # position
 # left_of is transitive
