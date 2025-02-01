@@ -32,7 +32,6 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("scoped", query_function=self.scoped)),
         self.add_relation(Relation("store", query_function=self.store)),
         self.add_relation(Relation("destructure", query_function=self.destructure)),
-        self.add_relation(Relation("or", query_function=self.or_function)),
         self.add_relation(Relation("find_all", query_function=self.find_all)),
         self.add_relation(Relation("find_one", query_function=self.find_one)),
 
@@ -419,20 +418,6 @@ class CoreModule(SomeModule):
         return [
             result
         ]
-
-
-    # ('or', body-atoms, body-atoms, body-atoms, body-atoms...)
-    def or_function(self, values: list, context: ExecutionContext) -> list[list]:
-
-        for unbound_atoms in values:
-
-            results = context.solver.solve(unbound_atoms, context.binding)
-            if len(results) > 0:
-                return [
-                    [None] * len(values)
-                ]
-
-        return []
 
 
     # ('findall', variable-name, body-atoms, result-variable)

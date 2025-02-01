@@ -8,8 +8,9 @@ intent_table(Variables, Units, Body) :-
     find_all(Variables, Body, Results),
     store(output_type('table'), output_table(Results, Units)).
 
-intent_yn(Body) :- or(
-    ( scoped(Body),  store(output_type('yes')) ),
+intent_yn(Body) :- (
+    scoped(Body),  store(output_type('yes'))
+;
     store(output_type('no'))
 ).
 
