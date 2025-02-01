@@ -56,9 +56,10 @@ class SimpleInferenceRuleParser:
         return rules, None
 
 
+    # father(X, Y) :- parent(X, Y), male(X).
     def parse_rule(self, tokens: list[str], pos: int):
 
-        antecedent, new_pos = self.parse_atom(tokens, pos)
+        antecedent, new_pos = self.parse_simple_atom(tokens, pos)
         if not antecedent:
             return None, new_pos
         pos = new_pos
@@ -81,18 +82,16 @@ class SimpleInferenceRuleParser:
         return InferenceRule(antecedent, consequents), pos
 
 
+    # ( parent(X, Y), parent(Y, Z) )
+    # parent(X, Y), parent(Y, Z)
+    # ( sibling(X, Y) ; ( brother(X, Y) ; sister(X, Y) )
     def parse_atoms(self, tokens: list[str], pos: int):
-        atoms, new_pos = self.parse_ungrouped_atoms(tokens, pos)
-        if atoms:
-            pos = new_pos
-            return atoms, pos
-
         atoms, new_pos = self.parse_grouped_atoms(tokens, pos)
         if atoms:
             pos = new_pos
             return atoms, pos
 
-        atoms, new_pos = self.parse_disjuncted_atoms(tokens, pos)
+        atoms, new_pos = self.parse_ungrouped_atoms(tokens, pos)
         if atoms:
             pos = new_pos
             return atoms, pos
@@ -100,6 +99,7 @@ class SimpleInferenceRuleParser:
         return None, pos
 
 
+    # parent(X, Y), parent(Y, Z)
     def parse_ungrouped_atoms(self, tokens: list[str], pos: int):
         atoms = []
 
@@ -119,6 +119,7 @@ class SimpleInferenceRuleParser:
         return atoms, pos
 
 
+    # ( parent(X, Y), parent(Y, Z) )
     def parse_grouped_atoms(self, tokens: list[str], pos: int):
         open, new_pos = self.parse_token(tokens, pos)
         if open != "(":
@@ -138,7 +139,8 @@ class SimpleInferenceRuleParser:
         return atoms, pos
 
 
-    def parse_disjuncted_atoms(self, tokens: list[str], pos: int):
+    # ( brother(X, Y) ; sister(X, Y)
+    def parse_disjuncted_atom(self, tokens: list[str], pos: int):
         open, new_pos = self.parse_token(tokens, pos)
         if open != "(":
             return None, new_pos
@@ -166,10 +168,28 @@ class SimpleInferenceRuleParser:
 
         disjunction = (DISJUNCTION, disjuncts)
 
-        return [disjunction], pos
+        return disjunction, pos
 
 
+    # parent(X, Y)
+    # ( brother(X, Y) ; sister(X, Y)
     def parse_atom(self, tokens: list[str], pos: int):
+
+        atom, new_pos = self.parse_simple_atom(tokens, pos)
+        if atom:
+            pos = new_pos
+            return atom, pos
+
+        atom, new_pos = self.parse_disjuncted_atom(tokens, pos)
+        if atom:
+            pos = new_pos
+            return atom, pos
+
+        return None, pos
+
+
+    # parent(X, Y)
+    def parse_simple_atom(self, tokens: list[str], pos: int):
         predicate, new_pos = self.parse_identifier(tokens, pos)
         if not predicate:
             return None, new_pos
@@ -202,6 +222,7 @@ class SimpleInferenceRuleParser:
         return tuple([predicate] + terms), pos
 
 
+    # five_horses
     def parse_identifier(self, tokens: list[str], pos: int):
         token, new_pos = self.parse_token(tokens, pos)
         if not token:

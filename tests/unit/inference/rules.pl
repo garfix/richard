@@ -16,3 +16,6 @@ family(X, Y) :- (
     grand_parent(X, Y)
 ;   parent(X, Y)
 ).
+sister('spike', 'suzy').
+brother('james', 'george').
+sibling(X, Y) :- equals(X, X), ( brother(X, Y) ; sister(X, Y) ).

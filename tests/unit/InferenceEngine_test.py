@@ -89,6 +89,7 @@ class TestInferenceEngine(unittest.TestCase):
             # test disjunction
             [[('family', E1, 'martha')], {}, [{'E1': 'robert'}]],
             [[('family', E1, 'william')], {}, [{'E1': 'robert'}]],
+            [[('sibling', 'spike', E1)], {}, [{'E1': 'suzy'}]],
         ]
 
         for test in tests:
