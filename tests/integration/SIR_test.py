@@ -229,9 +229,9 @@ class TestSIR(unittest.TestCase):
 
         logger = Logger()
         logger.log_no_tests()
-        logger.log_only_last_test()
+        # logger.log_only_last_test()
         # logger.log_all_tests()
-        logger.log_products()
+        # logger.log_products()
 
         tester = DialogTester(self, tests, pipeline, logger)
         tester.run()

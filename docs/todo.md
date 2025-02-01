@@ -6,6 +6,8 @@ NOT_UNDERSTOOD = "Sorry, I don't understand"
 
 remove or()
 
+"The answer is 10" werkt niet als de bindings uniek gemaakt worden (Solver)
+
 * generate output
     * create unit test for sentence generator
     * the simple responder should now use a grammar

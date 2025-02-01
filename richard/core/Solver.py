@@ -65,6 +65,11 @@ class Solver(SomeSolver):
             if len(values[0]) != len(arguments):
                 raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
 
+        results = self.create_solve_single_results(values, binding, arguments)
+        return results
+
+
+    def create_solve_single_results(self, values: list, binding: dict, arguments: list):
         results = []
         for v in values:
             # extend the incoming binding
@@ -94,6 +99,7 @@ class Solver(SomeSolver):
             results.append(result)
 
         return results
+
 
     def solve_disjunction(self, disjuncts: list[list[tuple]], binding: dict):
         for disjunct in disjuncts:
