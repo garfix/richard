@@ -1,5 +1,4 @@
 import pathlib
-import sqlite3
 import unittest
 
 from richard.block.TryFirst import TryFirst
@@ -15,9 +14,10 @@ from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.processor.parser.BasicParser import BasicParser
-from tests.integration.sir.SIRSentenceContext import SIRSentenceContext
-from tests.integration.sir.SIRModule import SIRModule
-from tests.integration.sir.write_grammar import get_write_grammar
+from .SIRDB import SIRDB
+from .SIRSentenceContext import SIRSentenceContext
+from .SIRModule import SIRModule
+from .write_grammar import get_write_grammar
 from .read_grammar import get_read_grammar
 
 
@@ -50,18 +50,7 @@ class TestSIR(unittest.TestCase):
 
         # create a database
 
-        connection = sqlite3.connect(':memory:')
-        cursor = connection.cursor()
-
-        cursor.execute("CREATE TABLE isa (entity TEXT, type TEXT)")
-        cursor.execute("CREATE TABLE identical (entity1 TEXT, entity2 TEXT)")
-        cursor.execute("CREATE TABLE part_of (part TEXT, whole TEXT)")
-        cursor.execute("CREATE TABLE part_of_n (part TEXT, whole TEXT, number INTEGER)")
-        cursor.execute("CREATE TABLE own (person TEXT, thing TEXT)")
-        cursor.execute("CREATE TABLE just_left_of (thing1 TEXT, thing2 TEXT)")
-        cursor.execute("CREATE TABLE left_of (thing1 TEXT, thing2 TEXT)")
-
-        data_source = Sqlite3DataSource(connection)
+        data_source = SIRDB()
         facts = SIRModule(data_source)
 
         # define some inference rules

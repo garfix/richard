@@ -1,12 +1,10 @@
 import pathlib
-import sqlite3
 import unittest
 
 from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
-from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
@@ -17,6 +15,7 @@ from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
+from .CooperDB import CooperDB
 from .CooperModule import CooperModule
 from .write_grammar import get_write_grammar
 from .read_grammar1 import get_read_grammar1
@@ -51,34 +50,10 @@ class TestCooper(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
-        connection = sqlite3.connect(':memory:')
-        cursor = connection.cursor()
-
-        # note: same entity may have multiple names
-        cursor.execute("CREATE TABLE entity (id TEXT, name TEXT)")
-
-        cursor.execute("CREATE TABLE metal (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE element (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE compound (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE nonmetal (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE white (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE dark_gray (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE brittle (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE oxide (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE sulfide (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE chloride (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE fuel (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE burns (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE burns_rapidly (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE combustable (entity TEXT PRIMARY KEY, truth TEXT)")
-        cursor.execute("CREATE TABLE gasoline (entity TEXT PRIMARY KEY, truth TEXT)")
-
-        # define some inference rules
-
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
 
-        data_source = Sqlite3DataSource(connection)
+        data_source = CooperDB()
         facts = CooperModule(data_source)
 
         sentence_context = BasicSentenceContext()
