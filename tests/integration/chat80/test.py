@@ -1,4 +1,3 @@
-import sqlite3
 import unittest
 import pathlib
 
@@ -6,8 +5,6 @@ from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
-from richard.data_source.CsvImporter import CsvImporter
-from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicSentenceContext import BasicSentenceContext
@@ -48,15 +45,23 @@ class TestChat80(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
+        # define the database
+
         db = Chat80DB()
         facts = Chat80Module(db)
+
+        # define the intents and other inferences
 
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
         inferences.import_rules(path + "intents.pl")
 
+        # define the data sources that have sentence and dialog scope, respectively
+
         sentence_context = BasicSentenceContext()
         dialog_context = BasicDialogContext()
+
+        # define the model
 
         model = Model([
             facts,
@@ -65,15 +70,18 @@ class TestChat80(unittest.TestCase):
             dialog_context
         ])
 
+        # define the pipeline
+
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
         parser = BasicParser(read_grammar)
-        composer = SemanticComposer(parser)
-        composer.query_optimizer = BasicQueryOptimizer(model)
-        composer.sentence_context = sentence_context
+
+        composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, sentence_context)
+
+        # define the system
 
         system = System(
             model=model,

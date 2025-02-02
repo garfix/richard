@@ -51,13 +51,21 @@ class TestCooper(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
-        inferences = InferenceModule()
-        inferences.import_rules(path + "inferences.pl")
+        # create a database
 
         data_source = CooperDB()
         facts = CooperModule(data_source)
 
+        # define inference rules
+
+        inferences = InferenceModule()
+        inferences.import_rules(path + "inferences.pl")
+
+        # a data source for facts that only last a sentence
+
         sentence_context = BasicSentenceContext()
+
+        # define the model
 
         model = Model([
             facts,
@@ -65,15 +73,18 @@ class TestCooper(unittest.TestCase):
             sentence_context,
         ])
 
+        # define the first pipeline
+
         grammar1 = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar1())
         parser = BasicParser(grammar1)
-        composer = SemanticComposer(parser)
-        composer.query_optimizer = BasicQueryOptimizer(model)
-        composer.sentence_context = sentence_context
+
+        composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, sentence_context)
+
+        # define the first system
 
         system1 = System(
             model=model,
@@ -85,12 +96,15 @@ class TestCooper(unittest.TestCase):
             output_generator=generator
         )
 
+        # define the second pipeline
+
         grammar2 = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar2())
         parser = BasicParser(grammar2)
-        composer = SemanticComposer(parser)
-        composer.query_optimizer = BasicQueryOptimizer(model)
-        composer.sentence_context = sentence_context
+
+        composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
         executor = AtomExecutor(composer, model)
+
+        # define the second system
 
         system2 = System(
             model=model,

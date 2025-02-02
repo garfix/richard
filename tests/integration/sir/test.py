@@ -59,14 +59,11 @@ class TestSIR(unittest.TestCase):
         inferences.import_rules(path + "intents.pl")
         inferences.import_rules(path + "inferences.pl")
 
-        # sentence scoped facts
+        # a data source for facts that only last a sentence
 
         sentence_context = SIRSentenceContext()
 
-        # define the pipeline
-
-        read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
-        parser = BasicParser(read_grammar)
+        # define the model
 
         model = Model([
             facts,
@@ -74,8 +71,12 @@ class TestSIR(unittest.TestCase):
             sentence_context
         ])
 
-        composer = SemanticComposer(parser)
-        composer.query_optimizer = BasicQueryOptimizer(model)
+        # define the pipeline
+
+        read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
+        parser = BasicParser(read_grammar)
+
+        composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())

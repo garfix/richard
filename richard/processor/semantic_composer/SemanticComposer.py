@@ -23,10 +23,10 @@ class SemanticComposer(SomeProcessor):
     variable_generator: VariableGenerator
 
 
-    def __init__(self, parser: SomeProcessor) -> None:
+    def __init__(self, parser: SomeProcessor, query_optimizer: SomeQueryOptimizer = None) -> None:
         super().__init__()
         self.parser = parser
-        self.query_optimizer = None
+        self.query_optimizer = query_optimizer
         self.variable_generator = VariableGenerator("$")
 
 

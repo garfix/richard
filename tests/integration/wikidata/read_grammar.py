@@ -9,7 +9,7 @@ def get_read_grammar():
         # sentence
         {
             "syn": "s(E2) -> 'where' 'was' np(E1) 'born'+'?'",
-            "sem": lambda np: apply(np, []) + [('place_of_birth', E1, E2), ('sentence_report', E2)],
+            "sem": lambda np: apply(np, []) + [('place_of_birth', E1, E2), ('intent_report', E2)],
         },
 
         # nbar

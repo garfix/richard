@@ -7,20 +7,18 @@ from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
-from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.data_source.WikidataDataSource import WikidataDataSource
-from tests.integration.wikidata.write_grammar import get_write_grammar
 from .WikidataSentenceContext import WikidataSentenceContext
 from .WikidataModule import WikidataModule
+from .write_grammar import get_write_grammar
 from .read_grammar import get_read_grammar
 
 
@@ -40,16 +38,24 @@ class TestWikiData(unittest.TestCase):
 
     def test_wikidata(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/resources/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/"
         result_cache_path = str(pathlib.Path(__file__).parent.resolve()) + "/result_cache/"
 
-        # map domain predicates to one or more Wikidata predicates
+        # define the data source
+        wikidata = WikidataModule(WikidataDataSource(result_cache_path=result_cache_path))
+
+        # define the intents
+        # define predicate mapping from the domain to one or more Wikidata predicates
+
         inferences = InferenceModule()
         inferences.import_rules(path + "mapping.pl")
-        inferences.import_rules(path + "sentences.pl")
+        inferences.import_rules(path + "intents.pl")
+
+        # a data source for facts that only last a sentence
 
         sentence_context = WikidataSentenceContext()
-        wikidata = WikidataModule(WikidataDataSource(result_cache_path=result_cache_path))
+
+        # define the model
 
         model = Model([
             inferences,
@@ -57,14 +63,18 @@ class TestWikiData(unittest.TestCase):
             wikidata,
         ])
 
+        # define the pipeline
+
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
         parser = BasicParser(read_grammar)
+
         composer = SemanticComposer(parser)
-        composer.query_optimizer = BasicQueryOptimizer(model)
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, sentence_context)
+
+        # define the system
 
         system = System(
             model=model,
