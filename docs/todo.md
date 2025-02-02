@@ -3,7 +3,6 @@
 
 * more SIR sentences
     * b. RESOLVING AMBIGUITIES
-* move the create table statements into the modules
 * document
     * replace processing exception with store output
     * generate

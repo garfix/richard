@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 setup(
     name='richard',
@@ -9,8 +9,8 @@ setup(
     author='Patrick van Bergen',
     author_email='patrick.vanbergen@gmail.com',
     license='MIT',
-    packages=find_packages(),
-    install_requires=[],
+    package_dir={"": "richard"},
+    packages=find_namespace_packages(where='richard'),
 
     classifiers=[
         'Intended Audience :: Science/Research',

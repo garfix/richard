@@ -214,7 +214,6 @@ class TestSIR(unittest.TestCase):
             ['How many fingers does Tom have?', "The answer is 9"],
             ['How many fingers does Dick have?', "The answer is 5"],
             ['How many fingers does Harry have?', "The answer is 10"],
-            # ['How many fingers doest Joe have?', "Don't know whether finger is part of Joe"],
         ]
 
         logger = Logger()
