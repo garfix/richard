@@ -14,6 +14,7 @@ class BasicSentenceContext(SimpleMemoryModule):
         self.add_relation(Relation("output_table", arguments=["results", "units"]))
         self.add_relation(Relation("output_list", arguments=["elements"]))
         self.add_relation(Relation("output_name_not_found", arguments=["name"]))
+        self.add_relation(Relation("output_unknown_word", arguments=["word"]))
 
 
     def clear(self):

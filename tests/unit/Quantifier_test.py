@@ -3,7 +3,7 @@ import unittest
 
 from richard.block.TryFirst import TryFirst
 from richard.core.Model import Model
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, E2, Body, Range
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
@@ -106,16 +106,19 @@ class TestQuantification(unittest.TestCase):
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            TryFirst(composer),
-            TryFirst(executor)
-        ])
+        system = System(
+            model=model,
+            input_pipeline=[
+                FindOne(parser),
+                TryFirst(composer),
+                TryFirst(executor)
+            ]
+        )
 
         request = SentenceRequest("Every parent has two children")
-        bindings = pipeline.enter(request)
+        bindings = system.enter(request)
         self.assertEqual(len(bindings), 3)
 
         request = SentenceRequest("Every parent has three children")
-        bindings = pipeline.enter(request)
+        bindings = system.enter(request)
         self.assertEqual(len(bindings), 0)

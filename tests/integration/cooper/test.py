@@ -5,6 +5,7 @@ from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
+from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
@@ -12,7 +13,7 @@ from richard.processor.semantic_composer.SemanticComposer import SemanticCompose
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from .CooperDB import CooperDB
@@ -71,14 +72,18 @@ class TestCooper(unittest.TestCase):
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
 
-        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
-        generator = BasicGenerator(write_grammar, model)
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
+        generator = BasicGenerator(write_grammar, model, sentence_context)
 
-        pipeline1 = Pipeline([
-            FindOne(parser),
-            TryFirst(composer),
-            TryFirst(executor),
-        ], generator=generator)
+        system1 = System(
+            model=model,
+            input_pipeline=[
+                FindOne(parser),
+                TryFirst(composer),
+                TryFirst(executor),
+            ],
+            output_generator=generator
+        )
 
         grammar2 = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar2())
         parser = BasicParser(grammar2)
@@ -87,11 +92,15 @@ class TestCooper(unittest.TestCase):
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
 
-        pipeline2 = Pipeline([
-            FindOne(parser),
-            TryFirst(composer),
-            TryFirst(executor),
-        ], generator=generator)
+        system2 = System(
+            model=model,
+            input_pipeline=[
+                FindOne(parser),
+                TryFirst(composer),
+                TryFirst(executor),
+            ],
+            output_generator=generator
+        )
 
         tests1 = [
             ["magnesium is a metal", "OK"],
@@ -163,12 +172,12 @@ class TestCooper(unittest.TestCase):
         # logger.log_products()
         # logger.log_stats()
 
-        tester = DialogTester(self, tests1, pipeline1, logger)
+        tester = DialogTester(self, tests1, system1, logger)
         tester.run()
 
         # print(logger)
 
-        tester = DialogTester(self, tests2, pipeline2, logger)
+        tester = DialogTester(self, tests2, system2, logger)
         tester.run()
 
         print(logger)

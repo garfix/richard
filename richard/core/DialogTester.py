@@ -3,7 +3,7 @@ import unittest
 import cProfile
 import time
 
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.core.Logger import ALL, LAST, Logger
 from richard.entity.SentenceRequest import SentenceRequest
 
@@ -11,7 +11,7 @@ class DialogTester:
 
     test_case: unittest.TestCase
     tests: list
-    pipeline: Pipeline
+    system: System
 
     # what to print? none, all, last
     logger: Logger
@@ -23,13 +23,13 @@ class DialogTester:
     def __init__(self,
         test_case: unittest.TestCase,
         tests: list,
-        pipeline: Pipeline,
+        system: System,
         logger: Logger,
         profile: bool = False
     ) -> None:
         self.test_case = test_case
         self.tests = tests
-        self.pipeline = pipeline
+        self.system = system
         self.logger = logger
         self.profile = profile
 
@@ -59,13 +59,13 @@ class DialogTester:
                 start_time = time.perf_counter()
 
                 # send the request through the pipeline
-                self.pipeline.enter(request)
+                self.system.enter(request)
 
                 end_time = time.perf_counter()
 
                 output = ''
-                if self.pipeline.generator:
-                    output = self.pipeline.generator.generate_output()
+                if self.system.output_generator:
+                    output = self.system.output_generator.generate_output()
 
                 error = output != expected
 

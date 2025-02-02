@@ -1,9 +1,5 @@
 ## todo
 
-NOT_UNDERSTOOD = "Sorry, I don't understand"
-^ write output
-
-error message parsing sentence: could not understand: i
 
 * more SIR sentences
     * b. RESOLVING AMBIGUITIES

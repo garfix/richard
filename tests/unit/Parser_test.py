@@ -1,8 +1,13 @@
 import unittest
 
-from richard.core.Pipeline import Pipeline
+from richard.core.BasicGenerator import BasicGenerator
+from richard.core.Model import Model
+from richard.core.System import System
 from richard.block.FindOne import FindOne
+from richard.core.constants import E1
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.grammar.en_us_write import get_en_us_write_grammar
+from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 
@@ -59,17 +64,6 @@ class TestParser(unittest.TestCase):
             rules = [str(rule) for rule in grammar.index['s'][1]]
             self.assertEqual(rules, test['variants'])
 
-        # rule = { "syn": "s(V) -> np(E1) 'so'? vp(V, E1)" }
-        # grammar = SimpleGrammarRulesParser().parse([rule])
-        # rules = [str(rule) for rule in grammar.index['s'][1]]
-        # self.assertEqual(rules, ["s(V) -> np(E1) ' ' 'so' ' ' vp(V, E1)", "s(V) -> np(E1) ' ' vp(V, E1)"])
-
-
-        # rule = { "syn": "s(V) -> np(E1)+'so'?~vp(V, E1)" }
-        # grammar = SimpleGrammarRulesParser().parse([rule])
-        # rules = [str(rule) for rule in grammar.index['s'][1]]
-        # self.assertEqual(rules, ["s(V) -> np(E1) 'so' ' ' vp(V, E1)", "s(V) -> np(E1) ' ' vp(V, E1)"])
-
 
     def test_parser_process(self):
 
@@ -86,12 +80,14 @@ class TestParser(unittest.TestCase):
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
 
-        pipeline = Pipeline([
-            FindOne(parser)
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser)
+            ]
+        )
 
         request = SentenceRequest("John loves Mary")
-        parse_tree = pipeline.enter(request)
+        parse_tree = system.enter(request)
         self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 
 
@@ -106,13 +102,15 @@ class TestParser(unittest.TestCase):
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
 
-        pipeline = Pipeline([
-            FindOne(parser)
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser)
+            ]
+        )
 
         # note: two spaces
         request = SentenceRequest("John's  shoe")
-        parse_tree = pipeline.enter(request)
+        parse_tree = system.enter(request)
 
         self.assertEqual(parse_tree.inline_str(), "s(np(john 'john') ' ''' s 's' np(shoe 'shoe'))")
 
@@ -129,3 +127,36 @@ class TestParser(unittest.TestCase):
             parser = BasicParser(grammar)
         except Exception as e:
             self.assertEqual(str(e), "Missing -> operator in 'syn' value: s(V) => proper_noun(E1) verb(V)")
+
+
+    def test_parse_error(self):
+        simple_read_grammar = [
+            { "syn": "s(V) -> proper_noun(E1) verb(V)" },
+            { "syn": "proper_noun(E1) -> 'mary'" },
+            { "syn": "verb(V) -> 'walks'" },
+        ]
+
+        sentence_context = BasicSentenceContext()
+
+        model = Model([
+            sentence_context
+        ])
+
+        read_grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_read_grammar)
+        parser = BasicParser(read_grammar)
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar())
+        generator = BasicGenerator(write_grammar, model, sentence_context)
+
+        system = System(
+            model=model,
+            input_pipeline=[
+                FindOne(parser)
+            ],
+            output_generator=generator
+        )
+
+        request = SentenceRequest("Mary talks")
+        system.enter(request)
+        response = generator.generate_output()
+        self.assertEqual(response, "Could not understand: talks ...")
+

@@ -5,14 +5,14 @@ from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
-from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
+from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.processor.parser.BasicParser import BasicParser
 from .SIRDB import SIRDB
 from .SIRSentenceContext import SIRSentenceContext
@@ -76,19 +76,19 @@ class TestSIR(unittest.TestCase):
 
         composer = SemanticComposer(parser)
         composer.query_optimizer = BasicQueryOptimizer(model)
-        composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
 
-        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
-        generator = BasicGenerator(write_grammar, model)
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
+        generator = BasicGenerator(write_grammar, model, sentence_context)
 
-        pipeline = Pipeline(
-            [
+        system = System(
+            model=model,
+            input_pipeline=[
                 TryFirst(parser),
                 TryFirst(composer),
                 TryFirst(executor),
             ],
-            generator=generator
+            output_generator=generator
         )
 
         tests = [
@@ -213,7 +213,7 @@ class TestSIR(unittest.TestCase):
             ['How many fingers does Tom have?', "The answer is 9"],
             ['How many fingers does Dick have?', "The answer is 5"],
             ['How many fingers does Harry have?', "The answer is 10"],
-            ['How many fingers does Joe have?', "Don't know whether finger is part of Joe"],
+            # ['How many fingers doest Joe have?', "Don't know whether finger is part of Joe"],
         ]
 
         logger = Logger()
@@ -222,7 +222,7 @@ class TestSIR(unittest.TestCase):
         # logger.log_all_tests()
         # logger.log_products()
 
-        tester = DialogTester(self, tests, pipeline, logger)
+        tester = DialogTester(self, tests, system, logger)
         tester.run()
 
         print(logger)

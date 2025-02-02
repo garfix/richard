@@ -112,8 +112,8 @@ class Logger:
         if self.is_active() and self.show_products == ALL:
             if not self.show_products_processors or processor in self.show_products_processors:
                 self.add_header(processor.get_name())
-                if result.error != "":
-                    self.add_error(result.error)
+                if result.error_type != "":
+                    self.add_error(result.error_type)
 
                 for product in result.products:
                     product.log(self)

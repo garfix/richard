@@ -1,6 +1,6 @@
 import unittest
 
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.block.FindAll import FindAll
 from richard.block.FindOne import FindOne
 from richard.entity.SentenceRequest import SentenceRequest
@@ -38,25 +38,29 @@ class TestFunctionApplication(unittest.TestCase):
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            FindOne(composer)
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser),
+                FindOne(composer)
+            ]
+        )
 
         request = SentenceRequest("What is three plus four")
-        pipeline.enter(request)
+        system.enter(request)
         composition = request.get_current_product(composer)
         self.assertEqual(composition.get_semantics_last_iteration(), 7)
 
         # test find_all
         # test ambiguous sentence with 2 readings (that exposed an error in the parser, now solved)
 
-        pipeline = Pipeline([
-            FindAll(parser),
-            FindAll(composer)
-        ])
+        system = System(
+            input_pipeline=[
+                FindAll(parser),
+                FindAll(composer)
+            ]
+        )
         request = SentenceRequest("Calculate three plus four times two")
-        pipeline.enter(request)
+        system.enter(request)
 
         compositions = request.get_alternative_products(composer)
         self.assertEqual(compositions[0].get_semantics_last_iteration(), 14)

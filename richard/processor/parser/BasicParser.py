@@ -36,7 +36,8 @@ class BasicParser(SomeProcessor):
         products = [BasicParserProduct(tree) for tree in sorted_trees]
         return ProcessResult(
             products,
-            result.error
+            result.error_type,
+            result.error_args
         )
 
 

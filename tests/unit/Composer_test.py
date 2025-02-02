@@ -1,7 +1,7 @@
 import re
 import unittest
 
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, E2, Body, Range
 from richard.entity.SentenceRequest import SentenceRequest
@@ -25,14 +25,16 @@ class TestComposer(unittest.TestCase):
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            FindOne(composer),
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser),
+                FindOne(composer),
+            ]
+        )
 
         exception_occurred = False
         try:
-            pipeline.enter(SentenceRequest("Mary walks"))
+            system.enter(SentenceRequest("Mary walks"))
         except Exception as e:
             self.assertEqual(str(e), "Rule 'proper_noun(E1) -> 'mary'' is missing key 'sem'")
             exception_occurred = True
@@ -57,13 +59,15 @@ class TestComposer(unittest.TestCase):
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            FindOne(composer),
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser),
+                FindOne(composer),
+            ]
+        )
 
         request = SentenceRequest("The river flows to the sea")
-        semantics = pipeline.enter(request)
+        semantics = system.enter(request)
         self.assertEqual(str(semantics), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
 
 
@@ -80,15 +84,17 @@ class TestComposer(unittest.TestCase):
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            FindOne(composer),
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser),
+                FindOne(composer),
+            ]
+        )
 
         # basic
 
         request = SentenceRequest("John sleeps")
-        semantics = pipeline.enter(request)
+        semantics = system.enter(request)
 
         product: BasicParserProduct = request.get_current_product(parser)
         self.assertEqual(product.parse_tree.inline_str(), "s(np(proper_noun(\w+ 'John')) sleeps 'sleeps')")
@@ -97,7 +103,7 @@ class TestComposer(unittest.TestCase):
         # two tokens
 
         request = SentenceRequest("John Walker sleeps")
-        semantics = pipeline.enter(request)
+        semantics = system.enter(request)
         self.assertEqual(str(semantics), "John Walker")
 
 
@@ -113,13 +119,15 @@ class TestComposer(unittest.TestCase):
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            FindOne(composer),
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser),
+                FindOne(composer),
+            ]
+        )
 
         request = SentenceRequest("John sleeps")
-        pipeline.enter(request)
+        system.enter(request)
         composition = request.get_current_product(composer)
         self.assertEqual(composition.return_variables, ["$1", "$2"])
 
@@ -136,15 +144,17 @@ class TestComposer(unittest.TestCase):
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            FindOne(composer),
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(parser),
+                FindOne(composer),
+            ]
+        )
 
         # basic
 
         request = SentenceRequest("Does John sleep?")
-        semantics = pipeline.enter(request)
+        semantics = system.enter(request)
 
         product: BasicParserProduct = request.get_current_product(parser)
         self.assertEqual(str(semantics), "John")

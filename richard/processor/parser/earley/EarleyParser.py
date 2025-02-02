@@ -24,13 +24,15 @@ class EarleyParser:
         rootNodes = extract_tree_roots(chart)
 
         error = ""
+        args = []
 
         if len(rootNodes) == 0:
 
             nextWord = find_unknown_word(chart)
 
             if nextWord != "":
-                error = UNKNOWN_WORD + " " + nextWord
+                error = UNKNOWN_WORD
+                args = [nextWord]
             elif len(text) == 0:
                 error = NO_SENTENCE
             else:
@@ -38,7 +40,8 @@ class EarleyParser:
 
         return ProcessResult(
             products=rootNodes,
-            error=error
+            error_type=error,
+            error_args=args
         )
 
 

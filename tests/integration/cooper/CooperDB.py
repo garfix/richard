@@ -4,7 +4,7 @@ from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 
 
 class CooperDB(Sqlite3DataSource):
-    # Using an in-memory sqlite database to store Chat-80's facts
+    # Using an in-memory sqlite database to store the facts
     def __init__(self):
 
         connection = sqlite3.connect(':memory:')

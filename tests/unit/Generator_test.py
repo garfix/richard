@@ -59,7 +59,7 @@ class TestGenerator(unittest.TestCase):
         ]
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(raw_grammar)
-        generator = BasicGenerator(write_grammar, model)
+        generator = BasicGenerator(write_grammar, model, sentence_context)
 
         tests = [
             {

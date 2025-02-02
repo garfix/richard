@@ -21,7 +21,6 @@ class SemanticComposer(SomeProcessor):
     parser: SomeProcessor
     query_optimizer: SomeQueryOptimizer
     variable_generator: VariableGenerator
-    sentence_context: SomeClearableDb
 
 
     def __init__(self, parser: SomeProcessor) -> None:
@@ -29,7 +28,6 @@ class SemanticComposer(SomeProcessor):
         self.parser = parser
         self.query_optimizer = None
         self.variable_generator = VariableGenerator("$")
-        self.sentence_context = None
 
 
     def get_name(self) -> str:
@@ -37,9 +35,6 @@ class SemanticComposer(SomeProcessor):
 
 
     def process(self, request: SentenceRequest) -> ProcessResult:
-
-        if self.sentence_context:
-            self.sentence_context.clear()
 
         incoming: BasicParserProduct = request.get_current_product(self.parser)
         parse_tree = incoming.parse_tree

@@ -1,6 +1,6 @@
 import unittest
 
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.SentenceRequest import SentenceRequest
@@ -40,17 +40,19 @@ class TestMultilingual(unittest.TestCase):
 
         parser = Multilingual(parsers, language_selector)
 
-        pipeline = Pipeline([
-            FindOne(language_selector),
-            FindOne(parser)
-        ])
+        system = System(
+            input_pipeline=[
+                FindOne(language_selector),
+                FindOne(parser)
+            ]
+        )
 
         request = SentenceRequest("John loves Mary")
 
-        parse_tree: ParseTreeNode = pipeline.enter(request)
+        parse_tree: ParseTreeNode = system.enter(request)
         self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 
         request = SentenceRequest("Jan houdt van Marie")
 
-        parse_tree: ParseTreeNode = pipeline.enter(request)
+        parse_tree: ParseTreeNode = system.enter(request)
         self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(jan 'jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'marie')))))")

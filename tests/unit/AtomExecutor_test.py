@@ -3,7 +3,7 @@ import unittest
 from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
 from richard.core.Model import Model
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, e1
 from richard.entity.SentenceRequest import SentenceRequest
@@ -44,15 +44,17 @@ class TestAtomExecutor(unittest.TestCase):
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
         parser = BasicParser(read_grammar)
         composer = SemanticComposer(parser)
-        composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
-        generator = BasicGenerator(write_grammar, model)
+        generator = BasicGenerator(write_grammar, model, sentence_context)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            TryFirst(composer),
-            TryFirst(executor),
-        ], generator=generator)
+        pipeline = System(
+            model=model,
+            input_pipeline=[
+                FindOne(parser),
+                TryFirst(composer),
+                TryFirst(executor),
+            ],
+            output_generator=generator)
 
         pipeline.enter(SentenceRequest("John walks"))
         output = generator.generate_output()
@@ -96,19 +98,22 @@ class TestAtomExecutor(unittest.TestCase):
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            TryFirst(composer),
-            TryFirst(executor),
-        ])
+        system = System(
+            model=model,
+            input_pipeline=[
+                FindOne(parser),
+                TryFirst(composer),
+                TryFirst(executor),
+            ]
+        )
 
         # test the inference
-        pipeline.enter(SentenceRequest("Continents be"))
+        system.enter(SentenceRequest("Continents be"))
         results = dialog_context.data_source.select("isa", ['entity', 'type'], [None, None])
         self.assertEqual(["$1", "continent"], results[0])
 
         # test the executable code
-        pipeline.enter(SentenceRequest("Continents exist"))
+        system.enter(SentenceRequest("Continents exist"))
         results = dialog_context.data_source.select("concept", ['type'], [None])
         self.assertEqual(["continents"], results[0])
 

@@ -11,22 +11,24 @@ class TryFirst(ControlBlock):
 
     def process(self, request: SentenceRequest) -> BlockResult:
         result = request.exec_process(self.processor)
-        if result.error != '':
-            return BlockResult(result.error)
+        if result.error_type != '':
+            return BlockResult(result.error_type, result.error_args)
 
         request.set_alternative_products(self.processor, result.products)
 
-        error = ""
+        error_type = ""
+        error_args = []
 
         for product in result.products:
 
             request.set_current_product(self.processor, product)
 
             next_block_result = self.next_block.process(request)
-            error = next_block_result.error
+            error_type = next_block_result.error_type
+            error_args = next_block_result.error_args
 
             # first product tried: quit
             break
 
-        return BlockResult(error)
+        return BlockResult(error_type, error_args)
 

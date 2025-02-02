@@ -8,6 +8,7 @@ from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.data_source.CsvImporter import CsvImporter
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
+from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicSentenceContext import BasicSentenceContext
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
@@ -15,7 +16,7 @@ from richard.processor.semantic_composer.SemanticComposer import SemanticCompose
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
-from richard.core.Pipeline import Pipeline
+from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.module.InferenceModule import InferenceModule
@@ -71,14 +72,18 @@ class TestChat80(unittest.TestCase):
         composer.sentence_context = sentence_context
         executor = AtomExecutor(composer, model)
 
-        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_write_grammar())
-        generator = BasicGenerator(write_grammar, model)
+        write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
+        generator = BasicGenerator(write_grammar, model, sentence_context)
 
-        pipeline = Pipeline([
-            FindOne(parser),
-            TryFirst(composer),
-            TryFirst(executor)
-        ], generator=generator)
+        system = System(
+            model=model,
+            input_pipeline=[
+                FindOne(parser),
+                TryFirst(composer),
+                TryFirst(executor)
+            ],
+            output_generator=generator
+        )
 
         tests = [
             ["What rivers are there?", "amazon, amu_darya, amur, brahmaputra, colorado, congo_river, cubango, danube, don, elbe, euphrates, ganges, hwang_ho, indus, irrawaddy, lena, limpopo, mackenzie, mekong, mississippi, murray, niger_river, nile, ob, oder, orange, orinoco, parana, rhine, rhone, rio_grande, salween, senegal_river, tagus, vistula, volga, volta, yangtze, yenisei, yukon, zambesi"],
@@ -134,7 +139,7 @@ class TestChat80(unittest.TestCase):
         # logger.log_products()
         # logger.log_stats()
 
-        tester = DialogTester(self, tests, pipeline, logger)
+        tester = DialogTester(self, tests, system, logger)
         tester.run()
 
         print(logger)
