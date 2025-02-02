@@ -18,7 +18,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from tests.integration.sir.SIRSentenceContext import SIRSentenceContext
 from tests.integration.sir.SIRModule import SIRModule
 from tests.integration.sir.write_grammar import get_write_grammar
-from .sir.read_grammar import get_read_grammar
+from .read_grammar import get_read_grammar
 
 
 class TestSIR(unittest.TestCase):
@@ -46,7 +46,7 @@ class TestSIR(unittest.TestCase):
 
     def test_sir(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/sir/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
         # create a database
 

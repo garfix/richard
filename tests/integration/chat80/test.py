@@ -19,9 +19,9 @@ from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.module.InferenceModule import InferenceModule
-from .chat80.write_grammar import get_write_grammar
-from .chat80.Chat80Module import Chat80Module
-from .chat80.read_grammar import get_read_grammar
+from .write_grammar import get_write_grammar
+from .Chat80Module import Chat80Module
+from .read_grammar import get_read_grammar
 
 
 class TestChat80(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestChat80(unittest.TestCase):
 
     def test_chat80(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/chat80/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
         connection = sqlite3.connect(':memory:')
         cursor = connection.cursor()

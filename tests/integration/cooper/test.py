@@ -17,10 +17,10 @@ from richard.core.Model import Model
 from richard.core.Pipeline import Pipeline
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
-from .cooper.CooperModule import CooperModule
-from .cooper.write_grammar import get_write_grammar
-from .cooper.read_grammar1 import get_read_grammar1
-from .cooper.read_grammar2 import get_read_grammar2
+from .CooperModule import CooperModule
+from .write_grammar import get_write_grammar
+from .read_grammar1 import get_read_grammar1
+from .read_grammar2 import get_read_grammar2
 
 
 class TestCooper(unittest.TestCase):
@@ -49,7 +49,7 @@ class TestCooper(unittest.TestCase):
 
     def test_cooper(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/cooper/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
         connection = sqlite3.connect(':memory:')
         cursor = connection.cursor()

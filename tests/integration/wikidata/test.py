@@ -18,9 +18,9 @@ from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.data_source.WikidataDataSource import WikidataDataSource
 from tests.integration.wikidata.write_grammar import get_write_grammar
-from .wikidata.WikidataSentenceContext import WikidataSentenceContext
-from .wikidata.WikidataModule import WikidataModule
-from .wikidata.read_grammar import get_read_grammar
+from .WikidataSentenceContext import WikidataSentenceContext
+from .WikidataModule import WikidataModule
+from .read_grammar import get_read_grammar
 
 
 class TestWikiData(unittest.TestCase):
@@ -39,8 +39,8 @@ class TestWikiData(unittest.TestCase):
 
     def test_wikidata(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/wikidata/resources/"
-        result_cache_path = str(pathlib.Path(__file__).parent.resolve()) + "/wikidata/result_cache/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/resources/"
+        result_cache_path = str(pathlib.Path(__file__).parent.resolve()) + "/result_cache/"
 
         # map domain predicates to one or more Wikidata predicates
         inferences = InferenceModule()

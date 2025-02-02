@@ -1,10 +1,9 @@
 ## todo
 
 NOT_UNDERSTOOD = "Sorry, I don't understand"
-
 ^ write output
 
-"The answer is 10" werkt niet als de bindings uniek gemaakt worden (Solver)
+error message parsing sentence: could not understand: i
 
 * more SIR sentences
     * b. RESOLVING AMBIGUITIES
@@ -17,6 +16,7 @@ NOT_UNDERSTOOD = "Sorry, I don't understand"
     * generate rules: post
     * generate rules: the order of the rules matters!
     * describe the technique of `context('question')`
+    * learning general rules
 
 
 ## module
