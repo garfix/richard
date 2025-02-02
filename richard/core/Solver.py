@@ -24,9 +24,7 @@ class Solver(SomeSolver):
         if not isinstance(atoms, list):
             raise Exception("Solver can only solve lists of atoms, this is not a list: " + str(atoms))
 
-        if len(atoms) == 1:
-            return self.solve_single(atoms[0], binding)
-        elif len(atoms) == 0:
+        if len(atoms) == 0:
             return [binding]
         else:
             result = []

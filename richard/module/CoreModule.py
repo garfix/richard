@@ -390,7 +390,7 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('destructure', body-atoms, term, term, term...)
+    # ('destructure', body-atom, predicate, arg-val, arg-val...)
     # for example: ('destructure', Atom, 'just_left_of', A, B)
     def destructure(self, values: list, context: ExecutionContext) -> list[list]:
 
@@ -420,8 +420,8 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('findall', variable-name, body-atoms, result-variable)
-    # ('findall', [variable-name, variable-name...], body-atoms, result-variable)
+    # ('find_all', variable-name, body-atoms, result-variable)
+    # ('find_all', [variable-name, variable-name...], body-atoms, result-variable)
     # Creates a list of all values of variable found by running body-atoms
     # There can be a list of variables, in which case a list of combinations is returned
     # Returned value is placed in result-variable

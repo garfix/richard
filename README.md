@@ -16,12 +16,13 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 
 ## Versions
 
-* 0.4 ?
+* 0.4 February 2025
     * use sqlite3 for all examples and memory stores
     * storing facts and learning rules
     * Cooper's system (1964) demo
     * Bertram Rafael's SIR (1964) demo
     * integrate tokenizer into parser to enable morphological analysis
+    * generator with write grammar
 * 0.3 September 2024
     * from function based grammar to atom based grammar
     * inference engine

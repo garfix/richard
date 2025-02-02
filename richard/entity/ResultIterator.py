@@ -23,6 +23,4 @@ class ResultIterator:
         self.index += 1
         if self.index > self.number:
             raise StopIteration
-        return self.single_result
-
-
+        return f"{self.single_result}{self.index}"

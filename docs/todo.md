@@ -4,37 +4,12 @@ NOT_UNDERSTOOD = "Sorry, I don't understand"
 
 ^ write output
 
-remove or()
-
 "The answer is 10" werkt niet als de bindings uniek gemaakt worden (Solver)
 
-* generate output
-    * create unit test for sentence generator
-    * the simple responder should now use a grammar
-    * responder not just part of the pipeline anymore, rather part of the client
-    * the sentence context is used to store buffered output
-    * apply to all tests
-* Read SIR thesis whole
 * more SIR sentences
-    * a. SET-INCLUSION ("sometimes")
-    * b. SET-MEMBERSHIP (except: "the boy" without knowing what it refers to)
-    * c. EQUIVALENCE no (depends on "the man" which has no reference)
-    * d. OWNERSHIP
-    * e. OWNERSHIP, SPECIFIC
-    * f. PART-WHOLE, GENERAL
-    * g. PART-WHOLE, SPECIFIC
-    * h. NUMBER (done!)
-    * i. LEFT-TO-RIGHT POSITION
-* more SIR sentences
-    * a. EXCEPTION PRINCIPLE
     * b. RESOLVING AMBIGUITIES
-    * c. STREAMLINING LINKAGES
-* create dialog variables for `the X`
 * move the create table statements into the modules
 * document
-    * destructure
-    * or as ;
-    * grouped atoms with parens
     * replace processing exception with store output
     * generate
     * format
@@ -49,25 +24,6 @@ remove or()
 * (?) add `common_query` and `common_write` to SomeModule to reduce code duplication
 * turn destructure2 into a more generic way of destructuring, using an array for the structure
 
-## inferences
-
-* create the inference structure that the second set of goals is only tried if the first fails (syntax yet unknown)
-
-~~~
-or:
-    sentence_claim(Atom, "impossible") :- not(check_claim(Atom)).
-    sentence_claim(Atom, "ok") :- check_claim(Atom), store(Atom).
-~~~
-
-this would be a possible implementation, but it is not clear
-
-~~~
-sentence_claim(Atom, Result) :- or(
-    not(check_claim(Atom)), let(Result, "impossible"),
-    store(Atom), let(Result, "ok")
-).
-~~~
-
 ## isolation of independent parts
 
 optimize isolate independent parts:
@@ -78,6 +34,7 @@ optimize isolate independent parts:
 
 ## done
 
+* replace SimpleResponder by BasicGenerator
 * learn_grammar_rule
 * directly execute code
 * characters as tokens; exit tokenizer
