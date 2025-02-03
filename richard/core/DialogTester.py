@@ -65,7 +65,7 @@ class DialogTester:
 
                 output = ''
                 if self.system.output_generator:
-                    output = self.system.output_generator.generate_output()
+                    output = self.system.read_output()
 
                 error = output != expected
 

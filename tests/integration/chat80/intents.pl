@@ -10,8 +10,7 @@ intent_table(Variables, Units, Body) :-
 
 intent_yn(Body) :- (
     scoped(Body),  store(output_type('yes'))
-;
-    store(output_type('no'))
+;   store(output_type('no'))
 ).
 
 intent_value(Variable, Sem) :-

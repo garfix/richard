@@ -220,10 +220,7 @@ def get_read_grammar():
         { "syn": "noun(E1) -> 'sea'",           "sem": lambda: [('sea', E1)],           "dialog": [('dialog_isa', e1, 'sea')] },
         { "syn": "noun(E1) -> 'city'",          "sem": lambda: [('city', E1)],          "dialog": [('dialog_isa', e1, 'city')] },
         { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)],     "dialog": [('dialog_isa', e1, 'continent')] },
-        # plurals: ignore 's'
-        # { "syn": "noun(E1) -> noun(E1)+'s'",    "sem": lambda noun: noun },
-        # { "syn": "noun(E1) -> /\w+/+'ies'",     "sem": lambda token: [(token+'y', E1)], "dialog": lambda token: [('dialog_isa', e1, token+'y')] },
-
+        # plurals
         { "syn": "noun(E1) -> plural_noun(E1)'",    "sem": lambda plural_noun: plural_noun },
         { "syn": "plural_noun(E1) -> /\w+/+'s'",    "sem": lambda token: [(token, E1)], "dialog": lambda token: [('dialog_isa', e1, token)] },
         { "syn": "plural_noun(E1) -> /\w+/+'ies'",  "sem": lambda token: [(token+'y', E1)], "dialog": lambda token: [('dialog_isa', e1, token+'y')] },

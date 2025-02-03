@@ -13,6 +13,7 @@
     * describe the technique of `context('question')`
     * learning general rules
 
+These something odd about the sentence context, but I don't know how to handle it yet.
 
 ## module
 

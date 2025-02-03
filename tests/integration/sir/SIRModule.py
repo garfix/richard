@@ -29,7 +29,6 @@ class SIRModule(SomeModule):
         self.add_relation(Relation("position_description", query_function=self.position_description, arguments=['description'])),
 
 
-
     def common_query(self, values: list, context: ExecutionContext) -> list[list]:
         results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
         return results
