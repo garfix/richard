@@ -7,15 +7,15 @@ from richard.core.Solver import Solver
 from richard.core.constants import E1, E2, e1, e2
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
-from tests.unit.generator.TestSentenceContext import TestSentenceContext
+from tests.unit.generator.TestOutputBuffer import TestOutputBuffer
 
 class TestGenerator(unittest.TestCase):
 
     def test_generator(self):
 
-        path = str(pathlib.Path(__file__).parent.resolve()) + "/generator/resources/"
+        path = str(pathlib.Path(__file__).parent.resolve()) + "/generator/"
 
-        output_buffer = TestSentenceContext()
+        output_buffer = TestOutputBuffer()
 
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")

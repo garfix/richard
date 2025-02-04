@@ -16,7 +16,7 @@ from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.data_source.WikidataDataSource import WikidataDataSource
-from .WikidataSentenceContext import WikidataSentenceContext
+from .WikidataOutputBuffer import WikidataOutputBuffer
 from .WikidataModule import WikidataModule
 from .write_grammar import get_write_grammar
 from .read_grammar import get_read_grammar
@@ -53,7 +53,7 @@ class TestWikiData(unittest.TestCase):
 
         # a data source to store information for output
 
-        output_buffer = WikidataSentenceContext()
+        output_buffer = WikidataOutputBuffer()
 
         # define the model
 

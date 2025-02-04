@@ -15,7 +15,7 @@ from richard.core.Model import Model
 from richard.core.System import System
 from richard.processor.parser.BasicParser import BasicParser
 from .SIRDB import SIRDB
-from .SIRSentenceContext import SIRSentenceContext
+from .SIROutputBuffer import SIROutputBuffer
 from .SIRModule import SIRModule
 from .write_grammar import get_write_grammar
 from .read_grammar import get_read_grammar
@@ -61,7 +61,7 @@ class TestSIR(unittest.TestCase):
 
         # a data source to store information for output
 
-        output_buffer = SIRSentenceContext()
+        output_buffer = SIROutputBuffer()
 
         # define the model
 

@@ -2,7 +2,7 @@ from richard.entity.Relation import Relation
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
 
 
-class SIRSentenceContext(BasicOutputBuffer):
+class SIROutputBuffer(BasicOutputBuffer):
 
     def __init__(self) -> None:
         super().__init__()

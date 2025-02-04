@@ -10,7 +10,7 @@ In order to answer the question, the following steps take place:
 * create a database module: `HelloWorldModule` creates the predicates needed to interact with the database
 * define the intents and other inference rules: `inferences.pl` and `intents.pl` define the Prolog-like rules
 * create a dialog context for dialog-wide facts that follow from the `dialog` parts of executed read grammar
-* create a sentence context to store output atoms used by the generator
+* create a output buffer to store output atoms used by the generator
 * create the model that references all data stores via their modules
 * define the input pipeline: the parser, the composer, and the executor. The parser needs a `read_grammar`.
 * define the generator. The generator needs to `write_grammar`.
