@@ -3,7 +3,7 @@ from richard.entity.Relation import Relation
 from richard.module.SimpleMemoryModule import SimpleMemoryModule
 
 
-class BasicSentenceContext(SimpleMemoryModule):
+class BasicOutputBuffer(SimpleMemoryModule):
 
     def __init__(self) -> None:
         super().__init__()

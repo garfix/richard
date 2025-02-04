@@ -1,5 +1,10 @@
 ## todo
 
+output
+* create a separate predicate for producing output (like `output(type)`)
+* or there may be different predicates `output_print()` that prints directly
+* this predicate should then **wait** until the message is received by the user / client, before continuing
+* this predicate can be implemented by the application in any way it sees fit
 
 * more SIR sentences
     * b. RESOLVING AMBIGUITIES

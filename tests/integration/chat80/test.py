@@ -7,7 +7,7 @@ from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
-from richard.module.BasicSentenceContext import BasicSentenceContext
+from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -56,9 +56,9 @@ class TestChat80(unittest.TestCase):
         inferences.import_rules(path + "inferences.pl")
         inferences.import_rules(path + "intents.pl")
 
-        # define the data sources that have sentence and dialog scope, respectively
+        # a data source to store information for output
 
-        sentence_context = BasicSentenceContext()
+        output_buffer = BasicOutputBuffer()
         dialog_context = BasicDialogContext()
 
         # define the model
@@ -66,7 +66,7 @@ class TestChat80(unittest.TestCase):
         model = Model([
             facts,
             inferences,
-            sentence_context,
+            output_buffer,
             dialog_context
         ])
 
@@ -79,7 +79,7 @@ class TestChat80(unittest.TestCase):
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
-        generator = BasicGenerator(write_grammar, model, sentence_context)
+        generator = BasicGenerator(write_grammar, model, output_buffer)
 
         # define the system
 

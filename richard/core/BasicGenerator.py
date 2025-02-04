@@ -4,25 +4,25 @@ from richard.core.constants import CATEGORY_FORMAT, CATEGORY_TEXT, CATEGORY_VALU
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.interface.SomeGenerator import SomeGenerator
-from richard.module.BasicSentenceContext import BasicSentenceContext
+from richard.module.BasicOutputBuffer import BasicOutputBuffer
 
 
 class BasicGenerator(SomeGenerator):
 
     grammar: GrammarRules
     solver: Solver
-    sentence_context: BasicSentenceContext
+    output_buffer: BasicOutputBuffer
 
 
-    def __init__(self, grammar: GrammarRules, model: Model, sentence_context: BasicSentenceContext):
+    def __init__(self, grammar: GrammarRules, model: Model, output_buffer: BasicOutputBuffer):
         self.grammar = grammar
         self.solver = Solver(model)
-        self.sentence_context = sentence_context
+        self.output_buffer = output_buffer
 
 
     def generate_output(self):
         output = self.generate_node([], "s", [], False)
-        self.sentence_context.clear()
+        self.output_buffer.clear()
         return output
 
 

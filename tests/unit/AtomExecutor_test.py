@@ -7,7 +7,7 @@ from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, e1
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.module.BasicSentenceContext import BasicSentenceContext
+from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -33,11 +33,11 @@ class TestAtomExecutor(unittest.TestCase):
         ]
 
         facts = TestModule()
-        sentence_context = BasicSentenceContext()
+        output_buffer = BasicOutputBuffer()
 
         model = Model([
             facts,
-            sentence_context,
+            output_buffer,
         ])
 
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(read_grammar)
@@ -45,7 +45,7 @@ class TestAtomExecutor(unittest.TestCase):
         parser = BasicParser(read_grammar)
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
-        generator = BasicGenerator(write_grammar, model, sentence_context)
+        generator = BasicGenerator(write_grammar, model, output_buffer)
 
         pipeline = System(
             model=model,

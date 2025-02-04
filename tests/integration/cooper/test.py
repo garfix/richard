@@ -6,7 +6,7 @@ from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
-from richard.module.BasicSentenceContext import BasicSentenceContext
+from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -61,16 +61,16 @@ class TestCooper(unittest.TestCase):
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
 
-        # a data source for facts that only last a sentence
+        # a data source to store information for output
 
-        sentence_context = BasicSentenceContext()
+        output_buffer = BasicOutputBuffer()
 
         # define the model
 
         model = Model([
             facts,
             inferences,
-            sentence_context,
+            output_buffer,
         ])
 
         # define the first pipeline
@@ -82,7 +82,7 @@ class TestCooper(unittest.TestCase):
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
-        generator = BasicGenerator(write_grammar, model, sentence_context)
+        generator = BasicGenerator(write_grammar, model, output_buffer)
 
         # define the first system
 

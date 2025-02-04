@@ -7,7 +7,7 @@ from richard.block.FindOne import FindOne
 from richard.core.constants import E1
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.grammar.en_us_write import get_en_us_write_grammar
-from richard.module.BasicSentenceContext import BasicSentenceContext
+from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 
@@ -136,16 +136,16 @@ class TestParser(unittest.TestCase):
             { "syn": "verb(V) -> 'walks'" },
         ]
 
-        sentence_context = BasicSentenceContext()
+        output_buffer = BasicOutputBuffer()
 
         model = Model([
-            sentence_context
+            output_buffer
         ])
 
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_read_grammar)
         parser = BasicParser(read_grammar)
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar())
-        generator = BasicGenerator(write_grammar, model, sentence_context)
+        generator = BasicGenerator(write_grammar, model, output_buffer)
 
         system = System(
             model=model,

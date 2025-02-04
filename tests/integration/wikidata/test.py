@@ -51,15 +51,15 @@ class TestWikiData(unittest.TestCase):
         inferences.import_rules(path + "mapping.pl")
         inferences.import_rules(path + "intents.pl")
 
-        # a data source for facts that only last a sentence
+        # a data source to store information for output
 
-        sentence_context = WikidataSentenceContext()
+        output_buffer = WikidataSentenceContext()
 
         # define the model
 
         model = Model([
             inferences,
-            sentence_context,
+            output_buffer,
             wikidata,
         ])
 
@@ -72,7 +72,7 @@ class TestWikiData(unittest.TestCase):
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
-        generator = BasicGenerator(write_grammar, model, sentence_context)
+        generator = BasicGenerator(write_grammar, model, output_buffer)
 
         # define the system
 

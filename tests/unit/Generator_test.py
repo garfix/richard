@@ -15,14 +15,14 @@ class TestGenerator(unittest.TestCase):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/generator/resources/"
 
-        sentence_context = TestSentenceContext()
+        output_buffer = TestSentenceContext()
 
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
 
         model = Model([
             inferences,
-            sentence_context
+            output_buffer
         ])
 
         raw_grammar = [
@@ -59,7 +59,7 @@ class TestGenerator(unittest.TestCase):
         ]
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(raw_grammar)
-        generator = BasicGenerator(write_grammar, model, sentence_context)
+        generator = BasicGenerator(write_grammar, model, output_buffer)
 
         tests = [
             {
@@ -83,7 +83,7 @@ class TestGenerator(unittest.TestCase):
         solver = Solver(model)
 
         for test in tests:
-            sentence_context.clear()
+            output_buffer.clear()
             for atom in test['atoms']:
                 solver.write_atom(atom)
             output = generator.generate_output()

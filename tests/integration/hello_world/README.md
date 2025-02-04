@@ -6,7 +6,7 @@ Next to that, in order to give you an idea what a simple interaction with a data
 
 In order to answer the question, the following steps take place:
 
-* set up the database: `HelloWorldDB` creates a in-memory SQLite database
+* set up the database: `HelloWorldDB` creates a in-memory SQLite database. Use your own database if you have one.
 * create a database module: `HelloWorldModule` creates the predicates needed to interact with the database
 * define the intents and other inference rules: `inferences.pl` and `intents.pl` define the Prolog-like rules
 * create a dialog context for dialog-wide facts that follow from the `dialog` parts of executed read grammar
