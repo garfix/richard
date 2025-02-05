@@ -36,10 +36,11 @@ part_of_number(A, B, N) :- (
 ).
 
 # position
-# left_of is transitive
+# in the context of a question, left_of is transitive
 left_of(A, B) :- context('question'), just_left_of(A, B).
 left_of(A, B) :- context('question'), just_left_of(A, C), left_of(C, B).
 left_of(A, B) :- context('question'), just_left_of(C, B), left_of(A, C).
+
 # if A is part of B, it has the same position as B
 # todo: can use `proper_part_of`
 just_left_of(A, B) :- part_of(A, C), isa(D, C), just_left_of(D, B).

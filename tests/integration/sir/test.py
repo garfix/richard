@@ -6,6 +6,7 @@ from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
+from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -62,13 +63,15 @@ class TestSIR(unittest.TestCase):
         # a data source to store information for output
 
         output_buffer = SIROutputBuffer()
+        dialog_context = BasicDialogContext()
 
         # define the model
 
         model = Model([
             facts,
             inferences,
-            output_buffer
+            output_buffer,
+            dialog_context
         ])
 
         # define the pipeline

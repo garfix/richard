@@ -21,8 +21,10 @@ class SimpleMemoryModule(SomeModule):
 
     def add_relation(self, relation: Relation):
         self.relations[relation.predicate] = relation
-        relation.query_function = self.query
-        relation.write_function = self.write
+        if not relation.query_function:
+            relation.query_function = self.query
+        if not relation.write_function:
+            relation.write_function = self.write
 
 
     def query(self, values: list, context: ExecutionContext) -> list[list]:

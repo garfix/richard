@@ -144,8 +144,7 @@ def get_read_grammar():
         # Is the pad just to the right of the book?
         {
             "syn": "s() -> 'is' proper_noun(E1) preposition(E1, E2) proper_noun(E2)~'?'",
-            "sem": lambda proper_noun1, preposition, proper_noun2: [('intent_yn', proper_noun1 + proper_noun2 + preposition)],
-            "dialog": [('context', 'question')]
+            "sem": lambda proper_noun1, preposition, proper_noun2: [('with_context', 'question', [('intent_yn', proper_noun1 + proper_noun2 + preposition)])],
         },
         # Where is the pad?
         {

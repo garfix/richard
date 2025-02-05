@@ -1,24 +1,17 @@
 ## todo
 
-output
+## context
+
+Work out context in inference rules:
+* syntax: `name{ rule. rule. }`
+* application: the rules must only be applied when context name is active
+
+## output
+
 * create a separate predicate for producing output (like `output(type)`)
 * or there may be different predicates `output_print()` that prints directly
 * this predicate should then **wait** until the message is received by the user / client, before continuing
 * this predicate can be implemented by the application in any way it sees fit
-
-* more SIR sentences
-    * b. RESOLVING AMBIGUITIES
-* document
-    * replace processing exception with store output
-    * generate
-    * format
-    * generate rules: optional atoms '?'
-    * generate rules: post
-    * generate rules: the order of the rules matters!
-    * describe the technique of `context('question')`
-    * learning general rules
-
-These something odd about the sentence context, but I don't know how to handle it yet.
 
 ## module
 

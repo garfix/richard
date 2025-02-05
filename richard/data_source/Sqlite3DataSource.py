@@ -31,5 +31,11 @@ class Sqlite3DataSource(SomeDataSource):
         cursor.execute(f"INSERT OR IGNORE INTO {table} ({column_string}) VALUES ({place_holders})", values)
 
 
+    def delete(self, table: str, columns: list[str], values: list):
+        cursor = self.connection.cursor()
+        place_holders = "AND ".join([f'{c} = ? ' for c in columns])
+        cursor.execute(f"DELETE FROM {table} WHERE {place_holders}", values)
+
+
     def clear(self):
         raise Exception('clear not implemented')
