@@ -24,8 +24,8 @@ from .read_grammar import get_read_grammar
 
 class TestSIR(unittest.TestCase):
     """
-    Replicates a dialog of SIR (Semantic Information Retriever), by Bertram Rafael as described in
-    - SIR: a computer program for semantic information retrieval - Bertram Rafael (1964)
+    Replicates a dialog of SIR (Semantic Information Retriever), by Bertram Raphael as described in
+    - SIR: a computer program for semantic information retrieval - Bertram Raphael (1964)
 
     This system is interesting because it allows the user to teach the computer facts about concepts,
     then use these new concepts to answer questions.

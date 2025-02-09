@@ -165,7 +165,7 @@ This looks like the equivalent of "A boy is a person". However, a rule-based ana
 
 ===
 
-This could well be asserted, but Rafael states in his dissertation that no nouns are built-in. So we might as well take this along.
+This could well be asserted, but Raphael states in his dissertation that no nouns are built-in. So we might as well take this along.
 
 ## 2024-11-02
 
