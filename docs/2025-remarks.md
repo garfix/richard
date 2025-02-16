@@ -21,6 +21,10 @@ Emotional expressions may also be different depending on the context of emotiona
 
 Inferences may be dependent on context. Even on nested contexts.
 
+===
+
+Okee, starting with the next one. Something based on Roger Schank's work. This stuff is beyond fascinating. But how to approach it?
+
 ## 2025-02-04
 
 I finished the SIR dialog.
