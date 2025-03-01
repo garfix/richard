@@ -14,7 +14,7 @@
 - PROPEL
 - GRASP
 - MOVE
-- INGEST
+- INGEST: to take inside the body
 - EXPEL
 - SMELL
 - SPEAK
@@ -25,6 +25,11 @@
 - PTRANS: change of location
 - CONC
 - MBUILD
+
+## Abbrebiations
+
+CP = Conscious Processor (the mind of some person)
+PP = Picture Producer: people and things that fill a slot in a script. May be a single entity or a group.
 
 ## Papers
 
@@ -40,3 +45,4 @@ Primitive concepts underlying verbs of thought - Schank et al (1972)
 Conceptual dependency: a theory of natural language understanding - Schank (1972)
 
 The fourteen primitive actions and their inferences - Schank (1973)
+
