@@ -14,10 +14,10 @@
 - PROPEL
 - GRASP
 - MOVE
-- INGEST: to take inside the body
+- INGEST: to take inside the body, eat or drink
 - EXPEL
 - SMELL
-- SPEAK
+- SPEAK: to speak
 - LISTEN-TO
 - LOOK-AT
 - MTRANS: transfer of mental information

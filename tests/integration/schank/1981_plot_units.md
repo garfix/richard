@@ -9,3 +9,6 @@ Three affect states
 * - (Negative Event) Events that displease
 * M (Mental State) Mental states (w/ neutral affect)
 
+## Papers
+
+Affect and Memory Representation - Lehnert (1981)
