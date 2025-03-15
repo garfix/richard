@@ -19,49 +19,84 @@ Collecting all information about Schank's line of development, analysing program
 
 ## Persons
 
-Schank starts at Yale. Wilensky starts in Yale under Schank, then sets up his own dept in Berkeley. He's not fond of MOP's developed by Schank.
+Universities
 
+Stanford - Stanford, California
+Yale - New Haven, Connecticut
+Berkeley - University of California
+Georgia - Georgia Institute of Technology
+
+Schank starts in Standford, then moves to Yale. 
+Wilensky starts in Yale under Schank, then sets up his own dept in Berkeley. He's not fond of MOP's developed by Schank.
+
+NAME                                UNIVERSITY              SYSTEM
 Arens, Yigal                        Berkeley                PHRAN
+Burstein, Mark                      Yale                    OPUS
 Butler, Margaret                    Berkeley
 Carbonell, Jaime                    Yale                    Politics
+Chin, David                         Berkeley                PHRAN (Unix consultant)
 Cullingford, Richard                Yale                    SAM
 DeJong, Gerald                      Yale                    Frump
 Dyer, Michael                       Yale                    BORIS
 Faletti, Joe                        Berkeley                PANDORA
-Goldman, Neil                       Berkeley                MARGIE
+Goldman, Neil                       Stanford                MARGIE
 Granacki, John                      Yale                    PHRAN
 Jacobs, Paul                        Berkeley                PHRED
-Kolodner, Janet
+Kolodner, Janet                     Yale, Georgia           CYRUS
 Lebowitz, Michael                   Yale, Columbia          IPP
-Lehnert, Wendy                      Yale                    Qualm, Plot Units
+Lehnert, Wendy                      Yale                    Qualm, OPUS, Plot Units
+Lytinen                             Yale                    MOPTRANS
+Meehan, James                       Yale                    Talespin
 Norvig, Peter                       Berkeley                FAUSTUS
 Parker, Alice                       Yale                    PHRAN
-Rieger, Charles                     Yale                    MARGIE
-Riesbeck, Chris/Christopher         Yale                    MARGIE
-Schank, Roger                       Yale                    __leader__
-Tesler, Lawrence                    Yale                    MARGIE
+Rieger, Charles                     Stanford                MEMORY (MARGIE)
+Riesbeck, Chris/Christopher         Stanford                ELI (MARGIE)
+Schank, Roger                       Stanford, Yale          __leader__
+Tesler, Lawrence                    Stanford                MARGIE
 Wilensky, Robert                    Yale, Berkeley          __leader__, PAM, PHRAN, Unix Consultant
 
 ## Systems
 
+Stanford
 - MARGIE (1973) Schank, Goldman, Rieger, Riesbeck
-- SAM (1975) Cullingford, Schank, story understanding using scripts
-- PAM (1976) Wilensky, story understanding, understands the plans in a story, predicts actions based on these plans
+
+Yale
+  NAME (YEAR) PERSON                DATA STRUCTURE          SHORT DESCRIPTION
+
+- SAM (1975) Cullingford            Script                  story understanding using scripts
+- PAM (1976) Wilensky               Plan                    story understanding, understands the plans in a story, predicts actions based on these plans
+- TaleSpin (1976) Meehan            Planning structure      writes stories
+- FRUMP (1977) DeJong               Sketchy script          text summarization, a bit like SAM, but skims stories using "sketchy stories"
+- Qualm (1977) Lehnert              __underlying system__   question answering frontend for SAM and PAM systems
+- Politics (1979) Carbonell         Script                  about politics
+- OPUS (1979) Lehnert,Burstein      Object primitive
+- IPP (1980) Lebowitz               SMOP, specMOP, AUs      terrorism stories understander, learns MOPs
+- Plot Units (1981) Lehnert         Plot Units              story summary using affect
+- BORIS (1982) Dyer                 Affect, __many other__  integration of previous structures (scripts, plans, affect); detects adages
+- CYRUS (1983) Kolodner             EMOP
+- MOPTRANS (1984) Lytinen           MOP                     multi-lingual integrated parser; translation
+
+Berkeley
+  NAME (YEAR) PERSON                DATA STRUCTURE          SHORT DESCRIPTION
+
+- Pandora (1982) Faletti            Event,(Meta-)Goal,Plan  planning, meta planning
+- Unix Consultant (1982) Wilensky   __uses Pandora__        ask questions about UNIX
+- FAUSTUS (Pamela) (1983) Norvig                            integration of previous system using frames
+
+The book "Into the heart of the mind" (Frank Rose, 1984) writes about the period in Berkeley.
+
+Georgia
+  NAME (YEAR) PERSON                DATA STRUCTURE          SHORT DESCRIPTION
+
+- CYRUS (1983) Kolodner         EMOP
+
+?
 - BELIEVER (1976) Schmidt and Sridharan - like PAM based on plans
-- TaleSpin (1976) Meehan - writes stories
-- FRUMP (1977) DeJong - text summarization, a bit like SAM, but skims stories using "sketchy stories"
-- Qualm (1977) Lehnert, question answering for SAM and PAM
-- FAUSTUS (previously: Pamela) (1983) Norvig, using frames for story understanding
-- Politics (1979) Carbonell, it's about politics
-- OPUS (1979) Lehnert, Burstein
-- IPP (1980) Lebowitz, text skimmer - terrorism stories understander
-- Plot Units (1981) Lehnert - story summary using affect
-- Pandora (1982) Faletti, hierarchical planning, meta planning
-- Unix Consultant (1982) - Wilensky - ask questions about UNIX
-- BORIS (1982) Dyer - integration of previous structures (scripts, plans, affect); detects adages
-- MOPTRANS (1984) Lytinen - translation
-- KODIAK (1986) Wilensky / Berkeley - knowledge representation language
+
+CBR?
+Georgia
 - CYRUS () Kolodner, Case Based Reasoning
+?
 - CHEF ()
 - PERSUADER ()
 - JUDGE ()
@@ -70,42 +105,61 @@ Wilensky, Robert                    Yale, Berkeley          __leader__, PAM, PHR
 
 ## Data structures
 
-* Script: see SAM
-* Plan: see PAM
+* Script 
+* Sketchy script
+* Plan
+* Planning structure: delta act, package, sigma state
+* Object primitive
 * Goal
 * Theme
+* Affect
 * Case
-* MOP: representation of an abstracted event; reusable by multiple scripts. Schank's Memory Organization Packets (MOPs) are frames primarily used to represent episodic memory, that is, memories of particular events and their generalizations.
-* TOP: thematic organization packet; defined in terms of goal situations
-* TAU: thematic abstraction unit (in BORIS)
+- Plot Unit
+* MOP: Memory Organization Packet, representation of an abstracted event
+* S-MOP: Simple MOP
+* spec-MOP: specialized MOP
+* AUs (Action Units)
+* EMOP: Episodic Memory Organization Packet
+* TOP: Thematic Organization Packet; defined in terms of goal situations
+* TAU: Thematic Abstraction Unit (in BORIS)
 
-## Papers
-
-QUALM
-    The process of question-answering (PhD thesis) - Lehnert (1977)
+## Papers of minor system
 
 CBR    
     Maintaining organization in a dynamic long-term memory - Kolodner (1983) 
 
 BELIEVER    
-    Recognizing plans and summarizing actions - Schmidt (1976)
+    Recognizing plans and summarizing actions - Schmidt, Sridharan, Goodson (1976)
 
-Politics
-    POLITICS  Automated Ideological Reasoning - Carbonel (1978)
+FRUMP
+    Prediction and Substantiation  A New Approach to Natural Language Processing (1979)
 
 IPP
     Memory based parsing - Lebowitz (1980?)
     Generalization and memory in an integrated understanding system (PhD thesis) - Lebowitz (1980)
 
+MOPTRANS
+    The representation of knowledge in a multi-lingual, integrated parser - Lytinen (1984)
+
+OPUS
+    The role of object primitives in natural language processing - Lehnert, Burstein (1979)
+    The Use of Ooject-Specl flc Knowledge in Natural Language Processing - Burstein (1979)
+
 Pandora
-    Meta-planning: Representing and using knowledge about planning in problem solving and naturallanguage understanding - Wilensky (1981)
+    Meta-planning: Representing and using knowledge about planning in problem solving and natural language understanding - Wilensky (1981)
     PANDORA — A Program for Doing Common-sense Planning in Complex Situations - Faletti (1982)
 
-UNIX Consultant
-    Talking to UNIX in English: An Overview of a UC - Wilensky (1982)
+Politics
+    POLITICS  Automated Ideological Reasoning - Carbonel (1978)
 
-KODIAK
-     KODIAK - a knowledge representation language - Wilensky (1984)
+QUALM
+    The process of question-answering (PhD thesis) - Lehnert (1977)
+
+Talespin
+    The metanovel: writing stories by computer (PhD thesis) - Meehan (1976)
+
+UNIX Consultant
+    Talking to UNIX in English: An Overview of a UC - Wilensky, Arens, Chin (1982)
 
 Overview article:
 
@@ -113,7 +167,7 @@ Conceptual dependency and its descendants - Lytinen (1992)
 
 ## Books
 
-Scripts Plans Goals and Understanding - Schank, Abelseon (1977)
+Scripts Plans Goals and Understanding - Schank, Abelson (1977)
 Dynamic memory - Schank (1982)
 Planning and understanding: A computational approach to human reasoning - Wilensky (1983)
-Into the heart of the mind - Frank Rose,  (1984)
+Into the heart of the mind - Frank Rose (1984)
