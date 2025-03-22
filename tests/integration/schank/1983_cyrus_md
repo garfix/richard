@@ -1,0 +1,13 @@
+# CYRUS
+
+Uses EMOPs (Episodic MOPs) to implement Long Term memory to add and retrieve events.
+
+Facts are entered in coded form. For example read by FRUMP then entered into CYRUS.
+
+## Papers
+
+Retrieval and Organizational Strategies in Conceptual Memory: A Computer Model (PhD thesis) - Kolodner (1980)
+Organizing memory and keeping it organized - Kolodner (1980)
+Organization and retrieval in a conceptual memory for events - Kolodner (1981)
+Reconstructive memory: a computer model - Kolodner (1983)
+Maintaining organization in a dynamic long-term memory - Kolodner (1983) 

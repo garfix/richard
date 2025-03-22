@@ -2,20 +2,42 @@
 
 Systems based on theories by Roger Schank. Starting from systems working out Conceptual Dependency (CD) and ending with Case Based Reasoning (CBR) systems by Janet Kolodner.
 
-These systems are quite modular and a specific parser may be used in several systems. I will not deal with these modules separately though, yet treat them with the system where they were first used.
+## todo
+
+- learn about CYRUS, IPP, CELIA, MOPs
 
 ## The goal of this page
 
-Collecting all information about Schank's line of development, analysing programs, and extracting the best techniques. Extract the main line of development and collect the techniques that proved to be most useful in the end.
+Collecting all information about Schank's line of development, analysing programs, and extracting the best techniques. Extract the main line of development and collect the techniques that proved to be most useful for NLU in the end.
 
-## Order of development
+## Management summary
 
-- explosion of inferences (MEMORY)
-- scripts to restrict the inferences; containing roles, scenes and tracks (no way to learn similarities in scenes in different scripts), but scripts are too restrictive and don't generalize
-- MOPs (Memory Organization Packets) are meant to solve this problem by reusing parts of scripts (MOPs)
-- Goals and plans (to fill in the knowledge that is hard to fit in a MOP)
-- TOPs: thematic structure (goals + conditions)
-- CBR
+Summary of main development (with my own comments)
+
+All systems are about making plausible inferences from the read text, in order to understand the rest of it (ie. to answer questions about it). 
+
+* __MARGIE__ was the first system. It made a large number of undirected inferences (slow, ineffective). 
+* __SAM__ used built-in __stories__, which is effective (but rigid and laborious). 
+* __PAM__ deduced the __goals__ and __plans__ of agents, which is also effective. 
+* __Plot units__ added __affect__ and emotion
+* "Dynamic Memory" is learning new structures. 
+* MOPs were invented to reuse story-parts, which makes them more flexible, simple, and reusable.
+* __IPP__ is dynamic; it learns new MOPs. 
+* __CYRUS__ is also dynamic. stores and retieves __events__ in Long Term Memory
+* __Pandora__ creates and combines plans in order to act. "Integrated" means that all modules are active at the same time; non-sequential. 
+* __BORIS__ is integrated and uses demons (hard to maintain and debug)
+* __FAUSTUS__ uses frames for all inference (it's generic but less effective for scrips and plans)
+
+## Mental phenomena
+
+The systems in this area of research model some of the mental phenomena that humans have, in order to understand:
+
+* Scripts: knowledge of a stereotyped event that occurs in a socially ritualized activity such as going to a restaurant and riding a subway
+* Goals and Plans: states we want to achieve, and the means of getting there
+* Long Term Memory (Episodic memory): a store of memories of events
+* Affect / emotion
+
+Some systems model one or more of these in a separated way, while others try to integrate multiple phenomena in a more uniform manner.
 
 ## Persons
 
@@ -73,7 +95,8 @@ Yale
 - IPP (1980) Lebowitz               SMOP, specMOP, AUs      terrorism stories understander, learns MOPs
 - Plot Units (1981) Lehnert         Plot Units              story summary using affect
 - BORIS (1982) Dyer                 Affect, __many other__  integration of previous structures (scripts, plans, affect); detects adages
-- CYRUS (1983) Kolodner             EMOP
+- CYRUS (1983) Kolodner             EMOP                    events in Long Term Memory
+- CELIA
 - MOPTRANS (1984) Lytinen           MOP                     multi-lingual integrated parser; translation
 
 Berkeley
@@ -81,7 +104,7 @@ Berkeley
 
 - Pandora (1982) Faletti            Event,(Meta-)Goal,Plan  planning, meta planning
 - Unix Consultant (1982) Wilensky   __uses Pandora__        ask questions about UNIX
-- FAUSTUS (Pamela) (1983) Norvig                            integration of previous system using frames
+- FAUSTUS (Pamela) (1983) Norvig    Frame                   integration of previous system using frames
 
 The book "Into the heart of the mind" (Frank Rose, 1984) writes about the period in Berkeley.
 
@@ -96,12 +119,20 @@ Georgia
 CBR?
 Georgia
 - CYRUS () Kolodner, Case Based Reasoning
+- CELIA
 ?
 - CHEF ()
 - PERSUADER ()
 - JUDGE ()
 - MEDIATOR ()
 - CABARET ()
+
+## Representation languages
+
+Data is stored in the system in different ways:
+
+- Conceptual Dependency (most systems) - Schank
+- KODIAK (FAUSTUS, Unix Consultant) - Wilensky
 
 ## Data structures
 
@@ -113,8 +144,11 @@ Georgia
 * Goal
 * Theme
 * Affect
+* Frame (see FAUSTUS): integration of earlier data structures like scripts, plans and goals
 * Case
 - Plot Unit
+- Story grammar ("Once upon a time")
+- Story point
 * MOP: Memory Organization Packet, representation of an abstracted event
 * S-MOP: Simple MOP
 * spec-MOP: specialized MOP
@@ -123,10 +157,20 @@ Georgia
 * TOP: Thematic Organization Packet; defined in terms of goal situations
 * TAU: Thematic Abstraction Unit (in BORIS)
 
-## Papers of minor system
+## General papers
 
-CBR    
-    Maintaining organization in a dynamic long-term memory - Kolodner (1983) 
+Reading and memory organization: an introduction into MOPs - Schank (1979)
+Conceptual dependency and its descendants - Lytinen (1992)
+
+## General books
+
+Scripts Plans Goals and Understanding - Schank, Abelson (1977)
+Dynamic memory - Schank (1982)
+Strategies for Natural Language Processing - Edited By Lehnert, Ringle (1982)
+Planning and understanding: A computational approach to human reasoning - Wilensky (1983)
+Into the heart of the mind - Frank Rose (1984)
+
+## Papers of minor system
 
 BELIEVER    
     Recognizing plans and summarizing actions - Schmidt, Sridharan, Goodson (1976)
@@ -160,14 +204,3 @@ Talespin
 
 UNIX Consultant
     Talking to UNIX in English: An Overview of a UC - Wilensky, Arens, Chin (1982)
-
-Overview article:
-
-Conceptual dependency and its descendants - Lytinen (1992)
-
-## Books
-
-Scripts Plans Goals and Understanding - Schank, Abelson (1977)
-Dynamic memory - Schank (1982)
-Planning and understanding: A computational approach to human reasoning - Wilensky (1983)
-Into the heart of the mind - Frank Rose (1984)
