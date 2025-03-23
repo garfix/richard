@@ -4,6 +4,22 @@ Uses EMOPs (Episodic MOPs) to implement Long Term memory to add and retrieve eve
 
 Facts are entered in coded form. For example read by FRUMP then entered into CYRUS.
 
+## E-MOP
+
+The internal organization of an E-MOP can be described as a net in which each node in the net is either an E-MOP or an event.
+
+Each E-MOP has two important aspects 
+* generalized information characterizing its episodes, and 
+* tree-like structures that index those episodes by their differences
+
+As for Schank's MOPs, the generalized information associated with an E-MOP is called its content frame. An E-MOP's content frame holds information describing its events, such as their usual participants, locations, and topics, and their usual relationships to other events.
+
+One of the E-MOPs CYRUS uses is "diplomatic meetings". Each of Vance's or Muskie's diplomatic meetings that are entered into CYRUS' memory are indexed in that E-MOP. CYRUS knows that the participants of diplomatic meetings are foreign diplomats, that their topics are international contracts, that they include discussion between the
+participants about the topic, that their goal is usually to resolve a disputed contract, and that they are normally part of negotiations. That is some of the information that makes up the content frame of "diplomatic meetings".
+
+The second important feature of an E-MOP is its indices. An E-MOP's indices can index either individual episodes or specialized E-MOPs. When an E-MOP holds only one episode with a particular index, that index will point to the individual episode. When two or more episodes in an E-MOP share the same feature, its corresponding index
+will point to a specialized sub-MOP (with the structure just described) which organizes the subset of events with that feature. In this way, MOP/sub-MOP hierarchies are formed.
+
 ## Papers
 
 Retrieval and Organizational Strategies in Conceptual Memory: A Computer Model (PhD thesis) - Kolodner (1980)

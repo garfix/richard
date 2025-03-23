@@ -5,6 +5,8 @@ Systems based on theories by Roger Schank. Starting from systems working out Con
 ## todo
 
 - learn about CYRUS, IPP, CELIA, MOPs
+- what are IMOPs, EMOPs and SMOPs as phenomena?
+- add TOPs to mental phenomena
 
 ## The goal of this page
 
@@ -15,6 +17,7 @@ Collecting all information about Schank's line of development, analysing program
 Summary of main development (with my own comments)
 
 All systems are about making plausible inferences from the read text, in order to understand the rest of it (ie. to answer questions about it). 
+Furthermore: "processing structures and memory structures are the same" (Lytinen), that is: build declarative structures, not custom procedures.
 
 * __MARGIE__ was the first system. It made a large number of undirected inferences (slow, ineffective). 
 * __SAM__ used built-in __stories__, which is effective (but rigid and laborious). 
@@ -22,8 +25,9 @@ All systems are about making plausible inferences from the read text, in order t
 * __Plot units__ added __affect__ and emotion
 * "Dynamic Memory" is learning new structures. 
 * MOPs were invented to reuse story-parts, which makes them more flexible, simple, and reusable.
-* __IPP__ is dynamic; it learns new MOPs. 
-* __CYRUS__ is also dynamic. stores and retieves __events__ in Long Term Memory
+* "Case-based reasoning" is building a plan by modifying an existing plan. A learning technique
+* __CYRUS__ is also dynamic. stores and retieves __events__ in Long Term Memory. Considered to be the first CBR system
+* __IPP__ is dynamic; it learns new MOPs. Also a CBR system
 * __Pandora__ creates and combines plans in order to act. "Integrated" means that all modules are active at the same time; non-sequential. 
 * __BORIS__ is integrated and uses demons (hard to maintain and debug)
 * __FAUSTUS__ uses frames for all inference (it's generic but less effective for scrips and plans)
@@ -32,12 +36,17 @@ All systems are about making plausible inferences from the read text, in order t
 
 The systems in this area of research model some of the mental phenomena that humans have, in order to understand:
 
-* Scripts: knowledge of a stereotyped event that occurs in a socially ritualized activity such as going to a restaurant and riding a subway
+* Event memory, Episodic memory: unorganized memories of events
+    * Generalized Event Memory, [Scripts]: knowledge of a stereotyped event that occurs in a socially ritualized activity such as going to a restaurant and riding a subway
+    * Situational memory: MOPs
+    * Intentional Memory: I-MOPs
+    * Episodal memory: E-MOPs
 * Goals and Plans: states we want to achieve, and the means of getting there
-* Long Term Memory (Episodic memory): a store of memories of events
 * Affect / emotion
 
 Some systems model one or more of these in a separated way, while others try to integrate multiple phenomena in a more uniform manner.
+
+Note the distinction between recognition and creation of these phenomena: they require different representations and processes. In order to plan something yourself you need to know how the actions are performed.
 
 ## Persons
 
@@ -48,9 +57,11 @@ Yale - New Haven, Connecticut
 Berkeley - University of California
 Georgia - Georgia Institute of Technology
 
-Schank starts in Standford, then moves to Yale. 
+Schank starts in Stanford, then moves to Yale. 
 Wilensky starts in Yale under Schank, then sets up his own dept in Berkeley. He's not fond of MOP's developed by Schank.
+Kolodner starts in Yale, under Schank. Then moves to Georgia advancing CBR.
 
+~~~
 NAME                                UNIVERSITY              SYSTEM
 Arens, Yigal                        Berkeley                PHRAN
 Burstein, Mark                      Yale                    OPUS
@@ -71,14 +82,17 @@ Lytinen                             Yale                    MOPTRANS
 Meehan, James                       Yale                    Talespin
 Norvig, Peter                       Berkeley                FAUSTUS
 Parker, Alice                       Yale                    PHRAN
+Redmond, Michael                    Georgia                 CELIA
 Rieger, Charles                     Stanford                MEMORY (MARGIE)
 Riesbeck, Chris/Christopher         Stanford                ELI (MARGIE)
 Schank, Roger                       Stanford, Yale          __leader__
 Tesler, Lawrence                    Stanford                MARGIE
 Wilensky, Robert                    Yale, Berkeley          __leader__, PAM, PHRAN, Unix Consultant
+~~~
 
 ## Systems
 
+~~~
 Stanford
 - MARGIE (1973) Schank, Goldman, Rieger, Riesbeck
 
@@ -93,10 +107,10 @@ Yale
 - Politics (1979) Carbonell         Script                  about politics
 - OPUS (1979) Lehnert,Burstein      Object primitive
 - IPP (1980) Lebowitz               SMOP, specMOP, AUs      terrorism stories understander, learns MOPs
+- CYRUS (1980) Kolodner             EMOP                    events in Long Term Memory
 - Plot Units (1981) Lehnert         Plot Units              story summary using affect
 - BORIS (1982) Dyer                 Affect, __many other__  integration of previous structures (scripts, plans, affect); detects adages
-- CYRUS (1983) Kolodner             EMOP                    events in Long Term Memory
-- CELIA
+- CELIA (1992) Redmond
 - MOPTRANS (1984) Lytinen           MOP                     multi-lingual integrated parser; translation
 
 Berkeley
@@ -112,20 +126,12 @@ Georgia
   NAME (YEAR) PERSON                DATA STRUCTURE          SHORT DESCRIPTION
 
 - CYRUS (1983) Kolodner         EMOP
+- CELIA (1989) Redmond          Case
+~~~
 
-?
-- BELIEVER (1976) Schmidt and Sridharan - like PAM based on plans
+Notes:
 
-CBR?
-Georgia
-- CYRUS () Kolodner, Case Based Reasoning
-- CELIA
-?
-- CHEF ()
-- PERSUADER ()
-- JUDGE ()
-- MEDIATOR ()
-- CABARET ()
+YEAR = year of first publication. Start year of development would be better, but is not known.
 
 ## Representation languages
 
@@ -145,19 +151,23 @@ Data is stored in the system in different ways:
 * Theme
 * Affect
 * Frame (see FAUSTUS): integration of earlier data structures like scripts, plans and goals
-* Case
+* Case: a case is a script-like plan: planning is done by modifying previous cases
 - Plot Unit
 - Story grammar ("Once upon a time")
 - Story point
 * MOP: Memory Organization Packet, representation of an abstracted event
-* S-MOP: Simple MOP
+* S-MOP: Simple MOP, defines part of a simple story
+* I-MOP: an episode over a longer period of time, with a well-defined goal
+* E-MOP: episodal MOP (CYRUS)
+* sub-MOP: a specialization of another MOP
 * spec-MOP: specialized MOP
 * AUs (Action Units)
-* EMOP: Episodic Memory Organization Packet
 * TOP: Thematic Organization Packet; defined in terms of goal situations
 * TAU: Thematic Abstraction Unit (in BORIS)
 
 ## General papers
+
+Note: read Schank's books and papers to get a bird's eye view of the subject. Technical details are mainly found in the PhD thesises of his students.
 
 Reading and memory organization: an introduction into MOPs - Schank (1979)
 Conceptual dependency and its descendants - Lytinen (1992)
@@ -174,6 +184,9 @@ Into the heart of the mind - Frank Rose (1984)
 
 BELIEVER    
     Recognizing plans and summarizing actions - Schmidt, Sridharan, Goodson (1976)
+
+CELIA
+    Learning by observing and understanding expert problem-solving, Redmond (1992)
 
 FRUMP
     Prediction and Substantiation  A New Approach to Natural Language Processing (1979)
