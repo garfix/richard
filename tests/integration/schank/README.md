@@ -7,6 +7,8 @@ Systems based on theories by Roger Schank. Starting from systems working out Con
 - learn about CYRUS, IPP, CELIA, MOPs
 - what are IMOPs, EMOPs and SMOPs as phenomena?
 - add TOPs to mental phenomena
+- name the types of sentences these techniques facilitate (ie, why)
+- read the Goals part of Schank and Abelson's book
 
 ## The goal of this page
 
@@ -41,12 +43,14 @@ The systems in this area of research model some of the mental phenomena that hum
     * Situational memory: MOPs
     * Intentional Memory: I-MOPs
     * Episodal memory: E-MOPs
+* Beliefs: facts and inferences people have and use
 * Goals and Plans: states we want to achieve, and the means of getting there
+    * Theory of Mind: inferring the beliefs and intents (motives and goals) of other agents
 * Affect / emotion
 
-Some systems model one or more of these in a separated way, while others try to integrate multiple phenomena in a more uniform manner.
+Some systems model one or more of these in a separated way, while others try to integrate multiple phenomena in ma more uniform manner.
 
-Note the distinction between recognition and creation of these phenomena: they require different representations and processes. In order to plan something yourself you need to know how the actions are performed.
+Note the distinction between recognition/understanding and creation/generation of these phenomena: they require different representations and processes. In order to plan something yourself you need to know how the actions are performed.
 
 ## Persons
 
@@ -142,13 +146,13 @@ Data is stored in the system in different ways:
 
 ## Data structures
 
-* Script 
+* Script: representation of a stereotyped situation
 * Sketchy script
-* Plan
+* Goal: a desired state of affairs
+* Plan: a way of accomplishing s goal
 * Planning structure: delta act, package, sigma state
 * Object primitive
-* Goal
-* Theme
+* Theme: drives, attitudes, social roles. the origin of goals (ex: hunger)
 * Affect
 * Frame (see FAUSTUS): integration of earlier data structures like scripts, plans and goals
 * Case: a case is a script-like plan: planning is done by modifying previous cases
@@ -167,7 +171,7 @@ Data is stored in the system in different ways:
 
 ## General papers
 
-Note: read Schank's books and papers to get a bird's eye view of the subject. Technical details are mainly found in the PhD thesises of his students.
+Note: read Schank's books and papers to get a phenomenological account of the subject. Technical details are mainly found in the PhD thesises of his students.
 
 Reading and memory organization: an introduction into MOPs - Schank (1979)
 Conceptual dependency and its descendants - Lytinen (1992)
