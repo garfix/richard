@@ -4,11 +4,13 @@ Systems based on theories by Roger Schank. Starting from systems working out Con
 
 ## todo
 
-- learn about CYRUS, IPP, CELIA, MOPs
-- what are IMOPs, EMOPs and SMOPs as phenomena?
-- add TOPs to mental phenomena
 - name the types of sentences these techniques facilitate (ie, why)
-- read the Goals part of Schank and Abelson's book
+
+What system am I going to implement? Think about it, and improve it
+
+PAM
+
+why: it subsumes SAM; later systems are mostly about story summarization, which doesn't interest me so much
 
 ## The goal of this page
 
@@ -18,20 +20,24 @@ Collecting all information about Schank's line of development, analysing program
 
 Summary of main development (with my own comments)
 
-All systems are about making plausible inferences from the read text, in order to understand the rest of it (ie. to answer questions about it). 
-Furthermore: "processing structures and memory structures are the same" (Lytinen), that is: build declarative structures, not custom procedures.
-
-* __MARGIE__ was the first system. It made a large number of undirected inferences (slow, ineffective). 
-* __SAM__ used built-in __stories__, which is effective (but rigid and laborious). 
-* __PAM__ deduced the __goals__ and __plans__ of agents, which is also effective. 
-* __Plot units__ added __affect__ and emotion
-* "Dynamic Memory" is learning new structures. 
+* All systems are about making plausible inferences from the read text, in order to understand the rest of it (ie. to answer questions about it). 
+* Furthermore: "processing structures and memory structures are the same" (Lytinen), that is: build declarative structures, not custom procedures.
+* Later systems explicitly recognize the structure of stories, in __plot units__ and __thematic abstraction units__
+* "Dynamic Memory" is about learning new structures. 
 * MOPs were invented to reuse story-parts, which makes them more flexible, simple, and reusable.
 * "Case-based reasoning" is building a plan by modifying an existing plan. A learning technique
-* __CYRUS__ is also dynamic. stores and retieves __events__ in Long Term Memory. Considered to be the first CBR system
-* __IPP__ is dynamic; it learns new MOPs. Also a CBR system
+* "Integrated" in a parser means that all processes of the system are performed while parsing (hard to maintain and debug, but is able to handle some edge cases better, like knowing the answer before the sentence is read completely)
+
+Development in the major systems
+
+* __MARGIE__ was the first system. It made a large number of undirected inferences (slow, ineffective). 
+* __SAM__ used built-in __scripts__, which is effective (but rigid and laborious). 
+* __PAM__ deduced the __goals__ and __plans__ of agents, which is also effective. 
+* __CYRUS__ is dynamic. stores and retieves __events__ in Long Term Memory. Considered to be the first CBR system
+* __IPP__ an integrated parser; is dynamic; it learns new MOPs. Also a CBR system (?)
+* __Plot units__ story recognition; recognizes __plot units__ consisting of positive and negative __affect states__, an interesting addition to goals and plans
+* __BORIS__ an integrated parser using demons; story recognition using __thematic abstraction units__
 * __Pandora__ creates and combines plans in order to act. "Integrated" means that all modules are active at the same time; non-sequential. 
-* __BORIS__ is integrated and uses demons (hard to maintain and debug)
 * __FAUSTUS__ uses frames for all inference (it's generic but less effective for scrips and plans)
 
 ## Mental phenomena
@@ -47,6 +53,8 @@ The systems in this area of research model some of the mental phenomena that hum
 * Goals and Plans: states we want to achieve, and the means of getting there
     * Theory of Mind: inferring the beliefs and intents (motives and goals) of other agents
 * Affect / emotion
+
+Make the distinction between Working Memory where structures are built during the conversion or story understanding, and Long Term Memory, where more permanent structures are stored.
 
 Some systems model one or more of these in a separated way, while others try to integrate multiple phenomena in ma more uniform manner.
 
@@ -110,9 +118,9 @@ Yale
 - Qualm (1977) Lehnert              __underlying system__   question answering frontend for SAM and PAM systems
 - Politics (1979) Carbonell         Script                  about politics
 - OPUS (1979) Lehnert,Burstein      Object primitive
-- IPP (1980) Lebowitz               SMOP, specMOP, AUs      terrorism stories understander, learns MOPs
+- IPP (1980) Lebowitz               SMOP, specMOP, AUs      an integrated parser, terrorism stories understander, learns MOPs
 - CYRUS (1980) Kolodner             EMOP                    events in Long Term Memory
-- Plot Units (1981) Lehnert         Plot Units              story summary using affect
+- Plot Units (1981) Lehnert         Plot Units              story summary units using positive and negative affect
 - BORIS (1982) Dyer                 Affect, __many other__  integration of previous structures (scripts, plans, affect); detects adages
 - CELIA (1992) Redmond
 - MOPTRANS (1984) Lytinen           MOP                     multi-lingual integrated parser; translation
@@ -146,32 +154,32 @@ Data is stored in the system in different ways:
 
 ## Data structures
 
-* Script: representation of a stereotyped situation
-* Sketchy script
-* Goal: a desired state of affairs
-* Plan: a way of accomplishing s goal
-* Planning structure: delta act, package, sigma state
-* Object primitive
-* Theme: drives, attitudes, social roles. the origin of goals (ex: hunger)
-* Affect
-* Frame (see FAUSTUS): integration of earlier data structures like scripts, plans and goals
-* Case: a case is a script-like plan: planning is done by modifying previous cases
-- Plot Unit
+* Script: representation of a stereotyped situation (SAM)
+* Sketchy script: a script that focuses on key points (FRUMP)
+* Goal: a desired state of affairs (PAM)
+* Plan: a way of accomplishing s goal (PAM)
+* Planning structure: delta act, package, sigma state (Talespin)
+* Object primitive (OPUS)
+* Theme: drives, attitudes, social roles. the origin of goals (ex: hunger). a collection of goals 
+* Frame: integration of earlier data structures like scripts, plans and goals (FAUSTUS)
+* Case: a case is a script-like plan: planning is done by modifying previous cases (CELIA and other CBR systems)
+- Plot Unit: representation of a plot twist in the story plot (ex: SUCCESS, RESOLUTION; HIDDEN BLESSING); each plot unit is a configuration of Affect States (Plot Unit)
+* Affect State: positive or negative, the attitude of an agent toward a situation (Plot Unit)
 - Story grammar ("Once upon a time")
 - Story point
 * MOP: Memory Organization Packet, representation of an abstracted event
-* S-MOP: Simple MOP, defines part of a simple story
+* S-MOP: Simple MOP, defines part of a simple story (IPP)
 * I-MOP: an episode over a longer period of time, with a well-defined goal
 * E-MOP: episodal MOP (CYRUS)
 * sub-MOP: a specialization of another MOP
 * spec-MOP: specialized MOP
-* AUs (Action Units)
+* AU: Action Unit (IPP)
 * TOP: Thematic Organization Packet; defined in terms of goal situations
-* TAU: Thematic Abstraction Unit (in BORIS)
+* TAU: Thematic Abstraction Unit (BORIS)
 
 ## General papers
 
-Note: read Schank's books and papers to get a phenomenological account of the subject. Technical details are mainly found in the PhD thesises of his students.
+Note: read Schank's books and papers to get a phenomenological/psychological account of the subject. Technical details are mainly found in the PhD thesises of his students.
 
 Reading and memory organization: an introduction into MOPs - Schank (1979)
 Conceptual dependency and its descendants - Lytinen (1992)
