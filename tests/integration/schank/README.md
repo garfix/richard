@@ -4,13 +4,14 @@ Systems based on theories by Roger Schank. Starting from systems working out Con
 
 ## todo
 
+- read more BORIS
 - name the types of sentences these techniques facilitate (ie, why)
 
 What system am I going to implement? Think about it, and improve it
 
 PAM
 
-why: it subsumes SAM; later systems are mostly about story summarization, which doesn't interest me so much
+why: it subsumes SAM; later systems are mostly about story summarization, which doesn't interest me so much yet
 
 ## The goal of this page
 
@@ -22,11 +23,11 @@ Summary of main development (with my own comments)
 
 * All systems are about making plausible inferences from the read text, in order to understand the rest of it (ie. to answer questions about it). 
 * Furthermore: "processing structures and memory structures are the same" (Lytinen), that is: build declarative structures, not custom procedures.
-* Later systems explicitly recognize the structure of stories, in __plot units__ and __thematic abstraction units__
-* "Dynamic Memory" is about learning new structures. 
-* MOPs were invented to reuse story-parts, which makes them more flexible, simple, and reusable.
-* "Case-based reasoning" is building a plan by modifying an existing plan. A learning technique
-* "Integrated" in a parser means that all processes of the system are performed while parsing (hard to maintain and debug, but is able to handle some edge cases better, like knowing the answer before the sentence is read completely)
+* __MOPs__ were invented to reuse story-parts, which makes them more flexible, simple, and reusable.
+* Later systems explicitly recognize the structure of stories, in __TOPs__, __Plot units__ and __thematic abstraction units__
+* __Dynamic Memory__ is about learning new structures. 
+* __Case-based reasoning__ is building a plan by modifying an existing plan. A learning technique
+* __Integrated__ in a parser means that all processes of the system are performed while parsing (hard to maintain and debug, but is able to handle some edge cases better, like knowing the answer before the sentence is read completely)
 
 Development in the major systems
 
@@ -163,8 +164,6 @@ Data is stored in the system in different ways:
 * Theme: drives, attitudes, social roles. the origin of goals (ex: hunger). a collection of goals 
 * Frame: integration of earlier data structures like scripts, plans and goals (FAUSTUS)
 * Case: a case is a script-like plan: planning is done by modifying previous cases (CELIA and other CBR systems)
-- Plot Unit: representation of a plot twist in the story plot (ex: SUCCESS, RESOLUTION; HIDDEN BLESSING); each plot unit is a configuration of Affect States (Plot Unit)
-* Affect State: positive or negative, the attitude of an agent toward a situation (Plot Unit)
 - Story grammar ("Once upon a time")
 - Story point
 * MOP: Memory Organization Packet, representation of an abstracted event
@@ -174,8 +173,10 @@ Data is stored in the system in different ways:
 * sub-MOP: a specialization of another MOP
 * spec-MOP: specialized MOP
 * AU: Action Unit (IPP)
+- Plot Unit: representation of a plot twist in the story plot (ex: SUCCESS, RESOLUTION; HIDDEN BLESSING); each plot unit is a configuration of Affect States (Plot Unit)
+* Affect State: positive or negative, the attitude of an agent toward a situation (Plot Unit)
 * TOP: Thematic Organization Packet; defined in terms of goal situations
-* TAU: Thematic Abstraction Unit (BORIS)
+* TAU: Thematic Abstraction Unit; like adages ("the pot calling the kettle black") (BORIS)
 
 ## General papers
 
