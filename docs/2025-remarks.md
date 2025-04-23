@@ -1,3 +1,11 @@
+## 2025-04-23
+
+I did some research on the models of Roger Schank's group. I picked PAM, by Robert Wilensky, because dealing with plan and goal recognition is hard enought by itself and would be an incredible addition to Richard! Also it could provide a more natural way to implement SHRDLU (which also deals with goals and reasons).
+
+For now I just extracted the stories from Wilensky's PhD thesis that have questions added to them. These make story understanding testable. 
+
+I asked some current employees from Yale and Berkeley's computer science departements if they could try to locate some of the source code of the model.
+
 ## 2025-02-05
 
 Thinking about contexts. At the moment I need contexts only for this sentence:
