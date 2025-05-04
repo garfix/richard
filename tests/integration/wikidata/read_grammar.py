@@ -1,6 +1,6 @@
 from richard.core.constants import E1, E2, e2, Body
 from richard.processor.parser.helper.grammar_functions import apply
-from richard.type.SemanticTemplate import SemanticTemplate
+from richard.type.SemanticFunction import SemanticFunction
 
 
 def get_read_grammar():
@@ -17,7 +17,7 @@ def get_read_grammar():
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar:
-            SemanticTemplate([Body], nbar + Body) },
+            SemanticFunction([Body], nbar + Body) },
 
         # noun
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },

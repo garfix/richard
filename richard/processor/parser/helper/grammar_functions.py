@@ -1,11 +1,11 @@
 
-from richard.type import SemanticTemplate
+from richard.type import SemanticFunction
 
 
-def apply(template: SemanticTemplate, *values):
+def apply(template: SemanticFunction, *values):
     replaced = template.body
     for i, value in enumerate(values):
-        token = template.args[i][0]       
+        token = template.args[i][0]
         replaced = replace(replaced, token, value, True)
 
     return replaced

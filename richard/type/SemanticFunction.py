@@ -2,6 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class SemanticTemplate:
+class SemanticFunction:
     args: list
     body: list[tuple]

@@ -1,7 +1,7 @@
 import re
 from richard.core.constants import E1, E2, E3, E4, e1, e2, e3, Body, Range
 from richard.processor.parser.helper.grammar_functions import apply
-from richard.type.SemanticTemplate import SemanticTemplate
+from richard.type.SemanticFunction import SemanticFunction
 
 
 

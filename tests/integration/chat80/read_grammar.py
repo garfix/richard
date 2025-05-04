@@ -1,7 +1,7 @@
 import re
 from richard.core.constants import E1, E2, E3, E4, e1, e2, e3, Body, Range
 from richard.processor.parser.helper.grammar_functions import apply
-from richard.type.SemanticTemplate import SemanticTemplate
+from richard.type.SemanticFunction import SemanticFunction
 
 
 
@@ -147,35 +147,35 @@ def get_read_grammar():
 
         # np
         { "syn": "np(E1) -> nbar(E1)", "sem": lambda nbar:
-            SemanticTemplate([Body], nbar + Body) },
+            SemanticFunction([Body], nbar + Body) },
         { "syn": "np(E1) -> det(E1) nbar(E1)", "sem": lambda det, nbar:
-            SemanticTemplate([Body], apply(det, nbar, Body)) },
+            SemanticFunction([Body], apply(det, nbar, Body)) },
         { "syn": "np(E1) -> det(E1) attr(E2, E1) 'of' nbar(E2)", "sem": lambda det, attr, nbar:
-            SemanticTemplate([Body], apply(det, nbar + attr, Body)) },
+            SemanticFunction([Body], apply(det, nbar + attr, Body)) },
         { "syn": "np(E1) -> number(E1)", "sem": lambda number:
-            SemanticTemplate([Body], [('let', E1, number)] + Body) },
+            SemanticFunction([Body], [('let', E1, number)] + Body) },
 
         # det
         { "syn": "det(E1) -> 'a'", "sem": lambda:
-            SemanticTemplate([Range, Body], Range + Body) },
+            SemanticFunction([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'the'", "sem": lambda:
-            SemanticTemplate([Range, Body], Range + Body) },
+            SemanticFunction([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'some'", "sem": lambda:
-            SemanticTemplate([Range, Body], Range + Body) },
+            SemanticFunction([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'any'", "sem": lambda:
-            SemanticTemplate([Range, Body], Range + Body) },
+            SemanticFunction([Range, Body], Range + Body) },
         { "syn": "det(E1) -> 'no'", "sem": lambda:
-            SemanticTemplate([Range, Body], [('none', Range + Body)]) },
+            SemanticFunction([Range, Body], [('none', Range + Body)]) },
         { "syn": "det(E1) -> number(E1)", "sem": lambda number:
-            SemanticTemplate([Range, Body], [('det_equals', Range + Body, number)]) },
+            SemanticFunction([Range, Body], [('det_equals', Range + Body, number)]) },
         { "syn": "det(E1) -> 'more' 'than' number(E1)", "sem": lambda number:
-            SemanticTemplate([Range, Body], [('det_greater_than', Range + Body, number)]) },
+            SemanticFunction([Range, Body], [('det_greater_than', Range + Body, number)]) },
 
         # superlatives
         { "syn": "superlative(E1) -> 'largest'", "sem": lambda:
-            SemanticTemplate([Body], [('arg_max', E1, E2, Body + [('size_of', E1, E2)])]) },
+            SemanticFunction([Body], [('arg_max', E1, E2, Body + [('size_of', E1, E2)])]) },
         { "syn": "superlative(E1) -> 'smallest'", "sem": lambda:
-            SemanticTemplate([Body], [('arg_min', E1, E2, Body + [('size_of', E1, E2)])]) },
+            SemanticFunction([Body], [('arg_min', E1, E2, Body + [('size_of', E1, E2)])]) },
 
         # attribute
         { "syn": "attr(E1, E2) -> 'population'", "sem": lambda: [('has_population', E1, E2)] },

@@ -17,7 +17,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.type.ExecutionContext import ExecutionContext
-from richard.type.SemanticTemplate import SemanticTemplate
+from richard.type.SemanticFunction import SemanticFunction
 
 
 class TestModule(SomeModule):
@@ -81,7 +81,7 @@ class TestQuantification(unittest.TestCase):
             },
             {
                 "syn": "np(E1) -> det(E1) nbar(E1)",
-                "sem": lambda det, nbar: SemanticTemplate([Body], apply(det, nbar, Body))
+                "sem": lambda det, nbar: SemanticFunction([Body], apply(det, nbar, Body))
             },
             {
                 "syn": "nbar(E1) -> noun(E1)",
@@ -89,11 +89,11 @@ class TestQuantification(unittest.TestCase):
             },
             {
                 "syn": "det(E1) -> 'every'",
-                "sem": lambda: SemanticTemplate([Range, Body], [('all', E1, Range, Body)])
+                "sem": lambda: SemanticFunction([Range, Body], [('all', E1, Range, Body)])
             },
             {
                 "syn": "det(E1) -> number(E1)",
-                "sem": lambda number: SemanticTemplate([Range, Body], [('det_equals', Range + Body, number)])
+                "sem": lambda number: SemanticFunction([Range, Body], [('det_equals', Range + Body, number)])
             },
             { "syn": "number(D1) -> 'two'", "sem": lambda: 2 },
             { "syn": "number(D1) -> 'three'", "sem": lambda: 3 },

@@ -9,7 +9,7 @@ from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
-from richard.type.SemanticTemplate import SemanticTemplate
+from richard.type.SemanticFunction import SemanticFunction
 
 
 class SemanticComposer(SomeProcessor):
@@ -142,8 +142,8 @@ class SemanticComposer(SomeProcessor):
             return [self.unify_variables(atom, map) for atom in semantics]
         elif isinstance(semantics, tuple):
             return tuple([self.unify_variables(term, map) for term in semantics])
-        elif isinstance(semantics, SemanticTemplate):
-            return SemanticTemplate(semantics.args, self.unify_variables(semantics.body, map))
+        elif isinstance(semantics, SemanticFunction):
+            return SemanticFunction(semantics.args, self.unify_variables(semantics.body, map))
         elif isinstance(semantics, Variable) and semantics.name in map:
             return Variable(map[semantics.name])
         elif isinstance(semantics, ReifiedVariable) and semantics.name in map:

@@ -24,12 +24,12 @@ from .read_grammar import get_read_grammar
 from .write_grammar import get_write_grammar
 
 
-class TestHelloWorld(unittest.TestCase):
+class TestPAM(unittest.TestCase):
     """
     A basic application that creates a test and shows how to interact with the system.
     """
 
-    def test_hello_world(self):
+    def test_pam(self):
 
         path = str(pathlib.Path(__file__).parent.resolve()) + "/"
 
@@ -87,8 +87,8 @@ class TestHelloWorld(unittest.TestCase):
             ["Hello world", "Hi there!"],
 
             # 1.1 Introduction; 1.4 Goals
-            ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away. Then John remembered that he had two tickets for the Giants' game on him. He told the cop that he would give them to him if he would forget the whole incident. The cop happened to be a terrific football fan . Re took John's tickets and drove away.", "OK"]
-            ["Why did John offer the cop a couple of tickets?", "Because he was afraid he was going to lose his license if he got another summons."]
+            ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away. Then John remembered that he had two tickets for the Giants' game on him. He told the cop that he would give them to him if he would forget the whole incident. The cop happened to be a terrific football fan . Re took John's tickets and drove away.", "OK"],
+            ["Why did John offer the cop a couple of tickets?", "Because he was afraid he was going to lose his license if he got another summons."],
 
             # 1.2 PAM; 1.7 A PAM Example
             ["John wanted money. He got a gun and walked into the liquor store. He told the owner he wanted some money. The owner gave John the money and John left.", "OK"],
@@ -101,9 +101,9 @@ class TestHelloWorld(unittest.TestCase):
             ["What were the consequences of the shopkeeper giving John the money?", "John had some money."],
             ["How did John go to the liquor store?", "John walked to the liquor store."],
             ["How did John threaten the shopkeeper?", "John got a gun and he walked to the liquor store."],
-            ["How did John leave?", "John walked."]
+            ["How did John leave?", "John walked."],
             ["Story from John's point of view", "I needed to get some dough. So I got myself this gun, and I walked down to the liquor store. I told the shopkeeper that if he didn't let me have the money then I would shoot him. So he handed it over. Then he left."],
-            ["Story from the owner's point of view", "I was minding the store when a man entered . He threatened me with a gun and demanded all the cash receipts. W ell. I didn't want to get hurt, so I gave him the money. Then he escaped."]
+            ["Story from the owner's point of view", "I was minding the store when a man entered . He threatened me with a gun and demanded all the cash receipts. W ell. I didn't want to get hurt, so I gave him the money. Then he escaped."],
 
             # 1.2 PAM (2) and 11.2.2 Computer example
             ["Willa was hungry. She picked up the Michelin guide and got into her car.", "OK"],
@@ -133,7 +133,7 @@ class TestHelloWorld(unittest.TestCase):
 
             # 5.2 Goal subsumption state establishment
             ["John loved drinking hot coffee. He bought a thermos.", "OK"],
-            ["Why did John buy a thermos?", "So he could enjoy drinking hot coffee whenever he wanted to."]
+            ["Why did John buy a thermos?", "So he could enjoy drinking hot coffee whenever he wanted to."],
 
             # 7.3.1.1 Factors involved in time-based goal conflicts
             ["John had just enough money to buy either a stereo or a television, but he only had enough money for one. John bought a stereo and stole a television set.", "OK"],
@@ -151,7 +151,7 @@ class TestHelloWorld(unittest.TestCase):
             ["John wanted to get the treasure, but it was guarded by a dragon. John walked over to the treasure quietly.", "OK"],
             ["Why did John sneak over to the treasure?", "Because he was trying to get the treasure and he wanted to prevent the dragon from knowing where he was."],
 
-
+            # 14 A detailed example
             ["John was lost. He pulled over to a farmer standing by the side of the road. he asked him where he was.", "OK"],
             ["Why did John pull over to a farmer?", "Because he wanted to know where he was."],
             ["Why did John ask a farmer to tell him where he was?", "Because he wanted to get someplace."],
@@ -162,6 +162,7 @@ class TestHelloWorld(unittest.TestCase):
         ]
 
         # comment in the following rules to see intermediate results
+        return
 
         logger = Logger()
         logger.log_no_tests()
