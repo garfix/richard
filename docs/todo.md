@@ -1,5 +1,42 @@
 ## todo
 
+Create a functional design for PAM
+
+- the goal is to recreate the example dialogs
+- to this end we recreate the program structure, algorithms and data structures
+- which means we need 
+    - the algorithm
+    - the data stucture
+    - built-in knowledge
+        - if/then rules
+    - the new core classes to house the algorithm
+
+Problems
+
+- there is not really a dialog. There's a story, questions, and asking for a summary
+- when are the inferences made? before, during, or after excution?
+    - during! we even have the inference `dialog`. we may want to add real production rules (if X then add Y and Z)
+- facts are added to the dialog via declarative senstences as well
+- facts should have a "likeliness" score
+
+The algorithm
+
+- is there a prediction that explains the input?
+- if no: can an explanation be inferred from the input? 
+- if yes: make the inference
+
+- whenever a fact is stored (via `store`), the __production rules__ are evaluated and produce new facts
+- if the fact exists already, it is not readded, and does not recheck the production rules
+- production rules say: if this fact is added to the dialog, these facts should be added as well
+- these rules produce themes, goals and plans
+    - themes are constants (ie `hunger`)
+    - if goal-condition then 
+        - build a __goal episode__: (goal, goal source (theme), plan)
+        - make __suggestions__ / __requests__: predictions about how the plan __gap__ will be filled: with a plan that satisfies the goal: `[((PLAN) !INPUT! SUITABLE-PLAN-RULE)]`
+- each goal has a list of plans that fulfill it
+
+
+
 ## context
 
 Work out context in inference rules:

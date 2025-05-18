@@ -1,3 +1,7 @@
+## 2025-05-14
+
+The way PAM works is described in chapter 13 of Wilensky's thesis. Its algorithm has some similarities to Earley's algorithm: it starts with bottom-up reading, then makes top-down predictions. Once there are predictions, further reading must match these predictions.
+
 ## 2025-04-23
 
 I did some research on the models of Roger Schank's group. I picked PAM, by Robert Wilensky, because dealing with plan and goal recognition is hard enought by itself and would be an incredible addition to Richard! Also it could provide a more natural way to implement SHRDLU (which also deals with goals and reasons).
