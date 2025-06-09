@@ -14,11 +14,13 @@ Create a functional design for PAM
 Problems
 
 - there is not really a dialog. There's a story, questions, and asking for a summary
+    - how to write the tests? how to use this structure in a conversation?
+    - distinguish between statements in a story ("John robbed a liquor store") and statements to learn facts ("Sheep are mammals")
 - when are the inferences made? before, during, or after excution?
     - during! we even have the inference `dialog`. we may want to add real production rules (if X then add Y and Z)
 - facts are added to the dialog via declarative senstences as well
 - facts should have a "likeliness" score
-
+ 
 The algorithm
 
 - is there a prediction that explains the input?
