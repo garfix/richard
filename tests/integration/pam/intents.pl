@@ -1,8 +1,7 @@
 # intent predicates
 
-intent_hello() :-
-    store(output_type('hi')).
+intent_understood() :-
+    store(output_type('understood')).
 
-intent_list(E1, Sem) :-
-    find_all(E1, Sem, Elements),
-    store(output_type('list'), output_list(Elements)).
+intent_question() :-
+    store(output_type('question')).

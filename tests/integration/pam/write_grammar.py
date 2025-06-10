@@ -5,13 +5,12 @@ def get_write_grammar():
     return [
         # sentences
         {
-            "syn": "s() -> 'Hi there!'",
-            "if": [('output_type', 'hi')],
+            "syn": "s() -> 'OK'",
+            "if": [('output_type', 'understood')],
         },
         {
-            "syn": "s() -> format(E1)",
-            "if": [('output_type', 'list'), ('output_list', E1)],
-            "format": lambda elements: format_list(elements),
+            "syn": "s() -> 'Dunno'",
+            "if": [('output_type', 'question')],
         },
     ]
 

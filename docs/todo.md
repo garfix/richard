@@ -1,5 +1,7 @@
 ## todo
 
+- understand the story sentences, one at a time
+
 Create a functional design for PAM
 
 - the goal is to recreate the example dialogs

@@ -1,4 +1,3 @@
-import re
 from richard.core.constants import E1, E2, E3, E4, e1, e2, e3, Body, Range
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.type.SemanticFunction import SemanticFunction
@@ -11,7 +10,7 @@ def get_read_grammar():
         # sentence
         {
             "syn": "s(E1) -> s(E2) s(E3)",
-            "sem": lambda s1, s2: s1 + s2,
+            "sem": lambda s1, s2: s1 + s2 + [('intent_understood',)],
         },
         {
             "syn": "clause(E1) -> 'one' 'day'+','? clause(E1)",
@@ -58,4 +57,13 @@ def get_read_grammar():
             "syn": "s(E1) -> clause(E1)+'.'",
             "sem": lambda c: [],
         },
+        {
+            "syn": "s(E1) -> clause(E1)+'?'",
+            "sem": lambda s1: s1 + [('intent_question',)],
+        },
+        {
+            "syn": "clause(E1) -> 'why did john offer the cop a couple of tickets'",
+            "sem": lambda: [],
+        },
+
     ]
