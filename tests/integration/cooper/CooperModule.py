@@ -46,7 +46,7 @@ class CooperModule(SomeModule):
                 id = context.arguments[1].name
             self.ds.insert("entity", ["name", "id", ], [name, id])
             return [
-                [name, id]
+                [None, id]
             ]
 
 

@@ -17,20 +17,20 @@ def get_read_grammar():
             "sem": lambda s: [],
         },
         {
-            "syn": "clause(E1) -> 'john' 'went' 'through' 'a' 'red' 'light'",
-            "sem": lambda: [],
+            "syn": "clause(E1) -> np(E2) 'went' 'through' 'a' 'red' 'light'",
+            "sem": lambda np: [],
         },
         {
-            "syn": "clause(E1) -> 'john' 'had' 'just' 'gotten' 'a' 'summons for speeding by a cop the previous week,'",
-            "sem": lambda: [],
+            "syn": "clause(E1) -> np(E1) 'had' 'just' 'gotten' 'a' 'summons for speeding by a cop the previous week,'",
+            "sem": lambda np: [],
         },
         {
             "syn": "clause(E1) -> 'was told that if he got another violation, his license would be taken away'",
             "sem": lambda: [],
         },
         {
-            "syn": "clause(E1) -> 'then john remembered that he had two tickets for the giants\\' game on him'",
-            "sem": lambda: [],
+            "syn": "clause(E1) -> 'then' np(E2) 'remembered that he had two tickets for the giants\\' game on him'",
+            "sem": lambda np: [],
         },
         {
             "syn": "clause(E1) -> 'he told the cop that he would give them to him if he would forget the whole incident'",
@@ -41,10 +41,9 @@ def get_read_grammar():
             "sem": lambda: [],
         },
         {
-            "syn": "clause(E1) -> 'he took john\\'s tickets and drove away'",
-            "sem": lambda: [],
+            "syn": "clause(E1) -> 'he took' np(E2)+'\\'s tickets and drove away'",
+            "sem": lambda np: [],
         },
-
         {
             "syn": "clause(E1) -> clause(E2) 'and' clause(E3)",
             "sem": lambda s1, s2: s1 + s2,
@@ -59,11 +58,23 @@ def get_read_grammar():
         },
         {
             "syn": "s(E1) -> clause(E1)+'?'",
-            "sem": lambda s1: s1 + [('intent_question',)],
+            "sem": lambda clause: clause + [('intent_question',)],
         },
         {
-            "syn": "clause(E1) -> 'why did john offer the cop a couple of tickets'",
-            "sem": lambda: [],
+            "syn": "clause(E1) -> 'why did' np(E2) 'offer the cop a couple of tickets'",
+            "sem": lambda np: np,
+        },
+        {
+            "syn": "np(E1) -> noun(E1)",
+            "sem": lambda noun: noun,
+        },
+        {
+            "syn": "noun(E1) -> proper_noun(E1)",
+            "sem": lambda proper_noun: proper_noun,
+        },
+        {
+            "syn": "proper_noun(E1) -> /\w+/",
+            "sem": lambda token: [('resolve_name', token, E1)],
         },
 
     ]

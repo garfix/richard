@@ -13,9 +13,3 @@ def get_write_grammar():
             "if": [('output_type', 'question')],
         },
     ]
-
-
-def format_list(elements):
-    elements.sort()
-    return ", ".join(elements)
-
