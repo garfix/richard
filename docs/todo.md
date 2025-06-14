@@ -1,6 +1,7 @@
 ## todo
 
 - understand the story sentences, one at a time
+- NB! declarative sentences -> must be stored!
 
 Create a functional design for PAM
 

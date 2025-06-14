@@ -13,16 +13,66 @@ def get_read_grammar():
             "sem": lambda s1, s2: s1 + s2 + [('intent_understood',)],
         },
         {
-            "syn": "clause(E1) -> 'one' 'day'+','? clause(E1)",
-            "sem": lambda s: [],
+            # one day, ...
+            "syn": "clause(E1) -> adverb(E1)+','? clause(E1)",
+            "sem": lambda adverb, clause: adverb + clause,
         },
         {
-            "syn": "clause(E1) -> np(E2) 'went' 'through' 'a' 'red' 'light'",
-            "sem": lambda np: [],
+            "syn": "clause(E1) -> np(E1) iv(E2, E1)",
+            "sem": lambda np, iv: apply(np, iv)
         },
         {
-            "syn": "clause(E1) -> np(E1) 'had' 'just' 'gotten' 'a' 'summons for speeding by a cop the previous week,'",
-            "sem": lambda np: [],
+            "syn": "clause(E1) -> np(E2) tv_sub_obj(E1, E2, E3) np(E3)",
+            "sem": lambda np1, tv_sub_obj, np2: apply(np1, apply(np2, tv_sub_obj)),
+        },
+        {
+            "syn": "iv(E1, E2) -> go() 'through' 'a' 'red' 'light'",
+            "sem": lambda go: [('go_through_red_light', E1, E2)],
+        },
+        {
+            "syn": "np(E1) -> nbar(E1)",
+            "sem": lambda nbar: SemanticFunction([Body], nbar + Body)
+        },
+        {
+            "syn": "np(E1) -> det(E1) nbar(E1)",
+            "sem": lambda det, nbar: SemanticFunction([Body], apply(det, nbar, Body))
+        },
+        {
+            "syn": "nbar(E1) -> nbar(E1) adjp(E1)",
+            "sem": lambda nbar, adjp: nbar + adjp
+        },
+        {
+            "syn": "det(E1) -> 'a'",
+            "sem": lambda: SemanticFunction([Range, Body], Range + Body)
+        },
+        {
+            "syn": "tv_sub_obj(E1, E2, E3) -> 'had' adverb(E1) past_participle(E1, E2, E3)",
+            "sem": lambda adverb, past_participle: adverb + past_participle
+        },
+        {
+            "syn": "tv_sub_obj(E1, E2, E3) -> 'had' past_participle(E1, E2, E3)",
+            "sem": lambda past_participle: past_participle
+        },
+        {
+            "syn": "adverb(E1) -> 'just'",
+            "sem": lambda: []
+        },
+        {
+            "syn": "adverb(E1) -> 'one day'",
+            "sem": lambda: []
+        },
+        {
+            "syn": "go() -> 'went'",
+            "sem": lambda: []
+        },
+        {
+            "syn": "past_participle(E1, E2, E3) -> 'gotten'",
+            "sem": lambda: [('get', E1, E2, E3)]
+        },
+        # === DONE ^ =============================
+        {
+            "syn": "adjp(E1) -> 'for speeding by a cop the previous week,'",
+            "sem": lambda: []
         },
         {
             "syn": "clause(E1) -> 'was told that if he got another violation, his license would be taken away'",
@@ -49,8 +99,12 @@ def get_read_grammar():
             "sem": lambda s1, s2: s1 + s2,
         },
         {
-            "syn": "clause(E1) -> 'was' 'pulled' 'over'",
-            "sem": lambda: [],
+            "syn": "clause(E1) -> 'was' past_participle(E1)",
+            "sem": lambda past_participle: past_participle,
+        },
+        {
+            "syn": "past_participle(E1) -> 'pulled' 'over'",
+            "sem": lambda: [('pull_over', E1)],
         },
         {
             "syn": "s(E1) -> clause(E1)+'.'",
@@ -62,15 +116,19 @@ def get_read_grammar():
         },
         {
             "syn": "clause(E1) -> 'why did' np(E2) 'offer the cop a couple of tickets'",
-            "sem": lambda np: np,
+            "sem": lambda np: [],
         },
         {
-            "syn": "np(E1) -> noun(E1)",
+            "syn": "nbar(E1) -> noun(E1)",
             "sem": lambda noun: noun,
         },
         {
             "syn": "noun(E1) -> proper_noun(E1)",
             "sem": lambda proper_noun: proper_noun,
+        },
+        {
+            "syn": "noun(E1) -> 'summons'",
+            "sem": lambda: [('summons', E1)],
         },
         {
             "syn": "proper_noun(E1) -> /\w+/",
