@@ -9,8 +9,16 @@ def get_read_grammar():
 
         # sentence
         {
-            "syn": "s(E1) -> s(E2) s(E3)",
-            "sem": lambda s1, s2: s1 + s2 + [('intent_understood',)],
+            "syn": "s() -> paragraph()",
+            "sem": lambda paragraph: paragraph + [('intent_understood',)],
+        },
+        {
+            "syn": "paragraph() -> s(E1)",
+            "sem": lambda s: s,
+        },
+        {
+            "syn": "paragraph() -> s(E1) paragraph()",
+            "sem": lambda s, paragraph: s + paragraph,
         },
         {
             # one day, ...
