@@ -7,7 +7,7 @@ from richard.type.SemanticFunction import SemanticFunction
 def get_read_grammar():
     return [
 
-        # sentence
+        # question
         {
             "syn": "s() -> paragraph()",
             "sem": lambda paragraph: paragraph + [('intent_understood',)],
@@ -20,6 +20,28 @@ def get_read_grammar():
             "syn": "paragraph() -> s(E1) paragraph()",
             "sem": lambda s, paragraph: s + paragraph,
         },
+        {
+            "syn": "s() -> clause(E1)+'?'",
+            "sem": lambda clause: clause + [('intent_question',)],
+        },
+        # story
+        {
+            "syn": "s() -> story()",
+            "sem": lambda paragraph: paragraph + [('intent_understood',)],
+        },
+        {
+            "syn": "story() -> decl(E1) story()",
+            "sem": lambda s, paragraph: s + paragraph,
+        },
+        {
+            "syn": "story() -> decl(E1)",
+            "sem": lambda s: s,
+        },
+        {
+            "syn": "decl(E1) -> clause(E1)+'.'",
+            "sem": lambda c: [],
+        },
+        # clause
         {
             # one day, ...
             "syn": "clause(E1) -> adverb(E1)+','? clause(E1)",
@@ -34,9 +56,23 @@ def get_read_grammar():
             "sem": lambda np1, tv_sub_obj, np2: apply(np1, apply(np2, tv_sub_obj)),
         },
         {
-            "syn": "iv(E1, E2) -> go() 'through' 'a' 'red' 'light'",
-            "sem": lambda go: [('go_through_red_light', E1, E2)],
+            "syn": "clause(E1) -> clause(E2) 'and' clause(E3)",
+            "sem": lambda s1, s2: s1 + s2,
         },
+        {
+            "syn": "clause(E1) -> clause(E2) 'and' clause_sub(E3, E4)",
+            "sem": lambda s1, s2: s1 + s2,
+        },
+        {
+            "syn": "clause(E1) -> clause(E1)+','",
+            "sem": lambda clause: clause,
+        },
+        {
+            "syn": "clause_sub(E1, E2) -> 'was' past_participle(E1, E2)",
+            "sem": lambda past_participle: past_participle,
+        },
+
+        # np
         {
             "syn": "np(E1) -> nbar(E1)",
             "sem": lambda nbar: SemanticFunction([Body], nbar + Body)
@@ -45,13 +81,42 @@ def get_read_grammar():
             "syn": "np(E1) -> det(E1) nbar(E1)",
             "sem": lambda det, nbar: SemanticFunction([Body], apply(det, nbar, Body))
         },
+        # noun
         {
-            "syn": "nbar(E1) -> nbar(E1) adjp(E1)",
-            "sem": lambda nbar, adjp: nbar + adjp
+            "syn": "noun(E1) -> proper_noun(E1)",
+            "sem": lambda proper_noun: proper_noun,
         },
+        {
+            "syn": "noun(E1) -> 'summons'",
+            "sem": lambda: [('summons', E1)],
+        },
+        {
+            "syn": "noun(E1) -> 'speeding'",
+            "sem": lambda: [('speeding', E1)],
+        },
+        # proper noun
+        {
+            "syn": "proper_noun(E1) -> /\w+/",
+            "sem": lambda token: [('resolve_name', token, E1)],
+        },
+        # nbar
+        {
+            "syn": "nbar(E1) -> nbar(E1) pp(E1)",
+            "sem": lambda nbar, pp: nbar + pp
+        },
+        {
+            "syn": "nbar(E1) -> noun(E1)",
+            "sem": lambda noun: noun,
+        },
+        # det
         {
             "syn": "det(E1) -> 'a'",
             "sem": lambda: SemanticFunction([Range, Body], Range + Body)
+        },
+        # verb
+        {
+            "syn": "iv(E1, E2) -> go() 'through' 'a' 'red' 'light'",
+            "sem": lambda go: [('go_through_red_light', E1, E2)],
         },
         {
             "syn": "tv_sub_obj(E1, E2, E3) -> 'had' adverb(E1) past_participle(E1, E2, E3)",
@@ -61,6 +126,7 @@ def get_read_grammar():
             "syn": "tv_sub_obj(E1, E2, E3) -> 'had' past_participle(E1, E2, E3)",
             "sem": lambda past_participle: past_participle
         },
+        # adverb
         {
             "syn": "adverb(E1) -> 'just'",
             "sem": lambda: []
@@ -69,6 +135,7 @@ def get_read_grammar():
             "syn": "adverb(E1) -> 'one day'",
             "sem": lambda: []
         },
+        # verb inflections
         {
             "syn": "go() -> 'went'",
             "sem": lambda: []
@@ -77,11 +144,36 @@ def get_read_grammar():
             "syn": "past_participle(E1, E2, E3) -> 'gotten'",
             "sem": lambda: [('get', E1, E2, E3)]
         },
-        # === DONE ^ =============================
         {
-            "syn": "adjp(E1) -> 'for speeding by a cop the previous week,'",
-            "sem": lambda: []
+            "syn": "past_participle(E1, E2) -> 'pulled' 'over'",
+            "sem": lambda: [('pull_over', E1, E2)],
         },
+        # preposition phase
+        {
+            "syn": "pp(E1) -> prep(E1, E2) noun(E2)",
+            "sem": lambda prep, noun: prep + noun
+        },
+        {
+            "syn": "pp(E1) -> prep(E1, E2) np(E2)",
+            "sem": lambda prep, np: apply(np, prep)
+        },
+        {
+            "syn": "pp(E1) -> 'the'? 'previous' 'week'",
+            "sem": lambda: [('previous_week', E1)]
+        },
+        # preposition
+        {
+            "syn": "prep(E1, E2) -> 'for'",
+            "sem": lambda: [('for', E1, E2)]
+        },
+        {
+            "syn": "prep(E1, E2) -> 'by'",
+            "sem": lambda: [('by', E1, E2)]
+        },
+
+
+
+        # === DONE ^ =============================
         {
             "syn": "clause(E1) -> 'was told that if he got another violation, his license would be taken away'",
             "sem": lambda: [],
@@ -103,44 +195,9 @@ def get_read_grammar():
             "sem": lambda np: [],
         },
         {
-            "syn": "clause(E1) -> clause(E2) 'and' clause(E3)",
-            "sem": lambda s1, s2: s1 + s2,
-        },
-        {
-            "syn": "clause(E1) -> 'was' past_participle(E1)",
-            "sem": lambda past_participle: past_participle,
-        },
-        {
-            "syn": "past_participle(E1) -> 'pulled' 'over'",
-            "sem": lambda: [('pull_over', E1)],
-        },
-        {
-            "syn": "s(E1) -> clause(E1)+'.'",
-            "sem": lambda c: [],
-        },
-        {
-            "syn": "s(E1) -> clause(E1)+'?'",
-            "sem": lambda clause: clause + [('intent_question',)],
-        },
-        {
             "syn": "clause(E1) -> 'why did' np(E2) 'offer the cop a couple of tickets'",
             "sem": lambda np: [],
         },
-        {
-            "syn": "nbar(E1) -> noun(E1)",
-            "sem": lambda noun: noun,
-        },
-        {
-            "syn": "noun(E1) -> proper_noun(E1)",
-            "sem": lambda proper_noun: proper_noun,
-        },
-        {
-            "syn": "noun(E1) -> 'summons'",
-            "sem": lambda: [('summons', E1)],
-        },
-        {
-            "syn": "proper_noun(E1) -> /\w+/",
-            "sem": lambda token: [('resolve_name', token, E1)],
-        },
+
 
     ]
