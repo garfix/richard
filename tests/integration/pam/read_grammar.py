@@ -56,97 +56,59 @@ def get_read_grammar():
             "sem": lambda adverb, clause: adverb + clause,
         },
         {
-            # one day, ...
-            "syn": "clause(C1) -> clause(C1) adverb(C1)",
-            "sem": lambda clause, adverb: clause + adverb,
-        },
-        {
-            "syn": "clause(C1) -> np(Sub) vp_sub(C1, Sub)",
+            "syn": "clause(C1) -> np(E1) vp(C1, E1)",
             "sem": lambda np, vp_sub: apply(np, vp_sub)
         },
         {
-            "syn": "clause(C1) -> clause(C1) 'and' clause(C2)",
-            "sem": lambda clause1, clause2: clause1 + clause2,
+            "syn": "clause(C1) -> np(E1) vp(C1, E1) 'and' vp(C2, E1)",
+            "sem": lambda np, vp1, vp2: apply(np, vp1 + vp2),
         },
+        # subordinate_clause
         {
-            "syn": "clause(C1) -> np(Sub) vp_sub(C1, Sub) 'and' vp_sub(C2, Sub)",
-            "sem": lambda np, vp_sub1, vp_sub2: apply(np, vp_sub1 + vp_sub2),
-        },
-        {
-            "syn": "clause(C1) -> clause(C1)+','",
+            "syn": "subordinate_clause(C1) -> 'that' clause(C1)",
             "sem": lambda clause: clause,
         },
         # vp
         {
-            "syn": "vp_sub(C1, Sub) -> 'was' past_participle_phase_sub(C1, Sub)",
-            "sem": lambda past_participle_phase_sub: past_participle_phase_sub,
+            "syn": "vp(C1, E1) -> vp(C1, E1)+','",
+            "sem": lambda clause: clause,
         },
         {
-            "syn": "vp_sub(C1, Sub) -> iv(C1, Sub)",
+            "syn": "vp(C1, E1) -> vp(C1, E1) adverb(C1)",
+            "sem": lambda clause, adverb: clause + adverb,
+        },
+        {
+            "syn": "vp(C1, E1) -> 'was' vp(C1, E1)",
+            "sem": lambda vp: vp,
+        },
+        {
+            "syn": "vp(C1, E1) -> iv(C1, E1)",
             "sem": lambda iv: iv,
         },
         {
-            "syn": "vp_sub(C1, Sub) -> 'had' past_participle_phase_sub(C1, Sub)",
-            "sem": lambda past_participle_phase_sub: past_participle_phase_sub
-        },
-        # past participle phase
-        {
-            "syn": "past_participle_phase_sub(C1, Obj) -> past_participle_phase_sub_obj(C1, Sub, Obj) 'by' np(Sub)",
-            "sem": lambda past_participle_phase_sub_obj, np: apply(np, past_participle_phase_sub_obj),
-        },
-        # {
-        #     "syn": "past_participle_phase_sub_obj(C1, Sub, Obj) -> past_participle_phase_sub_obj(C1, Sub, Obj, Obj2)",
-        #     "sem": lambda past_participle_phase_sub_obj: past_participle_phase_sub_obj,
-        # },
-        {
-            "syn": "past_participle_phase_sub(C1, Sub) -> past_participle(C1, Sub)",
+            "syn": "vp(C1, E1, E2, E3) -> past_participle(C1, E1, E2, E3)",
             "sem": lambda past_participle: past_participle,
         },
         {
-            "syn": "past_participle_phase_sub(C1, Sub) -> adverb(C1) past_participle_phase_sub(C1, Sub)",
-            "sem": lambda adverb, past_participle_phase_sub: adverb + past_participle_phase_sub,
-        },
-
-        {
-            "syn": "past_participle_phase_sub(C1, Sub) -> past_participle_phase_sub_obj(C1, Sub, Obj) 'by' np(Obj)",
-            "sem": lambda past_participle_phase_sub, np: apply(np, past_participle_phase_sub),
-        },
-
-        {
-            "syn": "past_participle_phase_sub(C1, Sub) -> past_participle(C1, Sub, Obj) np(Obj)",
-            "sem": lambda past_participle, np: apply(np, past_participle),
-        },
-        {
-            "syn": "past_participle_phase_sub_obj(C1, Sub, Obj) -> past_participle(C1, Sub, Obj)",
+            "syn": "vp(C1, E1) -> past_participle(C1, E1, E2)",
             "sem": lambda past_participle: past_participle,
         },
         {
-            "syn": "past_participle_phase_sub_obj(C1, Sub, Obj) -> past_participle(C1, Sub, Obj, Obj2) np(Obj2)",
-            "sem": lambda past_participle: past_participle,
+            "syn": "vp(C1, E2) -> vp(C1, E1, E2, E3) np(E3) 'by' np(E1)",
+            "sem": lambda vp, np1, np2: apply(np1, apply(np2, vp)),
         },
-
         {
-            "syn": "past_participle_phase_sub(C1, Sub) -> past_participle_phase_sub(C1, Sub, Obj) 'that' np(Obj)",
-            "sem": lambda past_participle_phase_sub, np: apply(np, past_participle_phase_sub),
+            # had just gotten a summons
+            "syn": "vp(C1, E1) -> 'had' vp(C1, E1)",
+            "sem": lambda vp: vp
+        },
+        {
+            # had just gotten a summons
+            "syn": "vp(C1, E1) -> adverb(C1) vp(C1, E1)",
+            "sem": lambda adverb, vp: adverb + vp
         },
 
-        # {
-        #     "syn": "clause_sub(C1, Sub) -> 'was' vp(C1, Sub)",
-        #     "sem": lambda past_participle: past_participle,
-        # },
-        # {
-        #     "syn": "clause_sub(C1, Sub) -> 'was' past_participle(C1, Sub)",
-        #     "sem": lambda past_participle: past_participle,
-        # },
 
-        # {
-        #     "syn": "clause_sub(C1) -> 'was' past_participle(C1, Sub, C2) subordinate_clause(C2)",
-        #     "sem": lambda past_participle, subordinate_clause: past_participle + subordinate_clause,
-        # },
-        # {
-        #     "syn": "subordinate_clause(C1) -> 'that' clause(C1)",
-        #     "sem": lambda clause: clause,
-        # },
 
         # np
         {
@@ -198,14 +160,6 @@ def get_read_grammar():
             "syn": "iv(C1, Sub) -> go() 'through' 'a' 'red' 'light'",
             "sem": lambda go: [('go_through_red_light', C1, Sub)],
         },
-        {
-            "syn": "tv_sub_obj(C1, Sub, Obj) -> 'had' adverb(C1) past_participle(C1, Sub, Obj)",
-            "sem": lambda adverb, past_participle: adverb + past_participle
-        },
-        # {
-        #     "syn": "tv_sub_obj(E1, E2, E3) -> 'was' past_participle(E1, E2, E3) subordinate_clause(E3)",
-        #     "sem": lambda past_participle, subordinate_clause: past_participle + subordinate_clause
-        # },
         # adverb
         {
             "syn": "adverb(E1) -> 'just'",
@@ -229,8 +183,8 @@ def get_read_grammar():
             "sem": lambda: [('get', C1, Sub, Obj, Obj2)]
         },
         {
-            "syn": "past_participle(C1, Sub, Obj) -> 'told'",
-            "sem": lambda: [('tell', C1, Sub, Obj)]
+            "syn": "past_participle(C1, Sub, Obj, Obj2) -> 'told'",
+            "sem": lambda: [('tell', C1, Sub, Obj, Obj2)]
         },
         {
             "syn": "past_participle(C1, Sub, Obj) -> 'pulled' 'over'",

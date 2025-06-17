@@ -1,3 +1,44 @@
+## 2025-06-18
+
+Just an idea: use thes constructs for main nodes:
+
+    vp(C1, E1, E2, E3)
+
+then do rewrites:    
+
+    vp(C1, E1, E2, E3) -> vp(C1)
+    vp(C1, E1, E2, E3) -> vp(C1, E1)
+    vp(C1, E1, E2, E3) -> vp(C1, E1, E2)
+
+this is to reduce the number of rules.
+
+Use one of them like this:
+
+    vp(C1, E1, _, E3)
+
+## 2025-06-17
+
+I'm attempting to write a grammar that rewrites an n-argument clause into an n+1 argument clause, like this:
+
+        {
+            "syn": "past_participle_phase_sub(C1, Sub) -> past_participle_phase_sub_obj(C1, Sub, Obj) np(Obj)",
+            "sem": lambda past_participle, np: apply(np, past_participle),
+        },
+
+There are rules for 1 -> 2 arguments, and 2 -> 3 arguments.
+
+A big problem turns out to be that the second argument may be known before the third argument is added.
+
+    John had just gotten a summons for speeding by a cop the previous week.
+
+Here: John is the object, a summons is the indirect object, and a cop is the subject.    
+
+Writing out the full rules with all arguments at once will probably result in less rules and is much easier to understand.
+
+===
+
+Now trying to solve the grammar without any _sub_ or _obj_ affixes to the predicates. If that works, it will dramatically decrease the number of rules needed. It will allow about any sentence possible, and will not be the fastest, but if it's fast enough, the simplicity gained will be worth it.
+
 ## 2025-06-08
 
 PAM doesn't work with dialogues like the other systems. This forms a problem that needs to be solved. Do I force the examples into a dialogue, or do I change the form of interaction?
