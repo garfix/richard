@@ -1,3 +1,19 @@
+## 2025-06-22
+
+    John had just gotten a summons for speeding by a cop the previous week, and was told that
+
+this is
+
+    S -> np clause and clause
+
+but they share an *object* (John).
+
+So can't just say
+
+    s -> np(E1) clause_sub(E1) 'and' clause_sub(E1)
+
+because in this passive sentence it's an object.    
+
 ## 2025-06-18
 
 Just an idea: use thes constructs for main nodes:
@@ -15,6 +31,32 @@ this is to reduce the number of rules.
 Use one of them like this:
 
     vp(C1, E1, _, E3)
+
+===
+
+I tried this out, and it makes for less rules, but it makes the parsing process very inefficient and the time it takes quickly goes from 0.008 seconds to multiple seconds.
+
+===
+
+I also tried to replace all vp's with `vp(C1, E1, E2, E3)` but this also made the parsing process very very slow. This is the first time, in fact, that the slowness of the parsing process plays any role at all. The structure of the grammar starts to matter.
+
+The reason for the slowness is that the sentences become highly ambiguous with hundred of alternative parse trees.
+
+===
+
+The problem is that the grammar doesn't provide a "skeleton" for the sentence. The main reason for the ambiguity turns out to be that any word can be a pronoun (due to the pronoun being a very accepting regexp `/\w+/`) and that the np can be placed anywhere `vp -> vp np`.
+
+The solution is to provide skeletons for clauses:
+
+    clause -> np vp np by np
+    clause -> clause adverb
+    vp -> 'had' vp
+    vp -> adverb vp
+    vp -> verb
+    np -> \w+\ \w+\ \w+\
+    adverb -> the previous week
+
+    John had just gotten a summons for speeding by a cop the previous week
 
 ## 2025-06-17
 

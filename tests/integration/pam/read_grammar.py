@@ -8,6 +8,8 @@ C2 = Variable('C2')
 Sub = Variable('Sub')
 Obj = Variable('Obj')
 Obj2 = Variable('Obj2')
+X = Variable('X')
+
 
 
 def get_read_grammar():
@@ -51,63 +53,114 @@ def get_read_grammar():
         # clause
         # - refer to all verb phrases as the generic 'vp'
         {
-            # one day, ...
+            # pre-adverb
             "syn": "clause(C1) -> adverb(C1)+','? clause(C1)",
             "sem": lambda adverb, clause: adverb + clause,
         },
         {
-            "syn": "clause(C1) -> np(E1) vp(C1, E1)",
-            "sem": lambda np, vp_sub: apply(np, vp_sub)
-        },
-        {
-            "syn": "clause(C1) -> np(E1) vp(C1, E1) 'and' vp(C2, E1)",
-            "sem": lambda np, vp1, vp2: apply(np, vp1 + vp2),
-        },
-        # subordinate_clause
-        {
-            "syn": "subordinate_clause(C1) -> 'that' clause(C1)",
-            "sem": lambda clause: clause,
-        },
-        # vp
-        {
-            "syn": "vp(C1, E1) -> vp(C1, E1)+','",
-            "sem": lambda clause: clause,
-        },
-        {
-            "syn": "vp(C1, E1) -> vp(C1, E1) adverb(C1)",
+            # post-adverb
+            "syn": "clause(C1) -> clause(C1) adverb(C1)",
             "sem": lambda clause, adverb: clause + adverb,
         },
         {
-            "syn": "vp(C1, E1) -> 'was' vp(C1, E1)",
-            "sem": lambda vp: vp,
+            # split clause in two
+            "syn": "clause(C1) -> np(E1) clause(C1, E1) 'and' clause(C2, E1)",
+            "sem": lambda np, clause1, clause2: apply(np, clause1 + clause2),
         },
         {
-            "syn": "vp(C1, E1) -> iv(C1, E1)",
-            "sem": lambda iv: iv,
-        },
-        {
-            "syn": "vp(C1, E1, E2, E3) -> past_participle(C1, E1, E2, E3)",
-            "sem": lambda past_participle: past_participle,
-        },
-        {
-            "syn": "vp(C1, E1) -> past_participle(C1, E1, E2)",
-            "sem": lambda past_participle: past_participle,
-        },
-        {
-            "syn": "vp(C1, E2) -> vp(C1, E1, E2, E3) np(E3) 'by' np(E1)",
-            "sem": lambda vp, np1, np2: apply(np1, apply(np2, vp)),
-        },
-        {
-            # had just gotten a summons
-            "syn": "vp(C1, E1) -> 'had' vp(C1, E1)",
-            "sem": lambda vp: vp
-        },
-        {
-            # had just gotten a summons
-            "syn": "vp(C1, E1) -> adverb(C1) vp(C1, E1)",
-            "sem": lambda adverb, vp: adverb + vp
+            # split off first np
+            "syn": "clause(C1) -> np(E1) clause(C1, E1)",
+            "sem": lambda np, clause: apply(np, clause)
         },
 
+        # clause expecting single argument
+        {
+            # post-adverb
+            "syn": "clause(C1, E1) -> clause(C1, E1) adverb(C1)",
+            "sem": lambda clause, adverb: clause + adverb,
+        },
+        {
+            "syn": "clause(C1, E1) -> verb(C1, E1)",
+            "sem": lambda verb: verb,
+        },
+        {
+            "syn": "clause(C1, E1) -> 'was' verb(C1, E1)",
+            "sem": lambda verb: verb,
+        },
+        {
+            "syn": "clause(C1, E1) -> 'had' vp(C1, E1, E2, E3) np(E3) 'by' np(E2)",
+            "sem": lambda vp, np1, np2: apply(np1, apply(np2, vp))
+        },
+        # verb phrase (just the verb and its modifiers, no np's)
+        {
+            "syn": "vp(C1, E1, E2, E3) -> adverb(C1) vp(C1, E1, E2, E3)",
+            "sem": lambda adverb, clause: adverb + clause,
+        },
+        {
+            "syn": "vp(C1, E1, E2, E3) -> verb(C1, E1, E2, E3)",
+            "sem": lambda verb: verb
+        },
+
+
+# John had just gotten a summons for speeding by a cop the previous week,
+# and was told that if he got another violation, his license would be taken away.
+
+
+        # vp abstract
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1)",
+        #     "sem": lambda clause: clause,
+        # },
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1)",
+        #     "sem": lambda clause: clause,
+        # },
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2)",
+        #     "sem": lambda clause: clause,
+        # },
+        # vp abstract modifications
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3)+','",
+        #     "sem": lambda clause: clause,
+        # },
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3) adverb(C1)",
+        #     "sem": lambda clause, adverb: clause + adverb,
+        # },
+        # {
+        #     # just gotten a summons
+        #     "syn": "vp(C1, E1, E2, E3) -> adverb(C1) vp(C1, E1, E2, E3)",
+        #     "sem": lambda adverb, vp: adverb + vp
+        # },
+        # # past participle phrases
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> 'was' vp(C1, E1, E2, E3)",
+        #     "sem": lambda vp: vp,
+        # },
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> 'had' vp(C1, E1, E2, E3)",
+        #     "sem": lambda vp: vp
+        # },
+        # # subordinate clause
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> 'that' vp(C1, E1, E2, E3)",
+        #     "sem": lambda clause: clause,
+        # },
+        # # connect with object
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3) 'by' np(E1)",
+        #     "sem": lambda vp, np1: apply(np1, vp),
+        # },
+        # {
+        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3) np(E2)",
+        #     "sem": lambda vp, np1: apply(np1, vp),
+        # },
+        # # go lower level
+        # {
+        #     "syn": "vp(C1, E1) -> iv(C1, E1)",
+        #     "sem": lambda iv: iv,
+        # },
 
 
         # np
@@ -157,8 +210,25 @@ def get_read_grammar():
         },
         # verb
         {
-            "syn": "iv(C1, Sub) -> go() 'through' 'a' 'red' 'light'",
+            "syn": "verb(C1, Sub) -> go() 'through' 'a' 'red' 'light'",
             "sem": lambda go: [('go_through_red_light', C1, Sub)],
+        },
+        # verb inflections
+        {
+            "syn": "go() -> 'went'",
+            "sem": lambda: []
+        },
+        {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'gotten'",
+            "sem": lambda: [('get', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "vp(C1, Sub, Obj, Obj2) -> 'told'",
+            "sem": lambda: [('tell', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "verb(C1, Sub) -> 'pulled' 'over'",
+            "sem": lambda: [('pull_over', C1, Sub, X)],
         },
         # adverb
         {
@@ -172,23 +242,6 @@ def get_read_grammar():
         {
             "syn": "adverb(E1) -> 'the'? 'previous' 'week'",
             "sem": lambda: [('previous_week', E1)]
-        },
-        # verb inflections
-        {
-            "syn": "go() -> 'went'",
-            "sem": lambda: []
-        },
-        {
-            "syn": "past_participle(C1, Sub, Obj, Obj2) -> 'gotten'",
-            "sem": lambda: [('get', C1, Sub, Obj, Obj2)]
-        },
-        {
-            "syn": "past_participle(C1, Sub, Obj, Obj2) -> 'told'",
-            "sem": lambda: [('tell', C1, Sub, Obj, Obj2)]
-        },
-        {
-            "syn": "past_participle(C1, Sub, Obj) -> 'pulled' 'over'",
-            "sem": lambda: [('pull_over', C1, Sub, Obj)],
         },
         # preposition phase
         {
