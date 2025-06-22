@@ -64,13 +64,18 @@ def get_read_grammar():
         },
         {
             # split clause in two
-            "syn": "clause(C1) -> np(E1) clause(C1, E1) 'and' clause(C2, E1)",
+            "syn": "clause(C1) -> np(E1) clause(C1, E1)+','? 'and' clause(C2, E1)",
             "sem": lambda np, clause1, clause2: apply(np, clause1 + clause2),
         },
         {
             # split off first np
             "syn": "clause(C1) -> np(E1) clause(C1, E1)",
             "sem": lambda np, clause: apply(np, clause)
+        },
+        {
+            # relative
+            "syn": "relative_clause(C1) -> 'that' clause(C1)",
+            "sem": lambda clause: clause
         },
 
         # clause expecting single argument
@@ -80,16 +85,33 @@ def get_read_grammar():
             "sem": lambda clause, adverb: clause + adverb,
         },
         {
-            "syn": "clause(C1, E1) -> verb(C1, E1)",
+            "syn": "clause(C1, E1) -> vp(C1, E1)",
             "sem": lambda verb: verb,
+        },
+        {
+            "syn": "clause(C1, E1) -> vp(C1, E1, E2, E3)",
+            "sem": lambda verb: verb,
+        },
+        {
+            "syn": "clause(C1, E1) -> verb(C1, X, E1, E2) np(E2)",
+            "sem": lambda verb, np: apply(np, verb),
         },
         {
             "syn": "clause(C1, E1) -> 'was' verb(C1, E1)",
             "sem": lambda verb: verb,
         },
         {
+            "syn": "clause(C1, E1) -> 'was' vp(C1, X, E1, C2) relative_clause(C2)",
+            "sem": lambda vp, relative_clause: vp + relative_clause,
+        },
+        {
             "syn": "clause(C1, E1) -> 'had' vp(C1, E1, E2, E3) np(E3) 'by' np(E2)",
             "sem": lambda vp, np1, np2: apply(np1, apply(np2, vp))
+        },
+        {
+            # conditional statement
+            "syn": "clause(C1) -> 'if' clause(C2)+','? clause(C3)",
+            "sem": lambda clause1, clause2: [('if', clause1, clause2)]
         },
         # verb phrase (just the verb and its modifiers, no np's)
         {
@@ -97,73 +119,33 @@ def get_read_grammar():
             "sem": lambda adverb, clause: adverb + clause,
         },
         {
+            "syn": "vp(C1, E1) -> verb(C1, E1)",
+            "sem": lambda verb: verb
+        },
+        {
             "syn": "vp(C1, E1, E2, E3) -> verb(C1, E1, E2, E3)",
+            "sem": lambda verb: verb
+        },
+        {
+            "syn": "vp(C1, E1, E2, E3) -> 'would' 'be' verb(C1, E1, E2, E3)",
             "sem": lambda verb: verb
         },
 
 
 # John had just gotten a summons for speeding by a cop the previous week,
-# and was told that if he got another violation, his license would be taken away.
-
-
-        # vp abstract
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1)",
-        #     "sem": lambda clause: clause,
-        # },
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1)",
-        #     "sem": lambda clause: clause,
-        # },
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2)",
-        #     "sem": lambda clause: clause,
-        # },
-        # vp abstract modifications
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3)+','",
-        #     "sem": lambda clause: clause,
-        # },
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3) adverb(C1)",
-        #     "sem": lambda clause, adverb: clause + adverb,
-        # },
-        # {
-        #     # just gotten a summons
-        #     "syn": "vp(C1, E1, E2, E3) -> adverb(C1) vp(C1, E1, E2, E3)",
-        #     "sem": lambda adverb, vp: adverb + vp
-        # },
-        # # past participle phrases
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> 'was' vp(C1, E1, E2, E3)",
-        #     "sem": lambda vp: vp,
-        # },
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> 'had' vp(C1, E1, E2, E3)",
-        #     "sem": lambda vp: vp
-        # },
-        # # subordinate clause
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> 'that' vp(C1, E1, E2, E3)",
-        #     "sem": lambda clause: clause,
-        # },
-        # # connect with object
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3) 'by' np(E1)",
-        #     "sem": lambda vp, np1: apply(np1, vp),
-        # },
-        # {
-        #     "syn": "vp(C1, E1, E2, E3) -> vp(C1, E1, E2, E3) np(E2)",
-        #     "sem": lambda vp, np1: apply(np1, vp),
-        # },
-        # # go lower level
-        # {
-        #     "syn": "vp(C1, E1) -> iv(C1, E1)",
-        #     "sem": lambda iv: iv,
-        # },
-
+# and was told that
+#   if he got another violation,
+#       his license would be taken away.
 
         # np
+        {
+            "syn": "np(E1) -> 'his' nbar(E1)",
+            "sem": lambda nbar: SemanticFunction([Body], nbar + [('his', E1)] + Body)
+        },
+        {
+            "syn": "np(E1) -> 'he'",
+            "sem": lambda: SemanticFunction([Body], [('he', E1)] + Body)
+        },
         {
             "syn": "np(E1) -> nbar(E1)",
             "sem": lambda nbar: SemanticFunction([Body], nbar + Body)
@@ -186,8 +168,17 @@ def get_read_grammar():
             "sem": lambda: [('summons', E1)],
         },
         {
+            "syn": "noun(E1) -> 'violation'",
+            "sem": lambda: [('violation', E1)],
+        },
+        {
             "syn": "noun(E1) -> 'speeding'",
             "sem": lambda: [('speeding', E1)],
+        },
+        # adjective
+        {
+            "syn": "adj(E1) -> 'another'",
+            "sem": lambda: [('another', E1)],
         },
         # proper noun
         {
@@ -196,12 +187,21 @@ def get_read_grammar():
         },
         # nbar
         {
+            "syn": "nbar(E1) -> adjp(E1) nbar(E1)",
+            "sem": lambda adjp, nbar: adjp + nbar
+        },
+        {
             "syn": "nbar(E1) -> nbar(E1) pp(E1)",
             "sem": lambda nbar, pp: nbar + pp
         },
         {
             "syn": "nbar(E1) -> noun(E1)",
             "sem": lambda noun: noun,
+        },
+        # adjp
+        {
+            "syn": "adjp(E1) -> adj(E1)",
+            "sem": lambda adj: adj,
         },
         # det
         {
@@ -219,8 +219,16 @@ def get_read_grammar():
             "sem": lambda: []
         },
         {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'got'",
+            "sem": lambda: [('get', C1, Sub, Obj, Obj2)]
+        },
+        {
             "syn": "verb(C1, Sub, Obj, Obj2) -> 'gotten'",
             "sem": lambda: [('get', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'taken' 'away'",
+            "sem": lambda: [('take_away', C1, Sub, Obj, Obj2)]
         },
         {
             "syn": "vp(C1, Sub, Obj, Obj2) -> 'told'",
