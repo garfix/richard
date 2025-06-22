@@ -88,7 +88,7 @@ class TestPAM(unittest.TestCase):
         tests = [
             [
                 # Inference (1.1 Introduction; 1.4 Goals)
-                ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week.", "OK"],
+                ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away.", "OK"],
                 ["Why did John offer the cop a couple of tickets?", "Because he was afraid he was going to lose his license if he got another summons."],
             ],
             # [

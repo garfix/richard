@@ -159,6 +159,15 @@ def get_read_grammar():
             "syn": "noun(E1) -> proper_noun(E1)",
             "sem": lambda proper_noun: proper_noun,
         },
+# !experiment!
+{
+    "syn": "noun(E1) -> proper_noun(E1) proper_noun(E2)",
+    "sem": lambda proper_noun, proper_noun2: proper_noun + proper_noun2,
+},
+{
+    "syn": "noun(E1) -> proper_noun(E1) proper_noun(E2) proper_noun(E3)",
+    "sem": lambda proper_noun, proper_noun2, proper_noun3: proper_noun + proper_noun2 + proper_noun3,
+},
         {
             "syn": "noun(E1) -> 'cop'",
             "sem": lambda: [('cop, E1')],

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from richard.core.constants import POS_TYPE_REG_EXP
 from richard.entity.GrammarRule import GrammarRule
 
 
@@ -52,4 +53,13 @@ class ParseTreeNode:
 
         return self.category + "(" + body + ")"
 
+    def count_regexps(self) -> int:
+        count = 0
+        if self.rule.antecedent.position_type == POS_TYPE_REG_EXP:
+            count = 1
+
+        for child in self.children:
+            count += child.count_regexps()
+
+        return count
 

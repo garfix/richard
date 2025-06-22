@@ -14,6 +14,18 @@ So can't just say
 
 because in this passive sentence it's an object.    
 
+===
+
+The skeletel clause works much better. 2 sentences parsed in 16 msecs. Ambiguity still too high (not for proper functioning, but for speed).
+
+Processing all sentences of a paragraph in one is possible, but each next sentence multiplies the number of possible parses.
+
+It would be better to parse as much as possible, followed by a check if all text is covered. One problem would be that regexp constructs will win the parse.
+
+===
+
+I want to prune unnecessary parse trees as soon as possible. Parse trees with less reg exp nodes are better than ones with more. I will only keep parse trees with the least amount of reg exps. And I think I can do that in the parse tree extracter.
+
 ## 2025-06-18
 
 Just an idea: use thes constructs for main nodes:
