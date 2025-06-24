@@ -1,3 +1,16 @@
+## 2025-06-24
+
+Ambiguity:
+
+    He told the cop that he would give them to him 
+    if he would forget the whole incident.
+
+    He told the cop that 
+        he would give them to him 
+        if he would forget the whole incident.
+
+Don't know how to solve at the moment.
+
 ## 2025-06-22
 
     John had just gotten a summons for speeding by a cop the previous week, and was told that

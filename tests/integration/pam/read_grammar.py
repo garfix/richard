@@ -93,8 +93,24 @@ def get_read_grammar():
             "sem": lambda verb: verb,
         },
         {
-            "syn": "clause(C1, E1) -> verb(C1, X, E1, E2) np(E2)",
-            "sem": lambda verb, np: apply(np, verb),
+            "syn": "clause(C1, E1) -> vp(C1, E1, C2) infinitival_clause(C2)",
+            "sem": lambda verb, infinitival_clause: verb + infinitival_clause,
+        },
+        {
+            "syn": "clause(C1, E1) -> vp(C1, X, E1, E2) np(E2)",
+            "sem": lambda vp, np: apply(np, vp),
+        },
+        {
+            "syn": "clause(C1, E1) -> vp(C1, E1, E3, E2) np(E2) 'to' np(E3)",
+            "sem": lambda vp, np1, np2: apply(np1, apply(np2, vp)),
+        },
+        {
+            "syn": "clause(C1, E1) -> vp(C1, X, E1, C2) relative_clause(C2)",
+            "sem": lambda vp, relative_clause: vp + relative_clause,
+        },
+        {
+            "syn": "clause(C1, E1) -> vp(C1, E1, E2, C2) np(E2) relative_clause(C2)",
+            "sem": lambda vp, np, relative_clause: apply(np, vp + relative_clause),
         },
         {
             "syn": "clause(C1, E1) -> 'was' verb(C1, E1)",
@@ -109,9 +125,24 @@ def get_read_grammar():
             "sem": lambda vp, np1, np2: apply(np1, apply(np2, vp))
         },
         {
+            # expression
+            "syn": "clause(C1, E1) -> 'had' np(E2) 'on' 'him'",
+            "sem": lambda np: apply(np, [('have_on_oneself', C1, E1, E2)])
+        },
+        {
             # conditional statement
             "syn": "clause(C1) -> 'if' clause(C2)+','? clause(C3)",
             "sem": lambda clause1, clause2: [('if', clause1, clause2)]
+        },
+        {
+            # conditional statement
+            "syn": "clause(C1) -> clause(C2)+','? 'if' clause(C3)",
+            "sem": lambda clause1, clause2: [('if', clause2, clause1)]
+        },
+        {
+            # infinitival statement
+            "syn": "infinitival_clause(C1) -> 'to' 'be' np(E1)",
+            "sem": lambda np: apply(np, [])
         },
         # verb phrase (just the verb and its modifiers, no np's)
         {
@@ -123,6 +154,10 @@ def get_read_grammar():
             "sem": lambda verb: verb
         },
         {
+            "syn": "vp(C1, E1, E2) -> verb(C1, E1, E2)",
+            "sem": lambda verb: verb
+        },
+        {
             "syn": "vp(C1, E1, E2, E3) -> verb(C1, E1, E2, E3)",
             "sem": lambda verb: verb
         },
@@ -130,12 +165,15 @@ def get_read_grammar():
             "syn": "vp(C1, E1, E2, E3) -> 'would' 'be' verb(C1, E1, E2, E3)",
             "sem": lambda verb: verb
         },
+        {
+            "syn": "vp(C1, E1, E2, E3) -> 'would' verb(C1, E1, E2, E3)",
+            "sem": lambda verb: verb
+        },
 
 
 # John had just gotten a summons for speeding by a cop the previous week,
-# and was told that
-#   if he got another violation,
-#       his license would be taken away.
+# and was told that if he got another violation, his license would be taken away.
+# Then John remembered that he had two tickets for the Giants' game on him.
 
         # np
         {
@@ -147,6 +185,14 @@ def get_read_grammar():
             "sem": lambda: SemanticFunction([Body], [('he', E1)] + Body)
         },
         {
+            "syn": "np(E1) -> 'him'",
+            "sem": lambda: SemanticFunction([Body], [('he', E1)] + Body)
+        },
+        {
+            "syn": "np(E1) -> 'them'",
+            "sem": lambda: SemanticFunction([Body], [('them', E1)] + Body)
+        },
+        {
             "syn": "np(E1) -> nbar(E1)",
             "sem": lambda nbar: SemanticFunction([Body], nbar + Body)
         },
@@ -156,18 +202,23 @@ def get_read_grammar():
         },
         # noun
         {
-            "syn": "noun(E1) -> proper_noun(E1)",
-            "sem": lambda proper_noun: proper_noun,
+            "syn": "np(E1) -> proper_noun(E1)",
+            "sem": lambda proper_noun: SemanticFunction([Body], proper_noun + Body)
         },
+        {
+            "syn": "np(E1) -> np(E2)+'\\'' noun(E1)",
+            "sem": lambda np, noun: SemanticFunction([Body], apply(np, noun + [('poss', E2, E1)]))
+        },
+
 # !experiment!
-{
-    "syn": "noun(E1) -> proper_noun(E1) proper_noun(E2)",
-    "sem": lambda proper_noun, proper_noun2: proper_noun + proper_noun2,
-},
-{
-    "syn": "noun(E1) -> proper_noun(E1) proper_noun(E2) proper_noun(E3)",
-    "sem": lambda proper_noun, proper_noun2, proper_noun3: proper_noun + proper_noun2 + proper_noun3,
-},
+# {
+#     "syn": "noun(E1) -> proper_noun(E1) proper_noun(E2)",
+#     "sem": lambda proper_noun, proper_noun2: proper_noun + proper_noun2,
+# },
+# {
+#     "syn": "noun(E1) -> proper_noun(E1) proper_noun(E2) proper_noun(E3)",
+#     "sem": lambda proper_noun, proper_noun2, proper_noun3: proper_noun + proper_noun2 + proper_noun3,
+# },
         {
             "syn": "noun(E1) -> 'cop'",
             "sem": lambda: [('cop, E1')],
@@ -181,18 +232,37 @@ def get_read_grammar():
             "sem": lambda: [('violation', E1)],
         },
         {
+            "syn": "noun(E1) -> 'incident'",
+            "sem": lambda: [('incident', E1)],
+        },
+        {
             "syn": "noun(E1) -> 'speeding'",
             "sem": lambda: [('speeding', E1)],
         },
-        # adjective
         {
-            "syn": "adj(E1) -> 'another'",
-            "sem": lambda: [('another', E1)],
+            "syn": "noun(E1) -> 'tickets'",
+            "sem": lambda: [('ticket, E1')],
+        },
+        {
+            "syn": "noun(E1) -> 'game'",
+            "sem": lambda: [('game', E1)],
+        },
+        {
+            "syn": "noun(E1) -> 'license'",
+            "sem": lambda: [('license', E1)],
+        },
+        {
+            "syn": "noun(E1) -> 'football' 'fan'",
+            "sem": lambda: [('football_fan, E1')],
         },
         # proper noun
         {
             "syn": "proper_noun(E1) -> /\w+/",
             "sem": lambda token: [('resolve_name', token, E1)],
+        },
+        {
+            "syn": "proper_noun(E1) -> 'the' /\w+/",
+            "sem": lambda token: [('resolve_name', 'the ' + token, E1)],
         },
         # nbar
         {
@@ -212,20 +282,48 @@ def get_read_grammar():
             "syn": "adjp(E1) -> adj(E1)",
             "sem": lambda adj: adj,
         },
+        # adjective
+        {
+            "syn": "adj(E1) -> 'another'",
+            "sem": lambda: [('another', E1)],
+        },
+        {
+            "syn": "adj(E1) -> 'whole'",
+            "sem": lambda: [('whole', E1)],
+        },
+        {
+            "syn": "adj(E1) -> 'terrific'",
+            "sem": lambda: [('terrific', E1)],
+        },
         # det
+        {
+            "syn": "det(E1) -> 'the'",
+            "sem": lambda: SemanticFunction([Range, Body], Range + Body)
+        },
         {
             "syn": "det(E1) -> 'a'",
             "sem": lambda: SemanticFunction([Range, Body], Range + Body)
         },
+        {
+            "syn": "det(E1) -> number(E1)",
+            "sem": lambda number: SemanticFunction([Range, Body], [('det_equals', Range + Body, number)])
+        },
         # verb
         {
-            "syn": "verb(C1, Sub) -> go() 'through' 'a' 'red' 'light'",
-            "sem": lambda go: [('go_through_red_light', C1, Sub)],
+            "syn": "verb(C1, Sub, Obj) -> 'happened'",
+            "sem": lambda: [('happen', C1, Sub, Obj)]
         },
-        # verb inflections
         {
-            "syn": "go() -> 'went'",
-            "sem": lambda: []
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'give'",
+            "sem": lambda: [('give', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'forget'",
+            "sem": lambda: [('forget', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'remembered'",
+            "sem": lambda: [('remember', C1, Sub, Obj, Obj2)]
         },
         {
             "syn": "verb(C1, Sub, Obj, Obj2) -> 'got'",
@@ -240,14 +338,26 @@ def get_read_grammar():
             "sem": lambda: [('take_away', C1, Sub, Obj, Obj2)]
         },
         {
-            "syn": "vp(C1, Sub, Obj, Obj2) -> 'told'",
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'told'",
             "sem": lambda: [('tell', C1, Sub, Obj, Obj2)]
         },
         {
             "syn": "verb(C1, Sub) -> 'pulled' 'over'",
             "sem": lambda: [('pull_over', C1, Sub, X)],
         },
+        {
+            "syn": "verb(C1, Sub) -> go() 'through' 'a' 'red' 'light'",
+            "sem": lambda go: [('go_through_red_light', C1, Sub)],
+        },
+        {
+            "syn": "go() -> 'went'",
+            "sem": lambda: []
+        },
         # adverb
+        {
+            "syn": "adverb(E1) -> 'then'",
+            "sem": lambda: []
+        },
         {
             "syn": "adverb(E1) -> 'just'",
             "sem": lambda: []
@@ -262,10 +372,6 @@ def get_read_grammar():
         },
         # preposition phase
         {
-            "syn": "pp(E1) -> prep(E1, E2) noun(E2)",
-            "sem": lambda prep, noun: prep + noun
-        },
-        {
             "syn": "pp(E1) -> prep(E1, E2) np(E2)",
             "sem": lambda prep, np: apply(np, prep)
         },
@@ -274,26 +380,15 @@ def get_read_grammar():
             "syn": "prep(E1, E2) -> 'for'",
             "sem": lambda: [('for', E1, E2)]
         },
+        # number
+        {
+            "syn": "number(E1) -> 'two'",
+            "sem": lambda: 2
+        },
 
 
 
         # === DONE ^ =============================
-        {
-            "syn": "clause(E1) -> clause_sub(E1) 'if he got another violation, his license would be taken away'",
-            "sem": lambda: [],
-        },
-        {
-            "syn": "clause(E1) -> 'then' np(E2) 'remembered that he had two tickets for the giants\\' game on him'",
-            "sem": lambda np: [],
-        },
-        {
-            "syn": "clause(E1) -> 'he told the cop that he would give them to him if he would forget the whole incident'",
-            "sem": lambda: [],
-        },
-        {
-            "syn": "clause(E1) -> 'the cop happened to be a terrific football fan'",
-            "sem": lambda: [],
-        },
         {
             "syn": "clause(E1) -> 'he took' np(E2)+'\\'s tickets and drove away'",
             "sem": lambda np: [],

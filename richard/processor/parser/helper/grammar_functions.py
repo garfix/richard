@@ -1,8 +1,10 @@
 
-from richard.type import SemanticFunction
+from richard.type.SemanticFunction import SemanticFunction
 
 
 def apply(template: SemanticFunction, *values):
+    if not isinstance(template, SemanticFunction):
+        raise Exception(f"Not a SemanticTemplate: {template}")
     replaced = template.body
     for i, value in enumerate(values):
         token = template.args[i][0]
