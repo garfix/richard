@@ -11,6 +11,9 @@ class ParseTreeNode:
     children: list[ParseTreeNode]
     form: str
     rule: GrammarRule
+    # the number of regular expression nodes below and including this node
+    # including it here is a speed measure
+    reg_exp_count: int
 
     def is_leaf_node(self) -> bool:
         return len(self.children) == 0
@@ -52,14 +55,3 @@ class ParseTreeNode:
             sep = " "
 
         return self.category + "(" + body + ")"
-
-    def count_regexps(self) -> int:
-        count = 0
-        if self.rule.antecedent.position_type == POS_TYPE_REG_EXP:
-            count = 1
-
-        for child in self.children:
-            count += child.count_regexps()
-
-        return count
-
