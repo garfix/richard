@@ -209,6 +209,10 @@ def get_read_grammar():
             "syn": "np(E1) -> np(E2)+'\\'' noun(E1)",
             "sem": lambda np, noun: SemanticFunction([Body], apply(np, noun + [('poss', E2, E1)]))
         },
+        {
+            "syn": "np(E1) -> np(E2)+'\\'s' noun(E1)",
+            "sem": lambda np, noun: SemanticFunction([Body], apply(np, noun + [('poss', E2, E1)]))
+        },
 
 # !experiment!
 # {
@@ -334,8 +338,16 @@ def get_read_grammar():
             "sem": lambda: [('get', C1, Sub, Obj, Obj2)]
         },
         {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'took'",
+            "sem": lambda: [('take', C1, Sub, Obj, Obj2)]
+        },
+        {
             "syn": "verb(C1, Sub, Obj, Obj2) -> 'taken' 'away'",
             "sem": lambda: [('take_away', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'drove' 'away'",
+            "sem": lambda: [('drive_away', C1, Sub, Obj, Obj2)]
         },
         {
             "syn": "verb(C1, Sub, Obj, Obj2) -> 'told'",
@@ -389,10 +401,6 @@ def get_read_grammar():
 
 
         # === DONE ^ =============================
-        {
-            "syn": "clause(E1) -> 'he took' np(E2)+'\\'s tickets and drove away'",
-            "sem": lambda np: [],
-        },
         {
             "syn": "clause(E1) -> 'why did' np(E2) 'offer the cop a couple of tickets'",
             "sem": lambda np: [],

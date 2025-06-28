@@ -88,9 +88,7 @@ class TestPAM(unittest.TestCase):
         tests = [
             [
                 # Inference (1.1 Introduction; 1.4 Goals)
-                # ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away. Then John remembered that he had two tickets for the Giants' game on him. He told the cop that he would give them to him if he would forget the whole incident. The cop happened to be a terrific football fan. He took John's tickets and drove away.", "OK"],
-
-                ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away. Then John remembered that he had two tickets for the Giants' game on him. He told the cop that he would give them to him if he would forget the whole incident. The cop happened to be a terrific football fan.", "OK"],
+                ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away. Then John remembered that he had two tickets for the Giants' game on him. He told the cop that he would give them to him if he would forget the whole incident. The cop happened to be a terrific football fan. He took John's tickets and drove away.", "OK"],
                 ["Why did John offer the cop a couple of tickets?", "Because he was afraid he was going to lose his license if he got another summons."],
             ],
             # [
@@ -180,8 +178,8 @@ class TestPAM(unittest.TestCase):
 
         logger = Logger()
         logger.log_no_tests()
-        logger.log_all_tests()
-        logger.log_products()
+        # logger.log_all_tests()
+        # logger.log_products()
         # logger.log_stats()
 
         for session in tests:

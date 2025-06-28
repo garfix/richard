@@ -1,5 +1,6 @@
 ## todo
 
+- too many parse trees, can it be reduced?
 - understand the story sentences, one at a time
 - NB! declarative sentences -> must be stored!
 
