@@ -4,6 +4,7 @@ from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.RuleConstituent import RuleConstituent
+from richard.processor.parser.earley.prune_trees import get_trees_with_least_amount_of_regexps
 from .entity.Chart import Chart
 from .entity.ChartState import ChartState
 from .tree_extract import extract_tree_roots
@@ -21,12 +22,13 @@ class EarleyParser:
 
         chart = self.buildChart(grammar_rules, text)
 
-        rootNodes = extract_tree_roots(chart)
+        original_roots = extract_tree_roots(chart)
+        roots = get_trees_with_least_amount_of_regexps(original_roots)
 
         error = ""
         args = []
 
-        if len(rootNodes) == 0:
+        if len(roots) == 0:
 
             nextWord = find_unknown_word(chart)
 
@@ -39,7 +41,7 @@ class EarleyParser:
                 error = NOT_UNDERSTOOD
 
         return ProcessResult(
-            products=rootNodes,
+            products=roots,
             error_type=error,
             error_args=args
         )

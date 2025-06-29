@@ -13,10 +13,8 @@ def extract_tree_roots(chart: Chart):
 
     gamma_nodes = create_trees_for_state(chart, gamma_state)
 
-    pruned_gamma_nodes = get_trees_with_least_amount_of_regexps(gamma_nodes)
-
     # strip the gamma and delta nodes
-    return [gamma_node.children[0].children[0] for gamma_node in pruned_gamma_nodes]
+    return [gamma_node.children[0].children[0] for gamma_node in gamma_nodes]
 
 
 def create_trees_for_state(chart: Chart, state: ChartState):
@@ -93,17 +91,3 @@ def create_permutations(things: list[list]) -> list[list]:
     """
     return list(itertools.product(*things))
 
-
-def get_trees_with_least_amount_of_regexps(trees: list[ParseTreeNode]):
-    kept_trees = []
-    least_regexp_count = None
-
-    for tree in trees:
-        regexp_count = tree.reg_exp_count
-        if least_regexp_count == None or regexp_count < least_regexp_count:
-            least_regexp_count = regexp_count
-            kept_trees = [tree]
-        elif regexp_count == least_regexp_count:
-            kept_trees.append(tree)
-
-    return kept_trees
