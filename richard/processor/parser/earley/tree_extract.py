@@ -81,7 +81,31 @@ def create_trees_for_states(chart: Chart, states: list[ChartState]) -> list[list
     # each state has multiple trees
     trees_per_state = [create_trees_for_state(chart, state) for state in states]
     # create all of their permutations
-    return create_permutations(trees_per_state)
+    permutations = create_permutations(trees_per_state)
+    # filter out the permutations with the least amount of reg exps
+    return find_sequences_with_least_regexps(permutations)
+
+
+def find_sequences_with_least_regexps(forests: list[list[ParseTreeNode]]):
+    """
+    Rules with free regular expressions (i.e. /\w+/) are responsible for creating massive ambiguity.
+    To get rid of it in an early stage, we just keep the "forests" (tree sequences) produced by the least amount of regular expressions
+    """
+    kept_forests = []
+    least_regexp_count = None
+
+    for forest in forests:
+        regexp_count = 0
+        for tree in forest:
+            regexp_count += tree.reg_exp_count
+
+        if least_regexp_count == None or regexp_count < least_regexp_count:
+            least_regexp_count = regexp_count
+            kept_forests = [forest]
+        elif regexp_count == least_regexp_count:
+            kept_forests.append(forest)
+
+    return kept_forests
 
 
 def create_permutations(things: list[list]) -> list[list]:

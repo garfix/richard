@@ -1,3 +1,7 @@
+## 2025-06-29
+
+I reduced parse time from 375 msecs to 34 msecs by "pruning" the parse trees with many regexps in an early stage.
+
 ## 2025-06-28
 
 Pruning the parse trees proves expensive. 0.3 seconds for 8192 trees, and this is just checking if they contain regexp nodes. I guess there are a lot of nodes when each tree is a complete parapraph.
@@ -32,7 +36,7 @@ Great, I can now parse the first story:
 
     One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away. Then John remembered that he had two tickets for the Giants' game on him. He told the cop that he would give them to him if he would forget the whole incident. The cop happened to be a terrific football fan. He took John's tickets and drove away.
 
-It takes 375 seconds (which is bad) and has 4 parse trees (which is quite good!). Actually there are 8192 parse trees before pruning the ones with more regexps.
+It takes 375 msecs (which is bad) and has 4 parse trees (which is quite good!). Actually there are 8192 parse trees before pruning the ones with more regexps.
 
 ## 2025-06-22
 

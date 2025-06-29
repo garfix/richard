@@ -22,8 +22,7 @@ class EarleyParser:
 
         chart = self.buildChart(grammar_rules, text)
 
-        original_roots = extract_tree_roots(chart)
-        roots = get_trees_with_least_amount_of_regexps(original_roots)
+        roots = extract_tree_roots(chart)
 
         error = ""
         args = []
