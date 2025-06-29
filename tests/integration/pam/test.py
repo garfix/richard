@@ -189,8 +189,3 @@ class TestPAM(unittest.TestCase):
 
         print(logger)
 
-        # how to actually use the system
-
-        system.enter(SentenceRequest("Hello world"))
-        output = system.read_output()
-        print(output)
