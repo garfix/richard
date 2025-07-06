@@ -4,7 +4,6 @@ from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.RuleConstituent import RuleConstituent
-from richard.processor.parser.earley.prune_trees import get_trees_with_least_amount_of_regexps
 from .entity.Chart import Chart
 from .entity.ChartState import ChartState
 from .tree_extract import extract_tree_roots
