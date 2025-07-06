@@ -5,3 +5,5 @@ intent_understood() :-
 
 intent_question() :-
     store(output_type('question')).
+
+intent_tell(Atoms) :- store(Atoms).

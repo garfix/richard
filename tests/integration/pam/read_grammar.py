@@ -17,25 +17,13 @@ def get_read_grammar():
 
         # question
         {
-            "syn": "s() -> paragraph()",
-            "sem": lambda paragraph: paragraph + [('intent_understood',)],
-        },
-        {
-            "syn": "paragraph() -> s(E1)",
-            "sem": lambda s: s,
-        },
-        {
-            "syn": "paragraph() -> s(E1) paragraph()",
-            "sem": lambda s, paragraph: s + paragraph,
-        },
-        {
             "syn": "s() -> clause(C1)+'?'",
             "sem": lambda clause: clause + [('intent_question',)],
         },
         # story of declarative sentences
         {
             "syn": "s() -> story()",
-            "sem": lambda paragraph: paragraph + [('intent_understood',)],
+            "sem": lambda story: story + [('intent_understood',)],
         },
         {
             "syn": "story() -> decl(C1) story()",
@@ -86,15 +74,15 @@ def get_read_grammar():
         },
         {
             "syn": "clause(C1, E1) -> vp(C1, E1)",
-            "sem": lambda verb: verb,
+            "sem": lambda vp: vp,
         },
         {
             "syn": "clause(C1, E1) -> vp(C1, E1, E2, E3)",
-            "sem": lambda verb: verb,
+            "sem": lambda vp: vp,
         },
         {
             "syn": "clause(C1, E1) -> vp(C1, E1, C2) infinitival_clause(C2)",
-            "sem": lambda verb, infinitival_clause: verb + infinitival_clause,
+            "sem": lambda vp, infinitival_clause: vp + infinitival_clause,
         },
         {
             "syn": "clause(C1, E1) -> vp(C1, X, E1, E2) np(E2)",
@@ -147,7 +135,7 @@ def get_read_grammar():
         # verb phrase (just the verb and its modifiers, no np's)
         {
             "syn": "vp(C1, E1, E2, E3) -> adverb(C1) vp(C1, E1, E2, E3)",
-            "sem": lambda adverb, clause: adverb + clause,
+            "sem": lambda adverb, vp: adverb + vp,
         },
         {
             "syn": "vp(C1, E1) -> verb(C1, E1)",
@@ -169,12 +157,6 @@ def get_read_grammar():
             "syn": "vp(C1, E1, E2, E3) -> 'would' verb(C1, E1, E2, E3)",
             "sem": lambda verb: verb
         },
-
-
-# John had just gotten a summons for speeding by a cop the previous week,
-# and was told that if he got another violation, his license would be taken away.
-# Then John remembered that he had two tickets for the Giants' game on him.
-
         # np
         {
             "syn": "np(E1) -> 'his' nbar(E1)",
@@ -207,11 +189,11 @@ def get_read_grammar():
         },
         {
             "syn": "np(E1) -> np(E2)+'\\'' noun(E1)",
-            "sem": lambda np, noun: SemanticFunction([Body], apply(np, noun + [('poss', E2, E1)]))
+            "sem": lambda np, noun: SemanticFunction([Body], apply(np, noun + [('poss', E2, E1)] + Body))
         },
         {
             "syn": "np(E1) -> np(E2)+'\\'s' noun(E1)",
-            "sem": lambda np, noun: SemanticFunction([Body], apply(np, noun + [('poss', E2, E1)]))
+            "sem": lambda np, noun: SemanticFunction([Body], apply(np, noun + [('poss', E2, E1)] + Body))
         },
 
 # !experiment!
@@ -225,7 +207,7 @@ def get_read_grammar():
 # },
         {
             "syn": "noun(E1) -> 'cop'",
-            "sem": lambda: [('cop, E1')],
+            "sem": lambda: [('cop', E1)],
         },
         {
             "syn": "noun(E1) -> 'summons'",
@@ -245,7 +227,7 @@ def get_read_grammar():
         },
         {
             "syn": "noun(E1) -> 'tickets'",
-            "sem": lambda: [('ticket, E1')],
+            "sem": lambda: [('ticket', E1)],
         },
         {
             "syn": "noun(E1) -> 'game'",
@@ -257,7 +239,7 @@ def get_read_grammar():
         },
         {
             "syn": "noun(E1) -> 'football' 'fan'",
-            "sem": lambda: [('football_fan, E1')],
+            "sem": lambda: [('football_fan', E1)],
         },
         # proper noun
         {
@@ -382,7 +364,7 @@ def get_read_grammar():
             "syn": "adverb(E1) -> 'the'? 'previous' 'week'",
             "sem": lambda: [('previous_week', E1)]
         },
-        # preposition phase
+        # prepositional phase
         {
             "syn": "pp(E1) -> prep(E1, E2) np(E2)",
             "sem": lambda prep, np: apply(np, prep)
