@@ -23,7 +23,7 @@ def get_read_grammar():
         # story of declarative sentences
         {
             "syn": "s() -> story()",
-            "sem": lambda story: story + [('intent_understood',)],
+            "sem": lambda story: [('intent_understand', story)],
         },
         {
             "syn": "story() -> decl(C1) story()",
@@ -36,7 +36,7 @@ def get_read_grammar():
         # declarative
         {
             "syn": "decl(C1) -> clause(C1)+'.'",
-            "sem": lambda clause: [],
+            "sem": lambda clause: clause,
         },
         # clause
         # - refer to all verb phrases as the generic 'vp'

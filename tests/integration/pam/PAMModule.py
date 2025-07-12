@@ -23,7 +23,7 @@ class PAMModule(SomeModule):
         out_values = self.ds.select("entity", ["name", "id"], [name, None])
 
         if len(out_values) > 0:
-            return out_values
+            return map(lambda row: [None, row[1]], out_values)
         else:
             # if id is given, a new name is linked to that id
             if id is None:

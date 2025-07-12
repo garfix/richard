@@ -1,9 +1,9 @@
 # intent predicates
 
-intent_understood() :-
+intent_understand(Story) :-
     store(output_type('understood')).
 
 intent_question() :-
     store(output_type('question')).
 
-intent_tell(Atoms) :- store(Atoms).
+
