@@ -5,6 +5,7 @@ from richard.type.SemanticFunction import SemanticFunction
 
 C1 = Variable('C1')
 C2 = Variable('C2')
+C3 = Variable('C3')
 Sub = Variable('Sub')
 Obj = Variable('Obj')
 Obj2 = Variable('Obj2')
@@ -60,10 +61,20 @@ def get_read_grammar():
             "syn": "clause(C1) -> np(E1) clause(C1, E1)",
             "sem": lambda np, clause: apply(np, clause)
         },
+        # relative clause
         {
-            # relative
             "syn": "relative_clause(C1) -> 'that' clause(C1)",
             "sem": lambda clause: clause
+        },
+        # adjective clause (modifying a np)
+        {
+            "syn": "adjective_clause(E1) -> vp(C1, E1)",
+            "sem": lambda vp: vp
+        },
+        # content clause / indirect question
+        {
+            "syn": "content_clause(C1) -> 'where' np(E1) vp(C1, E1)",
+            "sem": lambda np, vp: apply(np, vp)
         },
 
         # clause expecting single argument
@@ -83,6 +94,10 @@ def get_read_grammar():
         {
             "syn": "clause(C1, E1) -> vp(C1, E1, C2) infinitival_clause(C2)",
             "sem": lambda vp, infinitival_clause: vp + infinitival_clause,
+        },
+        {
+            "syn": "clause(C1, E1) -> vp(C1, E1, E2, C2) np(E2) content_clause(C2)",
+            "sem": lambda vp, np, content_clause: apply(np, vp + content_clause),
         },
         {
             "syn": "clause(C1, E1) -> vp(C1, X, E1, E2) np(E2)",
@@ -105,6 +120,10 @@ def get_read_grammar():
             "sem": lambda verb: verb,
         },
         {
+            "syn": "clause(C1, E1) -> copula() adj(E1)",
+            "sem": lambda copula, adj: adj,
+        },
+        {
             "syn": "clause(C1, E1) -> 'was' vp(C1, X, E1, C2) relative_clause(C2)",
             "sem": lambda vp, relative_clause: vp + relative_clause,
         },
@@ -120,12 +139,12 @@ def get_read_grammar():
         {
             # conditional statement
             "syn": "clause(C1) -> 'if' clause(C2)+','? clause(C3)",
-            "sem": lambda clause1, clause2: [('if', clause1, clause2)]
+            "sem": lambda clause1, clause2: [('if', C1, C2, C3)] + clause1 + clause2
         },
         {
             # conditional statement
             "syn": "clause(C1) -> clause(C2)+','? 'if' clause(C3)",
-            "sem": lambda clause1, clause2: [('if', clause2, clause1)]
+            "sem": lambda clause1, clause2: [('if', C1, C3, C2)] + clause1 + clause2
         },
         {
             # infinitival statement
@@ -140,6 +159,10 @@ def get_read_grammar():
         {
             "syn": "vp(C1, E1) -> verb(C1, E1)",
             "sem": lambda verb: verb
+        },
+        {
+            "syn": "vp(C1, E1) -> verb(C1, E1) pp(C1)",
+            "sem": lambda verb, pp: verb + pp
         },
         {
             "syn": "vp(C1, E1, E2) -> verb(C1, E1, E2)",
@@ -241,6 +264,19 @@ def get_read_grammar():
             "syn": "noun(E1) -> 'football' 'fan'",
             "sem": lambda: [('football_fan', E1)],
         },
+        {
+            "syn": "noun(E1) -> 'farmer'",
+            "sem": lambda: [('farmer', E1)],
+        },
+        {
+            "syn": "noun(E1) -> 'side'",
+            "sem": lambda: [('side', E1)],
+        },
+        {
+            "syn": "noun(E1) -> 'road'",
+            "sem": lambda: [('road', E1)],
+        },
+
         # proper noun
         {
             "syn": "proper_noun(E1) -> /\w+/",
@@ -263,6 +299,10 @@ def get_read_grammar():
             "syn": "nbar(E1) -> noun(E1)",
             "sem": lambda noun: noun,
         },
+        {
+            "syn": "nbar(E1) -> nbar(E1) adjective_clause(E1)",
+            "sem": lambda nbar, adjective_clause: nbar + adjective_clause
+        },
         # adjp
         {
             "syn": "adjp(E1) -> adj(E1)",
@@ -281,6 +321,10 @@ def get_read_grammar():
             "syn": "adj(E1) -> 'terrific'",
             "sem": lambda: [('terrific', E1)],
         },
+        {
+            "syn": "adj(E1) -> 'lost'",
+            "sem": lambda: [('lost', E1)],
+        },
         # det
         {
             "syn": "det(E1) -> 'the'",
@@ -292,7 +336,7 @@ def get_read_grammar():
         },
         {
             "syn": "det(E1) -> number(E1)",
-            "sem": lambda number: SemanticFunction([Range, Body], [('det_equals', Range + Body, number)])
+            "sem": lambda number: SemanticFunction([Range, Body], Body + Range + [('number_of', E1, number)])
         },
         # verb
         {
@@ -344,7 +388,27 @@ def get_read_grammar():
             "sem": lambda go: [('go_through_red_light', C1, Sub)],
         },
         {
+            "syn": "verb(C1, Sub, Obj, Obj2) -> 'asked'",
+            "sem": lambda: [('ask', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "verb(C1, Sub) -> 'standing'",
+            "sem": lambda: [('stand', C1, Sub)],
+        },
+        {
+            "syn": "verb(C1, Sub) -> 'was'",
+            "sem": lambda: [('be', C1, Sub)],
+        },
+        {
             "syn": "go() -> 'went'",
+            "sem": lambda: []
+        },
+        {
+            "syn": "copula() -> 'is'",
+            "sem": lambda: []
+        },
+        {
+            "syn": "copula() -> 'was'",
             "sem": lambda: []
         },
         # adverb
@@ -373,6 +437,18 @@ def get_read_grammar():
         {
             "syn": "prep(E1, E2) -> 'for'",
             "sem": lambda: [('for', E1, E2)]
+        },
+        {
+            "syn": "prep(E1, E2) -> 'to'",
+            "sem": lambda: [('to', E1, E2)]
+        },
+        {
+            "syn": "prep(E1, E2) -> 'by'",
+            "sem": lambda: [('by', E1, E2)]
+        },
+        {
+            "syn": "prep(E1, E2) -> 'of'",
+            "sem": lambda: [('of', E1, E2)]
         },
         # number
         {

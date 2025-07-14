@@ -1,12 +1,5 @@
 ## todo
 
-- too many parse trees, can it be reduced?
-- understand the story sentences, one at a time
-- NB! declarative sentences -> must be stored!
-
-- parse a single sentence (greedy). then start with the next
-- do something about the ambiguity problem caused by regexp matches
-
 Create a functional design for PAM
 
 - the goal is to recreate the example dialogs

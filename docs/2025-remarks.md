@@ -1,3 +1,153 @@
+## 2025-07-13
+
+I should start with a simple story. The one I have been parsing so far may not be simple enough. I also should start with a story that was explained in detail by Wilensky.
+
+Another thing: while I could produce a completely flat representation of the story, yesterday, that doesn't mean I can do that in all cases. So it's fragile to base the representation structure on this example. While I could store this example in a relational db, that's not the case with all sentences.
+
+I could use the story in 2.4 which is simple and explained well, or the example in chapter 14.
+
+2.5
+
+    JOHN WANTED BILL’S BICYCLE.
+    HE WENT OVER TO BILL AND ASKED HIM IF HE WOULD GIVE IT TO HIM.
+    BILL REFUSED.
+    JOHN TOLD BILL HE WOULD GIVE HIM FIVE DOLLARS FOR IT, BUT BILL WOULD NOT AGREE.
+    THEN JOHN TOLD BILL HE WOULD BREAK HIS ARM IF HE DIDN'T LET HIM HAVE IT.
+    BILL GAVE HIM THE BICYCLE.
+
+14
+
+    JOHN WAS LOST.
+    HE PULLED OVER TO A FARMER STANDING BY THE SIDE OF THE ROAD.
+    HE ASKED HIM WHERE HE WAS.
+
+Chapter 14 seems easiest.
+
+I will keep the existing grammar, and extend it.
+
+## 2025-07-12
+
+This is the current meaning of the first story:
+
+~~~js
+('go_through_red_light', $1, $2)
+('pull_over', $3, $2, $4)
+('summons', $9)
+('speeding', $10)
+('for', $9, $10)
+('cop', $8)
+('get', $5, $6, $8, $9)
+('previous_week', $5)
+('tell', $7, $11, $6, $12)
+('if', 
+    [
+        ('he', $15)
+        ('another', $17)
+        ('violation', $17)
+        ('get', $13, $16, $15, $17)
+    ], 
+    [
+        ('license', $18)
+        ('his', $18)
+        ('take_away', $14, $18, $19, $20)
+    ])
+('remember', $21, $23, $22, $24)
+('he', $25)
+('game', $26)
+('poss', $27, $26)
+('have_on_oneself', $24, $25, $26)
+('ticket', $27)
+('for', $27, $28)
+('number_of', $27, 2)
+('if', 
+    [
+        ('he', $38)
+        ('whole', $40)
+        ('incident', $40)
+        ('forget', $31, $39, $38, $40)
+    ], 
+    [
+        ('he', $32)
+        ('cop', $33)
+        ('tell', $30, $32, $33, $34)
+        ('he', $35)
+        ('them', $37)
+        ('he', $36)
+        ('give', $34, $35, $36, $37)
+    ])
+('cop', $42)
+('happen', $41, $42, $43)
+('terrific', $44)
+('football_fan', $44)
+('he', $46)
+('ticket', $49)
+('poss', $50, $49)
+('take', $45, $48, $46, $49)
+('drive_away', $47, $46, $51, $52)
+~~~
+
+Seems to be possible to enter this story in a relational database. But what about the "if" statements?
+
+I can do 
+
+~~~js
+{
+    "syn": "clause(C1) -> 'if' clause(C2)+','? clause(C3)",
+    "sem": lambda clause1, clause2: [('if', C1, C2, C3)] + clause1 + clause2
+},
+~~~
+
+and get 
+
+~~~js
+('go_through_red_light', $1, $2)
+('pull_over', $3, $2, $4)
+('summons', $9)
+('speeding', $10)
+('for', $9, $10)
+('cop', $8)
+('get', $5, $6, $8, $9)
+('previous_week', $5)
+('tell', $7, $11, $6, $12)
+('if', $12, $13, $14)
+('he', $15)
+('another', $17)
+('violation', $17)
+('get', $13, $16, $15, $17)
+('license', $18)
+('his', $18)
+('take_away', $14, $18, $19, $20)
+('remember', $21, $23, $22, $24)
+('he', $25)
+('game', $26)
+('poss', $27, $26)
+('have_on_oneself', $24, $25, $26)
+('ticket', $27)
+('for', $27, $28)
+('number_of', $27, 2)
+('if', $29, $31, $30)
+('he', $32)
+('cop', $33)
+('tell', $30, $32, $33, $34)
+('he', $35)
+('them', $37)
+('he', $36)
+('give', $34, $35, $36, $37)
+('he', $38)
+('whole', $40)
+('incident', $40)
+('forget', $31, $39, $38, $40)
+('cop', $42)
+('happen', $41, $42, $43)
+('terrific', $44)
+('football_fan', $44)
+('he', $46)
+('ticket', $49)
+('poss', $50, $49)
+('take', $45, $48, $46, $49)
+('drive_away', $47, $46, $51, $52)
+~~~
+
 ## 2025-06-29
 
 I reduced parse time from 375 msecs to 34 msecs by "pruning" the parse trees with many regexps in an early stage.
