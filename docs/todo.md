@@ -1,5 +1,9 @@
 ## todo
 
+> Create a rule that says: if x is lost, then x wants to know where x is
+> Find that rule
+> execute that rule (and create the goal "x knows that x is at y")
+
 Create a functional design for PAM
 
 - the goal is to recreate the example dialogs

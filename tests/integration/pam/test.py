@@ -5,10 +5,10 @@ from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
-from richard.entity.SentenceRequest import SentenceRequest
 from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
+from richard.processor.goal_understander.GoalUnderstander import GoalUnderstander
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -66,6 +66,8 @@ class TestPAM(unittest.TestCase):
         composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
         executor = AtomExecutor(composer, model)
 
+        understander = GoalUnderstander(composer)
+
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, output_buffer)
 
@@ -76,6 +78,7 @@ class TestPAM(unittest.TestCase):
             input_pipeline=[
                 FindOne(parser),
                 TryFirst(composer),
+                TryFirst(understander),
                 TryFirst(executor)
             ],
             output_generator=generator

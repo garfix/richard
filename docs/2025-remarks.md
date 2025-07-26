@@ -1,3 +1,69 @@
+## 2025-07-20
+
+"John was lost"
+
+CD representation
+
+    (
+        (CON 
+            (
+                (ACTOR HUM0 IS (*PROX* PART (*UNSPEC* CLASS (*LOCATION*))))
+                TIME (FORM11)
+            )
+            IS (*1LOC* VAL (*LTM* PART HUM0))
+        )
+        MODE (FORM12) 
+        TIME (FORM13)
+    )
+
+First rule that matches this representation: FIND-OUT-REQ:
+
+    TEST T
+
+    ACTION (BUILD '#DKNOW-EPISODE)
+
+    SUGGESTIONS
+    (((GOALFORM GOAL PLANNER) (IS VAL PART) FOCUS-REQ)
+    ((GOALFORM GOAL RECIPIENT) (IS VAL PART) FOCUS-REQ)
+    ((GOALFORM GOAL FACT) (CON) FOCUS-REQ)
+    ((ATTEMPTS) FIND-OUT-AT-REQ))
+
+    MESSAGE (PRTGOAL (PATH '(GOALFORM GOAL) !STRUCT!))
+
+    FOUNDER T
+
+NB: "the condition ... is distibuted throughout the tests in the disciminiation net"
+
+This rule builds the following goal structure:
+
+    (
+        *DKNOW* PLANNER 
+        HUM0 RECIPIENT
+        HUM0 FACT (
+            (ACTOR HUM0 IS (*PROX* PART (*UNSPEC* CLASS (*LOCATION*)))) 
+            TIME (TIMK2)
+        )
+    )
+
+It builds this **KNOWN-EPISODE** structure:
+
+    (*GOAL-EPISODE*
+        GOALFORM (GOAL (*DKNOW* PLANNER (NIL)
+                                RECIPIENT (NIL)
+                                FACT (NIL))
+                SOURCE (NIL)
+                RELATIONS (*LIST*)
+                OUTCOME (NIL))
+        ATTEMPTS (*LIST*)
+    )
+    
+
+
+
+## 2025-07-15
+
+Starting chapter 14. I need to create structures while processing the story. Where can I save them? So far I have been storing information in relational databases. Can I keep this up? It's not essential. 
+
 ## 2025-07-13
 
 I should start with a simple story. The one I have been parsing so far may not be simple enough. I also should start with a story that was explained in detail by Wilensky.
