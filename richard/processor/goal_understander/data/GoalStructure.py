@@ -11,8 +11,8 @@
 # DKNOW = don't know (ChatGPT)
 
 from multiprocessing.managers import Token
-from richard.processor.data.Fact import Fact
-from richard.processor.data.enums import Action
+from richard.processor.goal_understander.data.Fact import Fact
+from richard.processor.goal_understander.data.enums import Action
 
 
 class GoalStructure:

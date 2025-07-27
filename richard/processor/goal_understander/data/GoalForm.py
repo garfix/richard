@@ -1,4 +1,4 @@
-from richard.processor.data.GoalStructure import GoalStructure
+from richard.processor.goal_understander.data.GoalStructure import GoalStructure
 
 
 class GoalForm:

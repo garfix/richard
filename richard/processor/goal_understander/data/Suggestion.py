@@ -1,0 +1,16 @@
+# p. 296
+
+# (!SPNAME1! (A B C) !SPNAME2! (X Y Z) REQUEST-NAME)
+
+# p. 294
+
+# ((GOALFORM GOAL PLANNER) (IS VAL PART) FOCUS-REQ)
+# ((GOALFORM GOAL RECIPIENT) (IS VAL PART) FOCUS-REQ)
+# ((GOALFORM GOAL FAC) (CON) FOCUS-REQ)
+# ((ATTEMPTS) FIND-OUT-AT-REQ)
+
+class Suggestion:
+    spname1: None
+    spName2: None
+    requestName: None
+

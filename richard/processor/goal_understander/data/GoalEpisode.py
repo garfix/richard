@@ -13,8 +13,8 @@
 # )
 
 
-from richard.processor.data.Attempt import Attempt
-from richard.processor.data.GoalForm import GoalForm
+from richard.processor.goal_understander.data.Attempt import Attempt
+from richard.processor.goal_understander.data.GoalForm import GoalForm
 
 
 class GoalEpisode:

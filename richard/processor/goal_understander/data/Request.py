@@ -1,3 +1,5 @@
+# FIND-OUT-REQ
+
 # TEST T
 
 # ACTION (BUILD '#DKNOW-EPISODE)
@@ -12,10 +14,16 @@
 
 # FOUNDER T
 
+from richard.processor.goal_understander.data.Suggestion import Suggestion
+
+
 class Request:
     test: str # todo: condition
     action: str
-    suggestions: list[str]
+    suggestions: list[Suggestion]
     message: str
     founder: str
 
+    # suggestions should probably be a method
+    def suggestions(self):
+        pass

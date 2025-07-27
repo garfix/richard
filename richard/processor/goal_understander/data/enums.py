@@ -16,7 +16,7 @@ class Action(Enum):
     DLINK = "dlink"          # Dislike
     PLINK = "plink"          # Like
     EVAL = "eval"            # Evaluate or judge
-    DKNOW = "dknow"          # Don't know
+    DKNOW = "dknow"          # Don't know (Delta know?)
 
 class CaseRole(Enum):
     ACTOR = "actor"              # Who performs the action
@@ -48,4 +48,11 @@ class MemoryTag(Enum):
     PROBLEM = "problem"           # A recognized problem state
     SOLUTION = "solution"         # A remembered solution
     FAILURE = "failure"           # A goal that failed
-    DKNOW = "dknow"               # A memory of not knowing something
+    DKNOW = "dknow"               # A memory of not knowing something (Delta know?)
+
+class Gender(Enum):
+    MASC = "masculine"
+    FEM = "feminine"
+
+class TokenClass(Enum):
+    PERSON = "person"
