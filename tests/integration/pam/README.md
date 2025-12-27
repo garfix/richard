@@ -8,45 +8,67 @@ PAM’s explanation algorithm makes use of two components: A bottom—up mechani
 
 ## Design
 
+### General
+
+I believe the Conceptual Dependency formalism to be inessential for this problem, and more of a hindrance than a help, and I do not want to add another formalism to the one I already use, and therefore I will continue to use basic predicates.
+
 ### Concepts
 
 Concept|Description
 -|-
-character|an actor with goals
-story|a paragraph of text involving a purposeful interaction between characters
-event|
+event|the contents of any line in a story
 plan|a way of accomplishing a goal
 goal|the desired state of affairs
-theme|
-
-reccurring goals (ch 4, 5)
-goal conflict (ch 6, 7)
-goal competition (ch 8, 9)
-goal concordance (ch 10)
+character|an actor with goals
+story|a paragraph of text involving a purposeful interaction between characters
+theme|a goal (or goal like entity) that requires no further explanation
+drive|a theme like hunger, or sexual arousal
+attitude|a theme like fondness towards an individual
+socal role|a theme like being a garbage man
+explanation|the reason why an actor of a story chose to perform a particular action
+instrumentality|a goal is often instrumental to a plan for another goal
+goal conflict|within a character, the fulfillment of one goal precludes the fulfillment of others (ch 6, 7)
+goal competition|between two characters, whose goals interfere with one another (ch 8, 9)
+goal concord|between two characters, perform actions together towards a common goal (ch 10)
+goal subsumption|achieve a state that will make it easier to fulfull a recurring goal (ch 4, 5)
 
 ### Data structures
 
 These structures are built during the processing of a text.
 The structures are in a short term memory, which is not persisted to a db
+But it should be possible to query this information
 
 events (based on existing tech)
 
-character goal: a single story may contain multiple goals, and these goals can interact
+known plan (planbox)
+- instance of plan
+
+known goal: a single story may contain multiple goals, and these goals can interact
 - status: fulfilled, abandoned, set aside
 - example: John wants to have a gun
 
-character plan (planbox)
-- instance of plan
+known theme
 
-predicted character plans
+**predictions**
+
+predicted action
+- a plan without an action predicts an action
+
+predicted plan
 - multiple predictions, but not yet proven
+- a goal without a plan predicts a plan
 
-predicted character goals
+predicted goal
+- a theme without a goal predicts a goal
+
+predicted theme
+
 
 
 ### Knowledge structures
 
 Stored knowledge about plans and goals
+- is this knowledge declarative or procedural (i.e. part of the reading algorithm?)
 
 goals
 - preserving his right to drive
@@ -62,19 +84,29 @@ plans
 goal relationships (p19)
 - relations between goals
 
-some sort of deduction
+**recognition rules / requests**
+
+plan-recognition rules
 - general: if event A causes event B, then a way to prevent B is to prevent A
 - a person may want to harm someone he greatly dislikes
 - if a person loves someone, then he will want to help that person if that person is endangered
 - knowing the location is instrumental to going there
-
-plan-recognition rules
 - attached to "gun": predict the THREATEN or OVERPOWER plans
-- is this knowledge declarative or procedural (i.e. part of the reading algorithm?)
-- how to recognize a plan
+
+goal-recognition rules
+- if A "wants B's C" then taking control of B' C is a goal of A
+
+theme-recognition rules (from goal to theme)
+- if a person wants to possess an object, then he may have the attitude of liking the object
+- if a person wants to possess an object that has a function, then he may want to use that object to perform its function
+
+**other**
 
 goal-interaction rules
 - idem: declarative or procedural
+
+object knowledge
+- the use of a bicycle is to be ridden
 
 ### Reading algorithm
 
@@ -86,7 +118,7 @@ two aspects
 - bottom-up
 - predictive
 
-bottom-up comments
+my comments on bottom-up
 - why did character A do that? what goal is involved?
 - find out character's goals and plans
 - reason about motives
@@ -94,17 +126,40 @@ bottom-up comments
 - determine if a goal is fulfilled, abandoned, set aside
 - how to determine which plan is used?
 
-predictive comments
+my comments on predictive 
 - see if the next input is a response to a question
 - predictions should be specific, don't just make all possible predictions
 - predictions can be made about the goals or plans that will be inferred later on in the story
 - check if a prediction is confirmed
 - predictions can be used to constrain the bottom-up inference process without eliminating it entirely
 
-algorithm
+Wilensky:
+- read line of text
+- turn text into semantic representation
+- find an explanation for an event
+    - step 1: is the event part of a known plan? yes => the plan is the explanation
+    - step 2: no => can a plan (or plans) be inferred from the event? no => fail
+    - step 3: can one of these plans be a plan for a known goal? yes => the plan is the explanation
+    - step 4: can a goal (or goals) be inferred from one of the plans? no => fail
+    - step 5: can one of these goals be instrumental to a known plan?  yes => the plan-goal sequence is the explanation
+    - step 6: can one of these goals have arisen because of a known theme? yes => plan-goal-theme is the explanation
+    - step 7: can a plan be inferred to which one of these goals is instrumental? no => fail
+    - goto step 3
+- top down
+    - try to match a prediction
+- bottom-up
+    - try to match one of the event-goal rules to find a goal
+        - goal found? 
+            - find an explanation for the goal, and a theme for the goal
+            - add a predicted plan for the goal to memory
+            - add a predicted theme for the goal to memory
+
+
+my findings
 - read a line of text
 - pronoun resolution ("he")
 - bottom-up
+    - make some standard inferences ("John" is a man)
     - recognize a goal ("John wanted some money")
         - infer higher-up other possible goals from this goal (goal subsumption)
     - recognize an event ("he got a gun")
@@ -117,3 +172,6 @@ algorithm
 - predictive
     - after inferring the goal (to get something (some money) from someone)
         - predict the execution of the plan (to threaten or overpower someone to get the money)
+- a confirmation of a prediction causes another prediction to be set up looking for yet another plan
+
+TODO: add explanatory diagrams for each of the actions in the algorithm
