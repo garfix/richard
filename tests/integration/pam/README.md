@@ -8,9 +8,11 @@ PAM’s explanation algorithm makes use of two components: A bottom—up mechani
 
 ## Design
 
-### General
+### CD
 
-I believe the Conceptual Dependency formalism to be inessential for this problem, and more of a hindrance than a help, and I do not want to add another formalism to the one I already use, and therefore I will continue to use basic predicates.
+I believe the Conceptual Dependency formalism to be inessential for this problem, and more of a hindrance than a help, and I do not want to add another formalism to the one I already have, and therefore I will continue to use basic predicates.
+
+CD makes some unneccesary assumptions that can be wrong, or are strange at best. For example: to kill someone is IS HEALTH(-10).
 
 ### Concepts
 
@@ -38,16 +40,23 @@ These structures are built during the processing of a text.
 The structures are in a short term memory, which is not persisted to a db
 But it should be possible to query this information
 
-events (based on existing tech)
+action
 
-known plan (planbox)
+plan (planbox)
 - instance of plan
 
-known goal: a single story may contain multiple goals, and these goals can interact
+goal: a single story may contain multiple goals, and these goals can interact
 - status: fulfilled, abandoned, set aside
 - example: John wants to have a gun
 
-known theme
+theme
+
+goal subsumption source (p86)
+- attributes:
+    - recurring goal
+    - source of goal
+    - plan
+    - precondition
 
 **predictions**
 
@@ -63,16 +72,14 @@ predicted goal
 
 predicted theme
 
-
-
 ### Knowledge structures
 
 Stored knowledge about plans and goals
-- is this knowledge declarative or procedural (i.e. part of the reading algorithm?)
 
 goals
 - preserving his right to drive
 - the cop not to give him a summons
+- a goal may be recurring (pay the rent)
 
 plans
 - asking, bargaining
@@ -83,6 +90,12 @@ plans
 
 goal relationships (p19)
 - relations between goals
+
+resources (p116)
+- time
+- consumable functional objects
+- non-consumable functional objects
+- abilities
 
 **recognition rules / requests**
 
@@ -100,6 +113,16 @@ theme-recognition rules (from goal to theme)
 - if a person wants to possess an object, then he may have the attitude of liking the object
 - if a person wants to possess an object that has a function, then he may want to use that object to perform its function
 
+goal-subsumption state recognition (4.3)
+- types
+    - establishment
+    - replacement
+    - termination
+- if a character has a negative attitude toward an action that may be dominated by a recurring goal, then that character may want to subsume the recurring goal using a plan that does not involve the distasteful acion (p94)
+- more rules: p105
+
+goal conflict detection rules (p118)
+
 **other**
 
 goal-interaction rules
@@ -107,6 +130,12 @@ goal-interaction rules
 
 object knowledge
 - the use of a bicycle is to be ridden
+
+subsumption state
+- ownership of a functional object
+- tapping a stream
+- being in a social relationship
+- knowing something
 
 ### Reading algorithm
 
@@ -145,6 +174,23 @@ Wilensky:
     - step 6: can one of these goals have arisen because of a known theme? yes => plan-goal-theme is the explanation
     - step 7: can a plan be inferred to which one of these goals is instrumental? no => fail
     - goto step 3
+- subsumption state recognition algorithm (p89)
+    - step 1: does the state at which the goal is aimed normally subsume any goals? no => the expection has not been met
+    - step 2: are any of these goals the same as the goal the planner is trying to subsume? yes => the expection has been confirmed
+    - step 3: could one of these goals be instrumental to the goal the planner is trying to subsume? yes => the expection has been confirmed
+    - the expectation has not been met
+- goal conflict recognition algorithm (p114)
+    - does the new goal require a resource also required by another goal and of which there is an insufficient quantity? yes => the new goal conflicts with an old goal
+    - does the fulfullment of the new goal entail the creation of a state that is mutually exclusive with a state needed for another goal? yes => the new goal conflicts with an old goal
+    - does the fulfillment of the new goal entail the generation of a preservation goal? yes => the new goal conflicts with the preservation goal
+    - the new goal does not cause a goal conflict
+- detecting a conflict caused by a limited resource (p117)
+    - does the story suggest a scarce resource? no => no conflict
+    - infer the plan usually used for each goal
+    - is the resource common to each plan? no => no conflict
+    - is the amount available less than the amount needed? no => no conflict
+    - there exists a conflcit due to resource limitations
+
 - top down
     - try to match a prediction
 - bottom-up

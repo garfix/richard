@@ -192,6 +192,7 @@ Dynamic memory - Schank (1982)
 Strategies for Natural Language Processing - Edited By Lehnert, Ringle (1982)
 Planning and understanding: A computational approach to human reasoning - Wilensky (1983)
 Into the heart of the mind - Frank Rose (1984)
+Inside Computer Understanding: Five Programs Plus Miniatures - Schank, Riesbeck; partial source: https://www.cs.cmu.edu/afs/cs/project/ai-repository/ai/areas/nlp/nlu/icu/
 
 ## Papers of minor system
 
