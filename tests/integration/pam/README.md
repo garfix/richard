@@ -72,6 +72,13 @@ predicted goal
 
 predicted theme
 
+**objects**
+
+object knowledge
+- the use of a bicycle is to be ridden
+- the function of an object is a description of the plans for which that object was designed
+- consumable?
+
 ### Knowledge structures
 
 Stored knowledge about plans and goals
@@ -123,13 +130,12 @@ goal-subsumption state recognition (4.3)
 
 goal conflict detection rules (p118)
 
+goal abandonment recognition rules (p136)
+
 **other**
 
 goal-interaction rules
 - idem: declarative or procedural
-
-object knowledge
-- the use of a bicycle is to be ridden
 
 subsumption state
 - ownership of a functional object
