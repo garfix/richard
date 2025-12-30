@@ -64,9 +64,8 @@ class TestPAM(unittest.TestCase):
         parser = BasicParser(read_grammar)
 
         composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
-        executor = AtomExecutor(composer, model)
-
         understander = GoalUnderstander(composer)
+        executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, output_buffer)
@@ -85,9 +84,6 @@ class TestPAM(unittest.TestCase):
         )
 
         # test the system
-        intro = ["Answer questions about a story", "OK"]
-        separator = ["Questions", "OK"]
-
         tests = [
             [
                 # Inference (1.1 Introduction; 1.4 Goals)
