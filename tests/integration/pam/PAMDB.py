@@ -12,6 +12,7 @@ class PAMDB(Sqlite3DataSource):
         connection = sqlite3.connect(':memory:')
         cursor = connection.cursor()
         cursor.execute("CREATE TABLE entity (id TEXT, name TEXT)")
+        cursor.execute("CREATE TABLE lost (id TEXT)")
 
         super().__init__(connection)
 

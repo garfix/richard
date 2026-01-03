@@ -28,7 +28,7 @@ def get_read_grammar():
         },
         {
             "syn": "story() -> decl(C1) story()",
-            "sem": lambda decl, paragraph: decl + paragraph,
+            "sem": lambda decl, story: decl + story,
         },
         {
             "syn": "story() -> decl(C1)",
