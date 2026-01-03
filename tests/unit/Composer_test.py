@@ -68,7 +68,7 @@ class TestComposer(unittest.TestCase):
 
         request = SentenceRequest("The river flows to the sea")
         result = system.enter(request)
-        semantics = result[0].get_semantics_last_iteration()
+        semantics = result[0]
         self.assertEqual(str(semantics), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
 
 
@@ -95,19 +95,17 @@ class TestComposer(unittest.TestCase):
         # basic
 
         request = SentenceRequest("John sleeps")
-        result = system.enter(request)
-        semantics = result[0].get_semantics_last_iteration()
+        sentence_semantics = system.enter(request)
 
         product: BasicParserProduct = request.get_current_product(parser)
         self.assertEqual(product.parse_trees[0].inline_str(), "s(np(proper_noun(\w+ 'John')) sleeps 'sleeps')")
-        self.assertEqual(str(semantics), "John")
+        self.assertEqual(str(sentence_semantics[0]), "John")
 
         # two tokens
 
         request = SentenceRequest("John Walker sleeps")
-        result = system.enter(request)
-        semantics = result[0].get_semantics_last_iteration()
-        self.assertEqual(str(semantics), "John Walker")
+        sentence_semantics = system.enter(request)
+        self.assertEqual(str(sentence_semantics[0]), "John Walker")
 
 
     def test_multiple_return_variables(self):
@@ -157,8 +155,7 @@ class TestComposer(unittest.TestCase):
         # basic
 
         request = SentenceRequest("Does John sleep?")
-        result = system.enter(request)
-        semantics = result[0].get_semantics_last_iteration()
+        sentence_semantics = system.enter(request)
 
         product: BasicParserProduct = request.get_current_product(parser)
-        self.assertEqual(str(semantics), "John")
+        self.assertEqual(str(sentence_semantics[0]), "John")

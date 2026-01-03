@@ -14,5 +14,5 @@ class SemanticComposerProduct(SomeProduct):
 
 
     def get_output(self) -> any:
-        return self.sentences
+        return list(map(lambda s: s.get_semantics_last_iteration(), self.sentences))
 
