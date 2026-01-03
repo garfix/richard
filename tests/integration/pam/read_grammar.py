@@ -15,29 +15,33 @@ X = Variable('X')
 
 def get_read_grammar():
     return [
-
-        # question
+        # sentence
         {
-            "syn": "s() -> clause(C1)+'?'",
-            "sem": lambda clause: clause + [('intent_question',)],
+            "syn": "s() -> question(C1)+'?'",
+            "sem": lambda question: None,
+        },
+        {
+            "syn": "s() -> story()",
+            "sem": lambda story: None,
         },
         # story of declarative sentences
         {
-            "syn": "s() -> story()",
-            "sem": lambda story: [('intent_understand', story)],
-        },
-        {
             "syn": "story() -> decl(C1) story()",
-            "sem": lambda decl, story: decl + story,
+            "sem": lambda decl, story: None,
         },
         {
             "syn": "story() -> decl(C1)",
-            "sem": lambda decl: decl,
+            "sem": lambda decl: None,
+        },
+        # question
+        {
+            "syn": "question() -> clause(C1)+'?'",
+            "sem": lambda clause: clause + [('intent_question',)],
         },
         # declarative
         {
             "syn": "decl(C1) -> clause(C1)+'.'",
-            "sem": lambda clause: clause,
+            "sem": lambda clause: [('intent_understand', clause)],
         },
         # clause
         # - refer to all verb phrases as the generic 'vp'

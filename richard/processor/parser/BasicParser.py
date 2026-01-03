@@ -15,14 +15,14 @@ class BasicParser(SomeProcessor):
     grammar: GrammarRules
     parser: EarleyParser
     tree_sorter: SomeParseTreeSortHeuristics
-    sentence_category: str
+    sentence_categories: str
 
 
-    def __init__(self, grammar: GrammarRules, sentence_category = "s") -> None:
+    def __init__(self, grammar: GrammarRules, sentence_categories = ["s"]) -> None:
         self.grammar = grammar
         self.parser = EarleyParser()
         self.tree_sorter = BasicParseTreeSortHeuristics()
-        self.sentence_category = sentence_category
+        self.sentence_categories = sentence_categories
 
 
     def get_name(self) -> str:
@@ -39,7 +39,7 @@ class BasicParser(SomeProcessor):
 
         products = []
         for tree in sorted_trees:
-            sentence_trees = extract_sentences(tree, self.sentence_category)
+            sentence_trees = extract_sentences(tree, self.sentence_categories)
             if len(sentence_trees) > 0:
                 products.append(BasicParserProduct(sentence_trees))
 

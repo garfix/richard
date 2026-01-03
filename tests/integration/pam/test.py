@@ -61,7 +61,7 @@ class TestPAM(unittest.TestCase):
         # define the pipeline
 
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
-        parser = BasicParser(read_grammar, sentence_category="decl")
+        parser = BasicParser(read_grammar, sentence_categories=["decl", "question"])
 
         composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
         understander = GoalUnderstander(composer)
