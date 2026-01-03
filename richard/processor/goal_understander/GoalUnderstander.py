@@ -24,13 +24,16 @@ class GoalUnderstander(SomeProcessor):
 
     def process(self, request: SentenceRequest) -> ProcessResult:
         incoming: SemanticComposerProduct = request.get_current_product(self.composer)
-        # content = incoming.get_semantics_last_iteration()
 
-        # todo process this content line by line
+        for sentence in incoming.sentences:
+            content = sentence.get_semantics_last_iteration()
 
-        active = True
-        # main loop (p. 293)
-        while active:
-            active = False
+            # todo process this content line by line
+            print(content)
+
+            active = True
+            # main loop (p. 293)
+            while active:
+                active = False
 
         return ProcessResult(products=[incoming], error_type="")

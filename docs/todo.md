@@ -1,8 +1,11 @@
 ## todo
 
-> Create a rule that says: if x is lost, then x wants to know where x is
-> Find that rule
-> execute that rule (and create the goal "x knows that x is at y")
+PAM
+- the multi-line input now forms a single semantic construction and is hard or impossible to process by the goal understander
+- provide semantics line by line
+- this is part of the parser: add the option to return multiple trees
+- post-process: split the tree into multiple trees, based on category (like S)
+- FindAll gaat na iedere tree direct verder naar het volgende block
 
 Create a functional design for PAM
 

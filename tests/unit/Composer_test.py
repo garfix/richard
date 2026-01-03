@@ -67,7 +67,8 @@ class TestComposer(unittest.TestCase):
         )
 
         request = SentenceRequest("The river flows to the sea")
-        semantics = system.enter(request)
+        result = system.enter(request)
+        semantics = result[0].get_semantics_last_iteration()
         self.assertEqual(str(semantics), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
 
 
@@ -94,16 +95,18 @@ class TestComposer(unittest.TestCase):
         # basic
 
         request = SentenceRequest("John sleeps")
-        semantics = system.enter(request)
+        result = system.enter(request)
+        semantics = result[0].get_semantics_last_iteration()
 
         product: BasicParserProduct = request.get_current_product(parser)
-        self.assertEqual(product.parse_tree.inline_str(), "s(np(proper_noun(\w+ 'John')) sleeps 'sleeps')")
+        self.assertEqual(product.parse_trees[0].inline_str(), "s(np(proper_noun(\w+ 'John')) sleeps 'sleeps')")
         self.assertEqual(str(semantics), "John")
 
         # two tokens
 
         request = SentenceRequest("John Walker sleeps")
-        semantics = system.enter(request)
+        result = system.enter(request)
+        semantics = result[0].get_semantics_last_iteration()
         self.assertEqual(str(semantics), "John Walker")
 
 
@@ -128,8 +131,8 @@ class TestComposer(unittest.TestCase):
 
         request = SentenceRequest("John sleeps")
         system.enter(request)
-        composition = request.get_current_product(composer)
-        self.assertEqual(composition.return_variables, ["$1", "$2"])
+        product = request.get_current_product(composer)
+        self.assertEqual(product.sentences[0].return_variables, ["$1", "$2"])
 
 
     def test_regexp(self):
@@ -154,7 +157,8 @@ class TestComposer(unittest.TestCase):
         # basic
 
         request = SentenceRequest("Does John sleep?")
-        semantics = system.enter(request)
+        result = system.enter(request)
+        semantics = result[0].get_semantics_last_iteration()
 
         product: BasicParserProduct = request.get_current_product(parser)
         self.assertEqual(str(semantics), "John")

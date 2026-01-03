@@ -3,10 +3,10 @@ from richard.entity.ParseTreeNode import ParseTreeNode
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
-from richard.interface.SomeClearableDb import SomeClearableDb
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
+from richard.processor.semantic_composer.SemanticSentence import SemanticSentence
 from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
 from richard.type.SemanticFunction import SemanticFunction
@@ -37,22 +37,28 @@ class SemanticComposer(SomeProcessor):
     def process(self, request: SentenceRequest) -> ProcessResult:
 
         incoming: BasicParserProduct = request.get_current_product(self.parser)
-        parse_tree = incoming.parse_tree
+        parse_trees = incoming.parse_trees
+        sentences = []
 
-        self.check_for_sem(parse_tree)
+        for parse_tree in parse_trees:
 
-        root_variables = [self.variable_generator.next() for _ in parse_tree.rule.antecedent.arguments]
-        semantics, inferences, executable = self.compose(parse_tree, root_variables)
+            self.check_for_sem(parse_tree)
 
-        if self.query_optimizer:
-            if not isinstance(semantics, list):
-                raise Exception("Sentence semantics is not a list of atoms: " + str(semantics))
+            root_variables = [self.variable_generator.next() for _ in parse_tree.rule.antecedent.arguments]
+            semantics, inferences, executable = self.compose(parse_tree, root_variables)
 
-            semantics_iterations = self.query_optimizer.optimize(semantics, root_variables)
-        else:
-            semantics_iterations = {"Semantics": semantics}
+            if self.query_optimizer:
+                if not isinstance(semantics, list):
+                    raise Exception("Sentence semantics is not a list of atoms: " + str(semantics))
 
-        product = SemanticComposerProduct(semantics_iterations, inferences, executable, root_variables)
+                semantics_iterations = self.query_optimizer.optimize(semantics, root_variables)
+            else:
+                semantics_iterations = [["Semantics", semantics]]
+
+            sentences.append(SemanticSentence(semantics_iterations, inferences, executable, root_variables))
+
+        product = SemanticComposerProduct(sentences)
+
         return ProcessResult([product], "")
 
 

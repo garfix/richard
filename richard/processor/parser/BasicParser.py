@@ -5,6 +5,7 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeParseTreeSortHeuristics import SomeParseTreeSortHeuristics
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
+from richard.processor.parser.helper.sentence_extractor import extract_sentences
 from .tree_sort_heuristics.BasicParseTreeSortHeuristics import BasicParseTreeSortHeuristics
 from .earley.EarleyParser import EarleyParser
 
@@ -14,12 +15,14 @@ class BasicParser(SomeProcessor):
     grammar: GrammarRules
     parser: EarleyParser
     tree_sorter: SomeParseTreeSortHeuristics
+    sentence_category: str
 
 
-    def __init__(self, grammar: GrammarRules) -> None:
+    def __init__(self, grammar: GrammarRules, sentence_category = "s") -> None:
         self.grammar = grammar
         self.parser = EarleyParser()
         self.tree_sorter = BasicParseTreeSortHeuristics()
+        self.sentence_category = sentence_category
 
 
     def get_name(self) -> str:
@@ -33,12 +36,15 @@ class BasicParser(SomeProcessor):
         result = self.parser.parse(self.grammar, source_text)
 
         sorted_trees = self.tree_sorter.sort_trees(result.products)
-        products = [BasicParserProduct(tree) for tree in sorted_trees]
+
+        products = []
+        for tree in sorted_trees:
+            sentence_trees = extract_sentences(tree, self.sentence_category)
+            if len(sentence_trees) > 0:
+                products.append(BasicParserProduct(sentence_trees))
+
         return ProcessResult(
             products,
             result.error_type,
             result.error_args
         )
-
-
-

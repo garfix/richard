@@ -13,17 +13,17 @@ class BasicQueryOptimizer(SomeQueryOptimizer):
         self.model = model
 
 
-    def optimize(self, semantics: list[tuple], root_variables: list[str]) -> dict[str, list[tuple]]:
-        semantics_iterations = {}
-        semantics_iterations["Semantics"] = semantics
+    def optimize(self, semantics: list[tuple], root_variables: list[str]) -> tuple[str, list[tuple]]:
+        semantics_iterations = []
+        semantics_iterations.append(["Semantics", semantics])
 
         semantics = FrontResolveName().sort(semantics)
-        semantics_iterations["Names resolved"] = semantics
+        semantics_iterations.append(["Names resolved", semantics])
 
         semantics = SortByCost().sort(semantics, self.model)
-        semantics_iterations["Sorted by cost"] = semantics
+        semantics_iterations.append(["Sorted by cost", semantics])
 
         semantics = IsolateIndependentParts().isolate(semantics, root_variables)
-        semantics_iterations["Isolated"] = semantics
+        semantics_iterations.append(["Isolated", semantics])
 
         return semantics_iterations

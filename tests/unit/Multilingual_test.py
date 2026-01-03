@@ -49,10 +49,10 @@ class TestMultilingual(unittest.TestCase):
 
         request = SentenceRequest("John loves Mary")
 
-        parse_tree: ParseTreeNode = system.enter(request)
-        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
+        parse_trees: ParseTreeNode = system.enter(request)
+        self.assertEqual(parse_trees[0].inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 
         request = SentenceRequest("Jan houdt van Marie")
 
-        parse_tree: ParseTreeNode = system.enter(request)
-        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(jan 'jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'marie')))))")
+        parse_trees: ParseTreeNode = system.enter(request)
+        self.assertEqual(parse_trees[0].inline_str(), "s(np(noun(proper_noun(jan 'jan'))) vp(verb(houdt 'houdt' van 'van') np(noun(proper_noun(marie 'marie')))))")

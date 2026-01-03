@@ -87,8 +87,8 @@ class TestParser(unittest.TestCase):
         )
 
         request = SentenceRequest("John loves Mary")
-        parse_tree = system.enter(request)
-        self.assertEqual(parse_tree.inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
+        parse_trees = system.enter(request)
+        self.assertEqual(parse_trees[0].inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 
 
     def test_quote(self):
@@ -110,9 +110,9 @@ class TestParser(unittest.TestCase):
 
         # note: two spaces
         request = SentenceRequest("John's  shoe")
-        parse_tree = system.enter(request)
+        parse_trees = system.enter(request)
 
-        self.assertEqual(parse_tree.inline_str(), "s(np(john 'john') ' ''' s 's' np(shoe 'shoe'))")
+        self.assertEqual(parse_trees[0].inline_str(), "s(np(john 'john') ' ''' s 's' np(shoe 'shoe'))")
 
 
     def test_syntax_error(self):

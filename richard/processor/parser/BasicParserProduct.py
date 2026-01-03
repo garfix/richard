@@ -6,12 +6,15 @@ from richard.interface.Product import SomeProduct
 
 @dataclass
 class BasicParserProduct(SomeProduct):
-    parse_tree: ParseTreeNode
+    # one or parse trees derived from a single input
+    # all of these trees together form a single ambiguous variant
+    parse_trees: list[ParseTreeNode]
 
 
     def log(self, logger: Logger):
-        logger.add(str(self.parse_tree).strip())
+        for parse_tree in self.parse_trees:
+            logger.add(str(parse_tree).strip())
 
 
     def get_output(self) -> any:
-        return self.parse_tree
+        return self.parse_trees

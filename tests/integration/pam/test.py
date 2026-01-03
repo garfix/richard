@@ -61,7 +61,7 @@ class TestPAM(unittest.TestCase):
         # define the pipeline
 
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
-        parser = BasicParser(read_grammar)
+        parser = BasicParser(read_grammar, sentence_category="decl")
 
         composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
         understander = GoalUnderstander(composer)
@@ -85,6 +85,16 @@ class TestPAM(unittest.TestCase):
 
         # test the system
         tests = [
+            [
+                # 14 A detailed example
+                ["John was lost. He pulled over to a farmer standing by the side of the road. He asked him where he was.", "OK"],
+                # ["Why did John pull over to a farmer?", "Because he wanted to know where he was."],
+                # ["Why did John ask a farmer to tell him where he was?", "Because he wanted to get someplace."],
+                # ["What were the consequences of John's pulling over to a farmer?", "This enabled him to ask him where John was."],
+                # ["What happened when John pulled over to a farmer?", "He asked him to tell him where he was."],
+                # ["What happened when John asked a farmer to tell him where he was?", "I don't know."],
+                # ["How did John go over to a farmer?", "He drove over to him."]
+            ],
             [
                 # Inference (1.1 Introduction; 1.4 Goals)
                 # ["One day, John went through a red light and was pulled over. John had just gotten a summons for speeding by a cop the previous week, and was told that if he got another violation, his license would be taken away. Then John remembered that he had two tickets for the Giants' game on him. He told the cop that he would give them to him if he would forget the whole incident. The cop happened to be a terrific football fan. He took John's tickets and drove away.", "OK"],
@@ -163,22 +173,12 @@ class TestPAM(unittest.TestCase):
             #     ["How did Willa get into her car?", "Wila walked to her automobile."],
             #     ["The story from Willa's point of view", "I wanted to get something to eat, but I didn't know where a restaurant was. So I picked up the Michelin Guide and I got into my car."],
             # ],
-            [
-                # 14 A detailed example
-                ["John was lost. He pulled over to a farmer standing by the side of the road. he asked him where he was.", "OK"],
-                # ["Why did John pull over to a farmer?", "Because he wanted to know where he was."],
-                # ["Why did John ask a farmer to tell him where he was?", "Because he wanted to get someplace."],
-                # ["What were the consequences of John's pulling over to a farmer?", "This enabled him to ask him where John was."],
-                # ["What happened when John pulled over to a farmer?", "He asked him to tell him where he was."],
-                # ["What happened when John asked a farmer to tell him where he was?", "I don't know."],
-                # ["How did John go over to a farmer?", "He drove over to him."]
-            ],
         ]
 
         logger = Logger()
         logger.log_no_tests()
-        logger.log_all_tests()
-        logger.log_products()
+        # logger.log_all_tests()
+        # logger.log_products()
         # logger.log_stats()
 
         for session in tests:
