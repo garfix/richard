@@ -1,22 +1,20 @@
 ## todo
 
 PAM
-- the multi-line input now forms a single semantic construction and is hard or impossible to process by the goal understander
-- provide semantics line by line
-- this is part of the parser: add the option to return multiple trees
-- post-process: split the tree into multiple trees, based on category (like S)
-- FindAll gaat na iedere tree direct verder naar het volgende block
-
-Create a functional design for PAM
-
-- the goal is to recreate the example dialogs
-- to this end we recreate the program structure, algorithms and data structures
-- which means we need 
-    - the algorithm
-    - the data stucture
-    - built-in knowledge
-        - if/then rules
-    - the new core classes to house the algorithm
+- unit test een nieuwe `destructure`
+- analyze_plans
+- `store(output_type('understood')), store(Story), analyze_plans(Story).`
+    - store in sentence-level storage only?
+    - PAM's sentences have (so far) no hierarchical structure, but you should consider that they might have it
+- given `lost($2)`, the `lost` from the sentence, not any stored `lost`, deduce that $2 has a goal of knowing `location($2, $L)`
+- add a memory module for just a sentence interpretation?
+    - create the module just before execution
+    - okay, no then there would be no need, and it could just be part of the dialog
+    - however, how can you tell which relations were from this sentence alone?
+    - apply the deduction rules to this memory module alone
+- wat dacht je van `analyze() :- current_sentence(lost(A)), store(goal(know(A, location(A))));`
+- FIND-OUT-REQ
+- add an assignment operator that allows destructuring / as a replacement for destructuring
 
 Problems
 
@@ -43,8 +41,6 @@ The algorithm
         - build a __goal episode__: (goal, goal source (theme), plan)
         - make __suggestions__ / __requests__: predictions about how the plan __gap__ will be filled: with a plan that satisfies the goal: `[((PLAN) !INPUT! SUITABLE-PLAN-RULE)]`
 - each goal has a list of plans that fulfill it
-
-
 
 ## context
 

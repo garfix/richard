@@ -30,19 +30,24 @@ class AtomExecutor(SomeProcessor):
     def process(self, request: SentenceRequest) -> ProcessResult:
         incoming: SemanticComposerProduct = request.get_current_product(self.composer)
         sentences = incoming.sentences
-        sentence = sentences[0]
         solver = Solver(self.model, log_stats=request.logger.should_log_stats())
 
-        # store the inferences in the sentence context
-        for inference in sentence.inferences:
-            solver.write_atom(inference)
+        products = []
+        for sentence in sentences:
 
-        # perform executable atoms
-        solver.solve(sentence.executable)
+            # store the inferences in the sentence context
+            for inference in sentence.inferences:
+                solver.write_atom(inference)
 
-        bindings = solver.solve(sentence.get_semantics_last_iteration())
+            # perform executable atoms
+            solver.solve(sentence.executable)
 
-        product = AtomExecutorProduct(bindings, solver.stats)
+            bindings = solver.solve(sentence.get_semantics_last_iteration())
 
-        return ProcessResult([product], "")
+            product = AtomExecutorProduct(bindings, solver.stats)
+
+            # todo: is this right?
+            products = [product]
+
+        return ProcessResult(products, "")
 
