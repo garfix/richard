@@ -8,7 +8,7 @@ from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
-from richard.processor.goal_understander.GoalUnderstander import GoalUnderstander
+from richard.module.PlanAnalyzerModule import PlanAnalyzerModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -43,6 +43,11 @@ class TestPAM(unittest.TestCase):
         inferences = InferenceModule()
         inferences.import_rules(path + "inferences.pl")
         inferences.import_rules(path + "intents.pl")
+        inferences.import_rules(path + "plan_recognition.pl")
+
+        # add the plan analyzer
+
+        plan_analyzer = PlanAnalyzerModule()
 
         # a data source to store information for output
 
@@ -54,6 +59,7 @@ class TestPAM(unittest.TestCase):
         model = Model([
             facts,
             inferences,
+            plan_analyzer,
             output_buffer,
             dialog_context
         ])
@@ -64,7 +70,6 @@ class TestPAM(unittest.TestCase):
         parser = BasicParser(read_grammar, sentence_categories=["decl", "question"])
 
         composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
-        understander = GoalUnderstander(composer)
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
@@ -77,7 +82,6 @@ class TestPAM(unittest.TestCase):
             input_pipeline=[
                 FindOne(parser),
                 TryFirst(composer),
-                TryFirst(understander),
                 TryFirst(executor)
             ],
             output_generator=generator

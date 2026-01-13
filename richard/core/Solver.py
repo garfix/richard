@@ -1,6 +1,7 @@
 from collections import defaultdict
 from richard.core.Model import Model
 from richard.core.constants import DISJUNCTION
+from richard.entity.BindingResult import BindingResult
 from richard.entity.ResultIterator import ResultIterator
 from richard.entity.Variable import Variable
 from richard.interface.SomeSolver import SomeSolver
@@ -55,6 +56,9 @@ class Solver(SomeSolver):
 
         if isinstance(values, ResultIterator):
             return values
+
+        if isinstance(values, BindingResult):
+            return list(values)
 
         if not isinstance(values, list):
             raise Exception("Predicate '" + predicate + "' should return a list")
@@ -125,6 +129,9 @@ class Solver(SomeSolver):
 
             # call the relation's query function
             out_values = relation.query_function(db_values, context)
+
+            if isinstance(out_values, BindingResult):
+                return out_values
 
             if isinstance(out_values, ResultIterator):
                 if len(relations) > 1:

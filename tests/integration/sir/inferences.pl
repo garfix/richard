@@ -51,8 +51,11 @@ left_of(B, A) :- part_of(A, C), isa(D, C), left_of(B, D).
 
 somewhere_left_of(A, B) :- left_of(A, B), not(just_left_of(A, B)).
 
-check_claim(Atom) :- destructure(Atom, 'just_left_of', A, B), check_just_left_of(A, B).
-check_claim(Atom) :- destructure(Atom, 'left_of', A, B), check_left_of(A, B).
+checkable(Atom) :- destructure(Atom, just_left_of(A, B)).
+checkable(Atom) :- destructure(Atom, left_of(A, B)).
+
+check_claim(Atom) :- destructure(Atom, just_left_of(A, B)), check_just_left_of(A, B).
+check_claim(Atom) :- destructure(Atom, left_of(A, B)), check_left_of(A, B).
 
 # check if the position just left of A is not already occupied
 # check if A not to the right of B

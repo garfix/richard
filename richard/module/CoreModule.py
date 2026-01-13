@@ -1,6 +1,7 @@
 
 
-from richard.core.atoms import bind_variables
+from richard.core.atoms import bind_variables, unification
+from richard.entity.BindingResult import BindingResult
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
@@ -390,34 +391,14 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('destructure', body-atom, predicate, arg-val, arg-val...)
-    # for example: ('destructure', Atom, 'just_left_of', A, B)
+    # ('destructure', source-value, target-value)
+    # for example: ('destructure', [('just_left_of, 'sofa', 'table')], [('just_left_of, E1, E2)]
     def destructure(self, values: list, context: ExecutionContext) -> list[list]:
 
-        unbound_atoms = values[0]
-        atoms = bind_variables(unbound_atoms, context.binding)
-        atom = atoms[0]
-        structure = context.arguments[1:]
-        fail_structure = [None] + [None] * len(structure)
-
-        if len(atom) != len(structure):
-            return [ fail_structure ]
-
-        result = [None]
-        for atom_term, structure_term in zip(atom, structure):
-            if atom_term == structure_term:
-                new_term = structure_term
-            else:
-                if isinstance(structure_term, Variable):
-                    new_term = atom_term
-                else:
-                    return [ fail_structure ]
-
-            result.append(new_term)
-
-        return [
-            result
-        ]
+        bound = bind_variables(values[0], context.binding)
+        free = bind_variables(values[1], context.binding)
+        binding = unification(bound, free)
+        return BindingResult(context.binding, [] if binding is None else [binding])
 
 
     # ('find_all', variable-name, body-atoms, result-variable)

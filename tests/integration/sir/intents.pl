@@ -56,9 +56,12 @@ intent_some_own(A, B) :- (
 ).
 
 # claim
-# NB the order is important, because `store` changes the state
-intent_claim(Atom) :- not(check_claim(Atom)), store(output_type('impossible')).
-intent_claim(Atom) :- check_claim(Atom), store(Atom), store(output_type('understand')).
+intent_claim(Atom) :- checkable(Atom), (
+    check_claim(Atom), store(Atom), store(output_type('understand'))
+;
+    store(output_type('impossible'))
+).
+intent_claim(Atom) :- not(checkable(Atom)), store(Atom), store(output_type('understand')).
 
 # where
 intent_where(Variable, Body) :-

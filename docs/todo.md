@@ -1,7 +1,11 @@
 ## todo
 
 PAM
+destructure: waarom geeft hij geen lege array terug bij failure?
+MOET WEL! de check_claim() logica klopt helemaal niet
+
 - unit test een nieuwe `destructure`
+- lastigheid hier is hoe de variabelen gebonden moeten worden
 - analyze_plans
 - `store(output_type('understood')), store(Story), analyze_plans(Story).`
     - store in sentence-level storage only?
