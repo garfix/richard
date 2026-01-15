@@ -392,8 +392,8 @@ class CoreModule(SomeModule):
 
 
     # ('destructure', source-value, target-value)
-    # for example: ('destructure', [('just_left_of, 'sofa', 'table')], [('just_left_of, E1, E2)]
-    def destructure(self, values: list, context: ExecutionContext) -> list[list]:
+    # for example: ('destructure', [('just_left_of, 'sofa', 'table')], [('just_left_of', E1, E2)]
+    def destructure(self, values: list, context: ExecutionContext) -> BindingResult:
 
         bound = bind_variables(values[0], context.binding)
         free = bind_variables(values[1], context.binding)

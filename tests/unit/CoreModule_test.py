@@ -2,7 +2,7 @@ import unittest
 
 from richard.core.Model import Model
 from richard.core.Solver import Solver
-from richard.core.constants import E1
+from richard.core.constants import E1, E2
 from richard.module.CoreModule import CoreModule
 from richard.type.ExecutionContext import ExecutionContext
 
@@ -30,12 +30,45 @@ class TestCoreModule(unittest.TestCase):
         self.assertEqual(bindings, [[3, 3]])
 
 
+    def test_let(self):
+
+        model = Model([])
+        solver = Solver(model)
+
+        bindings = solver.solve([('let', E1, 5)])
+        self.assertEqual(bindings, [{'E1': 5}])
+
+
     def test_destructure(self):
 
         model = Model([])
         solver = Solver(model)
 
-        source = [('alive', 'john'), ('lost', 'john')]
+        source = [('alive', 'john'), ('lost', 'john'), ('likes', 'john', 'jane'), ('goal', 'john', ('win', 'jane'))]
 
         bindings = solver.solve([('destructure', source, [('lost', E1)])])
         self.assertEqual(bindings, [{'E1': 'john'}])
+
+        bindings = solver.solve([('destructure', source, [('location', E1)])])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([('destructure', source, [('likes', E1, 'jane')])])
+        self.assertEqual(bindings, [{'E1': 'john'}])
+
+        bindings = solver.solve([('destructure', source, [('likes', E1, E1)])])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([('destructure', source, [('lost', E1), ('likes', E1, E2)])])
+        self.assertEqual(bindings, [{'E1': 'john', 'E2': 'jane'}])
+
+        bindings = solver.solve([('destructure', source, [('goal', E1, ('win', E2))])])
+        self.assertEqual(bindings, [{'E1': 'john', 'E2': 'jane'}])
+
+        bindings = solver.solve([('destructure', source, [('goal', E1, ('win', E1))])])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([('let', E2, 'mary'), ('destructure', source, [('lost', E1)])])
+        self.assertEqual(bindings, [{'E1': 'john', 'E2': 'mary'}])
+
+        bindings = solver.solve([('let', E1, 'mary'), ('destructure', source, [('lost', E1)])])
+        self.assertEqual(bindings, [])
