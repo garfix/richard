@@ -1,5 +1,3 @@
-![Richard!](richard-small.png)
-
 A Natural Language Understanding and Execution library for Python
 
 This library is able to turn a sentence in any ordinary human language directly into executable Python code. It can be used as answering engine, a command executor, or to join me in my study to explore what is possible with a natural language interface.
