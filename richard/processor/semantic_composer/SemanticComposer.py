@@ -9,7 +9,7 @@ from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.semantic_composer.SemanticSentence import SemanticSentence
 from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
-from richard.type.SemanticFunction import SemanticFunction
+from richard.entity.SemanticFunction import SemanticFunction
 
 
 class SemanticComposer(SomeProcessor):

@@ -10,7 +10,7 @@ from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.type.SemanticFunction import SemanticFunction
+from richard.entity.SemanticFunction import SemanticFunction
 
 class TestComposer(unittest.TestCase):
 

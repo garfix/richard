@@ -9,7 +9,7 @@ from richard.entity.ResultIterator import ResultIterator
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.core.Solver import Solver
 from richard.interface.SomeModule import SomeModule
-from richard.type.ExecutionContext import ExecutionContext
+from richard.entity.ExecutionContext import ExecutionContext
 
 
 class TestResultIterator(ResultIterator):

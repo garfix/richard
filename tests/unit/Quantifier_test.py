@@ -16,8 +16,8 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
-from richard.type.ExecutionContext import ExecutionContext
-from richard.type.SemanticFunction import SemanticFunction
+from richard.entity.ExecutionContext import ExecutionContext
+from richard.entity.SemanticFunction import SemanticFunction
 
 
 class TestModule(SomeModule):

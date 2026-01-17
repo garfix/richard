@@ -1,6 +1,6 @@
 from richard.entity.Relation import Relation
 from richard.module.SimpleMemoryModule import SimpleMemoryModule
-from richard.type.ExecutionContext import ExecutionContext
+from richard.entity.ExecutionContext import ExecutionContext
 
 
 class BasicDialogContext(SimpleMemoryModule):

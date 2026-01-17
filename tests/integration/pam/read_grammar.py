@@ -1,7 +1,7 @@
 from richard.core.constants import Range, Body, E1, E2
 from richard.entity.Variable import Variable
 from richard.processor.parser.helper.grammar_functions import apply
-from richard.type.SemanticFunction import SemanticFunction
+from richard.entity.SemanticFunction import SemanticFunction
 
 C1 = Variable('C1')
 C2 = Variable('C2')

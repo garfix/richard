@@ -1,6 +1,6 @@
 from richard.core.constants import E1, E2, e2, Body
 from richard.processor.parser.helper.grammar_functions import apply
-from richard.type.SemanticFunction import SemanticFunction
+from richard.entity.SemanticFunction import SemanticFunction
 
 
 def get_read_grammar():

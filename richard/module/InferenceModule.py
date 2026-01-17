@@ -4,8 +4,8 @@ from richard.entity.Variable import Variable
 from richard.interface import SomeSolver
 from richard.interface.SomeModule import SomeModule
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
-from richard.type.ExecutionContext import ExecutionContext
-from richard.type.InferenceRule import InferenceRule
+from richard.entity.ExecutionContext import ExecutionContext
+from richard.entity.InferenceRule import InferenceRule
 
 
 class InferenceModule(SomeModule):

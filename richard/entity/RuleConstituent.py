@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from richard.type.PositionType import PositionType
+from richard.entity.PositionType import PositionType
 
 
 class RuleConstituent:

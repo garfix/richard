@@ -7,7 +7,7 @@ from richard.core.Solver import Solver
 from richard.entity.Variable import Variable
 from richard.module.InferenceModule import InferenceModule
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
-from richard.type.InferenceRule import InferenceRule
+from richard.entity.InferenceRule import InferenceRule
 
 
 class TestInferenceEngine(unittest.TestCase):

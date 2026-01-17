@@ -1,7 +1,7 @@
 from richard.entity.Relation import Relation
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
-from richard.type.ExecutionContext import ExecutionContext
+from richard.entity.ExecutionContext import ExecutionContext
 
 
 class PAMModule(SomeModule):

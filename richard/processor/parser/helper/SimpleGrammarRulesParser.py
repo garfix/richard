@@ -4,8 +4,8 @@ from richard.core.constants import POS_TYPE_REG_EXP, POS_TYPE_RELATION, POS_TYPE
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.RuleConstituent import RuleConstituent
-from richard.type.SimpleGrammarRule import SimpleGrammarRule
-from richard.type.SimpleGrammar import SimpleGrammar
+from richard.entity.SimpleGrammarRule import SimpleGrammarRule
+from richard.entity.SimpleGrammar import SimpleGrammar
 
 
 class SimpleGrammarRulesParser:

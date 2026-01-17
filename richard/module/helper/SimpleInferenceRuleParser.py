@@ -2,7 +2,7 @@ import re
 
 from richard.core.constants import DISJUNCTION
 from richard.entity.Variable import Variable
-from richard.type.InferenceRule import InferenceRule
+from richard.entity.InferenceRule import InferenceRule
 
 
 class SimpleInferenceRuleParser:

@@ -7,8 +7,8 @@ from richard.interface import SomeSolver
 from richard.interface.SomeModule import SomeModule
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
-from richard.type.ExecutionContext import ExecutionContext
-from richard.type.InferenceRule import InferenceRule
+from richard.entity.ExecutionContext import ExecutionContext
+from richard.entity.InferenceRule import InferenceRule
 
 
 class GrammarModule(SomeModule):

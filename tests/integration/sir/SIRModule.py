@@ -3,7 +3,7 @@ from richard.entity.ResultIterator import ResultIterator
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
-from richard.type.ExecutionContext import ExecutionContext
+from richard.entity.ExecutionContext import ExecutionContext
 
 
 class SIRModule(SomeModule):

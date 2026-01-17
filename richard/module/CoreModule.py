@@ -5,8 +5,8 @@ from richard.entity.BindingResult import BindingResult
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
-from richard.type.ExecutionContext import ExecutionContext
-from richard.type.OrderedSet import OrderedSet
+from richard.entity.ExecutionContext import ExecutionContext
+from richard.entity.OrderedSet import OrderedSet
 
 
 class CoreModule(SomeModule):

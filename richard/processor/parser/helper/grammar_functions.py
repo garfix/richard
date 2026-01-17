@@ -1,5 +1,5 @@
 
-from richard.type.SemanticFunction import SemanticFunction
+from richard.entity.SemanticFunction import SemanticFunction
 
 
 def apply(template: SemanticFunction, *values):

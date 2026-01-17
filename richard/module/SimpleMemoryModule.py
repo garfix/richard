@@ -2,7 +2,7 @@ import sqlite3
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
-from richard.type.ExecutionContext import ExecutionContext
+from richard.entity.ExecutionContext import ExecutionContext
 
 
 class SimpleMemoryModule(SomeModule):
