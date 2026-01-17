@@ -9,7 +9,7 @@ from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.module.PlanAnalyzerModule import PlanAnalyzerModule
-from richard.module.helper.PlanAnalyzerDB import PlanAnalyzerDB
+from richard.module.PlanAnalyzerDialogContext import PlanAnalyzerDialogContext
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -46,15 +46,15 @@ class TestPAM(unittest.TestCase):
         inferences.import_rules(path + "intents.pl")
         inferences.import_rules(path + "plan_recognition.pl")
 
-        # add the plan analyzer
-
-        plan_analyzer_db = PlanAnalyzerDB()
-        plan_analyzer = PlanAnalyzerModule(plan_analyzer_db)
-
         # a data source to store information for output
 
         output_buffer = BasicOutputBuffer()
         dialog_context = BasicDialogContext()
+
+        # add the plan analyzer
+
+        plan_analyzer = PlanAnalyzerModule()
+        plan_analyzer_dialog_content = PlanAnalyzerDialogContext()
 
         # define the model
 
@@ -63,7 +63,8 @@ class TestPAM(unittest.TestCase):
             inferences,
             plan_analyzer,
             output_buffer,
-            dialog_context
+            dialog_context,
+            plan_analyzer_dialog_content
         ])
 
         # define the pipeline
