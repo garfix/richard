@@ -66,34 +66,34 @@ def bind_variables(construct: any, binding: dict) -> list:
         return construct
 
 
-def unification(bound: any, free: any) -> dict|None:
+def unification(term1: any, term2: any) -> dict|None:
     binding = {}
     # list
-    if isinstance(bound, list) and isinstance(free, list):
-        for free_atom in free:
-            found = False
-            for bound_atom in bound:
-                sub = unification(bound_atom, free_atom)
+    if isinstance(term1, list) and isinstance(term2, list):
+        found = False
+        for a2 in term2:
+            for a1 in term1:
+                sub = unification(a1, a2)
                 if sub is not None:
                     found = True
                     binding = unification_binding(binding, sub)
-            if not found:
-                binding = None
+        if not found:
+            binding = None
     # tuple
-    elif isinstance(bound, tuple) and isinstance(free, tuple):
-        if len(bound) != len(free):
+    elif isinstance(term1, tuple) and isinstance(term2, tuple):
+        if len(term1) != len(term2):
             binding = None
         else:
-            for bound_arg, free_arg in zip(bound, free):
+            for bound_arg, free_arg in zip(term1, term2):
                 binding = unification_binding(binding, unification(bound_arg, free_arg))
     # variable
-    elif isinstance(free, Variable):
-        binding[free.name] = bound
+    elif isinstance(term2, Variable):
+        binding = unification_binding(binding, {term2.name: term1})
+    elif isinstance(term1, Variable):
+        binding = unification_binding(binding, {term1.name: term2})
     # other
-    elif bound != free:
+    elif term1 != term2:
         binding = None
-
-    # print(bound, free, binding)
 
     return binding
 

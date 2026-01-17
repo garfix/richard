@@ -58,6 +58,7 @@ Work out context in inference rules:
 ## module
 
 * (?) add `common_query` and `common_write` to SomeModule to reduce code duplication
+* $unification of 2 variables (both should be assigned a new anonymous variable. https://www.dai.ed.ac.uk/groups/ssp/bookpages/quickprolog/node12.html)
 
 ## isolation of independent parts
 
