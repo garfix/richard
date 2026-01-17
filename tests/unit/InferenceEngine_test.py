@@ -47,6 +47,10 @@ class TestInferenceEngine(unittest.TestCase):
                     )
                 ])]
             ],
+            # unification
+            ["pred(X) :- X = 2.", [InferenceRule(('pred', Variable('X')), [('$unification', Variable('X'), 2)])]],
+            ["pred(X) :- X = pred2(A).", [InferenceRule(('pred', Variable('X')), [('$unification', Variable('X'), [('pred2', Variable('A'))])])]],
+            ["pred(X) :- pred2(A) = X.", [InferenceRule(('pred', Variable('X')), [('$unification', [('pred2', Variable('A'))], Variable('X'))])]],
         ]
 
         for test in tests:

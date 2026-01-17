@@ -1,10 +1,6 @@
 ## todo
 
 PAM
-destructure: waarom geeft hij geen lege array terug bij failure?
-MOET WEL! de check_claim() logica klopt helemaal niet
-
-- unit test een nieuwe `destructure`
 - lastigheid hier is hoe de variabelen gebonden moeten worden
 - analyze_plans
 - `store(output_type('understood')), store(Story), analyze_plans(Story).`
@@ -62,7 +58,6 @@ Work out context in inference rules:
 ## module
 
 * (?) add `common_query` and `common_write` to SomeModule to reduce code duplication
-* turn destructure2 into a more generic way of destructuring, using an array for the structure
 
 ## isolation of independent parts
 
@@ -74,6 +69,7 @@ optimize isolate independent parts:
 
 ## done
 
+* $unification
 * replace SimpleResponder by BasicGenerator
 * learn_grammar_rule
 * directly execute code

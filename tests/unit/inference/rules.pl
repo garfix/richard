@@ -19,3 +19,4 @@ family(X, Y) :- (
 sister('spike', 'suzy').
 brother('james', 'george').
 sibling(X, Y) :- equals(X, X), ( brother(X, Y) ; sister(X, Y) ).
+river(X) :- 'danube' = A, river(A), A = X.

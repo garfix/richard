@@ -19,7 +19,7 @@ class Relation:
         relation_size: str = IGNORED,
         argument_sizes: list[str] = [],
     ) -> None:
-        if not re.fullmatch('[\w_]+', predicate):
+        if not re.fullmatch('\$?[\w_]+', predicate):
             raise Exception('Predicate is not a word: ' + predicate)
 
         self.predicate = predicate

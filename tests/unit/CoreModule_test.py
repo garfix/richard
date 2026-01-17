@@ -39,36 +39,36 @@ class TestCoreModule(unittest.TestCase):
         self.assertEqual(bindings, [{'E1': 5}])
 
 
-    def test_destructure(self):
+    def test_unification(self):
 
         model = Model([])
         solver = Solver(model)
 
         source = [('alive', 'john'), ('lost', 'john'), ('likes', 'john', 'jane'), ('goal', 'john', ('win', 'jane'))]
 
-        bindings = solver.solve([('destructure', source, [('lost', E1)])])
+        bindings = solver.solve([('$unification', source, [('lost', E1)])])
         self.assertEqual(bindings, [{'E1': 'john'}])
 
-        bindings = solver.solve([('destructure', source, [('location', E1)])])
+        bindings = solver.solve([('$unification', source, [('location', E1)])])
         self.assertEqual(bindings, [])
 
-        bindings = solver.solve([('destructure', source, [('likes', E1, 'jane')])])
+        bindings = solver.solve([('$unification', source, [('likes', E1, 'jane')])])
         self.assertEqual(bindings, [{'E1': 'john'}])
 
-        bindings = solver.solve([('destructure', source, [('likes', E1, E1)])])
+        bindings = solver.solve([('$unification', source, [('likes', E1, E1)])])
         self.assertEqual(bindings, [])
 
-        bindings = solver.solve([('destructure', source, [('lost', E1), ('likes', E1, E2)])])
+        bindings = solver.solve([('$unification', source, [('lost', E1), ('likes', E1, E2)])])
         self.assertEqual(bindings, [{'E1': 'john', 'E2': 'jane'}])
 
-        bindings = solver.solve([('destructure', source, [('goal', E1, ('win', E2))])])
+        bindings = solver.solve([('$unification', source, [('goal', E1, ('win', E2))])])
         self.assertEqual(bindings, [{'E1': 'john', 'E2': 'jane'}])
 
-        bindings = solver.solve([('destructure', source, [('goal', E1, ('win', E1))])])
+        bindings = solver.solve([('$unification', source, [('goal', E1, ('win', E1))])])
         self.assertEqual(bindings, [])
 
-        bindings = solver.solve([('let', E2, 'mary'), ('destructure', source, [('lost', E1)])])
+        bindings = solver.solve([('let', E2, 'mary'), ('$unification', source, [('lost', E1)])])
         self.assertEqual(bindings, [{'E1': 'john', 'E2': 'mary'}])
 
-        bindings = solver.solve([('let', E1, 'mary'), ('destructure', source, [('lost', E1)])])
+        bindings = solver.solve([('let', E1, 'mary'), ('$unification', source, [('lost', E1)])])
         self.assertEqual(bindings, [])

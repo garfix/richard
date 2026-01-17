@@ -32,7 +32,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("none", query_function=self.determiner_none)),
         self.add_relation(Relation("scoped", query_function=self.scoped)),
         self.add_relation(Relation("store", query_function=self.store)),
-        self.add_relation(Relation("destructure", query_function=self.destructure)),
+        self.add_relation(Relation("$unification", query_function=self.unification)),
         self.add_relation(Relation("find_all", query_function=self.find_all)),
         self.add_relation(Relation("find_one", query_function=self.find_one)),
 
@@ -391,9 +391,9 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('destructure', source-value, target-value)
-    # for example: ('destructure', [('just_left_of, 'sofa', 'table')], [('just_left_of', E1, E2)]
-    def destructure(self, values: list, context: ExecutionContext) -> BindingResult:
+    # ('$unification', source-value, target-value)
+    # for example: ('$unification', [('just_left_of, 'sofa', 'table')], [('just_left_of', E1, E2)]
+    def unification(self, values: list, context: ExecutionContext) -> BindingResult:
 
         bound = bind_variables(values[0], context.binding)
         free = bind_variables(values[1], context.binding)

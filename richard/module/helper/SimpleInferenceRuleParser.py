@@ -14,6 +14,7 @@ class SimpleInferenceRuleParser:
 
     def __init__(self) -> None:
         self.re_tokens = re.compile("(" + "|".join([
+            '=',
             '\.',
             ',',
             ';',
@@ -172,8 +173,14 @@ class SimpleInferenceRuleParser:
 
 
     # parent(X, Y)
-    # ( brother(X, Y) ; sister(X, Y)
+    # ( brother(X, Y) ; sister(X, Y) )
+    # X = friend(A, B)
     def parse_atom(self, tokens: list[str], pos: int):
+
+        atom, new_pos = self.parse_unification(tokens, pos)
+        if atom:
+            pos = new_pos
+            return atom, pos
 
         atom, new_pos = self.parse_simple_atom(tokens, pos)
         if atom:
@@ -187,6 +194,42 @@ class SimpleInferenceRuleParser:
 
         return None, pos
 
+    def parse_simple_atom_or_term(self, tokens: list[str], pos: int):
+        """ Note: returns the atom as a list of one"""
+
+        atom, new_pos = self.parse_simple_atom(tokens, pos)
+        if atom:
+            pos = new_pos
+            return [atom], pos
+
+        term, new_pos = self.parse_term(tokens, pos, no_atoms=True)
+        if term:
+            pos = new_pos
+            return term, pos
+
+        return None, pos
+
+
+    # X = friend(A, B)
+    # friend(A, B) = X
+    # Y = X
+    def parse_unification(self, tokens: list[str], pos: int):
+        atom_or_term1, new_pos = self.parse_simple_atom_or_term(tokens, pos)
+        if not atom_or_term1:
+            return None, new_pos
+        pos = new_pos
+
+        open, new_pos = self.parse_token(tokens, pos)
+        if open != "=":
+            return None, new_pos
+        pos = new_pos
+
+        atom_or_term2, new_pos = self.parse_simple_atom_or_term(tokens, pos)
+        if not atom_or_term2:
+            return None, new_pos
+        pos = new_pos
+
+        return tuple(['$unification', atom_or_term1, atom_or_term2]), pos
 
     # parent(X, Y)
     def parse_simple_atom(self, tokens: list[str], pos: int):
@@ -235,7 +278,7 @@ class SimpleInferenceRuleParser:
         return None, new_pos
 
 
-    def parse_term(self, tokens: list[str], pos: int):
+    def parse_term(self, tokens: list[str], pos: int, no_atoms = False):
         token, new_pos = self.parse_token(tokens, pos)
         if token[0] == "'":
             pos = new_pos
@@ -257,10 +300,11 @@ class SimpleInferenceRuleParser:
             pos = new_pos
             return Variable(token), pos
 
-        atoms, new_pos = self.parse_atoms(tokens, pos)
-        if atoms is not None:
-            pos = new_pos
-            return atoms, pos
+        if not no_atoms:
+            atoms, new_pos = self.parse_atoms(tokens, pos)
+            if atoms is not None:
+                pos = new_pos
+                return atoms, pos
 
         return None, pos
 
