@@ -1,3 +1,11 @@
+## 2026-01-17
+
+I implemented unification (for example: `Atoms = lost(A)`), to make it easier to work with atom type variables.
+
+---
+
+It occurred to me that the SemanticComposer produces multiple versions of semantic representations, and that so far, only the last production is used by the rest of the system. However, the last production is mainly interesting for querying. It contains scoped constructs that are great for querying, but not so good for sentence analysis, such as I need for the PlanAnalyzer. Therefore it would be good to keep producing different versions of semantics, but to expose all of them for further processing.
+
 ## 2026-01-06
 
 I'm starting the implementation of PAM with the example from chapter 14. First step: implement FIND-OUT-REQ: based on the sentence "John was lost", the system deducts that John will want to find out where he is. That is: a goal deduction rule.

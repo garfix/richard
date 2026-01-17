@@ -9,6 +9,7 @@ from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.module.PlanAnalyzerModule import PlanAnalyzerModule
+from richard.module.helper.PlanAnalyzerDB import PlanAnalyzerDB
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
@@ -47,7 +48,8 @@ class TestPAM(unittest.TestCase):
 
         # add the plan analyzer
 
-        plan_analyzer = PlanAnalyzerModule()
+        plan_analyzer_db = PlanAnalyzerDB()
+        plan_analyzer = PlanAnalyzerModule(plan_analyzer_db)
 
         # a data source to store information for output
 

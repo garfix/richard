@@ -1,14 +1,8 @@
-from richard.core.atoms import bind_variables, get_atom_variables
-from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.entity.Relation import Relation
-from richard.entity.Variable import Variable
-from richard.interface import SomeSolver
 from richard.interface.SomeModule import SomeModule
-from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.entity.ExecutionContext import ExecutionContext
-from richard.entity.InferenceRule import InferenceRule
 
 
 class GrammarModule(SomeModule):
