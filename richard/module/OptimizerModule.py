@@ -30,7 +30,7 @@ class OptimizerModule(SomeModule):
     # performs David H.D. Warren's optimization
     def optimize_isolate(self, values: list, context: ExecutionContext) -> list[list]:
         sem_in = bind_variables(values[0], context.binding)
-        sem_out = IsolateIndependentParts().isolate(sem_in, context.sentence.return_variables)
+        sem_out = IsolateIndependentParts().isolate(sem_in, context.sentence.root_variables)
         return [
             [None, sem_out]
         ]

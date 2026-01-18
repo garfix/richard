@@ -108,7 +108,7 @@ class TestComposer(unittest.TestCase):
         self.assertEqual(str(sentence_semantics[0]), "John Walker")
 
 
-    def test_multiple_return_variables(self):
+    def test_multiple_root_variables(self):
 
         simple_grammar = [
             { "syn": "s(E1, E2) -> np(E1) vp(E2)", "sem": lambda np, vp: np + vp },
@@ -130,7 +130,7 @@ class TestComposer(unittest.TestCase):
         request = SentenceRequest("John sleeps")
         system.enter(request)
         product = request.get_current_product(composer)
-        self.assertEqual(product.sentences[0].return_variables, ["$1", "$2"])
+        self.assertEqual(product.sentences[0].root_variables, ["$1", "$2"])
 
 
     def test_regexp(self):

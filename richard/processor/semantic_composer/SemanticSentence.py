@@ -8,7 +8,7 @@ class SemanticSentence:
     semantics: list[tuple]
     inferences: list[tuple]
     executable: callable
-    return_variables: list[str]
+    root_variables: list[str]
 
 
     def log(self, logger: Logger):
@@ -19,4 +19,4 @@ class SemanticSentence:
         logger.add_subheader("Inferences")
         logger.add(format_value(self.inferences))
         logger.add_subheader("Return variables")
-        logger.add(", ".join(self.return_variables))
+        logger.add(", ".join(self.root_variables))
