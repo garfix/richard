@@ -1,7 +1,7 @@
 import unittest
 
 from richard.core.constants import E1, E2, E3, E4
-from richard.processor.semantic_composer.optimizer.IsolateIndependentParts import IsolateIndependentParts
+from richard.module.optimizer.IsolateIndependentParts import IsolateIndependentParts
 
 
 class TestIsolateIndependentParts(unittest.TestCase):

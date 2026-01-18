@@ -8,9 +8,9 @@ from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
+from richard.module.OptimizerModule import OptimizerModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.System import System
@@ -61,11 +61,15 @@ class TestChat80(unittest.TestCase):
         output_buffer = BasicOutputBuffer()
         dialog_context = BasicDialogContext()
 
+        # optimizer
+        optimizer = OptimizerModule()
+
         # define the model
 
         model = Model([
             facts,
             inferences,
+            optimizer,
             output_buffer,
             dialog_context
         ])
@@ -75,7 +79,7 @@ class TestChat80(unittest.TestCase):
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
         parser = BasicParser(read_grammar)
 
-        composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
+        composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())

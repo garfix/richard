@@ -1,5 +1,11 @@
 ## todo
 
+! measure times before rewrite: Ran 6 tests in 1.340s
+chat80: 0.6
+! root_variables ?
+
+unification testen met verschillende atoms aan weerszijde
+
 PAM
 - sla op: `person($2), male($2)`
 - de Isolated form van semantics wordt nu nog gebruikt voor execution; werkt dat wel?

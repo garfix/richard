@@ -10,7 +10,6 @@ from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.module.InferenceModule import InferenceModule
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
-from richard.processor.semantic_composer.optimizer.BasicQueryOptimizer import BasicQueryOptimizer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
 from richard.core.System import System
@@ -78,7 +77,7 @@ class TestCooper(unittest.TestCase):
         grammar1 = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar1())
         parser = BasicParser(grammar1)
 
-        composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
+        composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
@@ -101,7 +100,7 @@ class TestCooper(unittest.TestCase):
         grammar2 = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar2())
         parser = BasicParser(grammar2)
 
-        composer = SemanticComposer(parser, query_optimizer = BasicQueryOptimizer(model))
+        composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
         # define the second system

@@ -30,10 +30,11 @@ class AtomExecutor(SomeProcessor):
     def process(self, request: SentenceRequest) -> ProcessResult:
         incoming: SemanticComposerProduct = request.get_current_product(self.composer)
         sentences = incoming.sentences
-        solver = Solver(self.model, log_stats=request.logger.should_log_stats())
 
         products = []
         for sentence in sentences:
+
+            solver = Solver(self.model, sentence, log_stats=request.logger.should_log_stats())
 
             # store the inferences in the sentence context
             for inference in sentence.inferences:

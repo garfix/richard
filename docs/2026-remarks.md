@@ -26,6 +26,34 @@ Up until now the optimized form could be used for all sentences, but this is no 
 
 I could solve this problem for the PAM system by not optimizing, but let's step back and solve it more fundamentally. Until it is solved, we will always need to choose between querying systems and story telling systems.
 
+A possible solution is to pull query optimization out of the ComposerModule and into specialized functions. Taking a Chat80 example:
+
+~~~js
+intent_list(E1, Sem) :-
+    find_all(E1, Sem, Elements),
+    store(output_type('list'), output_list(Elements)).
+~~~
+
+will become
+
+~~~js
+optimize(SemIn, SemOut) :- optimize_names_first(SemIn, Sem2), optimize_sort_by_cost(Sem2, Sem3), optimize_isolate(Sem3, SemOut).
+
+intent_list(E1, Sem) :-
+    optimize(Sem, SemOpt)
+    find_all(E1, SemOpt, Elements),
+    store(output_type('list'), output_list(Elements)).
+~~~
+
+---
+
+Note that the idea of **intents** as predicates makes this kind of thing easy. If the intent is to query, then optimize the semantics first!
+
+---
+
+`optimize_isolate` needed the root variables (return variables) of the sentence. For this reason I added the SemanticSentence to the `ExecutionContext`. I also think I may need the current sentence later on; but on the other hand I'm a bit apprehensive to give this context to much information.
+
+
 ## 2026-01-17
 
 I implemented unification (for example: `Atoms = lost(A)`), to make it easier to work with atom type variables.

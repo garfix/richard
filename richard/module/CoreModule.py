@@ -383,7 +383,6 @@ class CoreModule(SomeModule):
             raise Exception(f"'store' expects a list of atoms; given: {unbound_atoms}")
 
         atoms = bind_variables(unbound_atoms, context.binding)
-        print(atoms)
         store_atoms(atoms, context.solver)
 
         return [

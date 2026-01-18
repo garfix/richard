@@ -4,7 +4,6 @@ from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
 from richard.interface.SomeProcessor import SomeProcessor
-from richard.interface.SomeQueryOptimizer import SomeQueryOptimizer
 from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.semantic_composer.SemanticSentence import SemanticSentence
 from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
@@ -19,14 +18,12 @@ class SemanticComposer(SomeProcessor):
     """
 
     parser: SomeProcessor
-    query_optimizer: SomeQueryOptimizer
     variable_generator: VariableGenerator
 
 
-    def __init__(self, parser: SomeProcessor, query_optimizer: SomeQueryOptimizer = None) -> None:
+    def __init__(self, parser: SomeProcessor) -> None:
         super().__init__()
         self.parser = parser
-        self.query_optimizer = query_optimizer
         self.variable_generator = VariableGenerator("$")
 
 
@@ -46,14 +43,7 @@ class SemanticComposer(SomeProcessor):
 
             root_variables = [self.variable_generator.next() for _ in parse_tree.rule.antecedent.arguments]
             semantics, inferences, executable = self.compose(parse_tree, root_variables)
-
-            if self.query_optimizer:
-                if not isinstance(semantics, list):
-                    raise Exception("Sentence semantics is not a list of atoms: " + str(semantics))
-
-                semantics_iterations = self.query_optimizer.optimize(semantics, root_variables)
-            else:
-                semantics_iterations = [["Semantics", semantics]]
+            semantics_iterations = [["Semantics", semantics]]
 
             sentences.append(SemanticSentence(semantics_iterations, inferences, executable, root_variables))
 
