@@ -7,13 +7,13 @@ intent_list(E1, Sem) :-
     find_all(E1, SemOpt, Elements),
     store(output_type('list'), output_list(Elements)).
 
-intent_table(Variables, Units, Body) :-
-    optimize(Body, SemOpt),
+intent_table(Variables, Units, Sem) :-
+    optimize(Sem, SemOpt),
     find_all(Variables, SemOpt, Results),
     store(output_type('table'), output_table(Results, Units)).
 
-intent_yn(Body) :- (
-    optimize(Body, SemOpt),
+intent_yn(Sem) :- (
+    optimize(Sem, SemOpt),
     scoped(SemOpt),  store(output_type('yes'))
 ;   store(output_type('no'))
 ).

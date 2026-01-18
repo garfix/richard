@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from richard.core.Logger import Logger
-from richard.core.atoms import format_value
 from richard.interface.SomeProduct import SomeProduct
 from richard.processor.semantic_composer.SemanticSentence import SemanticSentence
 
@@ -14,5 +13,5 @@ class SemanticComposerProduct(SomeProduct):
 
 
     def get_output(self) -> any:
-        return list(map(lambda s: s.get_semantics_last_iteration(), self.sentences))
+        return list(map(lambda s: s.semantics, self.sentences))
 

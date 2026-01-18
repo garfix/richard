@@ -43,7 +43,7 @@ class AtomExecutor(SomeProcessor):
             # perform executable atoms
             solver.solve(sentence.executable)
 
-            bindings = solver.solve(sentence.get_semantics_last_iteration())
+            bindings = solver.solve(sentence.semantics)
 
             product = AtomExecutorProduct(bindings, solver.stats)
 
