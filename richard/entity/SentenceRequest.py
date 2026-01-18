@@ -1,6 +1,6 @@
 from richard.core.Logger import ALL, Logger, nullLogger
 from richard.entity.ProcessResult import ProcessResult
-from richard.interface.Product import SomeProduct
+from richard.interface.SomeProduct import SomeProduct
 from richard.interface.SomeProcessor import SomeProcessor
 
 

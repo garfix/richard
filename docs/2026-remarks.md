@@ -1,3 +1,31 @@
+## 2026-01-18
+
+I will need to work out the thought I had yesterday, because I need it right away.
+
+"John was lost." resolves to 
+
+~~~js
+Isolated
+
+[
+    ('resolve_name', 'John', $2)
+    ('scoped', 
+        [
+            ('intent_understand', 
+                [
+                    ('lost', $2)
+                ])
+        ])
+]
+
+~~~
+
+so `intent_understand`, which stores the sentence, is left with `lost($2)`, and the name of $2 ("John") is not stored in this way.
+
+Up until now the optimized form could be used for all sentences, but this is no longer the case. It should be used only for query sentences.
+
+I could solve this problem for the PAM system by not optimizing, but let's step back and solve it more fundamentally. Until it is solved, we will always need to choose between querying systems and story telling systems.
+
 ## 2026-01-17
 
 I implemented unification (for example: `Atoms = lost(A)`), to make it easier to work with atom type variables.

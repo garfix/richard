@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from richard.core.Logger import Logger
 from richard.core.atoms import format_value
-from richard.interface.Product import SomeProduct
+from richard.interface.SomeProduct import SomeProduct
 from richard.processor.semantic_composer.SemanticSentence import SemanticSentence
 
 @dataclass(frozen=True)

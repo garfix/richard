@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from richard.core.Logger import Logger
-from richard.interface.Product import SomeProduct
+from richard.interface.SomeProduct import SomeProduct
 
 
 @dataclass
