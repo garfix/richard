@@ -7,6 +7,7 @@ from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.entity.OrderedSet import OrderedSet
+from richard.module.helper.store_atoms import store_atoms
 
 
 class CoreModule(SomeModule):
@@ -382,9 +383,8 @@ class CoreModule(SomeModule):
             raise Exception(f"'store' expects a list of atoms; given: {unbound_atoms}")
 
         atoms = bind_variables(unbound_atoms, context.binding)
-
-        for atom in atoms:
-            context.solver.write_atom(atom)
+        print(atoms)
+        store_atoms(atoms, context.solver)
 
         return [
             [None]

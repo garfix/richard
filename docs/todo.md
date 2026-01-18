@@ -1,46 +1,9 @@
 ## todo
 
 PAM
-- lastigheid hier is hoe de variabelen gebonden moeten worden
-- analyze_plans
-- `store(output_type('understood')), store(Story), analyze_plans(Story).`
-    - store in sentence-level storage only?
-    - PAM's sentences have (so far) no hierarchical structure, but you should consider that they might have it
-- given `lost($2)`, the `lost` from the sentence, not any stored `lost`, deduce that $2 has a goal of knowing `location($2, $L)`
-- add a memory module for just a sentence interpretation?
-    - create the module just before execution
-    - okay, no then there would be no need, and it could just be part of the dialog
-    - however, how can you tell which relations were from this sentence alone?
-    - apply the deduction rules to this memory module alone
-- wat dacht je van `analyze() :- current_sentence(lost(A)), store(goal(know(A, location(A))));`
-- FIND-OUT-REQ
-- add an assignment operator that allows destructuring / as a replacement for destructuring
-
-Problems
-
-- there is not really a dialog. There's a story, questions, and asking for a summary
-    - how to write the tests? how to use this structure in a conversation?
-    - distinguish between statements in a story ("John robbed a liquor store") and statements to learn facts ("Sheep are mammals")
-- when are the inferences made? before, during, or after excution?
-    - during! we even have the inference `dialog`. we may want to add real production rules (if X then add Y and Z)
-- facts are added to the dialog via declarative senstences as well
-- facts should have a "likeliness" score
- 
-The algorithm
-
-- is there a prediction that explains the input?
-- if no: can an explanation be inferred from the input? 
-- if yes: make the inference
-
-- whenever a fact is stored (via `store`), the __production rules__ are evaluated and produce new facts
-- if the fact exists already, it is not readded, and does not recheck the production rules
-- production rules say: if this fact is added to the dialog, these facts should be added as well
-- these rules produce themes, goals and plans
-    - themes are constants (ie `hunger`)
-    - if goal-condition then 
-        - build a __goal episode__: (goal, goal source (theme), plan)
-        - make __suggestions__ / __requests__: predictions about how the plan __gap__ will be filled: with a plan that satisfies the goal: `[((PLAN) !INPUT! SUITABLE-PLAN-RULE)]`
-- each goal has a list of plans that fulfill it
+- `store(Atoms)` voorlopig werkt dit, maar als de structuren genest worden, niet meer
+- `store(goal(...))` geen idee hoe dit eruit moet zien; werken we wel uit als het nodig is
+- welke automatisch deducties zijn er nodig? vorm de CD weergave van de zin; op een need-to-have basis
 
 ## context
 

@@ -1,6 +1,6 @@
 import pathlib
 import sqlite3
-from richard.data_source.CsvImporter import CsvImporter
+from richard.data_source.helper.CsvImporter import CsvImporter
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 
 
