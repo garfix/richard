@@ -55,6 +55,8 @@ class PAMModule(SomeModule):
         self.add_relation(Relation("to", query_function=self.simple_entity))
         self.add_relation(Relation("ask", query_function=self.simple_entity))
         self.add_relation(Relation("be", query_function=self.simple_entity))
+        self.add_relation(Relation("male", query_function=self.simple_entity))
+        self.add_relation(Relation("person", query_function=self.simple_entity))
 
 
     def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:

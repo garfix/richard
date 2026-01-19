@@ -1,9 +1,8 @@
 ## todo
 unification testen met verschillende atoms aan weerszijde
+should PamDB be cleared after each story?
 
 PAM
-- sla op: `person($2), male($2)`
-- de Isolated form van semantics wordt nu nog gebruikt voor execution; werkt dat wel?
 - `store(Atoms)` voorlopig werkt dit, maar als de structuren genest worden, niet meer
 - `store(goal(...))` geen idee hoe dit eruit moet zien; werken we wel uit als het nodig is
 - welke automatisch deducties zijn er nodig? vorm de CD weergave van de zin; op een need-to-have basis

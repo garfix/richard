@@ -22,5 +22,6 @@ class PlanAnalyzerModule(SomeModule):
         bindings = context.solver.solve([("recognize_plan", atoms)], context.binding)
 
         return [
+            [None]
         ]
 

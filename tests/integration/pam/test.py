@@ -191,6 +191,9 @@ class TestPAM(unittest.TestCase):
             tester = DialogTester(self, session, system, logger)
             tester.run()
             dialog_context.clear()
+            plan_analyzer_dialog_content.clear()
+            db = PAMDB()
+            facts.ds = db
 
         print(logger)
 
