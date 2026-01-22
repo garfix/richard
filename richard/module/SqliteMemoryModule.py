@@ -5,7 +5,7 @@ from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
 
 
-class SimpleMemoryModule(SomeModule):
+class SqliteMemoryModule(SomeModule):
 
     data_source: Sqlite3DataSource
 

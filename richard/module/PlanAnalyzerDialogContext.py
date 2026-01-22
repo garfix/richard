@@ -1,19 +1,20 @@
+from richard.data_source.SimpleFrameDataSource import SimpleFrameDataSource
 from richard.entity.Relation import Relation
-from richard.module.SimpleMemoryModule import SimpleMemoryModule
+from richard.interface.SomeModule import SomeModule
+from richard.module.SqliteMemoryModule import SqliteMemoryModule
 
 
-class PlanAnalyzerDialogContext(SimpleMemoryModule):
+class PlanAnalyzerDialogContext(SomeModule):
+
+    data_source: SimpleFrameDataSource
+
     def __init__(self) -> None:
         super().__init__()
-
-        self.clear()
+        self.data_source = SimpleFrameDataSource()
 
         self.add_relation(Relation("goal", arguments=["event_id"]))
 
 
     def clear(self):
-        super().clear()
+        self.data_source.clear()
 
-        cursor = self.data_source.connection.cursor()
-
-        cursor.execute("CREATE TABLE goal (event_id TEXT)")

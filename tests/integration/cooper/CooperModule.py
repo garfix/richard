@@ -1,4 +1,5 @@
 from richard.entity.Relation import Relation
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
@@ -36,12 +37,12 @@ class CooperModule(SomeModule):
         name = values[0].lower()
         id = values[1]
 
-        out_values = self.ds.select("entity", ["name", "id"], [name, None])
+        out_values = self.ds.select("entity", ["name", "id"], [name, Variable("E1")])
         if len(out_values) > 0:
             return out_values
         else:
             # if id is given, a new name is linked to that id
-            if id is None:
+            if isinstance(id, Variable):
                 # otherwise a new id is created for the name
                 id = context.arguments[1].name
             self.ds.insert("entity", ["name", "id", ], [name, id])
@@ -102,7 +103,7 @@ class CooperModule(SomeModule):
             return results
         else:
             return [
-                values[:-1] + ["unknown"]
+                list(values[:-1]) + ["unknown"]
             ]
 
 

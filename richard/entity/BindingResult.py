@@ -1,11 +1,9 @@
 class BindingResult:
 
-    base_binding: list[tuple]
     new_bindings: int
     index: int
 
-    def __init__(self, base_binding: dict, new_bindings: list[dict]) -> None:
-        self.base_binding = base_binding
+    def __init__(self, new_bindings: list[dict]) -> None:
         self.new_bindings = new_bindings
         self.index = 0
 
@@ -20,4 +18,4 @@ class BindingResult:
         if self.index > len(self.new_bindings):
             raise StopIteration
 
-        return self.base_binding | self.new_bindings[self.index-1]
+        return self.new_bindings[self.index-1]

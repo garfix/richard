@@ -1,6 +1,6 @@
 from richard.entity.Relation import Relation
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
-from richard.module.SimpleMemoryModule import SimpleMemoryModule
+from richard.module.SqliteMemoryModule import SqliteMemoryModule
 
 
 class WikidataOutputBuffer(BasicOutputBuffer):

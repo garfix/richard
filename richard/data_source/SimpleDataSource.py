@@ -1,3 +1,4 @@
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 
 
@@ -55,6 +56,6 @@ class SimpleDataSource(SomeDataSource):
     def create_dict(self, columns: list, values: list):
         d = {}
         for key, val in zip(columns, values):
-            if val is not None:
+            if not isinstance(val, Variable):
                 d[key] = val
         return d

@@ -1,3 +1,4 @@
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 
 
@@ -14,7 +15,7 @@ class Sqlite3DataSource(SomeDataSource):
         where = "TRUE"
         variables = []
         for column, value in zip(columns, values):
-            if value is not None:
+            if not isinstance(value, Variable):
                 where += f" AND {column}=?"
                 variables.append(value)
 

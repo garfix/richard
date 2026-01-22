@@ -1,8 +1,8 @@
 from richard.entity.Relation import Relation
-from richard.module.SimpleMemoryModule import SimpleMemoryModule
+from richard.module.SqliteMemoryModule import SqliteMemoryModule
 
 
-class TestDialogContext(SimpleMemoryModule):
+class TestDialogContext(SqliteMemoryModule):
 
     def __init__(self) -> None:
         super().__init__()

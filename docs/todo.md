@@ -1,4 +1,7 @@
 ## todo
+sparql
+haal ook de None->Variable conversie code uit Solver
+
 unification testen met verschillende atoms aan weerszijde
 should PamDB be cleared after each story?
 

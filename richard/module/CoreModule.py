@@ -44,13 +44,13 @@ class CoreModule(SomeModule):
         e1 = values[0]
         e2 = values[1]
 
-        if e1 is None:
-            if e2 is None:
+        if isinstance(e1, Variable):
+            if isinstance(e2, Variable):
                 raise Exception("== is called with two variables")
             else:
                 return [[e2, e2]]
         else:
-            if e2 is None:
+            if isinstance(e2, Variable):
                 return [[e1, e1]]
 
         if e1 == e2:
@@ -65,9 +65,9 @@ class CoreModule(SomeModule):
         e1 = values[0]
         e2 = values[1]
 
-        if e1 is None:
+        if isinstance(e1, Variable):
             raise Exception("> first argument is unbound")
-        if e2 is None:
+        if isinstance(e2, Variable):
             raise Exception("> second argument is unbound")
 
         if e1 > e2:
@@ -82,9 +82,9 @@ class CoreModule(SomeModule):
         e1 = values[0]
         e2 = values[1]
 
-        if e1 is None:
+        if isinstance(e1, Variable):
             raise Exception("< first argument is unbound")
-        if e2 is None:
+        if isinstance(e2, Variable):
             raise Exception("< second argument is unbound")
 
         if e1 < e2:
@@ -100,9 +100,9 @@ class CoreModule(SomeModule):
         e2 = values[1]
         e3 = e1 * e2
 
-        if e1 is None:
+        if isinstance(e1, Variable):
             raise Exception("* first argument is unbound")
-        if e2 is None:
+        if isinstance(e2, Variable):
             raise Exception("* second argument is unbound")
 
         return [
@@ -397,7 +397,7 @@ class CoreModule(SomeModule):
         bound = bind_variables(values[0], context.binding)
         free = bind_variables(values[1], context.binding)
         binding = unification(bound, free)
-        return BindingResult(context.binding, [] if binding is None else [binding])
+        return BindingResult([] if binding is None else [binding])
 
 
     # ('find_all', variable-name, body-atoms, result-variable)

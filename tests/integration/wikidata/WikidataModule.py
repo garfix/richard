@@ -1,6 +1,7 @@
 from richard.core.constants import INFINITE
 from richard.data_source.SparqlDataSource import CONSTANT, ID, TEXT
 from richard.entity.Relation import Relation
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
@@ -50,9 +51,9 @@ class WikidataModule(SomeModule):
         person = values[0]
         place = values[1]
 
-        if person is None:
+        if isinstance(person, Variable):
             raise Exception("Person ID is required: " + str(values))
-        if place is not None:
+        if not isinstance(place, Variable):
             raise Exception("Place should be None: " + str(values))
 
         out_values = self.ds.select('wdt:P19', [ID, ID], [person, place])

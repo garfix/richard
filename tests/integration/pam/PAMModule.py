@@ -1,4 +1,5 @@
 from richard.entity.Relation import Relation
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
@@ -69,7 +70,7 @@ class PAMModule(SomeModule):
             return map(lambda row: [None, row[1]], out_values)
         else:
             # if id is given, a new name is linked to that id
-            if id is None:
+            if isinstance(id, Variable):
                 # otherwise a new id is created for the name
                 id = context.arguments[1].name
             self.ds.insert("entity", ["name", "id", ], [name, id])

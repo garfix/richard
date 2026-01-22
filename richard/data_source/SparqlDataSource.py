@@ -1,5 +1,6 @@
 import hashlib
 import pickle
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 
 
@@ -27,7 +28,8 @@ class SparqlDataSource(SomeDataSource):
 
         # try to read from results cache
         if self.result_cache_path:
-            input_string = table + str(columns) + str(values)
+            nulled_values = list(map(lambda v: None if isinstance(v, Variable) else v, values))
+            input_string = table + str(columns) + str(nulled_values)
             cache_key = hashlib.sha1(input_string.encode()).hexdigest()
             file_name = self.result_cache_path + "/" + cache_key + ".pickle"
             try:
@@ -112,7 +114,7 @@ class SparqlDataSource(SomeDataSource):
 
 
     def prepare_term(self, term: any, index: int, columns: list[str]):
-        if term == None:
+        if isinstance(term, Variable):
             prepared = "?term" + str(index)
         elif isinstance(term, str):
             if columns[index] == ID:
@@ -130,7 +132,7 @@ class SparqlDataSource(SomeDataSource):
     def prepare_variables(self, values, terms):
         variables = []
         for i in range(2):
-            if values[i] == None:
+            if isinstance(values[i], Variable):
                 variables.append(terms[i])
         if len(variables) == 0:
             variables = ["*"]
@@ -140,7 +142,7 @@ class SparqlDataSource(SomeDataSource):
     def prepare_text_variables(self, values, terms, columns):
         variables = []
         for i in range(2):
-            if values[i] == None and columns[i] == TEXT:
+            if isinstance(values[i], Variable) and columns[i] == TEXT:
                 variables.append(terms[i])
         return variables
 
@@ -151,7 +153,7 @@ class SparqlDataSource(SomeDataSource):
 
             result = []
             for i in range(2):
-                if values[i] == None:
+                if isinstance(values[i], Variable):
                     # drop the preceding '?'
                     var = terms[i][1:]
                     value = item[var]['value']

@@ -1,5 +1,6 @@
 from collections import defaultdict
 from richard.core.Model import Model
+from richard.core.atoms import bind_variables
 from richard.core.constants import DISJUNCTION
 from richard.entity.BindingResult import BindingResult
 from richard.entity.Relation import Relation
@@ -62,14 +63,15 @@ class Solver(SomeSolver):
             return values
 
         if isinstance(values, BindingResult):
-            return list(values)
+            completed_values = [binding | out_value for out_value in values]
+            return list(completed_values)
 
         if not isinstance(values, list):
             raise Exception("Predicate '" + predicate + "' should return a list")
 
         if len(values) > 0:
-            if not isinstance(values[0], list):
-                raise Exception("The results of '" + predicate + "' should be lists")
+            if not isinstance(values[0], list) and not isinstance(values[0], tuple):
+                raise Exception("The results of '" + predicate + "' should be lists or tuples")
             if len(values[0]) != len(arguments):
                 raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
 
@@ -125,14 +127,13 @@ class Solver(SomeSolver):
         return result
 
 
-
     def find_relation_values(self, predicate: str, arguments: list, binding: dict) -> list[list]:
 
         relations = self.find_relations(predicate)
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
-        db_values = self.model_values_2_db_values(arguments, binding)
+        db_values = bind_variables(arguments, binding)
 
         rows = []
         stringed_values = {}
@@ -159,25 +160,6 @@ class Solver(SomeSolver):
                     rows.append(out_value)
 
         return rows
-
-
-    def model_values_2_db_values(self, model_values: list, binding: dict) -> list:
-        prepared = []
-        for arg in model_values:
-            # variable
-            if isinstance(arg, Variable):
-                # bound?
-                if arg.name in binding:
-                    # add variable value
-                    prepared.append(binding[arg.name])
-                else:
-                    # add None
-                    prepared.append(None)
-            else:
-                # just add value
-                prepared.append(arg)
-
-        return prepared
 
 
     def write_atom(self, atom: tuple):

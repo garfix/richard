@@ -93,7 +93,7 @@ class Chat80Module(SomeModule):
         id2 = values[1]
         lat1 = None
         lat2 = None
-        latitudes = self.ds.select('country', ['id', 'lat'], [None, None])
+        latitudes = self.ds.select('country', ['id', 'lat'], [Variable("E1"), Variable("E2")])
         latitudes.append(['equator', 0])
         for id, lat in latitudes:
             if id == id1:
@@ -127,15 +127,15 @@ class Chat80Module(SomeModule):
         query_river = values[0]
         query_from = values[1]
         query_to = values[2]
-        flows = self.ds.select('river', ['id', 'flows_through'], [None, None])
+        flows = self.ds.select('river', ['id', 'flows_through'], [Variable("E1"), Variable("E2")])
         out_values = []
         for id, flows_through in flows:
             flows_through_elements = flows_through.split("|")
             db_to = flows_through_elements[0]
             db_from = flows_through_elements[1:2]
-            if query_river is None or id == query_river:
-                if query_to is None or query_to == db_to:
-                    if query_from is None or query_from in db_from:
+            if isinstance(query_river, Variable) or id == query_river:
+                if isinstance(query_to, Variable) or query_to == db_to:
+                    if isinstance(query_from, Variable) or query_from in db_from:
                         for f in db_from:
                             out_values.append([id, f, db_to])
 
@@ -151,7 +151,7 @@ class Chat80Module(SomeModule):
         type = ""
         if isinstance(term, Variable):
             isa = context.solver.solve1([('dialog_isa', term.name, Variable('Type'))])
-            if isa is not None:
+            if not isinstance(isa, Variable):
                 type = isa["Type"]
 
         if type == 'city':
@@ -167,7 +167,7 @@ class Chat80Module(SomeModule):
         name = values[0].lower()
 
         for type in ["country", "city", "sea", "river", "ocean", "continent"]:
-            out_values = self.ds.select(type, ["id", "id"], [name, None])
+            out_values = self.ds.select(type, ["id", "id"], [name, Variable("E1")])
             if len(out_values) > 0:
                 context.solver.write_atom(('dialog_isa', context.arguments[1].name, type))
                 return [[None, value[1]] for value in out_values]

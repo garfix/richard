@@ -3,6 +3,7 @@ import unittest
 from richard.core.Model import Model
 from richard.core.Solver import Solver
 from richard.core.constants import E1, E2
+from richard.entity.Variable import Variable
 from richard.module.CoreModule import CoreModule
 from richard.entity.ExecutionContext import ExecutionContext
 
@@ -23,10 +24,10 @@ class TestCoreModule(unittest.TestCase):
         bindings = self.core_module.equals([3, 3], None)
         self.assertEqual(bindings, [[3, 3]])
 
-        bindings = self.core_module.equals([3, None], None)
+        bindings = self.core_module.equals([3, Variable('E1')], None)
         self.assertEqual(bindings, [[3, 3]])
 
-        bindings = self.core_module.equals([None, 3], None)
+        bindings = self.core_module.equals([Variable('E1'), 3], None)
         self.assertEqual(bindings, [[3, 3]])
 
 

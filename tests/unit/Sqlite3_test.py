@@ -1,5 +1,6 @@
 import unittest
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
+from richard.entity.Variable import Variable
 
 
 class TestSqlite3(unittest.TestCase):
@@ -33,7 +34,7 @@ class TestSqlite3(unittest.TestCase):
 
         ds = Sqlite3DataSource(connection)
 
-        self.assertEqual(ds.select_column('customer', ['id', 'name'], [None, None]), [1, 2])
-        self.assertEqual(ds.select('customer', ['id', 'name'], [1, None]), [[1, 'John']])
+        self.assertEqual(ds.select_column('customer', ['id', 'name'], [Variable('E1'), Variable('E2')]), [1, 2])
+        self.assertEqual(ds.select('customer', ['id', 'name'], [1, Variable('E1')]), [[1, 'John']])
 
 

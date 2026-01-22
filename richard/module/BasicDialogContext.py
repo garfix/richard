@@ -1,9 +1,9 @@
 from richard.entity.Relation import Relation
-from richard.module.SimpleMemoryModule import SimpleMemoryModule
+from richard.module.SqliteMemoryModule import SqliteMemoryModule
 from richard.entity.ExecutionContext import ExecutionContext
 
 
-class BasicDialogContext(SimpleMemoryModule):
+class BasicDialogContext(SqliteMemoryModule):
 
     def __init__(self) -> None:
         super().__init__()

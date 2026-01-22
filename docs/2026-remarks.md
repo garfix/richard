@@ -1,3 +1,17 @@
+## 2026-01-22
+
+I added a "SimpleFrameDataSource" that allows any data structure including nested tuples and lists. I'm not sure I need it, but it can always be handy to have.
+
+It required a code rewrite: before, I passed None values to database routines, now I pass in variables, because the frame data store needed this.
+
+## 2026-01-19
+
+Converting Wilensky's data structures to something I would make myself is very hard. I will need to learn a new way of thinking.
+
+I may need to create something of a frame-store, that stores frames. Like an Object DB? In order to store the goal and plan structures PAM builds.
+
+Any data structure can be stored in a relational DB, but sometimes another data store is better suited. (CYC documentation also emphasis this)
+
 ## 2026-01-18
 
 I will need to work out the thought I had yesterday, because I need it right away.

@@ -1,3 +1,4 @@
+from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 
 
@@ -16,7 +17,7 @@ class PsycoPg3DataSource(SomeDataSource):
         where = "TRUE"
         variables = []
         for column, value in zip(columns, values):
-            if value is not None:
+            if not isinstance(value, Variable):
                 where += f" AND {column}=%s"
                 variables.append(value)
 

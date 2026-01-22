@@ -7,6 +7,7 @@ from richard.core.System import System
 from richard.block.FindOne import FindOne
 from richard.core.constants import E1, e1
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.entity.Variable import Variable
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
@@ -109,11 +110,11 @@ class TestAtomExecutor(unittest.TestCase):
 
         # test the inference
         system.enter(SentenceRequest("Continents be"))
-        results = dialog_context.data_source.select("isa", ['entity', 'type'], [None, None])
+        results = dialog_context.data_source.select("isa", ['entity', 'type'], [Variable("E1"), Variable("E2")])
         self.assertEqual(["$1", "continent"], results[0])
 
         # test the executable code
         system.enter(SentenceRequest("Continents exist"))
-        results = dialog_context.data_source.select("concept", ['type'], [None])
+        results = dialog_context.data_source.select("concept", ['type'], [Variable("E1")])
         self.assertEqual(["continents"], results[0])
 

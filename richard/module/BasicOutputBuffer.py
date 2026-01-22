@@ -1,9 +1,9 @@
 from richard.data_source.SimpleDataSource import SimpleDataSource
 from richard.entity.Relation import Relation
-from richard.module.SimpleMemoryModule import SimpleMemoryModule
+from richard.module.SqliteMemoryModule import SqliteMemoryModule
 
 
-class BasicOutputBuffer(SimpleMemoryModule):
+class BasicOutputBuffer(SqliteMemoryModule):
 
     def __init__(self) -> None:
         super().__init__()
