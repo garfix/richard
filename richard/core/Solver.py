@@ -1,6 +1,6 @@
 from collections import defaultdict
 from richard.core.Model import Model
-from richard.core.atoms import bind_variables
+from richard.core.atoms import bind_variables, convert_tuple_results_to_bindings
 from richard.core.constants import DISJUNCTION
 from richard.entity.BindingResult import BindingResult
 from richard.entity.Relation import Relation
@@ -73,42 +73,10 @@ class Solver(SomeSolver):
                 if len(values[0]) != len(arguments):
                     raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
 
-            results = self.create_solve_single_results(values, binding, arguments)
+            results = convert_tuple_results_to_bindings(predicate, values, binding, arguments)
             return results
 
         raise Exception("Predicate '" + predicate + "' should return a list")
-
-
-    def create_solve_single_results(self, results: list, binding: dict, arguments: list):
-        checked_results = []
-        for result in results:
-            # extend the incoming binding
-            checked_result = binding.copy()
-            # check needed for a variable that occurs twice
-            conflict = False
-
-            # go through all arguments
-            for i, arg in enumerate(arguments):
-                # variable?
-                if isinstance(arg, Variable):
-                    # if the variable was bound already, no need to assign it
-                    # also no need to check for conflict, because the type may be different and that's ok
-                    if arg.name not in binding:
-                        # check for conflict with previous same variable
-                        if arg.name in checked_result and checked_result[arg.name] != result[i]:
-                            conflict = True
-                        # extend the binding
-                        checked_result[arg.name] = result[i]
-                else:
-                    if result[i] is not None and arg != result[i]:
-                        conflict = True
-
-            if conflict:
-                continue
-
-            checked_results.append(checked_result)
-
-        return checked_results
 
 
     def solve_disjunction(self, disjuncts: list[list[tuple]], binding: dict):
@@ -117,6 +85,7 @@ class Solver(SomeSolver):
             if len(results) > 0:
                 return results
         return []
+
 
     def find_relations(self, relation: str) -> list[Relation]:
         result = []

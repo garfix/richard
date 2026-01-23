@@ -39,9 +39,13 @@ class TestModule(SomeModule):
 
 
     def number_of(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = [
-            [None, 2]
-        ]
+        if values[1] == 2:
+            out_values = [
+                [None, 2]
+            ]
+        else:
+            out_values = [
+            ]
         return out_values
 
 

@@ -111,3 +111,40 @@ def unification_binding(old_binding: dict, new_binding: dict) -> dict|None:
 
     return old_binding | new_binding
 
+
+def convert_tuple_results_to_bindings(predicate: str, results: list, binding: dict, input: list):
+    """
+    Converts results into a list of bindings
+    If a result has some variable in different positions, make sure the values at the positions do not conflict
+    Also checks if the result keeps to the restrictions provided by the input
+    """
+    checked_results = []
+    for result in results:
+        # extend the incoming binding
+        checked_result = binding.copy()
+        # check needed for a variable that occurs twice
+        conflict = False
+
+        # go through all arguments
+        for i, arg in enumerate(input):
+            # variable?
+            if isinstance(arg, Variable):
+                # if the variable was bound already, no need to assign it
+                # also no need to check for conflict, because the type may be different and that's ok
+                if arg.name not in binding:
+                    # check for conflict with previous same variable
+                    if arg.name in checked_result and checked_result[arg.name] != result[i]:
+                        conflict = True
+                        break
+                    # extend the binding
+                    checked_result[arg.name] = result[i]
+            elif result[i] is not None:
+                # check if the result matches the given input
+                if arg != result[i]:
+                    # indicates an error in the relation
+                    raise Exception(f"Result doesn't match requirement for '{predicate}': {input} => {result}")
+
+        if not conflict:
+            checked_results.append(checked_result)
+
+    return checked_results

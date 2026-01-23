@@ -102,9 +102,7 @@ class CooperModule(SomeModule):
         if len(results) > 0:
             return results
         else:
-            return [
-                list(values[:-1]) + ["unknown"]
-            ]
+            return []
 
 
     def common_write(self, values: list, context: ExecutionContext) -> list[list]:
