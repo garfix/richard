@@ -66,24 +66,24 @@ class Solver(SomeSolver):
             completed_values = [binding | out_value for out_value in values]
             return list(completed_values)
 
-        if not isinstance(values, list):
-            raise Exception("Predicate '" + predicate + "' should return a list")
+        if isinstance(values, list):
+            if len(values) > 0:
+                if not isinstance(values[0], list) and not isinstance(values[0], tuple):
+                    raise Exception("The results of '" + predicate + "' should be lists or tuples")
+                if len(values[0]) != len(arguments):
+                    raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
 
-        if len(values) > 0:
-            if not isinstance(values[0], list) and not isinstance(values[0], tuple):
-                raise Exception("The results of '" + predicate + "' should be lists or tuples")
-            if len(values[0]) != len(arguments):
-                raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
+            results = self.create_solve_single_results(values, binding, arguments)
+            return results
 
-        results = self.create_solve_single_results(values, binding, arguments)
-        return results
+        raise Exception("Predicate '" + predicate + "' should return a list")
 
 
-    def create_solve_single_results(self, values: list, binding: dict, arguments: list):
-        results = []
-        for v in values:
+    def create_solve_single_results(self, results: list, binding: dict, arguments: list):
+        checked_results = []
+        for result in results:
             # extend the incoming binding
-            result = binding.copy()
+            checked_result = binding.copy()
             # check needed for a variable that occurs twice
             conflict = False
 
@@ -95,20 +95,20 @@ class Solver(SomeSolver):
                     # also no need to check for conflict, because the type may be different and that's ok
                     if arg.name not in binding:
                         # check for conflict with previous same variable
-                        if arg.name in result and result[arg.name] != v[i]:
+                        if arg.name in checked_result and checked_result[arg.name] != result[i]:
                             conflict = True
                         # extend the binding
-                        result[arg.name] = v[i]
+                        checked_result[arg.name] = result[i]
                 else:
-                    if v[i] is not None and arg != v[i]:
+                    if result[i] is not None and arg != result[i]:
                         conflict = True
 
             if conflict:
                 continue
 
-            results.append(result)
+            checked_results.append(checked_result)
 
-        return results
+        return checked_results
 
 
     def solve_disjunction(self, disjuncts: list[list[tuple]], binding: dict):
@@ -133,7 +133,7 @@ class Solver(SomeSolver):
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
-        db_values = bind_variables(arguments, binding)
+        bound_values = bind_variables(arguments, binding)
 
         rows = []
         stringed_values = {}
@@ -142,7 +142,7 @@ class Solver(SomeSolver):
             context = ExecutionContext(relation, arguments, binding, self, self.sentence)
 
             # call the relation's query function
-            out_values = relation.query_function(db_values, context)
+            out_values = relation.query_function(bound_values, context)
 
             if isinstance(out_values, BindingResult):
                 return out_values
