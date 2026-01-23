@@ -159,7 +159,7 @@ class SparqlDataSource(SomeDataSource):
                     value = item[var]['value']
                     result.append(value)
                 else:
-                    result.append(values[i])
+                    result.append(None)
 
             results.append(result)
         return results

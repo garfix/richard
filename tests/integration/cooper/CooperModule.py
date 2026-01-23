@@ -37,7 +37,7 @@ class CooperModule(SomeModule):
         name = values[0].lower()
         id = values[1]
 
-        out_values = self.ds.select("entity", ["name", "id"], [name, Variable("E1")])
+        out_values = self.ds.select("entity", ["name", "id"], [name, id])
         if len(out_values) > 0:
             return out_values
         else:

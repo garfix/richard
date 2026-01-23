@@ -127,22 +127,25 @@ def convert_tuple_results_to_bindings(predicate: str, results: list, binding: di
 
         # go through all arguments
         for i, arg in enumerate(input):
+            if result[i] is None:
+                continue
             # variable?
-            if isinstance(arg, Variable):
-                # if the variable was bound already, no need to assign it
-                # also no need to check for conflict, because the type may be different and that's ok
-                if arg.name not in binding:
-                    # check for conflict with previous same variable
-                    if arg.name in checked_result and checked_result[arg.name] != result[i]:
-                        conflict = True
-                        break
-                    # extend the binding
-                    checked_result[arg.name] = result[i]
-            elif result[i] is not None:
+            elif isinstance(arg, Variable):
+                # if the variable was bound in the input binding, check if the result matches its value
+                if arg.name in binding:
+                    if binding[arg.name] != result[i]:
+                        raise Exception(f"Result of '{predicate}' doesn't match variable '{arg.name}': {binding[arg.name]} != {result[i]}")
+                # check for conflict with previous same variable
+                if arg.name in checked_result and checked_result[arg.name] != result[i]:
+                    conflict = True
+                    break
+                # extend the binding
+                checked_result[arg.name] = result[i]
+            else:
                 # check if the result matches the given input
                 if arg != result[i]:
                     # indicates an error in the relation
-                    raise Exception(f"Result doesn't match requirement for '{predicate}': {input} => {result}")
+                    raise Exception(f"Result of '{predicate}' doesn't match input value: {input} => {result}")
 
         if not conflict:
             checked_results.append(checked_result)
