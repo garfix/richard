@@ -12,7 +12,7 @@ class PlanAnalyzerDialogContext(SomeModule):
         super().__init__()
         self.data_source = SimpleFrameDataSource()
 
-        self.add_relation(Relation("goal", arguments=["event_id"]))
+        self.add_relation(Relation("goal", formal_parameters=["event_id"]))
 
 
     def clear(self):

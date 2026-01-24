@@ -28,8 +28,8 @@ class SqliteMemoryModule(SomeModule):
 
 
     def query(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.data_source.select(context.relation.predicate, context.relation.arguments, values)
+        return self.data_source.select(context.relation.predicate, context.relation.formal_parameters, values)
 
 
     def write(self, values: list, context: ExecutionContext):
-        self.data_source.insert(context.relation.predicate, context.relation.arguments, values)
+        self.data_source.insert(context.relation.predicate, context.relation.formal_parameters, values)

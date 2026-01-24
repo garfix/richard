@@ -15,9 +15,9 @@ class TestModule(SomeModule):
         self.add_relation(Relation("goal", query_function=self.query, write_function=self.write))
 
 
-    def query(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.data_source.select(context.relation.predicate, context.relation.arguments, values)
+    def query(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.data_source.select(context.relation.predicate, context.relation.formal_parameters, arguments)
 
 
-    def write(self, values: list, context: ExecutionContext):
-        self.data_source.insert(context.relation.predicate, context.relation.arguments, values)
+    def write(self, arguments: list, context: ExecutionContext):
+        self.data_source.insert(context.relation.predicate, context.relation.formal_parameters, arguments)

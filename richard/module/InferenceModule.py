@@ -41,7 +41,7 @@ class InferenceModule(SomeModule):
                 self.insert_rule(rule)
 
 
-    def handle_rule(self, values: list, context: ExecutionContext) -> list[list]:
+    def handle_rule(self, arguments: list, context: ExecutionContext) -> list[list]:
         results = []
         for rule in self.rules[context.relation.predicate]:
             results.extend(self.solve_rule(rule, context.formal_parameters, context.solver, context.binding))
@@ -114,8 +114,8 @@ class InferenceModule(SomeModule):
 
 
     # ('learn_rule', head, [body-atoms])
-    def learn_rule(self, values: list, context: ExecutionContext) -> list[list]:
-        head, body = values
+    def learn_rule(self, arguments: list, context: ExecutionContext) -> list[list]:
+        head, body = arguments
 
         if not isinstance(head, tuple):
             raise Exception("The head of a rule must be a single atom: " + str(head))

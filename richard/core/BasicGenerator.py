@@ -29,10 +29,10 @@ class BasicGenerator(SomeGenerator):
         return output
 
 
-    def generate_node(self, used_rules: list[int], antecedent_cat: str, antecedent_values: list[any], optional: bool) -> list[str]:
+    def generate_node(self, used_rules: list[int], antecedent_cat: str, antecedent_arguments: list[any], optional: bool) -> list[str]:
 
         words = []
-        rule, binding, found = self.find_rule(used_rules, antecedent_cat, antecedent_values)
+        rule, binding, found = self.find_rule(used_rules, antecedent_cat, antecedent_arguments)
 
         if found:
 
@@ -50,7 +50,7 @@ class BasicGenerator(SomeGenerator):
 
         else:
             if not optional:
-                raise Exception(f"No rule found for {antecedent_cat}: {antecedent_values}")
+                raise Exception(f"No rule found for {antecedent_cat}: {antecedent_arguments}")
 
         # combine the child results
         all_text = list(filter(lambda word: isinstance(word, str), words))
@@ -90,13 +90,13 @@ class BasicGenerator(SomeGenerator):
         return consequent_values
 
 
-    def find_rule(self, used_rules: list, antecedent_cat: str, antecedent_values: list[any]):
+    def find_rule(self, used_rules: list, antecedent_cat: str, antecedent_arguments: list[any]):
 
         found = False
         result_rule = None
         binding = {}
 
-        rules = self.grammar.find_rules(antecedent_cat, len(antecedent_values))
+        rules = self.grammar.find_rules(antecedent_cat, len(antecedent_arguments))
 
         for rule in rules:
 
@@ -106,7 +106,7 @@ class BasicGenerator(SomeGenerator):
 
             # rule_antecedent_variable = rule.antecedent.arguments[0]
             binding = {}
-            for rule_antecedent_variable, antecedent_value in zip(rule.antecedent.arguments, antecedent_values):
+            for rule_antecedent_variable, antecedent_value in zip(rule.antecedent.arguments, antecedent_arguments):
                 binding[rule_antecedent_variable] = antecedent_value
 
             # start the binding with the antecedent variable (in the example: E1)
@@ -138,17 +138,17 @@ class BasicGenerator(SomeGenerator):
         return result_rule, binding, found
 
 
-    def generate_single_consequent(self, rule: GrammarRule, used_rules: list[str], category: str, values: list[any], position_type: str, optional: bool) -> list[str]:
+    def generate_single_consequent(self, rule: GrammarRule, used_rules: list[str], category: str, arguments: list[any], position_type: str, optional: bool) -> list[str]:
 
         if position_type == POS_TYPE_WORD_FORM:
             result = category
         elif category == CATEGORY_VALUE:
-            result = values[0]
+            result = arguments[0]
         elif category == CATEGORY_TEXT:
-            result = str(values[0])
+            result = str(arguments[0])
         elif category == CATEGORY_FORMAT:
-            result = rule.exec(*values)
+            result = rule.exec(*arguments)
         else:
-            result = self.generate_node(used_rules, category, values, optional)
+            result = self.generate_node(used_rules, category, arguments, optional)
 
         return result

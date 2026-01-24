@@ -19,8 +19,8 @@ class GrammarModule(SomeModule):
 
 
     # ('learn_grammar_rule', simple_rule)
-    def learn_grammar_rule(self, values: list, context: ExecutionContext) -> list[list]:
-        simple_rule = values[0]
+    def learn_grammar_rule(self, arguments: list, context: ExecutionContext) -> list[list]:
+        simple_rule = arguments[0]
 
         rule = SimpleGrammarRulesParser().parse_simple_rule(simple_rule)
         self.grammar.add_rule(rule)

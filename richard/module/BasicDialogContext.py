@@ -10,17 +10,17 @@ class BasicDialogContext(SqliteMemoryModule):
 
         self.clear()
 
-        self.add_relation(Relation("dialog_isa", arguments=["entity", "type"]))
-        self.add_relation(Relation("context", arguments=["name"]))
+        self.add_relation(Relation("dialog_isa", formal_parameters=["entity", "type"]))
+        self.add_relation(Relation("context", formal_parameters=["name"]))
 
-        self.add_relation(Relation("with_context", arguments=["name", "body"], query_function=self.with_context))
-        self.add_relation(Relation("start_context", arguments=["name"], query_function=self.start_context))
-        self.add_relation(Relation("end_context", arguments=["name"], query_function=self.end_context))
+        self.add_relation(Relation("with_context", formal_parameters=["name", "body"], query_function=self.with_context))
+        self.add_relation(Relation("start_context", formal_parameters=["name"], query_function=self.start_context))
+        self.add_relation(Relation("end_context", formal_parameters=["name"], query_function=self.end_context))
 
 
-    def with_context(self, values: list, context: ExecutionContext) -> list[list]:
-        name = values[0]
-        body = values[1]
+    def with_context(self, arguments: list, context: ExecutionContext) -> list[list]:
+        name = arguments[0]
+        body = arguments[1]
         self.data_source.insert('context', ['name'], [name])
         context.solver.solve(body, context.binding)
         self.data_source.delete('context', ['name'], [name])
@@ -28,16 +28,16 @@ class BasicDialogContext(SqliteMemoryModule):
             [None, None]
         ]
 
-    def start_context(self, values: list, context: ExecutionContext) -> list[list]:
-        name = values[0]
+    def start_context(self, arguments: list, context: ExecutionContext) -> list[list]:
+        name = arguments[0]
         self.data_source.insert('context', ['name'], [name])
         return [
             [None]
         ]
 
 
-    def end_context(self, values: list, context: ExecutionContext) -> list[list]:
-        name = values[0]
+    def end_context(self, arguments: list, context: ExecutionContext) -> list[list]:
+        name = arguments[0]
         self.data_source.delete('context', ['name'], [name])
         return [
             [None]

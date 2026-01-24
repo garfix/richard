@@ -60,9 +60,9 @@ class PAMModule(SomeModule):
         self.add_relation(Relation("person", query_function=self.simple_entity))
 
 
-    def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
-        name = values[0].lower()
-        id = values[1]
+    def resolve_name(self, arguments: list, context: ExecutionContext) -> list[list]:
+        name = arguments[0].lower()
+        id = arguments[1]
 
         out_values = self.ds.select("entity", ["name", "id"], [name, None])
 
@@ -79,5 +79,5 @@ class PAMModule(SomeModule):
             ]
 
 
-    def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select(context.relation.predicate, ["id"], values)
+    def simple_entity(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select(context.relation.predicate, ["id"], arguments)

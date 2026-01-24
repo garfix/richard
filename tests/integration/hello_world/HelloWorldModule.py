@@ -15,5 +15,5 @@ class HelloWorldModule(SomeModule):
         self.add_relation(Relation("river", query_function=self.simple_entity))
 
 
-    def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select(context.relation.predicate, ["id"], values)
+    def simple_entity(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select(context.relation.predicate, ["id"], arguments)

@@ -39,10 +39,10 @@ class CoreModule(SomeModule):
 
 
     # ('equals', E1, E2)
-    def equals(self, values: list, context: ExecutionContext) -> list[list]:
+    def equals(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        e1 = values[0]
-        e2 = values[1]
+        e1 = arguments[0]
+        e2 = arguments[1]
 
         if isinstance(e1, Variable):
             if isinstance(e2, Variable):
@@ -60,10 +60,10 @@ class CoreModule(SomeModule):
 
     # ('greater_than', E1, E2)
     # E1 and E2 must be bound
-    def greater_than(self, values: list, context: ExecutionContext) -> list[list]:
+    def greater_than(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        e1 = values[0]
-        e2 = values[1]
+        e1 = arguments[0]
+        e2 = arguments[1]
 
         if isinstance(e1, Variable):
             raise Exception("> first argument is unbound")
@@ -71,16 +71,16 @@ class CoreModule(SomeModule):
             raise Exception("> second argument is unbound")
 
         if e1 > e2:
-            return [values]
+            return [arguments]
         return []
 
 
     # ('less_than', E1, E2)
     # E1 and E2 must be bound
-    def less_than(self, values: list, context: ExecutionContext) -> list[list]:
+    def less_than(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        e1 = values[0]
-        e2 = values[1]
+        e1 = arguments[0]
+        e2 = arguments[1]
 
         if isinstance(e1, Variable):
             raise Exception("< first argument is unbound")
@@ -88,16 +88,16 @@ class CoreModule(SomeModule):
             raise Exception("< second argument is unbound")
 
         if e1 < e2:
-            return [values]
+            return [arguments]
         return []
 
 
     # ('multiply', E1, E2, E3)
     # E3 is set to E1 * E2
-    def multiply(self, values: list, context: ExecutionContext) -> list[list]:
+    def multiply(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        e1 = values[0]
-        e2 = values[1]
+        e1 = arguments[0]
+        e2 = arguments[1]
         e3 = e1 * e2
 
         if isinstance(e1, Variable):
@@ -112,9 +112,9 @@ class CoreModule(SomeModule):
 
     # ('count', E1, [body-atoms])
     # returns the number of results of body-atoms in E1
-    def count(self, values: list, context: ExecutionContext) -> list[list]:
+    def count(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        body = values[1]
+        body = arguments[1]
 
         results = context.solver.solve(body, context.binding)
         count = len(results)
@@ -126,10 +126,10 @@ class CoreModule(SomeModule):
 
     # ('sum', E1, E2, [body-atoms])
     # returns the sum of results of the values of E2 in body-atoms in E1
-    def sum(self, values: list, context: ExecutionContext) -> list[list]:
+    def sum(self, arguments: list, context: ExecutionContext) -> list[list]:
 
         element_var = context.formal_parameters[1]
-        body = values[2]
+        body = arguments[2]
 
         results = context.solver.solve(body, context.binding)
         s = 0
@@ -143,11 +143,11 @@ class CoreModule(SomeModule):
 
     # ('arg_min', E1, E2, [body-atoms])
     # returns the minimum value of results of the values of E2 in body-atoms in E1
-    def arg_min(self, values: list, context: ExecutionContext) -> list[list]:
+    def arg_min(self, arguments: list, context: ExecutionContext) -> list[list]:
 
         min_var = context.formal_parameters[0]
         element_var = context.formal_parameters[1]
-        body = values[2]
+        body = arguments[2]
 
         results = context.solver.solve(body, context.binding)
 
@@ -168,11 +168,11 @@ class CoreModule(SomeModule):
 
     # ('arg_max', E1, E2, [body-atoms])
     # returns the maximum value of results of the values of E2 in body-atoms in E1
-    def arg_max(self, values: list, context: ExecutionContext) -> list[list]:
+    def arg_max(self, arguments: list, context: ExecutionContext) -> list[list]:
 
         max_var = context.formal_parameters[0]
         element_var = context.formal_parameters[1]
-        body = values[2]
+        body = arguments[2]
 
         results = context.solver.solve(body, context.binding)
 
@@ -193,10 +193,10 @@ class CoreModule(SomeModule):
 
     # ('avg', E1, E2, [body-atoms])
     # returns the average of results of the values of E2 in body-atoms in E1
-    def avg(self, values: list, context: ExecutionContext) -> list[list]:
+    def avg(self, arguments: list, context: ExecutionContext) -> list[list]:
 
         element_var = context.formal_parameters[1]
-        body = values[2]
+        body = arguments[2]
 
         results = context.solver.solve(body, context.binding)
 
@@ -218,10 +218,10 @@ class CoreModule(SomeModule):
 
     # ('percentage', E1, [nominator-atoms], [denominator-atoms])
     # returns the percentage of nominator-atoms in denominator-atoms
-    def percentage(self, values: list, context: ExecutionContext) -> list[list]:
+    def percentage(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        nominator = values[1]
-        denominator = values[2]
+        nominator = arguments[1]
+        denominator = arguments[2]
 
         nominator_results = context.solver.solve(nominator, context.binding)
         denominator_results = context.solver.solve(denominator, context.binding)
@@ -239,9 +239,9 @@ class CoreModule(SomeModule):
     # ('not', [body-atoms])
     # if body-atoms returns values, not returns an empty list
     # otherwise, it returns a list with a single value: True
-    def not_function(self, values: list, context: ExecutionContext) -> list[list]:
+    def not_function(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        body = values[0]
+        body = arguments[0]
 
         results = context.solver.solve(body, context.binding)
         # print(values, context.binding, results)
@@ -256,17 +256,17 @@ class CoreModule(SomeModule):
 
 
     # ('let', E1, 5)
-    def let(self, values: list, context: ExecutionContext) -> list[list]:
+    def let(self, arguments: list, context: ExecutionContext) -> list[list]:
 
         return [
-            [values[1], values[1]]
+            [arguments[1], arguments[1]]
         ]
 
 
     # ('det_equals', [body-atoms], E2)
-    def determiner_equals(self, values: list, context: ExecutionContext) -> list[list]:
+    def determiner_equals(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        body, number = values
+        body, number = arguments
 
         results = context.solver.solve(body, context.binding)
         count = len(results)
@@ -280,9 +280,9 @@ class CoreModule(SomeModule):
 
 
     # ('det_greater_than', [body-atoms], E2)
-    def determiner_greater_than(self, values: list, context: ExecutionContext) -> list[list]:
+    def determiner_greater_than(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        body, number = values
+        body, number = arguments
 
         results = context.solver.solve(body, context.binding)
         count = len(results)
@@ -296,9 +296,9 @@ class CoreModule(SomeModule):
 
 
     # ('det_less_than', [body-atoms], E2)
-    def determiner_less_than(self, values: list, context: ExecutionContext) -> list[list]:
+    def determiner_less_than(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        body, number = values
+        body, number = arguments
 
         results = context.solver.solve(body, context.binding)
         count = len(results)
@@ -312,11 +312,11 @@ class CoreModule(SomeModule):
 
 
     # ('all', E1, [range-atoms], [body-atoms])
-    def determiner_all(self, values: list, context: ExecutionContext) -> list[list]:
+    def determiner_all(self, arguments: list, context: ExecutionContext) -> list[list]:
 
         quant_var = context.formal_parameters[0]
-        range = values[1]
-        body = values[2]
+        range = arguments[1]
+        body = arguments[2]
 
         entities = OrderedSet([binding[quant_var.name] for binding in context.solver.solve(range, context.binding)])
 
@@ -341,9 +341,9 @@ class CoreModule(SomeModule):
 
 
     # ('none', [body-atoms])
-    def determiner_none(self, values: list, context: ExecutionContext) -> list[list]:
+    def determiner_none(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        body = values[0]
+        body = arguments[0]
 
         results = context.solver.solve(body, context.binding)
         count = len(results)
@@ -358,8 +358,8 @@ class CoreModule(SomeModule):
 
     # ('scoped', [body-atoms])
     # a wrapper around a possibly variable list of atoms
-    def scoped(self, values: list, context: ExecutionContext) -> list[list]:
-        body = values[0]
+    def scoped(self, arguments: list, context: ExecutionContext) -> list[list]:
+        body = arguments[0]
 
         results = context.solver.solve(body, context.binding)
         count = len(results)
@@ -375,9 +375,9 @@ class CoreModule(SomeModule):
 
 
     # ('store', [body-atoms])
-    def store(self, values: list, context: ExecutionContext) -> list[list]:
+    def store(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        unbound_atoms = values[0]
+        unbound_atoms = arguments[0]
 
         if not isinstance(unbound_atoms, list):
             raise Exception(f"'store' expects a list of atoms; given: {unbound_atoms}")
@@ -392,10 +392,10 @@ class CoreModule(SomeModule):
 
     # ('$unification', source-value, target-value)
     # for example: ('$unification', [('just_left_of, 'sofa', 'table')], [('just_left_of', E1, E2)]
-    def unification(self, values: list, context: ExecutionContext) -> BindingResult:
+    def unification(self, arguments: list, context: ExecutionContext) -> BindingResult:
 
-        bound = bind_variables(values[0], context.binding)
-        free = bind_variables(values[1], context.binding)
+        bound = bind_variables(arguments[0], context.binding)
+        free = bind_variables(arguments[1], context.binding)
         binding = unification(bound, free)
         return BindingResult([] if binding is None else [binding])
 
@@ -405,10 +405,10 @@ class CoreModule(SomeModule):
     # Creates a list of all values of variable found by running body-atoms
     # There can be a list of variables, in which case a list of combinations is returned
     # Returned value is placed in result-variable
-    def find_all(self, values: list, context: ExecutionContext) -> list[list]:
+    def find_all(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        variable = values[0]
-        body = values[1]
+        variable = arguments[0]
+        body = arguments[1]
         is_list = isinstance(variable, list)
 
         result = []
@@ -442,9 +442,9 @@ class CoreModule(SomeModule):
     # Useful if you know there's only one result and you're don't want a list
     # There can be a list of variables, in which case a list of combinations is returned
     # Returned value is placed in result-variable
-    def find_one(self, values: list, context: ExecutionContext) -> list[list]:
+    def find_one(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        results = self.find_all(values, context)
+        results = self.find_all(arguments, context)
         if len(results[0][2]) == 0:
             return []
         else:

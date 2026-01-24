@@ -12,7 +12,7 @@ class TestDialogContext(SqliteMemoryModule):
         cursor.execute("CREATE TABLE continent (entity TEXT)")
         cursor.execute("CREATE TABLE concept (type TEXT)")
 
-        self.add_relation(Relation("isa", arguments=["entity", "type"]))
-        self.add_relation(Relation("continent", arguments=["entity"]))
-        self.add_relation(Relation("concept", arguments=["type"]))
+        self.add_relation(Relation("isa", formal_parameters=["entity", "type"]))
+        self.add_relation(Relation("continent", formal_parameters=["entity"]))
+        self.add_relation(Relation("concept", formal_parameters=["type"]))
 

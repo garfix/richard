@@ -37,34 +37,34 @@ class Chat80Module(SomeModule):
         self.add_relation(Relation("has_population", query_function=self.has_population, relation_size=MEDIUM, argument_sizes=[MEDIUM, IGNORED]))
 
 
-    def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select(context.relation.predicate, ["id"], values)
+    def simple_entity(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select(context.relation.predicate, ["id"], arguments)
 
 
-    def capital(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select("country", ["capital"], values)
+    def capital(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select("country", ["capital"], arguments)
 
 
-    def borders(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select("borders", ["country_id1", "country_id2"], values)
-        out_values.extend(self.ds.select("borders", ["country_id2", "country_id1"], values))
+    def borders(self, arguments: list, context: ExecutionContext) -> list[list]:
+        out_values = self.ds.select("borders", ["country_id1", "country_id2"], arguments)
+        out_values.extend(self.ds.select("borders", ["country_id2", "country_id1"], arguments))
         return out_values
 
 
-    def of(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select("country", ["capital", "id"], values)
+    def of(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select("country", ["capital", "id"], arguments)
 
 
-    def size_of(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select("country", ["id", "area_div_1000"], values)
+    def size_of(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select("country", ["id", "area_div_1000"], arguments)
 
 
-    def where(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select("country", ["id", "region"], values)
+    def where(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select("country", ["id", "region"], arguments)
 
 
-    def some_continent(self, values: list, context: ExecutionContext) -> list[list]:
-        country_id = values[0]
+    def some_continent(self, arguments: list, context: ExecutionContext) -> list[list]:
+        country_id = arguments[0]
         table = "country"
         columns = ["id", "region"]
         regions = {
@@ -83,14 +83,14 @@ class Chat80Module(SomeModule):
         return out_values
 
 
-    def flows_through(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select("contains", ["part", "whole"], values)
+    def flows_through(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select("contains", ["part", "whole"], arguments)
 
 
-    def south_of(self, values: list, context: ExecutionContext) -> list[list]:
+    def south_of(self, arguments: list, context: ExecutionContext) -> list[list]:
         # this implementation could be done in SQL like "SELECT id FROM country WHERE lat < (SELECT lat FROM country WHERE id = %s)"
-        id1 = values[0]
-        id2 = values[1]
+        id1 = arguments[0]
+        id2 = arguments[1]
         lat1 = None
         lat2 = None
         latitudes = self.ds.select('country', ['id', 'lat'], [Variable("E1"), Variable("E2")])
@@ -113,20 +113,20 @@ class Chat80Module(SomeModule):
         return out_values
 
 
-    def in_function(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select("contains", ["part", "whole"], values)
+    def in_function(self, arguments: list, context: ExecutionContext) -> list[list]:
+        out_values = self.ds.select("contains", ["part", "whole"], arguments)
 
-        part = values[0]
-        whole = values[1]
+        part = arguments[0]
+        whole = arguments[1]
         recurse = context.solver.solve([("contains", whole, E1), ("in", part, E1)], context.binding)
         out_values.extend(recurse)
         return out_values
 
 
-    def flows_from_to(self, values: list, context: ExecutionContext) -> list[list]:
-        query_river = values[0]
-        query_from = values[1]
-        query_to = values[2]
+    def flows_from_to(self, arguments: list, context: ExecutionContext) -> list[list]:
+        query_river = arguments[0]
+        query_from = arguments[1]
+        query_to = arguments[2]
         flows = self.ds.select('river', ['id', 'flows_through'], [Variable("E1"), Variable("E2")])
         out_values = []
         for id, flows_through in flows:
@@ -142,11 +142,11 @@ class Chat80Module(SomeModule):
         return out_values
 
 
-    def contains(self, values: list, context: ExecutionContext) -> list[list]:
-        return self.ds.select("contains", ["whole", "part"], values)
+    def contains(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select("contains", ["whole", "part"], arguments)
 
 
-    def has_population(self, values: list, context: ExecutionContext) -> list[list]:
+    def has_population(self, arguments: list, context: ExecutionContext) -> list[list]:
         term = context.formal_parameters[0]
         type = ""
         if isinstance(term, Variable):
@@ -155,16 +155,16 @@ class Chat80Module(SomeModule):
                 type = isa["Type"]
 
         if type == 'city':
-            out_values = self.ds.select("city", ["id", "population"], values)
+            out_values = self.ds.select("city", ["id", "population"], arguments)
             out_values = [[row[0], row[1] * 1000] for row in out_values]
         else:
-            out_values = self.ds.select("country", ["id", "population"], values)
+            out_values = self.ds.select("country", ["id", "population"], arguments)
             out_values = [[row[0], row[1] * 1000000] for row in out_values]
         return out_values
 
 
-    def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
-        name = values[0].lower()
+    def resolve_name(self, arguments: list, context: ExecutionContext) -> list[list]:
+        name = arguments[0].lower()
 
         for type in ["country", "city", "sea", "river", "ocean", "continent"]:
             out_values = self.ds.select(type, ["id", "id"], [name, Variable("E1")])

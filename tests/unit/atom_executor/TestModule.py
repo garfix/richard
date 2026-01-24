@@ -10,8 +10,8 @@ class TestModule(SomeModule):
         self.add_relation(Relation("resolve_name", query_function=self.resolve_name))
 
 
-    def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
-        name = values[0].lower()
+    def resolve_name(self, arguments: list, context: ExecutionContext) -> list[list]:
+        name = arguments[0].lower()
 
         context.solver.solve([('store', [('output_type', 'name_not_found'), ('output_name_not_found', name)])])
         return []

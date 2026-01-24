@@ -28,18 +28,18 @@ class TestModule(SomeModule):
         self.add_relation(Relation("return_iterator", query_function=self.return_iterator))
 
 
-    def simple_entity(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select(context.relation.predicate, ['id'], values)
+    def simple_entity(self, arguments: list, context: ExecutionContext) -> list[list]:
+        out_values = self.ds.select(context.relation.predicate, ['id'], arguments)
         return out_values
 
 
-    def contains(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select("contains", ['country', 'river'], values)
+    def contains(self, arguments: list, context: ExecutionContext) -> list[list]:
+        out_values = self.ds.select("contains", ['country', 'river'], arguments)
         return out_values
 
 
-    def number_of(self, values: list, context: ExecutionContext) -> list[list]:
-        if values[1] == 2:
+    def number_of(self, arguments: list, context: ExecutionContext) -> list[list]:
+        if arguments[1] == 2:
             out_values = [
                 [None, 2]
             ]
@@ -49,7 +49,7 @@ class TestModule(SomeModule):
         return out_values
 
 
-    def return_iterator(self, values: list, context: ExecutionContext) -> list[list]:
+    def return_iterator(self, arguments: list, context: ExecutionContext) -> list[list]:
         return TestResultIterator([None, 2], 100000000)
 
 

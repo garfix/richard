@@ -23,17 +23,17 @@ class WikidataModule(SomeModule):
         self.add_relation(Relation("wikidata_person", query_function=self.wikidata_person, relation_size=INFINITE, argument_sizes=[INFINITE, INFINITE]))
 
 
-    def wikidata_person(self, values: list, context: ExecutionContext) -> list[list]:
-        person = values[0]
+    def wikidata_person(self, arguments: list, context: ExecutionContext) -> list[list]:
+        person = arguments[0]
 
         # person isa human
         out_values = self.ds.select('wdt:P31', [ID, CONSTANT], [person, 'wd:Q5'])
         return [[None] for value in out_values]
 
 
-    def wikidata_label(self, values: list, context: ExecutionContext) -> list[list]:
-        person = values[0]
-        name = values[1]
+    def wikidata_label(self, arguments: list, context: ExecutionContext) -> list[list]:
+        person = arguments[0]
+        name = arguments[1]
 
         # try with given case
         out_values = self.ds.select('rdfs:label', [ID, TEXT], [person, name])
@@ -47,14 +47,14 @@ class WikidataModule(SomeModule):
         raise Exception("Name not found: " + name)
 
 
-    def wikidata_place_of_birth(self, values: list, context: ExecutionContext) -> list[list]:
-        person = values[0]
-        place = values[1]
+    def wikidata_place_of_birth(self, arguments: list, context: ExecutionContext) -> list[list]:
+        person = arguments[0]
+        place = arguments[1]
 
         if isinstance(person, Variable):
-            raise Exception("Person ID is required: " + str(values))
+            raise Exception("Person ID is required: " + str(arguments))
         if not isinstance(place, Variable):
-            raise Exception("Place should be None: " + str(values))
+            raise Exception("Place should be None: " + str(arguments))
 
         out_values = self.ds.select('wdt:P19', [ID, ID], [person, place])
         return out_values

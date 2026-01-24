@@ -15,9 +15,9 @@ class PlanAnalyzerModule(SomeModule):
 
 
     # ('analyze_plans', [body-atoms])
-    def analyze_plans(self, values: list, context: ExecutionContext) -> list[list]:
+    def analyze_plans(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        atoms = values[0]
+        atoms = arguments[0]
 
         bindings = context.solver.solve([("recognize_plan", atoms)], context.binding)
 

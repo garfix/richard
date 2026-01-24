@@ -8,12 +8,12 @@ class Relation:
     argument_sizes: list[str]
     query_function: callable
     write_function: callable
-    arguments: list[str]
+    formal_parameters: list[str]
 
 
     def __init__(self,
         predicate: str,
-        arguments: list[str] = None,
+        formal_parameters: list[str] = None,
         query_function: callable = None,
         write_function: callable = None,
         relation_size: str = IGNORED,
@@ -27,4 +27,4 @@ class Relation:
         self.relation_size = relation_size
         self.argument_sizes = argument_sizes
         self.write_function = write_function
-        self.arguments = arguments
+        self.formal_parameters = formal_parameters

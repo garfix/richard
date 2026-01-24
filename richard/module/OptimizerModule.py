@@ -18,8 +18,8 @@ class OptimizerModule(SomeModule):
 
     # ('optimize_frontize', SemIn, SemOut)
     # places `resolve_name` atoms up front
-    def optimize_frontize(self, values: list, context: ExecutionContext) -> list[list]:
-        sem_in = bind_variables(values[0], context.binding)
+    def optimize_frontize(self, arguments: list, context: ExecutionContext) -> list[list]:
+        sem_in = bind_variables(arguments[0], context.binding)
         sem_out = FrontResolveName().sort(sem_in)
         return [
             [None, sem_out]
@@ -28,8 +28,8 @@ class OptimizerModule(SomeModule):
 
     # ('optimize_isolate', SemIn, SemOut)
     # performs David H.D. Warren's optimization
-    def optimize_isolate(self, values: list, context: ExecutionContext) -> list[list]:
-        sem_in = bind_variables(values[0], context.binding)
+    def optimize_isolate(self, arguments: list, context: ExecutionContext) -> list[list]:
+        sem_in = bind_variables(arguments[0], context.binding)
         sem_out = IsolateIndependentParts().isolate(sem_in, context.sentence.root_variables)
         return [
             [None, sem_out]
@@ -37,8 +37,8 @@ class OptimizerModule(SomeModule):
 
     # ('optimize_cost_sort', SemIn, SemOut)
     # sorts atoms by decreasing cost
-    def optimize_cost_sort(self, values: list, context: ExecutionContext) -> list[list]:
-        sem_in = bind_variables(values[0], context.binding)
+    def optimize_cost_sort(self, arguments: list, context: ExecutionContext) -> list[list]:
+        sem_in = bind_variables(arguments[0], context.binding)
         sem_out = SortByCost().sort(sem_in, context.solver, context.model)
         return [
             [None, sem_out]

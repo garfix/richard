@@ -31,18 +31,18 @@ class TestModule(SomeModule):
         self.add_relation(Relation("have", query_function=self.have))
 
 
-    def parent(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select("has_child", ["parent"], values)
+    def parent(self, arguments: list, context: ExecutionContext) -> list[list]:
+        out_values = self.ds.select("has_child", ["parent"], arguments)
         return out_values
 
 
-    def child(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select("has_child", ["child"], values)
+    def child(self, arguments: list, context: ExecutionContext) -> list[list]:
+        out_values = self.ds.select("has_child", ["child"], arguments)
         return out_values
 
 
-    def have(self, values: list, context: ExecutionContext) -> list[list]:
-        out_values = self.ds.select("has_child", ["parent", "child"], values)
+    def have(self, arguments: list, context: ExecutionContext) -> list[list]:
+        out_values = self.ds.select("has_child", ["parent", "child"], arguments)
         return out_values
 
 

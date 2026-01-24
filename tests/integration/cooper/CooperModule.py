@@ -16,26 +16,26 @@ class CooperModule(SomeModule):
         self.add_relation(Relation("resolve_name", query_function=self.resolve_name))
         self.add_relation(Relation("not_3v", query_function=self.not_3v))
         self.add_relation(Relation("and_3v", query_function=self.and_3v))
-        self.add_relation(Relation("metal", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("element", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("compound", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("nonmetal", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("white", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("dark_gray", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("brittle", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("oxide", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("sulfide", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("chloride", query_function=self.common_query, write_function=self.common_write, arguments=['entity', 'truth']))
-        self.add_relation(Relation("fuel", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
-        self.add_relation(Relation("burns", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
-        self.add_relation(Relation("burns_rapidly", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
-        self.add_relation(Relation("combustable", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
-        self.add_relation(Relation("gasoline", query_function=self.common_query, write_function=self.common_write,  arguments=['entity', 'truth']))
+        self.add_relation(Relation("metal", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("element", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("compound", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("nonmetal", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("white", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("dark_gray", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("brittle", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("oxide", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("sulfide", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("chloride", query_function=self.common_query, write_function=self.common_write, formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("fuel", query_function=self.common_query, write_function=self.common_write,  formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("burns", query_function=self.common_query, write_function=self.common_write,  formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("burns_rapidly", query_function=self.common_query, write_function=self.common_write,  formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("combustable", query_function=self.common_query, write_function=self.common_write,  formal_parameters=['entity', 'truth']))
+        self.add_relation(Relation("gasoline", query_function=self.common_query, write_function=self.common_write,  formal_parameters=['entity', 'truth']))
 
 
-    def resolve_name(self, values: list, context: ExecutionContext) -> list[list]:
-        name = values[0].lower()
-        id = values[1]
+    def resolve_name(self, arguments: list, context: ExecutionContext) -> list[list]:
+        name = arguments[0].lower()
+        id = arguments[1]
 
         out_values = self.ds.select("entity", ["name", "id"], [name, id])
         if len(out_values) > 0:
@@ -52,9 +52,9 @@ class CooperModule(SomeModule):
 
 
     # ('not_3v', in, out)
-    def not_3v(self, values: list, context: ExecutionContext) -> list[list]:
+    def not_3v(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        value = values[0]
+        value = arguments[0]
 
         if value == 'true':
             return [
@@ -71,9 +71,9 @@ class CooperModule(SomeModule):
 
 
     # ('and_3v', in1, in2, out)
-    def and_3v(self, values: list, context: ExecutionContext) -> list[list]:
+    def and_3v(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        in1, in2, _ = values
+        in1, in2, _ = arguments
 
         if in1 == 'true' and in2 == 'false':
             return [[None, None, 'false']]
@@ -97,14 +97,14 @@ class CooperModule(SomeModule):
             return [[None, None, 'unknown']]
 
 
-    def common_query(self, values: list, context: ExecutionContext) -> list[list]:
-        results = self.ds.select(context.relation.predicate, context.relation.arguments, values)
+    def common_query(self, arguments: list, context: ExecutionContext) -> list[list]:
+        results = self.ds.select(context.relation.predicate, context.relation.formal_parameters, arguments)
         if len(results) > 0:
             return results
         else:
             return []
 
 
-    def common_write(self, values: list, context: ExecutionContext) -> list[list]:
-        self.ds.insert(context.relation.predicate, context.relation.arguments, values)
+    def common_write(self, arguments: list, context: ExecutionContext) -> list[list]:
+        self.ds.insert(context.relation.predicate, context.relation.formal_parameters, arguments)
 

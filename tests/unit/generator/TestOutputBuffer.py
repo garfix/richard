@@ -9,6 +9,6 @@ class TestOutputBuffer(BasicOutputBuffer):
 
         self.clear()
 
-        self.add_relation(Relation("output_predicate", arguments=["predication", "predicate"]))
-        self.add_relation(Relation("output_subject", arguments=["predication", "subject"]))
-        self.add_relation(Relation("output_object", arguments=["predication", "object"]))
+        self.add_relation(Relation("output_predicate", formal_parameters=["predication", "predicate"]))
+        self.add_relation(Relation("output_subject", formal_parameters=["predication", "subject"]))
+        self.add_relation(Relation("output_object", formal_parameters=["predication", "object"]))

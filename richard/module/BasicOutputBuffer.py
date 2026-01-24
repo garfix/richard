@@ -8,13 +8,13 @@ class BasicOutputBuffer(SqliteMemoryModule):
     def __init__(self) -> None:
         super().__init__()
 
-        self.add_relation(Relation("output_type", arguments=["type"]))
-        self.add_relation(Relation("output_value", arguments=["value"]))
-        self.add_relation(Relation("output_value_with_unit", arguments=["value", "unit"]))
-        self.add_relation(Relation("output_table", arguments=["results", "units"]))
-        self.add_relation(Relation("output_list", arguments=["elements"]))
-        self.add_relation(Relation("output_name_not_found", arguments=["name"]))
-        self.add_relation(Relation("output_unknown_word", arguments=["word"]))
+        self.add_relation(Relation("output_type", formal_parameters=["type"]))
+        self.add_relation(Relation("output_value", formal_parameters=["value"]))
+        self.add_relation(Relation("output_value_with_unit", formal_parameters=["value", "unit"]))
+        self.add_relation(Relation("output_table", formal_parameters=["results", "units"]))
+        self.add_relation(Relation("output_list", formal_parameters=["elements"]))
+        self.add_relation(Relation("output_name_not_found", formal_parameters=["name"]))
+        self.add_relation(Relation("output_unknown_word", formal_parameters=["word"]))
 
 
     def clear(self):
