@@ -44,7 +44,7 @@ class Solver(SomeSolver):
 
     def solve_single(self, atom: tuple, binding: dict):
         predicate = atom[0]
-        arguments = atom[1:]
+        parameters = atom[1:]
 
         # predicate stats
         if self.log_stats:
@@ -55,23 +55,23 @@ class Solver(SomeSolver):
         if predicate == DISJUNCTION:
             return self.solve_disjunction(atom[1], binding)
 
-        values = self.find_relation_values(predicate, arguments, binding)
+        out_values = self.find_relation_values(predicate, parameters, binding)
 
-        if isinstance(values, ResultIterator):
-            return values
+        if isinstance(out_values, ResultIterator):
+            return out_values
 
-        if isinstance(values, BindingResult):
-            completed_values = [binding | out_value for out_value in values]
+        if isinstance(out_values, BindingResult):
+            completed_values = [binding | out_value for out_value in out_values]
             return list(completed_values)
 
-        if isinstance(values, list):
-            if len(values) > 0:
-                if not isinstance(values[0], list) and not isinstance(values[0], tuple):
+        if isinstance(out_values, list):
+            if len(out_values) > 0:
+                if not isinstance(out_values[0], list) and not isinstance(out_values[0], tuple):
                     raise Exception("The results of '" + predicate + "' should be lists or tuples")
-                if len(values[0]) != len(arguments):
-                    raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(values[0])) + " and should be " + str(len(arguments)))
+                if len(out_values[0]) != len(parameters):
+                    raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(out_values[0])) + " and should be " + str(len(parameters)))
 
-            results = convert_tuple_results_to_bindings(predicate, values, binding, arguments)
+            results = convert_tuple_results_to_bindings(predicate, out_values, binding, parameters)
             return results
 
         raise Exception("Predicate '" + predicate + "' should return a list")
@@ -85,22 +85,21 @@ class Solver(SomeSolver):
         return []
 
 
-    def find_relation_values(self, predicate: str, arguments: list, binding: dict) -> list[list]:
+    def find_relation_values(self, predicate: str, parameters: list, binding: dict) -> list[list]:
 
         relations = self.model.find_relations(predicate)
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
-        bound_values = bind_variables(arguments, binding)
-
+        arguments = bind_variables(parameters, binding)
         rows = []
         stringed_values = {}
 
         for relation in relations:
-            context = ExecutionContext(relation, arguments, binding, self, self.sentence, self.model)
+            context = ExecutionContext(relation, parameters, binding, self, self.sentence, self.model)
 
             # call the relation's query function
-            out_values = relation.query_function(bound_values, context)
+            out_values = relation.query_function(arguments, context)
 
             if isinstance(out_values, BindingResult):
                 return out_values

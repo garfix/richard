@@ -390,13 +390,13 @@ class CoreModule(SomeModule):
         ]
 
 
-    # ('$unification', source-value, target-value)
+    # ('$unification', term1, term2)
     # for example: ('$unification', [('just_left_of, 'sofa', 'table')], [('just_left_of', E1, E2)]
     def unification(self, arguments: list, context: ExecutionContext) -> BindingResult:
 
-        bound = bind_variables(arguments[0], context.binding)
-        free = bind_variables(arguments[1], context.binding)
-        binding = unification(bound, free)
+        term1 = bind_variables(arguments[0], context.binding)
+        term2 = bind_variables(arguments[1], context.binding)
+        binding = unification(term1, term2)
         return BindingResult([] if binding is None else [binding])
 
 
