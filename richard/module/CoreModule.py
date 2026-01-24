@@ -128,7 +128,7 @@ class CoreModule(SomeModule):
     # returns the sum of results of the values of E2 in body-atoms in E1
     def sum(self, values: list, context: ExecutionContext) -> list[list]:
 
-        element_var = context.arguments[1]
+        element_var = context.formal_parameters[1]
         body = values[2]
 
         results = context.solver.solve(body, context.binding)
@@ -145,8 +145,8 @@ class CoreModule(SomeModule):
     # returns the minimum value of results of the values of E2 in body-atoms in E1
     def arg_min(self, values: list, context: ExecutionContext) -> list[list]:
 
-        min_var = context.arguments[0]
-        element_var = context.arguments[1]
+        min_var = context.formal_parameters[0]
+        element_var = context.formal_parameters[1]
         body = values[2]
 
         results = context.solver.solve(body, context.binding)
@@ -170,8 +170,8 @@ class CoreModule(SomeModule):
     # returns the maximum value of results of the values of E2 in body-atoms in E1
     def arg_max(self, values: list, context: ExecutionContext) -> list[list]:
 
-        max_var = context.arguments[0]
-        element_var = context.arguments[1]
+        max_var = context.formal_parameters[0]
+        element_var = context.formal_parameters[1]
         body = values[2]
 
         results = context.solver.solve(body, context.binding)
@@ -195,7 +195,7 @@ class CoreModule(SomeModule):
     # returns the average of results of the values of E2 in body-atoms in E1
     def avg(self, values: list, context: ExecutionContext) -> list[list]:
 
-        element_var = context.arguments[1]
+        element_var = context.formal_parameters[1]
         body = values[2]
 
         results = context.solver.solve(body, context.binding)
@@ -314,7 +314,7 @@ class CoreModule(SomeModule):
     # ('all', E1, [range-atoms], [body-atoms])
     def determiner_all(self, values: list, context: ExecutionContext) -> list[list]:
 
-        quant_var = context.arguments[0]
+        quant_var = context.formal_parameters[0]
         range = values[1]
         body = values[2]
 

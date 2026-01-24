@@ -147,7 +147,7 @@ class Chat80Module(SomeModule):
 
 
     def has_population(self, values: list, context: ExecutionContext) -> list[list]:
-        term = context.arguments[0]
+        term = context.formal_parameters[0]
         type = ""
         if isinstance(term, Variable):
             isa = context.solver.find_first([('dialog_isa', term.name, Variable('Type'))])
@@ -169,7 +169,7 @@ class Chat80Module(SomeModule):
         for type in ["country", "city", "sea", "river", "ocean", "continent"]:
             out_values = self.ds.select(type, ["id", "id"], [name, Variable("E1")])
             if len(out_values) > 0:
-                context.solver.write_atom(('dialog_isa', context.arguments[1].name, type))
+                context.solver.write_atom(('dialog_isa', context.formal_parameters[1].name, type))
                 return [[None, value[1]] for value in out_values]
 
         if name == 'equator':
