@@ -121,7 +121,7 @@ class SIRModule(SomeModule):
 
     def get_name(self, context: ExecutionContext, id: str, value):
         # try to find the class
-        isa = context.solver.solve1([('isa', id, Variable('Type'))])
+        isa = context.solver.find_first([('isa', id, Variable('Type'))])
         if isa:
             type = isa["Type"]
             if type == 'person':

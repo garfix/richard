@@ -9,7 +9,7 @@ class SomeSolver(ABC):
 
 
     # Same as `solve` but returns the first result, or None
-    def solve1(self, atoms: list[tuple], binding: dict = {}) -> dict|None:
+    def find_first(self, atoms: list[tuple], binding: dict = {}) -> dict|None:
         result = self.solve(atoms, binding)
         return result[0] if len(result) > 0 else None
 

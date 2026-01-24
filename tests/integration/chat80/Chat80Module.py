@@ -150,7 +150,7 @@ class Chat80Module(SomeModule):
         term = context.arguments[0]
         type = ""
         if isinstance(term, Variable):
-            isa = context.solver.solve1([('dialog_isa', term.name, Variable('Type'))])
+            isa = context.solver.find_first([('dialog_isa', term.name, Variable('Type'))])
             if not isinstance(isa, Variable):
                 type = isa["Type"]
 

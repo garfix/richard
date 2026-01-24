@@ -1,20 +1,23 @@
-from richard.core.Model import Model
-from richard.core.Solver import Solver
 from richard.core.constants import CATEGORY_FORMAT, CATEGORY_TEXT, CATEGORY_VALUE, POS_TYPE_WORD_FORM
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
+from richard.interface import SomeModel
 from richard.interface.SomeGenerator import SomeGenerator
+from richard.interface.SomeSolver import SomeSolver
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
 
 
 class BasicGenerator(SomeGenerator):
 
     grammar: GrammarRules
-    solver: Solver
+    solver: SomeSolver
     output_buffer: BasicOutputBuffer
 
 
-    def __init__(self, grammar: GrammarRules, model: Model, output_buffer: BasicOutputBuffer):
+    def __init__(self, grammar: GrammarRules, model: SomeModel, output_buffer: BasicOutputBuffer):
+
+        from richard.core.Solver import Solver
+
         self.grammar = grammar
         self.solver = Solver(model)
         self.output_buffer = output_buffer

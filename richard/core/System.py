@@ -1,10 +1,9 @@
 from richard.block.Succeed import Succeed
-from richard.core.Model import Model
 from richard.core.Solver import Solver
 from richard.entity.ControlBlock import ControlBlock
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.interface.SomeClearableDb import SomeClearableDb
 from richard.interface.SomeGenerator import SomeGenerator
+from richard.interface.SomeModel import SomeModel
 
 
 class System:
@@ -18,9 +17,9 @@ class System:
 
     reader_pipeline: list[ControlBlock]
     output_generator: SomeGenerator
-    model: Model
+    model: SomeModel
 
-    def __init__(self, model: Model=None, input_pipeline: list[ControlBlock]=[], output_generator: SomeGenerator=None):
+    def __init__(self, model: SomeModel=None, input_pipeline: list[ControlBlock]=[], output_generator: SomeGenerator=None):
 
         self.model = model
         self.reader_pipeline = input_pipeline

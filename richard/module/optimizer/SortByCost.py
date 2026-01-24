@@ -1,7 +1,8 @@
-from richard.core.Solver import Solver
 from richard.core.atoms import get_atom_variables
 from richard.core.constants import IGNORED, INFINITE
 from richard.entity.Variable import Variable
+from richard.interface.SomeModel import SomeModel
+from richard.interface.SomeSolver import SomeSolver
 
 
 class SortByCost:
@@ -9,41 +10,41 @@ class SortByCost:
     Based on "Efficient processing of interactive relational database queries in logic" - David H.D. Warren (1981)
     """
 
-    def sort(self, composition: list[tuple], solver: Solver, bound_variables: set[str] = set()):
+    def sort(self, composition: list[tuple], solver: SomeSolver, model: SomeModel, bound_variables: set[str] = set()):
         if len(composition) == 0:
             return []
 
-        result = self.sort_rest([], composition, solver, bound_variables)
+        result = self.sort_rest([], composition, solver, model, bound_variables)
 
         return result
 
 
-    def sort_rest(self, done: list[tuple], todo: list[tuple], solver: Solver, bound_variables: set[str]) -> list[tuple]:
+    def sort_rest(self, done: list[tuple], todo: list[tuple], solver: SomeSolver, model: SomeModel, bound_variables: set[str]) -> list[tuple]:
 
         if len(todo) == 0:
             return done
 
         results = []
         for atom in todo:
-            cost = self.calculate_cost(atom, bound_variables, solver)
+            cost = self.calculate_cost(model, atom, bound_variables, solver)
             results.append({'atom': atom, 'cost': cost})
 
         results.sort(key=lambda result: result['cost'])
         sorted = [result['atom'] for result in results]
 
-        sorted_first_atom = self.sort_arguments(sorted[0], solver, bound_variables)
+        sorted_first_atom = self.sort_arguments(sorted[0], solver, model, bound_variables)
         bound_variables = bound_variables | set(get_atom_variables(sorted_first_atom))
 
-        return self.sort_rest(done + [sorted_first_atom], sorted[1:], solver, bound_variables)
+        return self.sort_rest(done + [sorted_first_atom], sorted[1:], solver, model, bound_variables)
 
 
-    def sort_arguments(self, atom: tuple, solver: Solver, bound_variables: set[str]) -> tuple:
+    def sort_arguments(self, atom: tuple, solver: SomeSolver, model: SomeModel, bound_variables: set[str]) -> tuple:
         atom_as_list = list(atom)
         replaced = False
         for i, arg in enumerate(atom):
             if isinstance(arg, list):
                 if len(arg) > 0 and isinstance(arg[0], tuple):
-                    atom_as_list[i] = self.sort(arg, solver, bound_variables)
+                    atom_as_list[i] = self.sort(arg, solver, model, bound_variables)
                     replaced = True
         if replaced:
             return tuple(atom_as_list)
@@ -51,9 +52,9 @@ class SortByCost:
             return atom
 
 
-    def calculate_cost(self, atom: tuple, bound_variables: set, solver: Solver):
+    def calculate_cost(self, model: SomeModel, atom: tuple, bound_variables: set, solver: SomeSolver):
         predicate = atom[0]
-        relations = solver.find_relations(predicate)
+        relations = model.find_relations(predicate)
         if len(relations) == 0:
             return 0
 

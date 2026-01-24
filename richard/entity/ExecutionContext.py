@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 
 from richard.entity.Relation import Relation
+from richard.interface.SomeModel import SomeModel
 from richard.interface.SomeSolver import SomeSolver
 from richard.processor.semantic_composer.SemanticSentence import SemanticSentence
 
@@ -13,3 +14,4 @@ class ExecutionContext:
     binding: dict
     solver: SomeSolver
     sentence: SemanticSentence
+    model: SomeModel

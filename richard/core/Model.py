@@ -21,3 +21,12 @@ class Model:
         self.modules.extend(modules)
 
 
+    def find_relations(self, relation: str) -> list[Relation]:
+        result = []
+        for module in self.modules:
+            relations = module.get_relations()
+            if relation in relations:
+                result.append(relations[relation])
+        return result
+
+

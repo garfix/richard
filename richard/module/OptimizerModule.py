@@ -39,7 +39,7 @@ class OptimizerModule(SomeModule):
     # sorts atoms by decreasing cost
     def optimize_cost_sort(self, values: list, context: ExecutionContext) -> list[list]:
         sem_in = bind_variables(values[0], context.binding)
-        sem_out = SortByCost().sort(sem_in, context.solver)
+        sem_out = SortByCost().sort(sem_in, context.solver, context.model)
         return [
             [None, sem_out]
         ]

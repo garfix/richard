@@ -1,11 +1,9 @@
 from collections import defaultdict
-from richard.core.Model import Model
 from richard.core.atoms import bind_variables, convert_tuple_results_to_bindings
 from richard.core.constants import DISJUNCTION
 from richard.entity.BindingResult import BindingResult
-from richard.entity.Relation import Relation
 from richard.entity.ResultIterator import ResultIterator
-from richard.entity.Variable import Variable
+from richard.interface.SomeModel import SomeModel
 from richard.interface.SomeSolver import SomeSolver
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.processor.semantic_composer.SemanticSentence import SemanticSentence
@@ -13,12 +11,12 @@ from richard.processor.semantic_composer.SemanticSentence import SemanticSentenc
 
 class Solver(SomeSolver):
 
-    model: Model
+    model: SomeModel
     log_stats: bool
     stats: dict
     sentence: SemanticSentence
 
-    def __init__(self, model: Model, sentence: SemanticSentence=None, log_stats: bool=False) -> None:
+    def __init__(self, model: SomeModel, sentence: SemanticSentence=None, log_stats: bool=False) -> None:
         self.model = model
         self.log_stats = log_stats
         self.stats = defaultdict(lambda: 0)
@@ -87,18 +85,9 @@ class Solver(SomeSolver):
         return []
 
 
-    def find_relations(self, relation: str) -> list[Relation]:
-        result = []
-        for module in self.model.modules:
-            relations = module.get_relations()
-            if relation in relations:
-                result.append(relations[relation])
-        return result
-
-
     def find_relation_values(self, predicate: str, arguments: list, binding: dict) -> list[list]:
 
-        relations = self.find_relations(predicate)
+        relations = self.model.find_relations(predicate)
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
@@ -108,7 +97,7 @@ class Solver(SomeSolver):
         stringed_values = {}
 
         for relation in relations:
-            context = ExecutionContext(relation, arguments, binding, self, self.sentence)
+            context = ExecutionContext(relation, arguments, binding, self, self.sentence, self.model)
 
             # call the relation's query function
             out_values = relation.query_function(bound_values, context)
@@ -135,12 +124,12 @@ class Solver(SomeSolver):
         predicate = atom[0]
         arguments = atom[1:]
 
-        relations = self.find_relations(predicate)
+        relations = self.model.find_relations(predicate)
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
         for relation in relations:
             if relation.write_function is not None:
-                context = ExecutionContext(relation, arguments, {}, self, self.sentence)
+                context = ExecutionContext(relation, arguments, {}, self, self.sentence, self.model)
                 relation.write_function(arguments, context)
 

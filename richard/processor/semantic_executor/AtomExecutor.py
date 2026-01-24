@@ -1,7 +1,6 @@
-from richard.core.Logger import Logger
-from richard.core.Model import Model
 from richard.entity.ProcessResult import ProcessResult
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.interface.SomeModel import SomeModel
 from richard.interface.SomeProcessor import SomeProcessor
 from richard.core.Solver import Solver
 from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
@@ -14,10 +13,10 @@ class AtomExecutor(SomeProcessor):
     """
 
     composer: SomeProcessor
-    model: Model
+    model: SomeModel
 
 
-    def __init__(self, composer: SomeProcessor, model: Model) -> None:
+    def __init__(self, composer: SomeProcessor, model: SomeModel) -> None:
         super().__init__()
         self.composer = composer
         self.model = model
