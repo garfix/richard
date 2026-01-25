@@ -1,5 +1,5 @@
 from collections import defaultdict
-from richard.core.atoms import bind_variables, convert_tuple_results_to_bindings
+from richard.core.atoms import bind_variables, convert_tuple_results_to_bindings, get_atom_variables
 from richard.core.constants import DISJUNCTION
 from richard.entity.BindingResult import BindingResult
 from richard.entity.ResultIterator import ResultIterator
@@ -109,6 +109,9 @@ class Solver(SomeSolver):
                     raise Exception("A relation that returns a ResultIterator can't be used in combination with another relation by the same name: " + relation.predicate)
                 return out_values
 
+            if not isinstance(out_values, list):
+                raise Exception("The results of '" + predicate + "' should be a list")
+
             # deduplicate results
             for out_value in out_values:
                 stringed_value = str(out_value)
@@ -126,6 +129,10 @@ class Solver(SomeSolver):
         relations = self.model.find_relations(predicate)
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
+
+        if len(get_atom_variables(arguments)) > 0:
+            raise Exception(f"'{predicate}' attempts to persist a variable: {arguments}")
+
 
         for relation in relations:
             if relation.write_function is not None:

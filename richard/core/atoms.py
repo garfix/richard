@@ -66,6 +66,25 @@ def bind_variables(construct: any, binding: dict) -> list:
         return construct
 
 
+def reify_variables(construct: any) -> any:
+    """
+    Returns a copy of construct with all variables it contains replaced by their names
+    """
+    # list
+    if isinstance(construct, list):
+        return [reify_variables(arg) for arg in construct]
+    # tuple
+    elif isinstance(construct, tuple):
+        return tuple([reify_variables(arg) for arg in construct])
+    # variable
+    elif isinstance(construct, Variable):
+        # return the name of the variable as an id
+        return construct.name
+    else:
+        # just the value
+        return construct
+
+
 def unification(term1: any, term2: any) -> dict|None:
     binding = {}
     # list

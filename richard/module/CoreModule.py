@@ -1,13 +1,12 @@
 
 
-from richard.core.atoms import bind_variables, unification
+from richard.core.atoms import bind_variables, reify_variables, unification
 from richard.entity.BindingResult import BindingResult
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.entity.OrderedSet import OrderedSet
-from richard.module.helper.store_atoms import store_atoms
 
 
 class CoreModule(SomeModule):
@@ -32,6 +31,7 @@ class CoreModule(SomeModule):
         self.add_relation(Relation("all", query_function=self.determiner_all)),
         self.add_relation(Relation("none", query_function=self.determiner_none)),
         self.add_relation(Relation("scoped", query_function=self.scoped)),
+        self.add_relation(Relation("reify", query_function=self.reify)),
         self.add_relation(Relation("store", query_function=self.store)),
         self.add_relation(Relation("$unification", query_function=self.unification)),
         self.add_relation(Relation("find_all", query_function=self.find_all)),
@@ -357,7 +357,7 @@ class CoreModule(SomeModule):
 
 
     # ('scoped', [body-atoms])
-    # a wrapper around a possibly variable list of atoms
+    # a wrapper around a list of atoms, that allows the execution of the atoms in a variable
     def scoped(self, arguments: list, context: ExecutionContext) -> list[list]:
         body = arguments[0]
 
@@ -374,6 +374,21 @@ class CoreModule(SomeModule):
         return result
 
 
+    # ('reify', variable-atoms, constant-atoms)
+    def reify(self, arguments: list, context: ExecutionContext) -> list[list]:
+
+        unbound_atoms = arguments[0]
+
+        if not isinstance(unbound_atoms, list):
+            raise Exception(f"'store' expects a list of atoms; given: {unbound_atoms}")
+
+        atoms = reify_variables(unbound_atoms)
+
+        return [
+            [None, atoms]
+        ]
+
+
     # ('store', [body-atoms])
     def store(self, arguments: list, context: ExecutionContext) -> list[list]:
 
@@ -383,7 +398,8 @@ class CoreModule(SomeModule):
             raise Exception(f"'store' expects a list of atoms; given: {unbound_atoms}")
 
         atoms = bind_variables(unbound_atoms, context.binding)
-        store_atoms(atoms, context.solver)
+        for atom in atoms:
+            context.solver.write_atom(atom)
 
         return [
             [None]

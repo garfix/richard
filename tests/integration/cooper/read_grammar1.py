@@ -21,7 +21,7 @@ def get_read_grammar1():
         # X is Y (X is another name for Y)
         {
             "syn": "s() -> proper_noun(E1) 'is' proper_noun(E1)",
-            "sem": lambda proper_noun1, proper_noun2: [('sentence_tell', proper_noun1 + proper_noun2)],
+            "sem": lambda proper_noun1, proper_noun2: proper_noun1 + proper_noun2 + [('sentence_tell', [])],
         },
 
         # no X is a Y

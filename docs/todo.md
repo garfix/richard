@@ -1,13 +1,7 @@
 ## todo
-sparql
-haal ook de None->Variable conversie code uit Solver
-
 unification testen met verschillende atoms aan weerszijde
-should PamDB be cleared after each story?
 
 PAM
-- `store(Atoms)` voorlopig werkt dit, maar als de structuren genest worden, niet meer
-- `store(goal(...))` geen idee hoe dit eruit moet zien; werken we wel uit als het nodig is
 - welke automatisch deducties zijn er nodig? vorm de CD weergave van de zin; op een need-to-have basis
 
 ## context

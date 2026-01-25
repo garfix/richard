@@ -96,6 +96,8 @@ class CooperModule(SomeModule):
         elif in1 == 'unknown' and in2 == 'true':
             return [[None, None, 'unknown']]
 
+        raise Exception(f"'and_3v' doesn't accept arguments: {arguments}")
+
 
     def common_query(self, arguments: list, context: ExecutionContext) -> list[list]:
         results = self.ds.select(context.relation.predicate, context.relation.formal_parameters, arguments)
