@@ -19,7 +19,7 @@ def get_read_grammar2():
         # sentence
         {
             "syn": "s(T1) -> vp(E1, T1)",
-            "sem": lambda vp: vp + [('sentence_check', T1)],
+            "sem": lambda vp: vp + [('intent_check', T1)],
         },
 
         # vp

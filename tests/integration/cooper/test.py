@@ -58,7 +58,7 @@ class TestCooper(unittest.TestCase):
         # define inference rules
 
         inferences = InferenceModule()
-        inferences.import_rules(path + "inferences.pl")
+        inferences.import_rules(path + "intents.pl")
 
         # a data source to store information for output
 
