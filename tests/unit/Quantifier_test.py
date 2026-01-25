@@ -112,9 +112,9 @@ class TestQuantification(unittest.TestCase):
         )
 
         request = SentenceRequest("Every parent has two children")
-        bindings = system.enter(request)
-        self.assertEqual(len(bindings), 3)
+        response = system.enter(request)
+        self.assertEqual(len(response.products[0].bindings), 3)
 
         request = SentenceRequest("Every parent has three children")
-        bindings = system.enter(request)
-        self.assertEqual(len(bindings), 0)
+        response = system.enter(request)
+        self.assertEqual(len(response.products[0].bindings), 0)

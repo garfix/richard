@@ -55,7 +55,7 @@ class BasicSystem(SomeSystem):
                 if executor_result.error_type != "":
                     return self.log_error(executor_result)
 
-                return executor_result.products[0].get_output()
+                return executor_result
 
 
     def log_error(self, result: ProcessResult):
