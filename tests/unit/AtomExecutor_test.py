@@ -1,10 +1,8 @@
 import unittest
 
-from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
+from richard.core.BasicSystem import BasicSystem
 from richard.core.Model import Model
-from richard.core.System import System
-from richard.block.FindOne import FindOne
 from richard.core.constants import E1, e1
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.entity.Variable import Variable
@@ -48,16 +46,15 @@ class TestAtomExecutor(unittest.TestCase):
         executor = AtomExecutor(composer, model)
         generator = BasicGenerator(write_grammar, model, output_buffer)
 
-        pipeline = System(
+        system = BasicSystem(
             model=model,
-            input_pipeline=[
-                FindOne(parser),
-                TryFirst(composer),
-                TryFirst(executor),
-            ],
-            output_generator=generator)
+            parser=parser,
+            composer=composer,
+            executor=executor,
+            output_generator=generator
+        )
 
-        pipeline.enter(SentenceRequest("John walks"))
+        system.enter(SentenceRequest("John walks"))
         output = generator.generate_output()
 
         self.assertEqual("Name not found: john", output)
@@ -99,13 +96,11 @@ class TestAtomExecutor(unittest.TestCase):
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
-        system = System(
+        system = BasicSystem(
             model=model,
-            input_pipeline=[
-                FindOne(parser),
-                TryFirst(composer),
-                TryFirst(executor),
-            ]
+            parser=parser,
+            composer=composer,
+            executor=executor
         )
 
         # test the inference

@@ -3,15 +3,15 @@ import unittest
 import cProfile
 import time
 
-from richard.core.System import System
 from richard.core.Logger import ALL, LAST, Logger
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.interface.SomeSystem import SomeSystem
 
 class DialogTester:
 
     test_case: unittest.TestCase
     tests: list
-    system: System
+    system: SomeSystem
 
     # what to print? none, all, last
     logger: Logger
@@ -23,7 +23,7 @@ class DialogTester:
     def __init__(self,
         test_case: unittest.TestCase,
         tests: list,
-        system: System,
+        system: SomeSystem,
         logger: Logger,
         profile: bool = False
     ) -> None:
@@ -50,7 +50,7 @@ class DialogTester:
             log_this = self.logger.which_tests == ALL or (self.logger.which_tests == LAST and test == last)
             self.logger.is_last_test = log_this
 
-            request = SentenceRequest(question, logger=self.logger)
+            request = SentenceRequest(question)
             try:
                 if log_this:
                     self.logger.add_test_separator(i+1)

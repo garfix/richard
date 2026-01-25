@@ -6,6 +6,13 @@ I added a check to ensure systems don't try to store variables in the database. 
 
 I have a language processor that is used to understand multiple languages in a single system. It just occurred to me that you can understand multiple languages by just combining all their rule sets. This has the added benefit that you can also add "uitdrukkingen uit een andere taal" within a sentence!
 
+I removed the blocks from the code. They have irritated me from the start and I notice that the configuration tends to remain the same. The blocks make things unnecessarily complicated. 
+
+The `System` makes place for `BasicSystem`.
+
+This does mean that the quirky "Calculate three plus four times two" tests goes as well.
+
+
 ## 2026-01-22
 
 I added a "SimpleFrameDataSource" that allows any data structure including nested tuples and lists. I'm not sure I need it, but it can always be handy to have.

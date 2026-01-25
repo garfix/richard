@@ -74,7 +74,6 @@ class PAMModule(SomeModule):
             if isinstance(id, Variable):
                 # otherwise a new id is created for the name
                 id = context.formal_parameters[1].name
-            print(id)
             self.ds.insert("entity", ["name", "id", ], [name, id])
             return [
                 [None, id]

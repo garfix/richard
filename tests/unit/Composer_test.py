@@ -1,16 +1,16 @@
 import re
 import unittest
 
-from richard.core.System import System
-from richard.block.FindOne import FindOne
+from richard.core.BasicSystem import BasicSystem
+from richard.core.Model import Model
 from richard.core.constants import E1, E2, Body, Range
 from richard.entity.SentenceRequest import SentenceRequest
-from richard.processor.parser.BasicParserProduct import BasicParserProduct
 from richard.processor.parser.BasicParser import BasicParser
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.parser.helper.grammar_functions import apply
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.entity.SemanticFunction import SemanticFunction
+from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 
 class TestComposer(unittest.TestCase):
 
@@ -21,15 +21,17 @@ class TestComposer(unittest.TestCase):
             { "syn": "verb(E1) -> 'walks'" },
         ]
 
+        model = Model([])
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
+        executor = AtomExecutor(composer, model)
 
-        system = System(
-            input_pipeline=[
-                FindOne(parser),
-                FindOne(composer),
-            ]
+        system = BasicSystem(
+            model=model,
+            parser=parser,
+            composer=composer,
+            executor=executor
         )
 
         exception_occurred = False
@@ -55,20 +57,21 @@ class TestComposer(unittest.TestCase):
             { "syn": "noun(E1) -> 'sea'", "sem": lambda: [('sea', E1)] },
         ]
 
+        model = Model([])
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        system = System(
-            input_pipeline=[
-                FindOne(parser),
-                FindOne(composer),
-            ]
+        system = BasicSystem(
+            model=model,
+            parser=parser,
+            composer=composer,
         )
 
         request = SentenceRequest("The river flows to the sea")
-        result = system.enter(request)
-        semantics = result[0]
+        response = system.enter(request)
+
+        semantics = response.products[0].sentences[0].semantics
         self.assertEqual(str(semantics), "[('river', $1), ('sea', $2), ('flows', $1, $2)]")
 
 
@@ -81,31 +84,27 @@ class TestComposer(unittest.TestCase):
             { "syn": "proper_noun(E1) -> /\w+ \w+/", "sem": lambda token: token },
         ]
 
+        model = Model([])
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        system = System(
-            input_pipeline=[
-                FindOne(parser),
-                FindOne(composer),
-            ]
+        system = BasicSystem(
+            model=model,
+            parser=parser
         )
-
-        # basic
-
-        request = SentenceRequest("John sleeps")
-        sentence_semantics = system.enter(request)
-
-        product: BasicParserProduct = request.get_current_product(parser)
-        self.assertEqual(product.parse_trees[0].inline_str(), "s(np(proper_noun(\w+ 'John')) sleeps 'sleeps')")
-        self.assertEqual(str(sentence_semantics[0]), "John")
 
         # two tokens
 
+        system = BasicSystem(
+            model=model,
+            parser=parser,
+            composer=composer
+        )
+
         request = SentenceRequest("John Walker sleeps")
-        sentence_semantics = system.enter(request)
-        self.assertEqual(str(sentence_semantics[0]), "John Walker")
+        response = system.enter(request)
+        self.assertEqual(str(response.products[0].sentences[0].semantics), "John Walker")
 
 
     def test_multiple_root_variables(self):
@@ -116,21 +115,20 @@ class TestComposer(unittest.TestCase):
             { "syn": "vp(E1) -> 'sleeps'", "sem": lambda: 'sleeps' },
         ]
 
+        model = Model([])
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        system = System(
-            input_pipeline=[
-                FindOne(parser),
-                FindOne(composer),
-            ]
+        system = BasicSystem(
+            model=model,
+            parser=parser,
+            composer=composer,
         )
 
         request = SentenceRequest("John sleeps")
-        system.enter(request)
-        product = request.get_current_product(composer)
-        self.assertEqual(product.sentences[0].root_variables, ["$1", "$2"])
+        product = system.enter(request)
+        self.assertEqual(product.products[0].sentences[0].root_variables, ["$1", "$2"])
 
 
     def test_regexp(self):
@@ -145,17 +143,16 @@ class TestComposer(unittest.TestCase):
         parser = BasicParser(grammar)
         composer = SemanticComposer(parser)
 
-        system = System(
-            input_pipeline=[
-                FindOne(parser),
-                FindOne(composer),
-            ]
+        system = BasicSystem(
+            model=Model([]),
+            parser=parser,
+            composer=composer,
         )
 
         # basic
 
         request = SentenceRequest("Does John sleep?")
-        sentence_semantics = system.enter(request)
+        response = system.enter(request)
 
-        product: BasicParserProduct = request.get_current_product(parser)
-        self.assertEqual(str(sentence_semantics[0]), "John")
+        # product: BasicParserProduct = request.get_current_product(parser)
+        self.assertEqual(str(response.products[0].sentences[0].semantics), "John")

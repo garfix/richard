@@ -1,10 +1,8 @@
 import sqlite3
 import unittest
 
-from richard.block.TryFirst import TryFirst
+from richard.core.BasicSystem import BasicSystem
 from richard.core.Model import Model
-from richard.core.System import System
-from richard.block.FindOne import FindOne
 from richard.core.constants import E1, E2, Body, Range
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
 from richard.entity.Relation import Relation
@@ -106,13 +104,11 @@ class TestQuantification(unittest.TestCase):
         composer = SemanticComposer(parser)
         executor = AtomExecutor(composer, model)
 
-        system = System(
+        system = BasicSystem(
             model=model,
-            input_pipeline=[
-                FindOne(parser),
-                TryFirst(composer),
-                TryFirst(executor)
-            ]
+            parser=parser,
+            composer=composer,
+            executor=executor,
         )
 
         request = SentenceRequest("Every parent has two children")

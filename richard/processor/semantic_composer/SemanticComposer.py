@@ -31,9 +31,8 @@ class SemanticComposer(SomeProcessor):
         return "Composer"
 
 
-    def process(self, request: SentenceRequest) -> ProcessResult:
+    def process(self, incoming: BasicParserProduct) -> ProcessResult:
 
-        incoming: BasicParserProduct = request.get_current_product(self.parser)
         parse_trees = incoming.parse_trees
         sentences = []
 

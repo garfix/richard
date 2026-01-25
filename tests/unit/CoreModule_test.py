@@ -5,7 +5,6 @@ from richard.core.Solver import Solver
 from richard.core.constants import E1, E2
 from richard.entity.Variable import Variable
 from richard.module.CoreModule import CoreModule
-from richard.entity.ExecutionContext import ExecutionContext
 
 
 class TestCoreModule(unittest.TestCase):

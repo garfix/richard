@@ -2,8 +2,8 @@ import pathlib
 import unittest
 
 
-from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
+from richard.core.BasicSystem import BasicSystem
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
@@ -12,8 +12,6 @@ from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGramm
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
-from richard.core.System import System
-from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.data_source.WikidataDataSource import WikidataDataSource
 from .WikidataOutputBuffer import WikidataOutputBuffer
@@ -76,14 +74,13 @@ class TestWikiData(unittest.TestCase):
 
         # define the system
 
-        system = System(
+        system = BasicSystem(
             model=model,
-            input_pipeline=[
-                FindOne(parser),
-                TryFirst(composer),
-                TryFirst(executor),
-            ],
-            output_generator=generator)
+            parser=parser,
+            composer=composer,
+            executor=executor,
+            output_generator=generator
+        )
 
         tests = [
             ["Where was madonna born?", "Bay City"],

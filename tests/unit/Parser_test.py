@@ -1,9 +1,8 @@
 import unittest
 
 from richard.core.BasicGenerator import BasicGenerator
+from richard.core.BasicSystem import BasicSystem
 from richard.core.Model import Model
-from richard.core.System import System
-from richard.block.FindOne import FindOne
 from richard.core.constants import E1
 from richard.entity.SentenceRequest import SentenceRequest
 from richard.grammar.en_us_write import get_en_us_write_grammar
@@ -80,15 +79,14 @@ class TestParser(unittest.TestCase):
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
 
-        system = System(
-            input_pipeline=[
-                FindOne(parser)
-            ]
+        system = BasicSystem(
+            model=Model([]),
+            parser=parser
         )
 
         request = SentenceRequest("John loves Mary")
-        parse_trees = system.enter(request)
-        self.assertEqual(parse_trees[0].inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
+        response = system.enter(request)
+        self.assertEqual(response.products[0].parse_trees[0].inline_str(), "s(np(noun(proper_noun(john 'john'))) vp(verb(loves 'loves') np(noun(proper_noun(mary 'mary')))))")
 
 
     def test_quote(self):
@@ -102,17 +100,16 @@ class TestParser(unittest.TestCase):
         grammar = SimpleGrammarRulesParser().parse_read_grammar(simple_grammar)
         parser = BasicParser(grammar)
 
-        system = System(
-            input_pipeline=[
-                FindOne(parser)
-            ]
+        system = BasicSystem(
+            model=Model([]),
+            parser=parser
         )
 
         # note: two spaces
         request = SentenceRequest("John's  shoe")
-        parse_trees = system.enter(request)
+        response = system.enter(request)
 
-        self.assertEqual(parse_trees[0].inline_str(), "s(np(john 'john') ' ''' s 's' np(shoe 'shoe'))")
+        self.assertEqual(response.products[0].parse_trees[0].inline_str(), "s(np(john 'john') ' ''' s 's' np(shoe 'shoe'))")
 
 
     def test_syntax_error(self):
@@ -147,11 +144,9 @@ class TestParser(unittest.TestCase):
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar())
         generator = BasicGenerator(write_grammar, model, output_buffer)
 
-        system = System(
+        system = BasicSystem(
             model=model,
-            input_pipeline=[
-                FindOne(parser)
-            ],
+            parser=parser,
             output_generator=generator
         )
 

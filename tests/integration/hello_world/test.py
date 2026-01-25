@@ -1,8 +1,8 @@
 import unittest
 import pathlib
 
-from richard.block.TryFirst import TryFirst
 from richard.core.BasicGenerator import BasicGenerator
+from richard.core.BasicSystem import BasicSystem
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
 from richard.entity.SentenceRequest import SentenceRequest
@@ -13,8 +13,6 @@ from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGramm
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
 from richard.processor.semantic_executor.AtomExecutor import AtomExecutor
 from richard.core.Model import Model
-from richard.core.System import System
-from richard.block.FindOne import FindOne
 from richard.processor.parser.BasicParser import BasicParser
 from richard.module.InferenceModule import InferenceModule
 from .HelloWorldDB import HellowWorldDB
@@ -70,13 +68,11 @@ class TestHelloWorld(unittest.TestCase):
 
         # define the system
 
-        system = System(
+        system = BasicSystem(
             model=model,
-            input_pipeline=[
-                FindOne(parser),
-                TryFirst(composer),
-                TryFirst(executor)
-            ],
+            parser=parser,
+            composer=composer,
+            executor=executor,
             output_generator=generator
         )
 
