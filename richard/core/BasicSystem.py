@@ -62,6 +62,7 @@ class BasicSystem(SomeSystem):
         Solver(self.model).solve([('store', [
             ('output_type', result.error_type),
             ('output_' + result.error_type, *result.error_args)])])
+        return result
 
 
     def read_output(self):
