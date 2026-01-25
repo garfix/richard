@@ -46,6 +46,7 @@ class PAMModule(SomeModule):
         self.add_relation(Relation("take", query_function=self.simple_entity))
         self.add_relation(Relation("drive_away", query_function=self.simple_entity))
         self.add_relation(Relation("resolve_name", query_function=self.resolve_name))
+        self.add_relation(Relation("name", query_function=self.simple_entity))
         self.add_relation(Relation("lost", query_function=self.simple_entity))
         self.add_relation(Relation("farmer", query_function=self.simple_entity))
         self.add_relation(Relation("stand", query_function=self.simple_entity))
@@ -73,6 +74,7 @@ class PAMModule(SomeModule):
             if isinstance(id, Variable):
                 # otherwise a new id is created for the name
                 id = context.formal_parameters[1].name
+            print(id)
             self.ds.insert("entity", ["name", "id", ], [name, id])
             return [
                 [None, id]

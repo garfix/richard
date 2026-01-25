@@ -1,3 +1,11 @@
+## 2026-01-25
+
+While I'm having trouble storing stories in relational form, it occurred to me that PAM may not store the literal information at all. It may just store all its inferences.
+
+I added a check to ensure systems don't try to store variables in the database. This exposed an occurrence in Cooper, where exactly that had happened. I fixed it.
+
+I have a language processor that is used to understand multiple languages in a single system. It just occurred to me that you can understand multiple languages by just combining all their rule sets. This has the added benefit that you can also add "uitdrukkingen uit een andere taal" within a sentence!
+
 ## 2026-01-22
 
 I added a "SimpleFrameDataSource" that allows any data structure including nested tuples and lists. I'm not sure I need it, but it can always be handy to have.
