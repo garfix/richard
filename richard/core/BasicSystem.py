@@ -59,9 +59,9 @@ class BasicSystem(SomeSystem):
 
 
     def log_error(self, result: ProcessResult):
-        Solver(self.model).solve([('store', [
-            ('output_type', result.error_type),
-            ('output_' + result.error_type, *result.error_args)])])
+        solver = Solver(self.model)
+        solver.write_atom(('output_type', result.error_type))
+        solver.write_atom(('output_' + result.error_type, *result.error_args))
         return result
 
 
