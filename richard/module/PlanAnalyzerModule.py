@@ -2,7 +2,6 @@ from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.module.plan_analyzer.PlanAnalyzer import PlanAnalyzer
-from richard.module.plan_analyzer.justify import justify
 
 
 class PlanAnalyzerModule(SomeModule):
