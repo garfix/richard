@@ -1,3 +1,7 @@
+## 2026-01-26
+
+Start the implementation of MicroPAM.
+
 ## 2026-01-25
 
 While I'm having trouble storing stories in relational form, it occurred to me that PAM may not store the literal information at all. It may just store all its inferences.
