@@ -14,12 +14,12 @@ class MicroPAM:
     current_db: None
 
 
-    def __init__(self, init_rules: list, sub_for: list, plans_for: list, instof: list, inference_rules: list):
+    def __init__(self, init_rules: list, sub_for: list, plans_for: list, instof: list):
         self.init_rules = init_rules
         self.sub_for = sub_for
         self.plans_for = plans_for
         self.instof = instof
-        self.inference_rules = inference_rules
+        self.inference_rules = instof + plans_for + sub_for + init_rules
         self.clear_globals()
 
 
@@ -144,7 +144,7 @@ class MicroPAM:
         self.current_bd = None
 
 
-def isa(self, type: str, cd: list[tuple]):
+def isa(type: str, cd: list[tuple]):
     if isinstance(cd, int) or isinstance(cd, float):
         return False
     elif atom(cd):
