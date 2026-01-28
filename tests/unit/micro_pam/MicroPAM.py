@@ -1,4 +1,4 @@
-class PlanAnalyzer:
+class MicroPAM:
 
     init_rules: list
     sub_for: list
@@ -52,11 +52,11 @@ class PlanAnalyzer:
 
 
     def predicted(self, cd: list[tuple]):
-        if self.isa("goal", cd):
+        if isa("goal", cd):
             return self.relate(cd, self.known_themes, self.init_rules) or self.relate(cd, self.known_plans, self.sub_for)
-        elif self.isa("plan", cd):
+        elif isa("plan", cd):
             return self.relate(cd, self.known_goals, self.plans_for)
-        elif self.isa("action"):
+        elif isa("action"):
             return self.relate(cd, self.known_plans, self.instof)
         else:
             return None
@@ -124,12 +124,16 @@ class PlanAnalyzer:
         return None
 
 
-    def update_db(self, atom: tuple):
-        pass
+    def update_db(self, cd: tuple):
+        print(cd)
 
-
-    def isa(self, type: str, cd: list[tuple]):
-        pass
+        if isa("is", cd):
+            print("theme")
+            self.known_themes.append(cd)
+        if isa("goal", cd):
+            self.known_goals.append(cd)
+        if isa("plan", cd):
+            self.known_plans.append(cd)
 
 
     def clear_globals(self):
@@ -140,7 +144,43 @@ class PlanAnalyzer:
         self.current_bd = None
 
 
+def isa(self, type: str, cd: list[tuple]):
+    if isinstance(cd, int) or isinstance(cd, float):
+        return False
+    elif atom(cd):
+        return isa_check(type, cd)
+    else:
+        x = filler_role("type", cd)
+        return isa_check(type, header_cd(cd)) or isa_check(type, header_cd, x)
+
+
+def filler_role(role, cd):
+    # p63
+    pass
+
+
+def header_cd(cd):
+    # p64
+    pass
+
+
+def isa_check(type, x):
+    return type == x or type == get(x, "isa")
+
+
+def get(x, property):
+    # ???
+    return x[property]
+
+
 def match_side(side, item, bd):
+    current_bd = match(pattern_side(side), item, bd)
+    # todo: strange: latest current_bd
+    return current_bd and eval(constraint_side(side)) and current_bd
+
+
+def match(pattern, cd, binding_list):
+    # p64
     pass
 
 
@@ -150,6 +190,20 @@ def lhs(rule):
 
 def rhs(rule):
     return rule[1]
+
+
+def pattern_side(side):
+    return side[0]
+
+
+def constraint_side(side):
+    if side[1]:
+        return side[1][0]
+    return None
+
+
+def atom(cd):
+    return isinstance(cd, str) or isinstance(cd, int) or isinstance(cd, float)
 
 
 def instantiate(self, pattern, binding_list):
