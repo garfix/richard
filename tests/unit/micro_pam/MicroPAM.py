@@ -1,3 +1,9 @@
+# Comments
+
+# MicroPAM bindings are in the form [ [name, value], [name, value], ...], but we'll just use a dict
+
+# MicroPAM (p187) ------------------------------------------------------
+
 class MicroPAM:
 
     init_rules: list
@@ -35,7 +41,7 @@ class MicroPAM:
                 break
 
             print("Does not confirm prediction")
-            chain.append([cd, self.inference_rules])
+            chain.append([cd, self.inference_rules[:]])
 
             cd = self.try_inference(chain)
             if not cd:
@@ -63,14 +69,14 @@ class MicroPAM:
 
 
     def relate(self, cd: list, item_list: list, rule_list: list):
-        bd = []
+        bindings = {}
         exists1 = False
         for item in item_list:
 
             exists2 = False
             for rule in rule_list:
-                bd = match_side(rhs(rule), cd, [])
-                if bd and match_side(lhs(rule), item, bd):
+                bindings = match_side(rhs(rule), cd, [])
+                if bindings and match_side(lhs(rule), item, bindings):
                     print("Confirms prediction from")
                     print(item)
                     exists2 = True
@@ -90,12 +96,12 @@ class MicroPAM:
                 break
 
             cd_inf = chain.pop()
-            cd = self.try_rules(cd_inf[0], cd_inf[1], chain)
+            cd = self.try_rules(cd_inf[0], cd_inf[1][:], chain)
             if cd is None:
                 print("No usable inferences from")
                 print(cd_inf[0])
 
-            if not cd:
+            if cd is None:
                 break
 
         if cd:
@@ -107,25 +113,28 @@ class MicroPAM:
 
 
     def try_rules(self, cd, rules: list, chain: list):
+        rule = None
+        bindings = {}
         while True:
             if len(rules) == 0:
                 break
 
             rule = rules.pop()
 
-            bd = match_side(rhs(rule), cd, [])
-            if not bd:
+            bindings = match_side(rhs(rule), cd, [])
+            if not bindings:
                 break
 
-        if bd:
-            chain.push([cd, rules])
-            return instantiate(lhs(rule)[0], bd)
+        if bindings:
+            chain.append([cd, rules])
+            return instantiate(lhs(rule)[0], bindings)
 
         return None
 
 
     def update_db(self, cd: tuple):
         print(cd)
+        self.add_cd(cd)
 
         if isa("is", cd):
             print("theme")
@@ -136,6 +145,10 @@ class MicroPAM:
             self.known_plans.append(cd)
 
 
+    def add_cd(self, cd):
+        self.data_base.append(cd)
+
+
     def clear_globals(self):
         self.known_themes = []
         self.known_goals = []
@@ -144,44 +157,38 @@ class MicroPAM:
         self.current_bd = None
 
 
-def isa(type: str, cd: list[tuple]):
-    if isinstance(cd, int) or isinstance(cd, float):
+# -- McPAM helper functions (p189) ------------------------------------------------------
+
+def match_side(side, item, bindings: dict) -> dict:
+    current_bindings = match(pattern_side(side), item, bindings)
+    # todo: strange: latest current_bd
+    return current_bindings and evaluate(constraint_side(side)) and current_bindings
+
+
+def isa(type: str, cd: any):
+    if numberp(cd):
         return False
     elif atom(cd):
         return isa_check(type, cd)
     else:
+        if isa_check(type, header_cd(cd)):
+            return True
         x = filler_role("type", cd)
-        return isa_check(type, header_cd(cd)) or isa_check(type, header_cd, x)
+        if isa_check(type, header_cd, x):
+            return True
 
-
-def filler_role(role, cd):
-    # p63
-    pass
-
-
-def header_cd(cd):
-    # p64
-    pass
+    return False
 
 
 def isa_check(type, x):
     return type == x or type == get(x, "isa")
 
 
-def get(x, property):
-    # ???
-    return x[property]
-
-
-def match_side(side, item, bd):
-    current_bd = match(pattern_side(side), item, bd)
-    # todo: strange: latest current_bd
-    return current_bd and eval(constraint_side(side)) and current_bd
-
-
-def match(pattern, cd, binding_list):
-    # p64
-    pass
+def pos_val(cd):
+    if consp(cd):
+        cd = cd[0]
+        if numberp(cd):
+            return not minusp(cd) and cd != 0
 
 
 def lhs(rule):
@@ -202,11 +209,62 @@ def constraint_side(side):
     return None
 
 
+# -- CD functions (p63) --------------------------------------------------------
+
+def filler_role(role, cd):
+    # looks for the pair (role filler) in the cd, and returns the filler
+    # like this (?)
+    for item in cd:
+        if isinstance(item, list) and len(item) > 0 and item[0] == role:
+            return item[1]
+
+    return None
+
+
+def header_cd(cd):
+    # returns the main predicate of a cd form
+    # (?)
+    return cd[0]
+
+
+def instantiate(self, pattern, bindings: dict):
+    # binds pattern with bindings. if a variable can't be bound, it's set to NIL
+    # page 64
+    pass
+
+
+def match(pattern, cd, bindings: dict):
+    # if pattern matches cd, then the binding list is returned, with any new bindings added
+    pass
+
+
+# -- Lisp functions (p54) ------------------------------------------------------
+
 def atom(cd):
     return isinstance(cd, str) or isinstance(cd, int) or isinstance(cd, float)
 
 
-def instantiate(self, pattern, binding_list):
-    # binds pattern with bindings. if a variable can't be bound, it's set to NIL
-    # page 64
-    pass
+def consp(cd):
+    return None if atom(cd) else cd
+
+
+def evaluate(cd):
+    if isinstance(cd, list):
+        # example; may not be needed
+        if cd[0] == "plus":
+            return cd[1] + cd[2]
+
+    return None
+
+
+def get(object, property):
+    # depends on the structure of an object (?)
+    return object[property]
+
+
+def minusp(cd):
+    return cd < 0
+
+
+def numberp(cd):
+    return isinstance(cd, int) or isinstance(cd, float)

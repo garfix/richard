@@ -1,8 +1,16 @@
 import unittest
 
-from tests.unit.micro_pam.MicroPAM import MicroPAM
+from tests.unit.micro_pam.MicroPAM import MicroPAM, match
 
 class TestMicroPAM(unittest.TestCase):
+
+    def test_match(self):
+        pattern = ['person', '?x']
+        cd = ['person', ['name', 'John']]
+        bindings = {}
+        result = match(pattern, cd, bindings)
+        self.assertEqual(result, {'x': ['name', 'John']})
+
 
     def test_micro_pam(self):
 
