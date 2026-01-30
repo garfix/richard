@@ -1,6 +1,7 @@
 import unittest
 
-from tests.unit.micro_pam.MicroPAM import MicroPAM, match
+from tests.unit.micro_pam.MicroPAM import MicroPAM
+from tests.unit.micro_pam.cd_functions import match
 
 class TestMicroPAM(unittest.TestCase):
 
@@ -22,6 +23,11 @@ class TestMicroPAM(unittest.TestCase):
 
         result = match([['person', '?x']], [['person', ['name', 'John']], ['profession', 'baker']], {})
         self.assertEqual(result, {'x': ['name', 'John']})
+
+        pattern = ['ptrans', ['actor', '?shopper'], ['object', '?shopper'], ['to', '?store']]
+        cd = ['ptrans', ['actor', ['person', ['name', ['Jack']]]], ['object', ['person', ['name', ['Jack']]]], ['to', ['store']]]
+        result = match(pattern, cd, {})
+        self.assertEqual(result, {'shopper': ['person', ['name', ['Jack']]], 'store': ['store']})
 
 
     def test_micro_pam(self):
