@@ -235,7 +235,52 @@ def instantiate(self, pattern, bindings: dict):
 
 def match(pattern, cd, bindings: dict):
     # if pattern matches cd, then the binding list is returned, with any new bindings added
-    pass
+    new_bindings = bindings.copy()
+    if is_predication_list(pattern) and is_predication_list(cd):
+        # each predication in pattern should match at least one in cd
+        for p in pattern:
+            found = False
+            for c in cd:
+                b = match(p, c, bindings)
+                if b is not None:
+                    found = True
+                    new_bindings = merge_bindings(bindings, b)
+                    break
+            if not found:
+                new_bindings = None
+    elif is_predication(pattern) and is_predication(cd):
+        if len(pattern) != len(cd):
+            new_bindings = None
+        for p, c in zip(pattern, cd):
+            b = match(p, c, bindings)
+            if b is not None:
+                new_bindings = merge_bindings(bindings, b)
+            else:
+                new_bindings = None
+                break
+    elif is_variable(pattern):
+        variable = pattern[1:]
+        new_bindings = merge_bindings(bindings, {variable: cd})
+    else:
+        if pattern != cd:
+            new_bindings = None
+
+    print(pattern, cd, bindings, new_bindings)
+
+    return new_bindings
+
+
+def merge_bindings(bindings1: dict, bindings2: dict) -> dict:
+    if bindings1 is None:
+        return None
+
+    new_bindings = bindings1.copy()
+    for key, value in bindings2.items():
+        if key in bindings1 and bindings1[key] != bindings2[key]:
+            return None
+        new_bindings[key] = value
+
+    return new_bindings
 
 
 # -- Lisp functions (p54) ------------------------------------------------------
@@ -268,3 +313,20 @@ def minusp(cd):
 
 def numberp(cd):
     return isinstance(cd, int) or isinstance(cd, float)
+
+
+# -- additional helper functions for the Python port ---------------------------
+
+# ['person', ['name', 'John']]
+def is_predication(cd):
+    return isinstance(cd, list) and len(cd) > 1 and isinstance(cd[0], str)
+
+
+# "?x"
+def is_variable(cd):
+    return isinstance(cd, str) and len(cd) > 0 and cd[0] == '?'
+
+
+# [ ["name", "John"], ["profession", "barber"] ]
+def is_predication_list(cd):
+    return isinstance(cd, list) and len(cd) > 0 and is_predication(cd[0])

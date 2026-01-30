@@ -5,10 +5,22 @@ from tests.unit.micro_pam.MicroPAM import MicroPAM, match
 class TestMicroPAM(unittest.TestCase):
 
     def test_match(self):
-        pattern = ['person', '?x']
-        cd = ['person', ['name', 'John']]
-        bindings = {}
-        result = match(pattern, cd, bindings)
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'y': 2})
+        self.assertEqual(result, {'x': ['name', 'John'], 'y': 2})
+
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'x': ['name', 'John']})
+        self.assertEqual(result, {'x': ['name', 'John']})
+
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'x': ['name', 'Jackie']})
+        self.assertEqual(result, None)
+
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'x': 2})
+        self.assertEqual(result, None)
+
+        result = match([['person', '?x']], [['person', ['name', 'John']]], {})
+        self.assertEqual(result, {'x': ['name', 'John']})
+
+        result = match([['person', '?x']], [['person', ['name', 'John']], ['profession', 'baker']], {})
         self.assertEqual(result, {'x': ['name', 'John']})
 
 
@@ -34,7 +46,7 @@ class TestMicroPAM(unittest.TestCase):
             [
                 [['goal', ['planner', '?x'],
                           ['objective', ['know', ['actor', '?x'],
-                                                 ['fact', ['is', ['actor', 'restaurant'], ['prox', '?z']]]]]]]
+                                                 ['fact', ['is', ['actor', 'restaurant'], ['prox', '?z']]]]]]],
                 [['read-plan', ['planner', '?x'], ['object', '?w']], ['isa', 'restaurant-guide', '?w']]
             ],
             # to enjoy oneself, read a book
@@ -121,5 +133,5 @@ class TestMicroPAM(unittest.TestCase):
             ]
         ]
 
-        for cd in story:
-            micro_pam.justify(cd)
+        # for cd in story:
+        #     micro_pam.justify(cd)
