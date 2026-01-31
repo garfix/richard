@@ -1,6 +1,6 @@
 # -- CD functions (p63) --------------------------------------------------------
 
-from tests.unit.micro_pam.extra_functions import is_predication, is_predication_list, is_variable
+from tests.unit.micro_pam.extra_functions import get_variable_name, is_predication, is_predication_list, is_variable
 
 
 def filler_role(role, cd):
@@ -19,12 +19,21 @@ def header_cd(cd):
     return cd[0]
 
 
-def instantiate(self, pattern, bindings: dict):
+def instantiate(pattern, bindings: dict):
     # binds pattern with bindings. if a variable can't be bound, it's set to NIL
-    # page 64
-    pass
+    if isinstance(pattern, list):
+        return [instantiate(element, bindings) for element in pattern]
+    elif is_variable(pattern):
+        variable = get_variable_name(pattern)
+        if variable in bindings:
+            return bindings[variable]
+        else:
+            return pattern
+    else:
+        return pattern
 
 
+# NB! see p124: a predication that is in the pattern and not in the cd should match
 def match(pattern, cd, bindings: dict):
     # if pattern matches cd, then the binding list is returned, with any new bindings added
     new_bindings = bindings.copy()
@@ -47,8 +56,8 @@ def match(pattern, cd, bindings: dict):
             b = match(p, c, bindings)
             new_bindings = merge_bindings(new_bindings, b)
     elif is_variable(pattern):
-        variable = pattern[1:]
-        new_bindings = merge_bindings(bindings, {variable: cd})
+        variable = get_variable_name(pattern)
+        new_bindings = merge_bindings(new_bindings, {variable: cd})
     else:
         if pattern != cd:
             new_bindings = None
@@ -64,8 +73,10 @@ def merge_bindings(bindings1: dict, bindings2: dict) -> dict:
 
     new_bindings = bindings1.copy()
     for key, value in bindings2.items():
+        # check for conflict
         if key in bindings1 and bindings1[key] != bindings2[key]:
             return None
+        # merge
         new_bindings[key] = value
 
     return new_bindings
