@@ -33,56 +33,60 @@ class MicroPAM:
         self.clear_globals()
 
 
-    def justify(self, input: list[tuple]):
+    def justify(self, input: list[tuple], log: list[str]):
+        """
+        Tries to find an explanation for `input` (a CD predication)
+        """
 
-        print("Trying to explain")
+        log.append("Trying to explain")
+        log.append(input)
 
         chain = []
         cd = input
 
         while True:
-            if self.predicted(cd):
+            if self.predicted(cd, log):
                 break
 
-            print("Does not confirm prediction")
+            log.append("Does not confirm prediction")
             chain.append([cd, self.inference_rules[:]])
 
-            cd = self.try_inference(chain)
+            cd = self.try_inference(chain, log)
             if not cd:
                 break
 
         if cd:
-            print("Adding inference chain to data base")
+            log.append("Adding inference chain to data base")
             for cd_inf in reversed(chain):
-                self.update_db(cd_inf[0])
+                self.update_db(cd_inf[0], log)
             self.update_db(cd)
         else:
-            print("No inference chain found - adding")
-            self.update_db(input)
+            log.append("No inference chain found - adding")
+            self.update_db(input, log)
 
 
-    def predicted(self, cd: list[tuple]):
+    def predicted(self, cd: list[tuple], log: list[str]):
         if isa("goal", cd):
-            return self.relate(cd, self.known_themes, self.init_rules) or self.relate(cd, self.known_plans, self.sub_for)
+            return self.relate(cd, self.known_themes, self.init_rules, log) or self.relate(cd, self.known_plans, self.sub_for, log)
         elif isa("plan", cd):
-            return self.relate(cd, self.known_goals, self.plans_for)
-        elif isa("action"):
-            return self.relate(cd, self.known_plans, self.instof)
+            return self.relate(cd, self.known_goals, self.plans_for, log)
+        elif isa("action", cd):
+            return self.relate(cd, self.known_plans, self.instof, log)
         else:
             return None
 
 
-    def relate(self, cd: list, item_list: list, rule_list: list):
+    def relate(self, cd: list, item_list: list, rule_list: list, log: list[str]):
         bindings = {}
         exists1 = False
         for item in item_list:
 
             exists2 = False
             for rule in rule_list:
-                bindings = match_side(rhs(rule), cd, [])
+                bindings = match_side(rhs(rule), cd, {})
                 if bindings and match_side(lhs(rule), item, bindings):
-                    print("Confirms prediction from")
-                    print(item)
+                    log.append("Confirms prediction from")
+                    log.append(item)
                     exists2 = True
                     break
             if exists2:
@@ -92,7 +96,7 @@ class MicroPAM:
         return exists1
 
 
-    def try_inference(self, chain: list):
+    def try_inference(self, chain: list, log: list[str]):
         cd_inf = []
         cd = []
         while True:
@@ -102,15 +106,15 @@ class MicroPAM:
             cd_inf = chain.pop()
             cd = self.try_rules(cd_inf[0], cd_inf[1][:], chain)
             if cd is None:
-                print("No usable inferences from")
-                print(cd_inf[0])
+                log.append("No usable inferences from")
+                log.append(cd_inf[0])
 
-            if cd is None:
+            if cd:
                 break
 
         if cd:
-            print("Possible explanation assuming")
-            print(cd)
+            log.append("Possible explanation assuming")
+            log.append(cd)
             return cd
 
         return None
@@ -124,9 +128,8 @@ class MicroPAM:
                 break
 
             rule = rules.pop()
-
-            bindings = match_side(rhs(rule), cd, [])
-            if not bindings:
+            bindings = match_side(rhs(rule), cd, {})
+            if bindings:
                 break
 
         if bindings:
@@ -136,12 +139,12 @@ class MicroPAM:
         return None
 
 
-    def update_db(self, cd: tuple):
-        print(cd)
+    def update_db(self, cd: tuple, log: list[str]):
+        log.append(cd)
         self.add_cd(cd)
 
         if isa("is", cd):
-            print("theme")
+            log.append("---theme")
             self.known_themes.append(cd)
         if isa("goal", cd):
             self.known_goals.append(cd)

@@ -1,5 +1,6 @@
 import unittest
 
+from pprint import pprint
 from tests.unit.micro_pam.MicroPAM import MicroPAM
 from tests.unit.micro_pam.cd_functions import instantiate, match
 
@@ -131,18 +132,67 @@ class TestMicroPAM(unittest.TestCase):
 
         story = [
             # Willa was hungry
-            [
-                ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]]
-            ],
+            ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
             # She picked up the Michelin guide
-            [
-                ['grasp', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]]
-            ],
+            ['grasp', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
             # She got into her car
+            ['ptrans', ['actor', ['person', ['name', ['Willa']]]], ['object', ['person', ['name', ['Willa']]]], ['to', ['car']]]
+        ]
+
+        expected_logs = [
             [
-                ['ptrans', ['actor', ['person', ['name', ['Willa']]]], ['object', ['person', ['name', ['Willa']]]], ['to', ['car']]]
+                "Trying to explain",
+                ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+                "Does not confirm prediction",
+                "No usable inferences from",
+                ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+                "No inference chain found - adding",
+                ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+                "---theme"
+            ],
+            [
+                "Trying to explain",
+                ['grasp', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+                "Does not confirm prediction",
+                "Possible explanation assuming",
+                ['take-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+                "Does not confirm prediction",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['poss', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]]]],
+                "Does not confirm prediction",
+
+            ],
+            [
+                "Trying to explain",
             ]
         ]
 
-        # for cd in story:
-        #     micro_pam.justify(cd)
+        for cd, expected_log in zip(story, expected_logs):
+            log = []
+            micro_pam.justify(cd, log)
+
+            error = False
+            if (len(log) != len(expected_log)):
+                error = True
+            else:
+                for log_line, expected_log_line in zip(log, expected_log):
+                    if (log_line != expected_log_line):
+                        print(f"{log_line} != {expected_log_line}")
+                        error = True
+
+            if error:
+                print("Expected:")
+                print_log(expected_log)
+                print()
+                print("Received:")
+                print_log(log)
+                break
+
+
+
+def print_log(log: list[str]):
+    for line in log:
+        if isinstance(line, list):
+            print(f"    {line}")
+        else:
+            print(line)
+

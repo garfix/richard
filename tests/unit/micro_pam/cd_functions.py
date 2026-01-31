@@ -6,7 +6,7 @@ from tests.unit.micro_pam.extra_functions import get_variable_name, is_predicati
 def filler_role(role, cd):
     # looks for the pair (role filler) in the cd, and returns the filler
     # like this (?)
-    for item in cd:
+    for item in cd[1:]:
         if isinstance(item, list) and len(item) > 0 and item[0] == role:
             return item[1]
 
@@ -61,8 +61,6 @@ def match(pattern, cd, bindings: dict):
     else:
         if pattern != cd:
             new_bindings = None
-
-    # print(pattern, cd, bindings, new_bindings)
 
     return new_bindings
 

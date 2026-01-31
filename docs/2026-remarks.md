@@ -1,3 +1,7 @@
+## 2026-01-31
+
+Apparently the CD representation is fundamentally tree-like. Every sentence so far has a single top-level predicate, such as "PTRANS". Interesting!
+
 ## 2026-01-26
 
 Start the implementation of MicroPAM.
