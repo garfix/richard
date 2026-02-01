@@ -69,6 +69,9 @@ class MicroPAM:
             return self.relate(cd, self.known_themes, self.init_rules, log) or self.relate(cd, self.known_plans, self.sub_for, log)
         elif isa("plan", cd):
             return self.relate(cd, self.known_goals, self.plans_for, log)
+        # todo fix
+        elif cd[0] == 'use-vehicle-plan':
+            return self.relate(cd, self.known_goals, self.plans_for, log)
         elif isa("action", cd):
             return self.relate(cd, self.known_plans, self.instance_of, log)
         else:

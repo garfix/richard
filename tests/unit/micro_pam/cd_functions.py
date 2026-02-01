@@ -49,11 +49,21 @@ def match(pattern, cd, bindings: dict):
             if not found:
                 new_bindings = None
     elif is_predication(pattern) and is_predication(cd):
-        if len(pattern) != len(cd):
+        # predicates should match
+        if pattern[0] != cd[0]:
             new_bindings = None
-        for p, c in zip(pattern, cd):
-            b = match(p, c, bindings)
-            new_bindings = merge_bindings(new_bindings, b)
+        else:
+            # each argument in the pattern should match one of the arguments in the cd
+            for p in pattern[1:]:
+                found = False
+                for c in cd[1:]:
+                    b = match(p, c, bindings)
+                    if b is not None:
+                        found = True
+                        new_bindings = merge_bindings(new_bindings, b)
+                        break
+                if not found:
+                    new_bindings = None
     elif is_variable(pattern):
         variable = get_variable_name(pattern)
         new_bindings = merge_bindings(new_bindings, {variable: cd})

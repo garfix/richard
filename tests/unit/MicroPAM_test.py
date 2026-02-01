@@ -205,31 +205,35 @@ class TestMicroPAM(unittest.TestCase):
             ],
             [
                 "Trying to explain",
-                ['ptrans', ['actor', ['person', ['name', ['Willa']]]], ['object', ['person', ['name', ['Willa']]]], ['to', ['car']]]
+                ['ptrans', ['actor', ['person', ['name', ['Willa']]]], ['object', ['person', ['name', ['Willa']]]], ['to', ['car']]],
+                "Does not confirm prediction",
                 # - inference ptrans instance walk-plan (ptrans is an instance of a walk-plan)
                 "Possible explanation assuming",
                 ['walk-plan', ['planner', ['person', ['name', ['Willa']]]], ['location', ['car']]],
                 "Does not confirm prediction",
                 # - inference: walk-plan plans_for goal (walk-plan is a plan for the goal to be in the proximity of)
                 "Possible explanation assuming",
-                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', ['car']]]]]
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', ['car']]]]],
                 "Does not confirm prediction",
                 # - inference: goal sub_for use-vehicle-plan (to be in the proximity of is a sub-goal of using a vehicle)
                 "Possible explanation assuming",
                 ['use-vehicle-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['car']]],
-                # - this event was predicted,
-
-# ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', ['car']]]]]
-
-# [['goal', ['planner', '?x'], ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]]],
-# [['use-vehicle-plan', ['planner', '?x']]]
+                # - this event was predicted, as it matches to the goal of being in the proximity of a restaurant
+                "Confirms prediction from",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', 'restaurant']]]],
+                # - adding inferences to database
+                "Adding inference chain to data base",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', ['car']]]]],
+                ['walk-plan', ['planner', ['person', ['name', ['Willa']]]], ['location', ['car']]],
+                ['ptrans', ['actor', ['person', ['name', ['Willa']]]], ['object', ['person', ['name', ['Willa']]]], ['to', ['car']]],
+                ['use-vehicle-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['car']]],
             ]
         ]
 
         for cd, expected_log in zip(story, expected_logs):
             log = []
 
-            print(f"Story line: {cd}")
+            # print(f"Story line: {cd}")
 
             micro_pam.justify(cd, log)
 
