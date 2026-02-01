@@ -7,32 +7,32 @@ from tests.unit.micro_pam.cd_functions import instantiate, match
 class TestMicroPAM(unittest.TestCase):
 
     def test_match(self):
-        result = match(['person', '?x'], ['person', ['name', 'John']], {'y': 2})
-        self.assertEqual(result, {'x': ['name', 'John'], 'y': 2})
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'?y': 2})
+        self.assertEqual(result, {'?x': ['name', 'John'], '?y': 2})
 
-        result = match(['person', '?x'], ['person', ['name', 'John']], {'x': ['name', 'John']})
-        self.assertEqual(result, {'x': ['name', 'John']})
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'?x': ['name', 'John']})
+        self.assertEqual(result, {'?x': ['name', 'John']})
 
-        result = match(['person', '?x'], ['person', ['name', 'John']], {'x': ['name', 'Jackie']})
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'?x': ['name', 'Jackie']})
         self.assertEqual(result, None)
 
-        result = match(['person', '?x'], ['person', ['name', 'John']], {'x': 2})
+        result = match(['person', '?x'], ['person', ['name', 'John']], {'?x': 2})
         self.assertEqual(result, None)
 
         result = match([['person', '?x']], [['person', ['name', 'John']]], {})
-        self.assertEqual(result, {'x': ['name', 'John']})
+        self.assertEqual(result, {'?x': ['name', 'John']})
 
         result = match([['person', '?x']], [['person', ['name', 'John']], ['profession', 'baker']], {})
-        self.assertEqual(result, {'x': ['name', 'John']})
+        self.assertEqual(result, {'?x': ['name', 'John']})
 
         pattern = ['ptrans', ['actor', '?shopper'], ['object', '?shopper'], ['to', '?store']]
         cd = ['ptrans', ['actor', ['person', ['name', ['Jack']]]], ['object', ['person', ['name', ['Jack']]]], ['to', ['store']]]
         result = match(pattern, cd, {})
-        self.assertEqual(result, {'shopper': ['person', ['name', ['Jack']]], 'store': ['store']})
+        self.assertEqual(result, {'?shopper': ['person', ['name', ['Jack']]], '?store': ['store']})
 
 
     def test_instantiate(self):
-        result = instantiate(['person', ['name', '?x']], {'x': 'John'})
+        result = instantiate(['person', ['name', '?x']], {'?x': 'John'})
         self.assertEqual(result, ['person', ['name', 'John']])
 
 

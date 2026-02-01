@@ -1,6 +1,6 @@
 # -- CD functions (p63) --------------------------------------------------------
 
-from tests.unit.micro_pam.extra_functions import get_variable_name, is_predication, is_predication_list, is_variable
+from tests.unit.micro_pam.extra_functions import is_predication, is_predication_list, is_variable
 
 
 def filler_role(role, cd):
@@ -23,7 +23,7 @@ def instantiate(pattern, bindings: dict):
     if isinstance(pattern, list):
         return [instantiate(element, bindings) for element in pattern]
     elif is_variable(pattern):
-        variable = get_variable_name(pattern)
+        variable = pattern
         if variable in bindings:
             return bindings[variable]
         else:
@@ -65,7 +65,7 @@ def match(pattern, cd, bindings: dict):
                 if not found:
                     new_bindings = None
     elif is_variable(pattern):
-        variable = get_variable_name(pattern)
+        variable = pattern
         new_bindings = merge_bindings(new_bindings, {variable: cd})
     else:
         if pattern != cd:

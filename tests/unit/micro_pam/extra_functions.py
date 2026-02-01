@@ -13,8 +13,3 @@ def is_variable(cd):
 # [ ["name", "John"], ["profession", "barber"] ]
 def is_predication_list(cd):
     return isinstance(cd, list) and len(cd) > 0 and is_predication(cd[0])
-
-
-# "?x" => "x"
-def get_variable_name(variable):
-    return variable[1:]
