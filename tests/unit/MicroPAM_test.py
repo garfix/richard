@@ -205,6 +205,24 @@ class TestMicroPAM(unittest.TestCase):
             ],
             [
                 "Trying to explain",
+                ['ptrans', ['actor', ['person', ['name', ['Willa']]]], ['object', ['person', ['name', ['Willa']]]], ['to', ['car']]]
+                # - inference ptrans instance walk-plan (ptrans is an instance of a walk-plan)
+                "Possible explanation assuming",
+                ['walk-plan', ['planner', ['person', ['name', ['Willa']]]], ['location', ['car']]],
+                "Does not confirm prediction",
+                # - inference: walk-plan plans_for goal (walk-plan is a plan for the goal to be in the proximity of)
+                "Possible explanation assuming",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', ['car']]]]]
+                "Does not confirm prediction",
+                # - inference: goal sub_for use-vehicle-plan (to be in the proximity of is a sub-goal of using a vehicle)
+                "Possible explanation assuming",
+                ['use-vehicle-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['car']]],
+                # - this event was predicted,
+
+# ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', ['car']]]]]
+
+# [['goal', ['planner', '?x'], ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]]],
+# [['use-vehicle-plan', ['planner', '?x']]]
             ]
         ]
 
