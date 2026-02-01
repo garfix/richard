@@ -13,7 +13,7 @@ class MicroPAM:
     init_rules: list
     sub_for: list
     plans_for: list
-    instof: list
+    instance_of: list
     inference_rules: list
 
     known_themes: list
@@ -21,15 +21,14 @@ class MicroPAM:
     known_plans: list
 
     data_base: list
-    current_db: None
 
 
-    def __init__(self, init_rules: list, sub_for: list, plans_for: list, instof: list):
+    def __init__(self, init_rules: list, sub_for: list, plans_for: list, instance_of: list):
         self.init_rules = init_rules
         self.sub_for = sub_for
         self.plans_for = plans_for
-        self.instof = instof
-        self.inference_rules = instof + plans_for + sub_for + init_rules
+        self.instance_of = instance_of
+        self.inference_rules = instance_of + plans_for + sub_for + init_rules
         self.clear_globals()
 
 
@@ -59,7 +58,7 @@ class MicroPAM:
             log.append("Adding inference chain to data base")
             for cd_inf in reversed(chain):
                 self.update_db(cd_inf[0], log)
-            self.update_db(cd)
+            self.update_db(cd, log)
         else:
             log.append("No inference chain found - adding")
             self.update_db(input, log)
@@ -71,7 +70,7 @@ class MicroPAM:
         elif isa("plan", cd):
             return self.relate(cd, self.known_goals, self.plans_for, log)
         elif isa("action", cd):
-            return self.relate(cd, self.known_plans, self.instof, log)
+            return self.relate(cd, self.known_plans, self.instance_of, log)
         else:
             return None
 
@@ -84,7 +83,7 @@ class MicroPAM:
             exists2 = False
             for rule in rule_list:
                 bindings = match_side(rhs(rule), cd, {})
-                if bindings and match_side(lhs(rule), item, bindings):
+                if bindings is not None and match_side(lhs(rule), item, bindings) is not None:
                     log.append("Confirms prediction from")
                     log.append(item)
                     exists2 = True
@@ -98,7 +97,7 @@ class MicroPAM:
 
     def try_inference(self, chain: list, log: list[str]):
         cd_inf = []
-        cd = []
+        cd = None
         while True:
             if len(chain) == 0:
                 break
@@ -129,7 +128,7 @@ class MicroPAM:
 
             rule = rules.pop()
             bindings = match_side(rhs(rule), cd, {})
-            if bindings:
+            if bindings is not None:
                 break
 
         if bindings:
@@ -161,6 +160,5 @@ class MicroPAM:
         self.known_goals = []
         self.known_plans = []
         self.data_base = []
-        self.current_bd = None
 
 

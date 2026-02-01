@@ -1,7 +1,8 @@
 # -- McPAM helper functions (p189) ------------------------------------------------------
 
-from tests.unit.micro_pam.cd_functions import filler_role, header_cd, match
-from tests.unit.micro_pam.lisp_functions import atom, consp, evaluate, get, minusp, numberp
+from tests.unit.micro_pam.cd_functions import filler_role, header_cd, instantiate, match
+from tests.unit.micro_pam.extra_functions import is_predication
+from tests.unit.micro_pam.lisp_functions import atom, consp, minusp, numberp
 
 
 def match_side(side, item, bindings: dict) -> dict:
@@ -10,9 +11,27 @@ def match_side(side, item, bindings: dict) -> dict:
 
     if current_bindings:
         if constraint_side(side):
-            return evaluate(constraint_side(side), current_bindings)
+            if not evaluate(constraint_side(side), current_bindings):
+                return None
 
     return current_bindings
+
+
+def evaluate(cd, bindings: dict):
+    if is_predication(cd):
+        predicate = cd[0]
+        if predicate == "pos-val":
+            value = instantiate(cd[1], bindings)
+            return value[0] > 0
+        elif predicate == "isa":
+            an_instance = instantiate(cd[1], bindings)
+            a_class = instantiate(cd[2], bindings)
+            # todo: inherit relations of isa
+            return isa(an_instance, a_class)
+        else:
+            raise Exception(f"Unknown predicate for 'evaluate': {predicate}")
+
+    return False
 
 
 def isa(type: str, cd: any):
@@ -74,7 +93,7 @@ def pattern_side(side):
 
 def constraint_side(side):
     if len(side) > 1:
-        return side[1][0]
+        return side[1]
     return None
 
 

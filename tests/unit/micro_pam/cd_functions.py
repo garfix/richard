@@ -15,7 +15,6 @@ def filler_role(role, cd):
 
 def header_cd(cd):
     # returns the main predicate of a cd form
-    # (?)
     return cd[0]
 
 
@@ -28,7 +27,7 @@ def instantiate(pattern, bindings: dict):
         if variable in bindings:
             return bindings[variable]
         else:
-            return pattern
+            return None
     else:
         return pattern
 
@@ -78,3 +77,5 @@ def merge_bindings(bindings1: dict, bindings2: dict) -> dict:
         new_bindings[key] = value
 
     return new_bindings
+
+

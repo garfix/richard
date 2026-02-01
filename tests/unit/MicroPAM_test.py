@@ -94,9 +94,9 @@ class TestMicroPAM(unittest.TestCase):
                 [['goal', ['planner', '?x'],
                           ['objective', ['poss', ['actor', '?x'], ['object', '?y']]]], ['isa', 'book', '?y']]
             ],
-            # to be close to a location, know ...(?)
+            # to be close to a location, know the proximity of the actor to the location
             [
-                [['goal', ['planner', '?x'], ['objective', ['prox', ['actor' '?x'], ['location', '?y']]]]],
+                [['goal', ['planner', '?x'], ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]]],
                 [['goal', ['planner', '?x'],
                           ['objective', ['know', ['actor', '?x'], ['fact', ['is', ['actor', '?y'], ['prox', '?z']]]]]]]
             ],
@@ -115,7 +115,7 @@ class TestMicroPAM(unittest.TestCase):
         ]
 
         # possible instances of a plan
-        instof = [
+        instance_of = [
             # to take an object, means to grasp it
             [
                 [['take-plan', ['planner', '?x'], ['object', '?y']]],
@@ -128,7 +128,7 @@ class TestMicroPAM(unittest.TestCase):
             ]
         ]
 
-        micro_pam = MicroPAM(init_rules, sub_for, plans_for, instof)
+        micro_pam = MicroPAM(init_rules, sub_for, plans_for, instance_of)
 
         story = [
             # Willa was hungry
@@ -146,6 +146,7 @@ class TestMicroPAM(unittest.TestCase):
                 "Does not confirm prediction",
                 "No usable inferences from",
                 ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+                # - does not fire any inferences
                 "No inference chain found - adding",
                 ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
                 "---theme"
@@ -154,12 +155,53 @@ class TestMicroPAM(unittest.TestCase):
                 "Trying to explain",
                 ['grasp', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
                 "Does not confirm prediction",
+                # - inference: grasp instance_of take-plan (grasp action is an instance of the take-plan)
                 "Possible explanation assuming",
                 ['take-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
                 "Does not confirm prediction",
+                # - inference: take-plan plans_for goal (take-plan is used for the possession goal)
+                "Possible explanation assuming",
                 ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['poss', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]]]],
                 "Does not confirm prediction",
-
+                # - inference: goal sub_for read-plan (possession goal is a sub-goal of the read-plan)
+                "Possible explanation assuming",
+                ['read-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+                "Does not confirm prediction",
+                # - inference: read-plan plans_for enjoyment (read-plan is used for the enjoyment goal)
+                "Possible explanation assuming",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['enjoyment', ['actor', ['person', ['name', ['Willa']]]]]]],
+                "Does not confirm prediction",
+                # - no further inferences
+                "No usable inferences from",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['enjoyment', ['actor', ['person', ['name', ['Willa']]]]]]],
+                # - inference: read-plan plans_for goal (read-plan is used for knowing a fact)
+                "Possible explanation assuming",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['know', ['actor', ['person', ['name', ['Willa']]]], ['fact', ['is', ['actor', 'restaurant'], ['prox', None]]]]]],
+                "Does not confirm prediction",
+                # - inference: goal sub_for goal (goal know proximity is used as a sub-goal for be in proximity)
+                "Possible explanation assuming",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', 'restaurant']]]],
+                "Does not confirm prediction",
+                # - inference: goal to be in proximity of a restaurant is used as a sub-goal of the do-$restaurant-plan
+                "Possible explanation assuming",
+                ['do-$restaurant-plan', ['planner', ['person', ['name', ['Willa']]]], ['restaurant', 'restaurant']],
+                "Does not confirm prediction",
+                # - inference goal do-$restaurant-plan plans_for goal to not be hungry
+                "Possible explanation assuming",
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [0]]]]]]],
+                # - this event was predicted, as it matches the contents of the first line of the story
+                "Confirms prediction from",
+                ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+                # - adding inferences to database
+                "Adding inference chain to data base",
+                ['do-$restaurant-plan', ['planner', ['person', ['name', ['Willa']]]], ['restaurant', 'restaurant']],
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', 'restaurant']]]],
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['know', ['actor', ['person', ['name', ['Willa']]]], ['fact', ['is', ['actor', 'restaurant'], ['prox', None]]]]]],
+                ['read-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['poss', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]]]],
+                ['take-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+                ['grasp', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+                ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [0]]]]]]],
             ],
             [
                 "Trying to explain",
@@ -168,10 +210,14 @@ class TestMicroPAM(unittest.TestCase):
 
         for cd, expected_log in zip(story, expected_logs):
             log = []
+
+            print(f"Story line: {cd}")
+
             micro_pam.justify(cd, log)
 
             error = False
             if (len(log) != len(expected_log)):
+                print(f"Expected lines: {len(expected_log)}, got: {len(log)}")
                 error = True
             else:
                 for log_line, expected_log_line in zip(log, expected_log):
