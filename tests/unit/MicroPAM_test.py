@@ -128,7 +128,17 @@ class TestMicroPAM(unittest.TestCase):
             ]
         ]
 
-        micro_pam = MicroPAM(init_rules, sub_for, plans_for, instance_of)
+        isa_props = {
+            'ptrans': 'action',
+            'grasp': 'action',
+            'take-plan': 'plan',
+            'read-plan': 'plan',
+            'do-$restaurant-plan': 'plan',
+            'walk-plan': 'plan',
+            'use-vehicle-plan': 'plan',
+        }
+
+        micro_pam = MicroPAM(init_rules, sub_for, plans_for, instance_of, isa_props)
 
         story = [
             # Willa was hungry
@@ -232,8 +242,6 @@ class TestMicroPAM(unittest.TestCase):
 
         for cd, expected_log in zip(story, expected_logs):
             log = []
-
-            # print(f"Story line: {cd}")
 
             micro_pam.justify(cd, log)
 

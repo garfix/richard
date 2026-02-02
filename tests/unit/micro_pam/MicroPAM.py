@@ -4,8 +4,10 @@
 
 # MicroPAM (p187) ------------------------------------------------------
 
-from tests.unit.micro_pam.cd_functions import instantiate
-from tests.unit.micro_pam.mcpam_functions import isa, lhs, match_side, rhs
+from tests.unit.micro_pam.cd_functions import filler_role, header_cd, instantiate, match
+from tests.unit.micro_pam.extra_functions import is_predication
+from tests.unit.micro_pam.lisp_functions import atom, numberp
+from tests.unit.micro_pam.mcpam_functions import constraint_side, lhs, pattern_side, rhs
 
 
 class MicroPAM:
@@ -22,13 +24,16 @@ class MicroPAM:
 
     data_base: list
 
+    isa_props: dict
 
-    def __init__(self, init_rules: list, sub_for: list, plans_for: list, instance_of: list):
+
+    def __init__(self, init_rules: list, sub_for: list, plans_for: list, instance_of: list, isa_props: dict):
         self.init_rules = init_rules
         self.sub_for = sub_for
         self.plans_for = plans_for
         self.instance_of = instance_of
         self.inference_rules = instance_of + plans_for + sub_for + init_rules
+        self.isa_props = isa_props
         self.clear_globals()
 
 
@@ -65,14 +70,11 @@ class MicroPAM:
 
 
     def predicted(self, cd: list[tuple], log: list[str]):
-        if isa("goal", cd):
+        if self.isa("goal", cd):
             return self.relate(cd, self.known_themes, self.init_rules, log) or self.relate(cd, self.known_plans, self.sub_for, log)
-        elif isa("plan", cd):
+        elif self.isa("plan", cd):
             return self.relate(cd, self.known_goals, self.plans_for, log)
-        # todo fix
-        elif cd[0] == 'use-vehicle-plan':
-            return self.relate(cd, self.known_goals, self.plans_for, log)
-        elif isa("action", cd):
+        elif self.isa("action", cd):
             return self.relate(cd, self.known_plans, self.instance_of, log)
         else:
             return None
@@ -80,22 +82,15 @@ class MicroPAM:
 
     def relate(self, cd: list, item_list: list, rule_list: list, log: list[str]):
         bindings = {}
-        exists1 = False
         for item in item_list:
-
-            exists2 = False
             for rule in rule_list:
-                bindings = match_side(rhs(rule), cd, {})
-                if bindings is not None and match_side(lhs(rule), item, bindings) is not None:
+                bindings = self.match_side(rhs(rule), cd, {})
+                if bindings is not None and self.match_side(lhs(rule), item, bindings) is not None:
                     log.append("Confirms prediction from")
                     log.append(item)
-                    exists2 = True
-                    break
-            if exists2:
-                exists1 = True
-                break
+                    return True
 
-        return exists1
+        return False
 
 
     def try_inference(self, chain: list, log: list[str]):
@@ -130,7 +125,7 @@ class MicroPAM:
                 break
 
             rule = rules.pop()
-            bindings = match_side(rhs(rule), cd, {})
+            bindings = self.match_side(rhs(rule), cd, {})
             if bindings is not None:
                 break
 
@@ -145,17 +140,68 @@ class MicroPAM:
         log.append(cd)
         self.add_cd(cd)
 
-        if isa("is", cd):
+        if self.isa("is", cd):
             log.append("---theme")
             self.known_themes.append(cd)
-        if isa("goal", cd):
+        if self.isa("goal", cd):
             self.known_goals.append(cd)
-        if isa("plan", cd):
+        if self.isa("plan", cd):
             self.known_plans.append(cd)
 
 
     def add_cd(self, cd):
         self.data_base.append(cd)
+
+
+    def match_side(self, side, item, bindings: dict) -> dict:
+
+        current_bindings = match(pattern_side(side), item, bindings)
+
+        if current_bindings:
+            if constraint_side(side):
+                if not self.evaluate(constraint_side(side), current_bindings):
+                    return None
+
+        return current_bindings
+
+
+    def evaluate(self, cd, bindings: dict):
+        if is_predication(cd):
+            predicate = cd[0]
+            if predicate == "pos-val":
+                value = instantiate(cd[1], bindings)
+                return value[0] > 0
+            elif predicate == "isa":
+                an_instance = instantiate(cd[1], bindings)
+                a_class = instantiate(cd[2], bindings)
+                return self.isa(an_instance, a_class)
+            else:
+                raise Exception(f"Unknown predicate for 'evaluate': {predicate}")
+
+        return False
+
+
+    def isa(self, type: str, cd: any):
+        if numberp(cd):
+            return False
+        elif atom(cd):
+            return self.isa_check(type, cd)
+        else:
+            if self.isa_check(type, header_cd(cd)):
+                return True
+            x = filler_role("type", cd)
+            if x:
+                return self.isa_check(type, header_cd(x))
+
+        return False
+
+
+    def isa_check(self, type, cd):
+        if type == cd:
+            return True
+        if cd in self.isa_props and self.isa_props[cd] == type:
+            return True
+        return False
 
 
     def clear_globals(self):
