@@ -1,6 +1,6 @@
 # Comments
 
-# MicroPAM bindings are in the form [ [name, value], [name, value], ...], but we'll just use a dict
+# MicroPAM bindings are in the form [ [name, value], [name, value], ...], but we'll just use a dict in the Python port
 
 # MicroPAM (p187) ------------------------------------------------------
 
@@ -34,13 +34,12 @@ class MicroPAM:
         self.instance_of = instance_of
         self.inference_rules = instance_of + plans_for + sub_for + init_rules
         self.isa_props = isa_props
+
         self.clear_globals()
 
 
-    def justify(self, input: list[tuple], log: list[str]):
-        """
-        Tries to find an explanation for `input` (a CD predication)
-        """
+    def justify(self, input: list, log: list[str]):
+        # Tries to find an explanation for `input` (a CD predication)
 
         log.append("Trying to explain")
         log.append(input)
@@ -49,12 +48,14 @@ class MicroPAM:
         cd = input
 
         while True:
+            # if cd can be related to an earlier theme, goal or plan, the cd is the explanation
             if self.predicted(cd, log):
                 break
 
             log.append("Does not confirm prediction")
             chain.append([cd, self.inference_rules[:]])
 
+            # infer as many themes, goals, and plans from the chain of new facts as possible
             cd = self.try_inference(chain, log)
             if not cd:
                 break
@@ -69,7 +70,7 @@ class MicroPAM:
             self.update_db(input, log)
 
 
-    def predicted(self, cd: list[tuple], log: list[str]):
+    def predicted(self, cd: list, log: list[str]):
         if self.isa("goal", cd):
             return self.relate(cd, self.known_themes, self.init_rules, log) or self.relate(cd, self.known_plans, self.sub_for, log)
         elif self.isa("plan", cd):
@@ -81,6 +82,10 @@ class MicroPAM:
 
 
     def relate(self, cd: list, item_list: list, rule_list: list, log: list[str]):
+        # item_list contains known themes, goals, or plans
+        # rule_list contains all rules that belong to the themes, goals or plans
+        # each rule has an antecedent (rhs) and a consequent (lhs)
+        # the function tries the match the cd (via the antecedent) with the known theme, goal, or plan (via the consequent)
         bindings = {}
         for item in item_list:
             for rule in rule_list:
@@ -94,19 +99,20 @@ class MicroPAM:
 
 
     def try_inference(self, chain: list, log: list[str]):
+        # chain is a list of [cd, all_inference_rules]
+        # return the lhs of the first match, and extend the chain
         cd_inf = []
         cd = None
-        while True:
-            if len(chain) == 0:
-                break
-
+        while len(chain) > 0:
             cd_inf = chain.pop()
+            # try all inference rules in the cd
+            # if the cd matches a rule, add it to the chain
+            # and return the bound lhs of the rule
             cd = self.try_rules(cd_inf[0], cd_inf[1][:], chain)
             if cd is None:
                 log.append("No usable inferences from")
                 log.append(cd_inf[0])
-
-            if cd:
+            else:
                 break
 
         if cd:
@@ -118,26 +124,28 @@ class MicroPAM:
 
 
     def try_rules(self, cd, rules: list, chain: list):
+        # match cd with the rhs of each of the rules
+        # if a match occurs, return a binding with the lhs of the rule
         rule = None
-        bindings = {}
-        while True:
-            if len(rules) == 0:
-                break
-
+        bindings = None
+        while len(rules) > 0:
             rule = rules.pop()
             bindings = self.match_side(rhs(rule), cd, {})
             if bindings is not None:
                 break
 
         if bindings:
+            # append the fact to the chain
             chain.append([cd, rules])
             return instantiate(lhs(rule)[0], bindings)
 
         return None
 
 
-    def update_db(self, cd: tuple, log: list[str]):
+    def update_db(self, cd: list, log: list[str]):
         log.append(cd)
+
+        # add cd as a fact to the `database`
         self.add_cd(cd)
 
         if self.isa("is", cd):
@@ -150,13 +158,16 @@ class MicroPAM:
 
 
     def add_cd(self, cd):
+        # adds fact `cd` to the `database`
+        # the database is not used here, but could be used by an application of which MicroPAM is a part
         self.data_base.append(cd)
 
 
     def match_side(self, side, item, bindings: dict) -> dict:
-
+        # try to bind side with item, by both matching the pattern
         current_bindings = match(pattern_side(side), item, bindings)
 
+        # and evaluating the optional constraint
         if current_bindings:
             if constraint_side(side):
                 if not self.evaluate(constraint_side(side), current_bindings):
@@ -166,6 +177,7 @@ class MicroPAM:
 
 
     def evaluate(self, cd, bindings: dict):
+        # evaluate a check to return a value
         if is_predication(cd):
             predicate = cd[0]
             if predicate == "pos-val":
@@ -182,6 +194,7 @@ class MicroPAM:
 
 
     def isa(self, type: str, cd: any):
+        # does type equal cd, or is type an instance of cd?
         if numberp(cd):
             return False
         elif atom(cd):

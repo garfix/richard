@@ -3,12 +3,6 @@
 from tests.unit.micro_pam.lisp_functions import consp, minusp, numberp
 
 
-def pos_val(cd):
-    if consp(cd):
-        cd = cd[0]
-        if numberp(cd):
-            return not minusp(cd) and cd != 0
-
 # For the following functions, take this example:
 #
 # [
@@ -26,6 +20,7 @@ def lhs(rule):
 
 def rhs(rule):
     return rule[1]
+
 
 # and from this "side",
 #

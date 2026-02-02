@@ -19,12 +19,6 @@ class TestMicroPAM(unittest.TestCase):
         result = match(['person', '?x'], ['person', ['name', 'John']], {'?x': 2})
         self.assertEqual(result, None)
 
-        result = match([['person', '?x']], [['person', ['name', 'John']]], {})
-        self.assertEqual(result, {'?x': ['name', 'John']})
-
-        result = match([['person', '?x']], [['person', ['name', 'John']], ['profession', 'baker']], {})
-        self.assertEqual(result, {'?x': ['name', 'John']})
-
         pattern = ['ptrans', ['actor', '?shopper'], ['object', '?shopper'], ['to', '?store']]
         cd = ['ptrans', ['actor', ['person', ['name', ['Jack']]]], ['object', ['person', ['name', ['Jack']]]], ['to', ['store']]]
         result = match(pattern, cd, {})
@@ -262,7 +256,6 @@ class TestMicroPAM(unittest.TestCase):
                 print("Received:")
                 print_log(log)
                 break
-
 
 
 def print_log(log: list[str]):

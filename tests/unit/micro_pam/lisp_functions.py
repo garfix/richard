@@ -1,23 +1,20 @@
 # -- Lisp functions (p54) ------------------------------------------------------
 
-def atom(cd):
-    return isinstance(cd, str) or isinstance(cd, int) or isinstance(cd, float)
+def atom(expression):
+    # is expression an identifier, number or string?
+    return isinstance(expression, str) or isinstance(expression, int) or isinstance(expression, float)
 
 
-def consp(cd):
-    return None if atom(cd) else cd
+def consp(expression):
+    # returns expression if not an atom, otherwise NIL
+    return None if atom(expression) else expression
 
 
-def get(object, property):
-    # depends on the structure of an object (?)
-    return object[property]
+def minusp(expression):
+    # is expression negative?
+    return expression < 0
 
 
-def minusp(cd):
-    return cd < 0
-
-
-def numberp(cd):
-    return isinstance(cd, int) or isinstance(cd, float)
-
-
+def numberp(expression):
+    # is expression a number?
+    return isinstance(expression, int) or isinstance(expression, float)
