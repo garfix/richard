@@ -1,3 +1,7 @@
+## 2026-02-03
+
+I created a separate repo for the MicroPAM port: https://github.com/garfix/micropam
+
 ## 2026-01-31
 
 Apparently the CD representation is fundamentally tree-like. Every sentence so far has a single top-level predicate, such as "PTRANS". Interesting!
