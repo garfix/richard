@@ -139,7 +139,6 @@ class MicroPAM:
 
         if bindings:
             # append the fact to the chain
-            print('push')
             chain.append([cd, rules])
             return instantiate(lhs(rule)[0], bindings)
 
