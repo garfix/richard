@@ -1,13 +1,11 @@
 # Comments
 
-# MicroPAM bindings are in the form [ [name, value], [name, value], ...], but we'll just use a dict in the Python port
-
 # MicroPAM (p187) ------------------------------------------------------
 
-from tests.unit.micro_pam.cd_functions import filler_role, header_cd, instantiate, match
-from tests.unit.micro_pam.extra_functions import is_predication
-from tests.unit.micro_pam.lisp_functions import atom, numberp
-from tests.unit.micro_pam.mcpam_functions import constraint_side, lhs, pattern_side, rhs
+from cd_functions import filler_role, header_cd, instantiate, match
+from extra_functions import is_predication
+from lisp_functions import atom, numberp
+from mcpam_functions import constraint_side, lhs, pattern_side, rhs
 
 
 class MicroPAM:
@@ -44,7 +42,11 @@ class MicroPAM:
         log.append("Trying to explain")
         log.append(input)
 
+        # a stack of recently discovered facts (cd's)
         chain = []
+
+        # cd is initialized to the current sentence from the story
+        # it changes to infererred plans, goals, and themes
         cd = input
 
         while True:
@@ -56,6 +58,7 @@ class MicroPAM:
             chain.append([cd, self.inference_rules[:]])
 
             # infer as many themes, goals, and plans from the chain of new facts as possible
+            # also adds these to the chain
             cd = self.try_inference(chain, log)
             if not cd:
                 break
@@ -136,6 +139,7 @@ class MicroPAM:
 
         if bindings:
             # append the fact to the chain
+            print('push')
             chain.append([cd, rules])
             return instantiate(lhs(rule)[0], bindings)
 

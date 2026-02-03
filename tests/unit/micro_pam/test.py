@@ -1,8 +1,7 @@
 import unittest
 
-from pprint import pprint
-from tests.unit.micro_pam.MicroPAM import MicroPAM
-from tests.unit.micro_pam.cd_functions import instantiate, match
+from MicroPAM import MicroPAM
+from cd_functions import instantiate, match
 
 class TestMicroPAM(unittest.TestCase):
 

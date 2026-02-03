@@ -1,6 +1,6 @@
 # -- CD functions (p63) --------------------------------------------------------
 
-from tests.unit.micro_pam.extra_functions import is_predication, is_variable
+from extra_functions import is_predication, is_variable
 
 
 def filler_role(role: str, cd: list):

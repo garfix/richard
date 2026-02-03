@@ -1,6 +1,6 @@
 # -- McPAM helper functions (p189) ------------------------------------------------------
 
-from tests.unit.micro_pam.lisp_functions import consp, minusp, numberp
+from lisp_functions import consp, minusp, numberp
 
 
 # For the following functions, take this example:
