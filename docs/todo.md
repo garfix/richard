@@ -2,7 +2,7 @@
 unification testen met verschillende atoms aan weerszijde
 
 PAM
-- welke automatisch deducties zijn er nodig? vorm de CD weergave van de zin; op een need-to-have basis
+- de deducties van PAM moeten een mate van onzekerheid hebben; het zijn geen zekerheden; hoe streep je hypothesen af?
 
 ## context
 

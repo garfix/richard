@@ -1,6 +1,41 @@
+## 2026-02-05
+
+I might as well start PAM with the story from MicroPAM
+
+    Willa was hungry
+    She picked up the Michelin guide
+    She got into her car
+
+But what would be a good question to ask?
+
+    Why did Willa pick up a Michelin guide?
+    Why did Willa get into her car?
+    Where did Willa drive to?
+
+===
+
+Is the decomposition of meaning (as in CD) essential to the recognition / matching of rules?
+Is the hierarchical semantic structure (as in CD) essential.
+
+I must say I'm intriguiged by the tree structure I saw. Systems like CHAT-80 use semantic structures that are as flat as possible as that's the only way it can optimize for querying efficiency.
+
+The hierarchical structure seems essential to modal verbs like "may" and "can" and for second order verbs like "think".
+
+Here again we may want to allow multiple representations of the same sentence. Some reps are better for database querying, some are better for rule matching.
+
+On the other hand, a flat representation may do just as well. 
+
+Let's just start with what I have and check again when I run into a problem.
+
 ## 2026-02-03
 
 I created a separate repo for the MicroPAM port: https://github.com/garfix/micropam
+
+===
+
+The `chain` of MicroPAM is a bit problematic. It is a stack where "cd's" (facts) are added and removed in a seemingly unorganized way. Each time a cd was not predicted, it is added to the chain. Then, when inferences are tried, the top cd is popped. New cd's are pushed whenever a new inference can be made. So it's hard to say what the chain contains at the end, when all cd's are written to the database. Some inferred facts will be missing. Perhaps these are mere intermediate inferences, but who can tell that these facts are not important when a new sentence of the story is added? It could be that a new sentence was predicted by these facts. Is the omission intentional. Maybe, but it seems impossible to keep this in mind when developing a system. It seems like an uncertain business, and possibly wrong.
+
+Also, PAM distinguishes between themes, goals, and plans. MicroPAM however, hardly distinguishes between them. They're all treated alike. And this begs the question if it's worthwhile to make this distinction in a working system. Is the added complexity necessary?
 
 ## 2026-01-31
 
