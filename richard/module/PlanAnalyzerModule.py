@@ -1,7 +1,7 @@
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
-# from richard.module.plan_analyzer.PlanAnalyzer import PlanAnalyzer
+from richard.module.plan_analyzer.PlanAnalyzer import PlanAnalyzer
 
 
 class PlanAnalyzerModule(SomeModule):
@@ -30,8 +30,8 @@ class PlanAnalyzerModule(SomeModule):
         instof = []
         inference_rules = []
 
-        # plan_analyzer = PlanAnalyzer(init_rules, sub_for, plans_for, instof, inference_rules)
-        # plan_analyzer.justify(inductions)
+        plan_analyzer = PlanAnalyzer()
+        plan_analyzer.justify(inductions, context)
 
         # bindings = context.solver.solve([("recognize_plan", atoms)], context.binding)
 

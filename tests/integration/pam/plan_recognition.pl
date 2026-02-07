@@ -26,3 +26,15 @@ recognize_plan(Atoms) :- scoped(Atoms) = scoped(resolve_name(Name, B), lost(B)),
                 source("?")),
             attempts())).
 
+
+# "No inference chain found - adding",
+# ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+# "---theme"
+
+# [
+#     ('intent_understand',
+#         [
+#             ('resolve_name', 'Willa', $2)
+#             ('hungry', $2)
+#         ])
+# ]

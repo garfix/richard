@@ -299,11 +299,11 @@ def get_read_grammar():
         # proper noun
         {
             "syn": "proper_noun(E1) -> /\w+/",
-            "sem": lambda token: [('resolve_name', token, E1)],
+            "sem": lambda token: [('name', E1, token)],
         },
         {
             "syn": "proper_noun(E1) -> 'the' /\w+/",
-            "sem": lambda token: [('resolve_name', 'the ' + token, E1)],
+            "sem": lambda token: [('name', E1, 'the ' + token)],
         },
         # nbar
         {

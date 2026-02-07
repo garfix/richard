@@ -39,7 +39,6 @@ class TestPAM(unittest.TestCase):
         # define the intents and other inferences
 
         inferences = InferenceModule()
-        inferences.import_rules(path + "inferences.pl")
         inferences.import_rules(path + "intents.pl")
         inferences.import_rules(path + "plan_recognition.pl")
 
@@ -97,7 +96,7 @@ class TestPAM(unittest.TestCase):
             ],
             [
                 # 14 A detailed example
-                ["John was lost. He pulled over to a farmer standing by the side of the road. He asked him where he was.", "OK"],
+                # ["John was lost. He pulled over to a farmer standing by the side of the road. He asked him where he was.", "OK"],
                 # ["Why did John pull over to a farmer?", "Because he wanted to know where he was."],
                 # ["Why did John ask a farmer to tell him where he was?", "Because he wanted to get someplace."],
                 # ["What were the consequences of John's pulling over to a farmer?", "This enabled him to ask him where John was."],

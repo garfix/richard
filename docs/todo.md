@@ -3,6 +3,8 @@ unification testen met verschillende atoms aan weerszijde
 
 PAM
 - de deducties van PAM moeten een mate van onzekerheid hebben; het zijn geen zekerheden; hoe streep je hypothesen af?
+- handle pronouns like "She" and "her"
+- voeg een zin toe aan de database "Willa was hungry"
 
 ## context
 
