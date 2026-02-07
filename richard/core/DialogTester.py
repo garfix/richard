@@ -3,8 +3,8 @@ import unittest
 import cProfile
 import time
 
-from richard.core.Logger import ALL, LAST, Logger
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.interface.SomeLogger import SomeLogger, ALL, LAST
 from richard.interface.SomeSystem import SomeSystem
 
 class DialogTester:
@@ -14,7 +14,7 @@ class DialogTester:
     system: SomeSystem
 
     # what to print? none, all, last
-    logger: Logger
+    logger: SomeLogger
 
     # profile all tests and print the results
     profile: bool
@@ -24,7 +24,7 @@ class DialogTester:
         test_case: unittest.TestCase,
         tests: list,
         system: SomeSystem,
-        logger: Logger,
+        logger: SomeLogger,
         profile: bool = False
     ) -> None:
         self.test_case = test_case
@@ -44,6 +44,9 @@ class DialogTester:
     def do_run(self):
         last = self.tests[-1] if len(self.tests) > 0 else None
         for i, test in enumerate(self.tests):
+
+            if len(test) != 2:
+                raise Exception("A test item must have two elements: a sentence and an expected response")
 
             question, expected = test
 

@@ -1,11 +1,8 @@
 from richard.entity.ProcessResult import ProcessResult
+from richard.interface.SomeLogger import ALL, LAST, NONE, SomeLogger
 from richard.interface.SomeProcessor import SomeProcessor
 import shutil
 
-
-NONE = 'none'
-LAST = 'last'
-ALL = 'all'
 
 NO_COLOR = '\033[0m'
 HEADER_COLOR = '\033[33m'
@@ -16,26 +13,12 @@ KEY_COLOR = '\033[34m'
 ERROR_COLOR = '\033[31m'
 COMMENT_COLOR = '\033[90m'
 
-class Logger:
-
-    which_tests: str
-
-    show_products: str
-    show_products_processors: list
-
-    is_last_test: bool
-
-    show_stats: bool
-    show_stats_processors: bool
-
-    entries: list
-
+class Logger(SomeLogger):
 
     def __init__(self):
         self.which_tests = LAST
         self.is_last_test = False
         self.show_products = NONE
-        self.show_products_processors = []
         self.show_stats = False
         self.entries = []
 
@@ -59,7 +42,6 @@ class Logger:
         processors: the products of these processors are logged (default = all)
         """
         self.show_products = ALL
-        self.show_products_processors = processors
 
 
     def log_stats(self):
@@ -110,13 +92,12 @@ class Logger:
 
     def add_process_result(self, processor: SomeProcessor, result: ProcessResult):
         if self.is_active() and self.show_products == ALL:
-            if not self.show_products_processors or processor in self.show_products_processors:
-                self.add_header(processor.get_name())
-                if result.error_type != "":
-                    self.add_error(result.error_type)
+            self.add_header(processor.get_name())
+            if result.error_type != "":
+                self.add_error(result.error_type)
 
-                for product in result.products:
-                    product.log(self)
+            for product in result.products:
+                product.log(self)
 
 
     def should_log_stats(self):

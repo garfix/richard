@@ -17,7 +17,7 @@ def get_read_grammar():
     return [
         # sentence
         {
-            "syn": "s() -> question(C1)+'?'",
+            "syn": "s() -> question()+'?'",
             "sem": lambda question: None,
         },
         {
@@ -37,6 +37,10 @@ def get_read_grammar():
         {
             "syn": "question() -> clause(C1)+'?'",
             "sem": lambda clause: clause + [('intent_question',)],
+        },
+        {
+            "syn": "question() -> 'why' 'did' clause(C1)",
+            "sem": lambda clause: [('intent_explanation', clause)],
         },
         # declarative
         {
@@ -89,6 +93,10 @@ def get_read_grammar():
         },
         {
             "syn": "clause(C1, E1) -> vp(C1, E1)",
+            "sem": lambda vp: vp,
+        },
+        {
+            "syn": "clause(C1, E1) -> vp(C1, E1, E2)",
             "sem": lambda vp: vp,
         },
         {
@@ -173,6 +181,10 @@ def get_read_grammar():
             "sem": lambda verb: verb
         },
         {
+            "syn": "vp(C1, E1, E2) -> verb(C1, E1, E2) np(E2)",
+            "sem": lambda verb, np: apply(np, verb)
+        },
+        {
             "syn": "vp(C1, E1, E2, E3) -> verb(C1, E1, E2, E3)",
             "sem": lambda verb: verb
         },
@@ -188,6 +200,10 @@ def get_read_grammar():
         {
             "syn": "np(E1) -> 'his' nbar(E1)",
             "sem": lambda nbar: SemanticFunction([Body], nbar + [('his', E1)] + Body)
+        },
+        {
+            "syn": "np(E1) -> 'her' nbar(E1)",
+            "sem": lambda nbar: SemanticFunction([Body], nbar + [('her', E1)] + Body)
         },
         {
             "syn": "np(E1) -> 'he'",
@@ -271,6 +287,14 @@ def get_read_grammar():
             "syn": "noun(E1) -> 'road'",
             "sem": lambda: [('road', E1)],
         },
+        {
+            "syn": "noun(E1) -> 'michelin guide'",
+            "sem": lambda: [('michelin_guide', E1)],
+        },
+        {
+            "syn": "noun(E1) -> 'car'",
+            "sem": lambda: [('car', E1)],
+        },
 
         # proper noun
         {
@@ -319,6 +343,10 @@ def get_read_grammar():
         {
             "syn": "adj(E1) -> 'lost'",
             "sem": lambda: [('lost', E1)],
+        },
+        {
+            "syn": "adj(E1) -> 'hungry'",
+            "sem": lambda: [('hungry', E1)],
         },
         # det
         {
@@ -369,6 +397,18 @@ def get_read_grammar():
         {
             "syn": "verb(C1, Sub, Obj, Obj2) -> 'drove' 'away'",
             "sem": lambda: [('drive_away', C1, Sub, Obj, Obj2)]
+        },
+        {
+            "syn": "verb(C1, Sub, Obj) -> 'picked' 'up'",
+            "sem": lambda: [('pick_up', C1, Sub, Obj)]
+        },
+        {
+            "syn": "verb(C1, Sub, Obj) -> 'pick' 'up'",
+            "sem": lambda: [('pick_up', C1, Sub, Obj)]
+        },
+        {
+            "syn": "verb(C1, Sub, Obj) -> 'got' 'into'",
+            "sem": lambda: [('get_into', C1, Sub, Obj)]
         },
         {
             "syn": "verb(C1, Sub, Obj, Obj2) -> 'told'",

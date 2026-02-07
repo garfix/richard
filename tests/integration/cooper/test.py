@@ -81,6 +81,9 @@ class TestCooper(unittest.TestCase):
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, output_buffer)
 
+        logger = Logger()
+
+
         # define the first system
 
         system1 = BasicSystem(
@@ -88,7 +91,8 @@ class TestCooper(unittest.TestCase):
             parser=parser,
             composer=composer,
             executor=executor,
-            output_generator=generator
+            output_generator=generator,
+            logger=logger
         )
 
         # define the second pipeline
@@ -106,7 +110,8 @@ class TestCooper(unittest.TestCase):
             parser=parser,
             composer=composer,
             executor=executor,
-            output_generator=generator
+            output_generator=generator,
+            logger=logger
         )
 
         tests1 = [
@@ -172,7 +177,6 @@ class TestCooper(unittest.TestCase):
             ["gasoline is a fuel that burns", "True"],
         ]
 
-        logger = Logger()
         logger.log_no_tests()
         # logger.log_all_tests()
         # logger.log_only_last_test()

@@ -83,6 +83,8 @@ class TestChat80(unittest.TestCase):
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, output_buffer)
 
+        logger = Logger()
+
         # define the system
 
         system = BasicSystem(
@@ -90,7 +92,8 @@ class TestChat80(unittest.TestCase):
             parser=parser,
             composer=composer,
             executor=executor,
-            output_generator=generator
+            output_generator=generator,
+            logger=logger
         )
 
         tests = [
@@ -141,7 +144,6 @@ class TestChat80(unittest.TestCase):
             ["Bye.", "Cheerio."],
         ]
 
-        logger = Logger()
         logger.log_no_tests()
         # logger.log_all_tests()
         # logger.log_products()

@@ -9,4 +9,6 @@ intent_understand(Story) :-
 intent_question() :-
     store(output_type('question')).
 
+intent_explanation(Question) :-
+    store(output_type('question')).
 

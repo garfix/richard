@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from richard.entity.SentenceRequest import SentenceRequest
+from richard.interface.SomeLogger import SomeLogger
 
 
 class SomeSystem(ABC):

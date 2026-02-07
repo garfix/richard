@@ -4,6 +4,7 @@ from richard.entity.SentenceRequest import SentenceRequest
 from richard.interface.SomeComposer import SomeComposer
 from richard.interface.SomeExecutor import SomeExecutor
 from richard.interface.SomeGenerator import SomeGenerator
+from richard.interface.SomeLogger import SomeLogger
 from richard.interface.SomeModel import SomeModel
 from richard.interface.SomeParser import SomeParser
 from richard.interface.SomeSystem import SomeSystem
@@ -16,19 +17,23 @@ class BasicSystem(SomeSystem):
     executor: SomeExecutor
     output_generator: SomeGenerator
     model: SomeModel
+    logger: SomeLogger
 
     def __init__(self,
             model: SomeModel=None,
             parser: SomeParser=None,
             composer: SomeComposer=None,
             executor: SomeExecutor=None,
-            output_generator: SomeGenerator=None):
+            output_generator: SomeGenerator=None,
+            logger: SomeLogger=None
+    ):
 
         self.model = model if model else Model([])
         self.parser = parser
         self.composer = composer
         self.executor = executor
         self.output_generator = output_generator
+        self.logger = logger
 
 
     def enter(self, request: SentenceRequest):
@@ -39,6 +44,9 @@ class BasicSystem(SomeSystem):
         if parse_result.error_type != "":
             return self.log_error(parse_result)
 
+        if self.logger:
+            self.logger.add_process_result(self.parser, parse_result)
+
         if not self.composer:
             return parse_result
 
@@ -46,6 +54,9 @@ class BasicSystem(SomeSystem):
             composer_result = self.composer.process(parse_product)
             if composer_result.error_type != "":
                 return self.log_error(composer_result)
+
+            if self.logger:
+                self.logger.add_process_result(self.composer, composer_result)
 
             if not self.executor:
                 return composer_result

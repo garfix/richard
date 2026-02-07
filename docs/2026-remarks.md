@@ -1,3 +1,24 @@
+## 2026-02-06
+
+What is the answer to the question "Why did Willa pick up a Michelin guide?"?
+
+- to go to a restaurant
+- to find out the location of a restaurant
+- to know the proximity to a restaurant
+- to read the restaurant guide
+- to possess the restaurant guide
+
+
+    ['do-$restaurant-plan', ['planner', ['person', ['name', ['Willa']]]], ['restaurant', 'restaurant']],
+    ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['prox', ['actor', ['person', ['name', ['Willa']]]], ['location', 'restaurant']]]],
+    ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['know', ['actor', ['person', ['name', ['Willa']]]], ['fact', ['is', ['actor', 'restaurant'], ['prox', None]]]]]],
+    ['read-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+    ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['poss', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]]]],
+    ['take-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+    ['grasp', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+    ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [0]]]]]]],
+
+
 ## 2026-02-05
 
 I might as well start PAM with the story from MicroPAM

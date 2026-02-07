@@ -75,6 +75,8 @@ class TestPAM(unittest.TestCase):
         write_grammar = SimpleGrammarRulesParser().parse_write_grammar(get_en_us_write_grammar() + get_write_grammar())
         generator = BasicGenerator(write_grammar, model, output_buffer)
 
+        logger = Logger()
+
         # define the system
 
         system = BasicSystem(
@@ -82,11 +84,17 @@ class TestPAM(unittest.TestCase):
             parser=parser,
             composer=composer,
             executor=executor,
-            output_generator=generator
+            output_generator=generator,
+            logger=logger
         )
 
         # test the system
         tests = [
+            [
+                # Example from MicroPAM
+                ["Willa was hungry. She picked up the Michelin guide. She got into her car.", "OK"],
+                ["Why did Willa pick up a Michelin guide?", "Because she wanted to be not hungry."]
+            ],
             [
                 # 14 A detailed example
                 ["John was lost. He pulled over to a farmer standing by the side of the road. He asked him where he was.", "OK"],
@@ -177,15 +185,15 @@ class TestPAM(unittest.TestCase):
             # ],
         ]
 
-        logger = Logger()
-        logger.log_no_tests()
-        # logger.log_all_tests()
-        # logger.log_products()
-        # logger.log_stats()
+        # logger.log_no_tests()
+        logger.log_all_tests()
+        logger.log_products()
 
         for session in tests:
             tester = DialogTester(self, session, system, logger)
             tester.run()
+
+            # clear
             dialog_context.clear()
             plan_analyzer_dialog_content.clear()
             db = PAMDB()
