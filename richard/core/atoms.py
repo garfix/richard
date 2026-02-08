@@ -87,16 +87,18 @@ def reify_variables(construct: any) -> any:
 
 def unification(term1: any, term2: any) -> dict|None:
     binding = {}
-    # list
+    # list: matches if either all atoms of term1 match with term2, or all atoms of term2 match with term1 (or both)
     if isinstance(term1, list) and isinstance(term2, list):
-        found = False
-        for a2 in term2:
-            for a1 in term1:
+        matches1 = {}
+        matches2 = {}
+        for i2, a2 in enumerate(term2):
+            for i1, a1 in enumerate(term1):
                 sub = unification(a1, a2)
                 if sub is not None:
-                    found = True
+                    matches1[i1] = True
+                    matches2[i2] = True
                     binding = unification_binding(binding, sub)
-        if not found:
+        if len(matches1) != len(term1) and len(matches2) != len(term2):
             binding = None
     # tuple
     elif isinstance(term1, tuple) and isinstance(term2, tuple):

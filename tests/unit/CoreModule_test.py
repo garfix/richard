@@ -61,6 +61,15 @@ class TestCoreModule(unittest.TestCase):
         bindings = solver.solve([('$unification', source, [('lost', E1), ('likes', E1, E2)])])
         self.assertEqual(bindings, [{'E1': 'john', 'E2': 'jane'}])
 
+        bindings = solver.solve([('$unification', [('lost', E1), ('likes', E1, E2)], source)])
+        self.assertEqual(bindings, [{'E1': 'john', 'E2': 'jane'}])
+
+        bindings = solver.solve([('$unification', source, [('lost', E1), ('hates', E1, E2)])])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([('$unification', [('lost', E1), ('hates', E1, E2)], source)])
+        self.assertEqual(bindings, [])
+
         bindings = solver.solve([('$unification', source, [('goal', E1, ('win', E2))])])
         self.assertEqual(bindings, [{'E1': 'john', 'E2': 'jane'}])
 

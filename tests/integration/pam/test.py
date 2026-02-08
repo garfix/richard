@@ -63,7 +63,8 @@ class TestPAM(unittest.TestCase):
             plan_analyzer_dialog_content
         ])
 
-        # define the pipeline
+
+        # define the system
 
         read_grammar = SimpleGrammarRulesParser().parse_read_grammar(get_read_grammar())
         parser = BasicParser(read_grammar, sentence_categories=["decl", "question"])
@@ -75,8 +76,6 @@ class TestPAM(unittest.TestCase):
         generator = BasicGenerator(write_grammar, model, output_buffer)
 
         logger = Logger()
-
-        # define the system
 
         system = BasicSystem(
             model=model,
