@@ -9,10 +9,17 @@ class PlanAnalyzerModule(SomeModule):
     This module, inspired by Robert Wilensky's PAM, analyzes the goals and plans of the actors in the story / dialog, and
     tries to predict their next moves
     """
+
+    plan_analyzer: PlanAnalyzer
+
+
     def __init__(self) -> None:
         super().__init__()
         self.add_relation(Relation("analyze_plans", query_function=self.analyze_plans))
         self.rules = {}
+
+        # the analyzer contains data that need to persist between sentences
+        self.plan_analyzer = PlanAnalyzer()
 
 
     # ('analyze_plans', [body-atoms])
@@ -30,8 +37,7 @@ class PlanAnalyzerModule(SomeModule):
         instof = []
         inference_rules = []
 
-        plan_analyzer = PlanAnalyzer()
-        plan_analyzer.justify(inductions, context)
+        self.plan_analyzer.justify(inductions, context)
 
         # bindings = context.solver.solve([("recognize_plan", atoms)], context.binding)
 

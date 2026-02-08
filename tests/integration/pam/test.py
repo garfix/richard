@@ -183,9 +183,9 @@ class TestPAM(unittest.TestCase):
             # ],
         ]
 
-        # logger.log_no_tests()
-        logger.log_all_tests()
-        logger.log_products()
+        logger.log_no_tests()
+        # logger.log_all_tests()
+        # logger.log_products()
 
         for session in tests:
             tester = DialogTester(self, session, system, logger)

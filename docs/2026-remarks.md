@@ -1,6 +1,28 @@
-## 2026-02-07
+## 2026-02-08
 
+Storing sentences as relations in a relational database makes no sense. I need to later recall the sentential structure and this is lost once it's in the database.
 
+===
+
+My first sentence "Willa was hungry" reads
+
+    ('name', '$2', 'Willa') ('hungry', '$2')
+
+It's very unlike
+
+    ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]]
+
+and it doesn't have the predicate `is` to recognize it as a theme.
+
+For now I store the sentences in arrays, just as MicroPAM does. If a sentence (semantic structure) does not have a `goal` or `plan` atom, it's stored as a theme.
+
+===
+
+Relational databases are only useful for very simple knowledge structures: is, has. Time-related is still possible, but second order knowledge is very problematic. Possible, of course, but not a good fit.
+
+=== 
+
+I asked Gemini for a database to store second order knowledge and it recommended Neo4j. I can look into this later. This only becomes relevant with large amounts of data.
 
 ## 2026-02-06
 

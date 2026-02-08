@@ -1,9 +1,21 @@
-# Based on MicroPAM (see https://github.com/garfix/micropam)
-from richard.core.atoms import reify_variables
+from richard.core.atoms import reify_variables, unification
+from richard.entity.Variable import Variable
 from richard.entity.ExecutionContext import ExecutionContext
 
 
+# Based on MicroPAM (see https://github.com/garfix/micropam)
 class PlanAnalyzer:
+
+    known_themes: list[tuple]
+    known_goals: list[tuple]
+    known_plans: list[tuple]
+
+
+    def __init__(self):
+        self.known_themes = []
+        self.known_goals = []
+        self.known_plans = []
+
 
     def justify(self, sentence: list[tuple], context: ExecutionContext):
 
@@ -32,9 +44,12 @@ class PlanAnalyzer:
 
 
     def update_db(self, sentence: list[tuple], context: ExecutionContext):
-        for atom in sentence:
-            reified = reify_variables(atom)
-            print(reified)
-            context.solver.write_atom(reified)
+        reified = reify_variables(sentence)
 
+        print(reified)
+
+        if unification(sentence, [('goal', Variable('E1'))]):
+            self.known_goals.append(reified)
+        else:
+            self.known_themes.append(reified)
 
