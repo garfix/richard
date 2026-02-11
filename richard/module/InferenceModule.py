@@ -34,7 +34,7 @@ class InferenceModule(SomeModule):
         parser = SimpleInferenceRuleParser()
         with open(path) as rule_file:
             content = rule_file.read()
-            rules, pos = parser.parse(content)
+            rules, pos = parser.parse_rules(content)
             if pos is not None:
                 raise Exception("Unable to parse inference on token " + str(pos) + " in file " + path)
             for rule in rules:

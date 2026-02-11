@@ -8,7 +8,7 @@ from richard.core.Logger import Logger
 from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
-from richard.module.PlanAnalyzerModule import PlanAnalyzerModule
+from richard.module.InductionModule import InductionModule
 from richard.module.PlanAnalyzerDialogContext import PlanAnalyzerDialogContext
 from richard.processor.parser.helper.SimpleGrammarRulesParser import SimpleGrammarRulesParser
 from richard.processor.semantic_composer.SemanticComposer import SemanticComposer
@@ -48,9 +48,9 @@ class TestPAM(unittest.TestCase):
 
         # add the plan analyzer
 
-        plan_analyzer = PlanAnalyzerModule()
-        plan_analyzer.import_fact_induction_rules(path + "fact_induction.pl")
-        plan_analyzer.import_plan_analyzer_rules(path + "plan_recognition.pl")
+        inductions = InductionModule()
+        inductions.import_fact_induction_rules(path + "fact_induction.pl")
+        inductions.import_plan_analyzer_rules(path + "plan_recognition.pl")
         plan_analyzer_dialog_content = PlanAnalyzerDialogContext()
 
         # define the model
@@ -58,7 +58,7 @@ class TestPAM(unittest.TestCase):
         model = Model([
             facts,
             inferences,
-            plan_analyzer,
+            inductions,
             output_buffer,
             dialog_context,
             plan_analyzer_dialog_content

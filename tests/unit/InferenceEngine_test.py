@@ -55,8 +55,8 @@ class TestInferenceEngine(unittest.TestCase):
 
         for test in tests:
             question, answer = test
-            result, _ = parser.parse(question)
-            self.assertEqual(answer, result)
+            rules, _ = parser.parse_rules(question)
+            self.assertEqual(answer, rules)
 
 
     def test_inference_engine(self):

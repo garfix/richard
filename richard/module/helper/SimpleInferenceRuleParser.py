@@ -1,6 +1,7 @@
 import re
 
 from richard.core.constants import DISJUNCTION
+from richard.entity.InductionRule import InductionRule
 from richard.entity.Variable import Variable
 from richard.entity.InferenceRule import InferenceRule
 
@@ -14,6 +15,7 @@ class SimpleInferenceRuleParser:
 
     def __init__(self) -> None:
         self.re_tokens = re.compile("(" + "|".join([
+            '=>',
             '=',
             '\.',
             ',',
@@ -35,7 +37,7 @@ class SimpleInferenceRuleParser:
         self.re_int = re.compile("^\d+$")
 
 
-    def parse(self, text: str):
+    def parse_rules(self, text: str):
 
         rules = []
         tokens = re.findall(self.re_tokens, text)
@@ -43,6 +45,28 @@ class SimpleInferenceRuleParser:
 
         while True:
             rule, new_pos = self.parse_rule(tokens, pos)
+            if rule:
+                rules.append(rule)
+                pos = new_pos
+            else:
+                break
+
+        pos = self.eat_trailing_comments(tokens, pos)
+
+        if pos != len(tokens):
+            return None, new_pos
+
+        return rules, None
+
+
+    def parse_induction_rules(self, text: str):
+
+        rules = []
+        tokens = re.findall(self.re_tokens, text)
+        pos = 0
+
+        while True:
+            rule, new_pos = self.parse_induction_rule(tokens, pos)
             if rule:
                 rules.append(rule)
                 pos = new_pos
@@ -81,6 +105,34 @@ class SimpleInferenceRuleParser:
         pos = new_pos
 
         return InferenceRule(antecedent, consequents), pos
+
+
+    # female(X), cow(X), young(X) :- heifer(X).
+    def parse_induction_rule(self, tokens: list[str], pos: int):
+
+        antecedents, new_pos = self.parse_atoms(tokens, pos)
+        if not antecedents:
+            return None, new_pos
+        pos = new_pos
+
+        consequents = []
+        implies, new_pos = self.parse_token(tokens, pos)
+        if implies == '=>':
+            pos = new_pos
+            consequents, new_pos = self.parse_atoms(tokens, pos)
+            if not consequents:
+                return None, new_pos
+            pos = new_pos
+        else:
+            return None, new_pos
+
+        dot, new_pos = self.parse_token(tokens, pos)
+
+        if not dot == ".":
+            return None, new_pos
+        pos = new_pos
+
+        return InductionRule(antecedents, consequents), pos
 
 
     # ( parent(X, Y), parent(Y, Z) )
@@ -280,6 +332,9 @@ class SimpleInferenceRuleParser:
 
     def parse_term(self, tokens: list[str], pos: int, no_atoms = False):
         token, new_pos = self.parse_token(tokens, pos)
+        if not token:
+            return None, pos
+
         if token[0] == "'":
             pos = new_pos
             return token[1:-1].replace("\\'", "'"), pos

@@ -4,7 +4,7 @@ from richard.entity.ExecutionContext import ExecutionContext
 from richard.module.induction.PlanAnalyzer import PlanAnalyzer
 
 
-class PlanAnalyzerModule(SomeModule):
+class InductionModule(SomeModule):
     """
     This module, inspired by Robert Wilensky's PAM, analyzes the goals and plans of the actors in the story / dialog, and
     tries to predict their next moves
