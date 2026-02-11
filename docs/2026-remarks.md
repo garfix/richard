@@ -1,3 +1,127 @@
+## 2026-02-10
+
+I'm now in the grip of tree-structures. Let's have a look
+
+Tree-representation of the same sentence:
+
+{thought
+    sub: {name: "John"}
+    obj: {like: {
+        sub: {name: "Mary},
+        obj: {reference: "him"}
+    }}}
+
+Let's take a sentence with a quantifier:
+
+"What is the average area of the countries in each continent?"
+
+{is
+    sub: E1,
+    obj: state {
+        type: area
+        modifier: average,
+        obj: country {
+            in: continent
+        }
+    }
+}
+
+or
+
+{is
+    sub: E1,
+    obj: average_area {
+        obj: country
+        group: continent
+    }
+}
+
+===
+
+On the other hand, there's a sliding scale from tuples to objects:
+
+    person(E1, Name)
+    person(id=E1, name=Name)
+    person {
+        id: str
+        name: str
+    }
+
+===
+
+Willa was hungry
+
+['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+
+(is,
+    actor { person { name = "Willa" }},
+    state { hunger { val = 5 }}
+)
+
+Willa was in a state of hunger
+
+(state, 
+    E1,
+    hunger
+)
+
+The actor named Willa was in the state of hunger
+
+(is, 
+    actor: E1,
+    state: hunger
+)
+
+A was B
+
+(is, 
+    actor: [],
+    state: []
+)
+
+(is, 
+    name("Willa"),
+    hunger()
+)
+
+===
+
+But, placing this in the database:
+
+[('name', '$2', 'Willa'), ('hungry', '$2')]
+
+also allows me to use `('hungry', '$2')` as a condition for a rule.
+
+===
+
+The rule
+
+    [['take-plan', ['planner', '?x'], ['object', '?y']]],
+    [['grasp', ['actor', '?x'], ['object', '?y']]]
+
+can also be written as
+
+    grasp(E1, E2) => take_plan(E1, E2)
+
+===
+
+Can I turn the `PlanAnalyzerModule` into a `InductionModule`? It could then allow for bot plan analysis, and basic induction, both of which are used by CD and PAM. The former is more specific PAM, the latter is general CD (in fact it's part of the CD parsing process).
+
+## 2026-02-09
+
+I'm trying to find out how to store second order sentences. So far I'm using id's to represent events and to create second order representations. This works well as a means to store relations, but it doesn't work at all as a means to query the second order data. I now need to store sentences, goals, plan instances, etc. 
+
+What about storing second order events like this
+
+"John thought mary liked him very much"
+
+name(E1, "John") name(E2, "Mary") think(E1, 
+                                    like(P1, E2, E1) very_much(P1))
+
+I added "very much" to ensure to predicate on the event itself. Still needing the extra variable.
+
+With this representation, it is no longer possible to just ask "Does Mary like John?"
+
 ## 2026-02-08
 
 Storing sentences as relations in a relational database makes no sense. I need to later recall the sentential structure and this is lost once it's in the database.
@@ -23,6 +147,18 @@ Relational databases are only useful for very simple knowledge structures: is, h
 === 
 
 I asked Gemini for a database to store second order knowledge and it recommended Neo4j. I can look into this later. This only becomes relevant with large amounts of data.
+
+===
+
+Second sentence: "She picked up the Michelin guide".
+
+This is the first rule to find:
+
+    [
+        [['take-plan', ['planner', '?x'], ['object', '?y']]],
+        [['grasp', ['actor', '?x'], ['object', '?y']]]
+    ],
+
 
 ## 2026-02-06
 

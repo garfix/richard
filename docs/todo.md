@@ -1,9 +1,42 @@
 ## todo
 
+PAM: Willa was hungry
+- match inferences voor "She picked up the Michelin guide"
+    - create the rule for pick_up -> grasp (action -> plan)
+    - match the rule, and add the plan to the list of plans 
+        - in een SimpleFrameDataSource? (hoe hou ik de zin dan bij elkaar als 1 geheel?)
+            - decl(name(E1, 'Willa'), hungry(E1))
+            - theme(name(E1, 'Willa'), hungry(E1))
+            - kan ik dan deze trees nog matchen aan een regel?
+                - decl(grasp(E1, E2)) => [condition] take_plan(E1, E2)
+                    - kan ik decl(grasp(E1, E2)) in de database gooien, om matches te vinden?
+                    - (is dan namelijk niet gewoon een kwestie van unificatie, en je kunt de volgende deducties gebruiken)
+                        - grasp() := pick_up()
+        - in de known_plans list?
+    - handle pronouns like "She" and "her"
+    - hoe houd ik de delen van de zin bijeen? tree structure?
+    - CD doet een semantische analyse aan het begin van het proces
+        - ik zou dat graag gedurende het proces doen
+        - maar kan ook tijdens de plan analyses phase?
+        - create inferences for Willa -> female, Willa -> person
+- OK voeg een zin toe aan de database "Willa was hungry"
+
+- pas de SimpleFrameDataSource aan zodat deze niet simpleweg unificatie doet, maar ook inferences toestaat
+
+- zin 1
+    - name('$2', "Willa"), hungry('$2')
+    - induce and store
+        female('$2'), person('$2')
+    - store in database:
+        'name'('$2', 'Willa'), 'hungry'('$2')
+- zin 2 
+    - pick_up(E1, E2) michelin_guide(E1)
+    - match with `grasp(E1, E2) => take_plan(E1, E2)` (grasp => pick_up, via general deduction)
+
+
+
 PAM
-- handle pronouns like "She" and "her"
 - de deducties van PAM moeten een mate van onzekerheid hebben; het zijn geen zekerheden; hoe streep je hypothesen af?
-- voeg een zin toe aan de database "Willa was hungry"
 
 ## context
 
@@ -17,6 +50,10 @@ Work out context in inference rules:
 * or there may be different predicates `output_print()` that prints directly
 * this predicate should then **wait** until the message is received by the user / client, before continuing
 * this predicate can be implemented by the application in any way it sees fit
+
+## database
+
+- use a db like Neo4j to store second order, modal, and time-based sentences
 
 ## module
 

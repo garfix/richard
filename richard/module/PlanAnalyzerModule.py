@@ -1,7 +1,7 @@
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
-from richard.module.plan_analyzer.PlanAnalyzer import PlanAnalyzer
+from richard.module.induction.PlanAnalyzer import PlanAnalyzer
 
 
 class PlanAnalyzerModule(SomeModule):
@@ -15,6 +15,7 @@ class PlanAnalyzerModule(SomeModule):
 
     def __init__(self) -> None:
         super().__init__()
+        self.add_relation(Relation("induce_facts", query_function=self.induce_facts))
         self.add_relation(Relation("analyze_plans", query_function=self.analyze_plans))
         self.rules = {}
 
@@ -22,8 +23,23 @@ class PlanAnalyzerModule(SomeModule):
         self.plan_analyzer = PlanAnalyzer()
 
 
+    def import_fact_induction_rules(self, path: str):
+        pass
+
+
+    def import_plan_analyzer_rules(self, path: str):
+        pass
+
+
+    # ('induce_facts', [body-atoms])
+    def induce_facts(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return []
+
+
     # ('analyze_plans', [body-atoms])
     def analyze_plans(self, arguments: list, context: ExecutionContext) -> list[list]:
+
+        print('X')
 
         atoms = arguments[0]
 

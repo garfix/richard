@@ -40,7 +40,6 @@ class TestPAM(unittest.TestCase):
 
         inferences = InferenceModule()
         inferences.import_rules(path + "intents.pl")
-        inferences.import_rules(path + "plan_recognition.pl")
 
         # a data source to store information for output
 
@@ -50,6 +49,8 @@ class TestPAM(unittest.TestCase):
         # add the plan analyzer
 
         plan_analyzer = PlanAnalyzerModule()
+        plan_analyzer.import_fact_induction_rules(path + "fact_induction.pl")
+        plan_analyzer.import_plan_analyzer_rules(path + "plan_recognition.pl")
         plan_analyzer_dialog_content = PlanAnalyzerDialogContext()
 
         # define the model
