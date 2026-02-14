@@ -1,6 +1,7 @@
 
 
-from richard.core.atoms import bind_variables, reify_variables, unification
+from richard.core.functions.atoms import bind_variables, reify_variables
+from richard.core.functions.unification import unification
 from richard.entity.BindingResult import BindingResult
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable

@@ -1,4 +1,4 @@
-from richard.core.atoms import bind_variables, get_atom_variables
+from richard.core.functions.atoms import bind_variables
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface import SomeSolver

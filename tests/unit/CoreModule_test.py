@@ -2,7 +2,7 @@ import unittest
 
 from richard.core.Model import Model
 from richard.core.Solver import Solver
-from richard.core.constants import E1, E2
+from richard.core.constants import E1, E2, E3, E4
 from richard.entity.Variable import Variable
 from richard.module.CoreModule import CoreModule
 

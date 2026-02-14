@@ -1,4 +1,4 @@
-from richard.core.atoms import get_atom_variables
+from richard.core.functions.atoms import get_atom_variables
 from richard.core.constants import IGNORED, INFINITE
 from richard.entity.Variable import Variable
 from richard.interface.SomeModel import SomeModel

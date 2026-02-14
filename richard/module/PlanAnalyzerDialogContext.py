@@ -1,9 +1,7 @@
-from richard.core.atoms import bind_variables
 from richard.data_source.SimpleFrameDataSource import SimpleFrameDataSource
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
-from richard.module.SqliteMemoryModule import SqliteMemoryModule
 
 
 class PlanAnalyzerDialogContext(SomeModule):

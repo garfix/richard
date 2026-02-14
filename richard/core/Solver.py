@@ -1,5 +1,5 @@
 from collections import defaultdict
-from richard.core.atoms import bind_variables, convert_tuple_results_to_bindings, get_atom_variables
+from richard.core.functions.atoms import bind_variables, convert_tuple_results_to_bindings, get_atom_variables
 from richard.core.constants import DISJUNCTION
 from richard.entity.BindingResult import BindingResult
 from richard.entity.ResultIterator import ResultIterator

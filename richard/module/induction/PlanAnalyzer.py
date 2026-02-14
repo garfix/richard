@@ -1,4 +1,6 @@
-from richard.core.atoms import reify_variables, unification
+from richard.core.functions.atoms import reify_variables
+
+from richard.core.functions.unification import unification
 from richard.entity.Variable import Variable
 from richard.entity.ExecutionContext import ExecutionContext
 

@@ -1,4 +1,4 @@
-from richard.core.atoms import unification
+from richard.core.functions.unification import unification
 from richard.entity.BindingResult import BindingResult
 from richard.interface.SomeDataSource import SomeDataSource
 

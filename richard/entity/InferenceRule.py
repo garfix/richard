@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from richard.core.atoms import get_atoms_variables
+from richard.core.functions.atoms import get_atoms_variables
 
 
 @dataclass(frozen=True)

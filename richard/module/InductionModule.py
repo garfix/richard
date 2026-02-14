@@ -1,4 +1,4 @@
-from richard.core.atoms import bind_variables
+from richard.core.functions.atoms import bind_variables
 from richard.entity.InductionRule import InductionRule
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
@@ -57,7 +57,7 @@ class InductionModule(SomeModule):
         atoms = arguments[0]
         print(atoms, context.binding)
         # for rule in self.fact_induction_rules:
-        pass
+        return []
 
 
     # ('analyze_plans', [body-atoms])
