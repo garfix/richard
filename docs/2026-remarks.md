@@ -2,6 +2,48 @@
 
 The idea of unification of unbound variables I got from "From discourse to logic" by Kamp and Reyle.
 
+===
+
+Now, *if* I use variable unification to solve the anaphora problem, what would that look like? Keep in mind that the CD folks claim that anaphora resolution is almost a non-problem.
+
+Let's see. Start with 
+
+    Willa was hungry 
+    ('name', $2, 'Willa'), ('hungry', $2)
+
+then we get 
+
+    She picked up a Michelin Guide 
+    ('name', $4, 'She'), ('michelin_guide', $5), ('pick_up', $3, $4, $5)
+
+How do we get $2 and $4 to be the same entity?
+
+First PAM goes through a number of induction iterations:
+
+    ['take-plan', ['planner', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]],
+    ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['poss', ['actor', ['person', ['name', ['Willa']]]], ['object', ['book', ['type', ['restaurant-guide']]]]]]],
+    ...
+    ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [0]]]]]]],
+
+all these just apply to the variables of the second sentence.
+
+But then comes a `predicted` step: "Confirms prediction from", matching the rule
+
+    [
+        [['is', ['actor', '?x'], ['state', ['hunger', ['val', '?n']]]], ['pos-val', '?n']],
+        [['goal', ['planner', '?x'], ['objective', ['is', ['actor', '?x'], ['state', ['hunger', ['val', [0]]]]]]]]
+    ],
+
+Now the new goal deduced from the second sentence matches the first sentence. In my lingo this would say (something like):
+
+    ('goal', ('not', ('hungry', E1))) => ('hungry', E1)
+
+The antecedent matches the second line, whicle the consequent matches the first line. The unification of both creates a link between their variables.
+
+And thus: $2 = $4
+
+QED
+
 ## 2026-02-13
 
 I asked ChatGPT for a basic algorithm for unbound variable unification in Prolog. This is what it returned:
