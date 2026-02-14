@@ -1,3 +1,77 @@
+## 2026-02-14
+
+The idea of unification of unbound variables I got from "From discourse to logic" by Kamp and Reyle.
+
+## 2026-02-13
+
+I asked ChatGPT for a basic algorithm for unbound variable unification in Prolog. This is what it returned:
+
+~~~
+
+unify(X, Y):
+    X = deref(X)
+    Y = deref(Y)
+
+    if X == Y:
+        succeed
+
+    else if X is unbound variable:
+        Heap[X] = Y
+        succeed
+
+    else if Y is unbound variable:
+        Heap[Y] = X
+        succeed
+
+    else if both are integers:
+        succeed if equal, else fail
+
+    else:
+        fail
+ 
+~~~
+
+When asked what was the source of the algorithm, it said that it created the algorithm itself, based on multiple sources.
+
+The algorithm is brilliant in its simplicity. I understand it now, and I've written a blogpost about it:
+
+https://patrick-van-bergen.blogspot.com/2026/02/unbound-variable-unification-in-prolog.html
+
+## 2026-02-12
+
+Working on fact induction. I created a separate predicate (`induce_facts`) that can be used in an intent to derive new facts from a given input. The predicate can use induction rules like this:
+
+    name(E1, "Willa") => female(E1), person(E1).
+
+The left hand side (antecedent) can have multiple conditions.
+
+===
+
+Based on the input `[('name', $2, 'Willa'), ('hungry', $2)]` I can now induce new facts. But first the variables of the input need to go.
+
+[('name', $2, 'Willa'), ('hungry', $2)]
+[('she', $4), ('michelin_guide', $5), ('pick_up', $3, $4, $5)]
+[('she', $7), ('car', $8), ('her', $8), ('get_into', $6, $7, $8)]
+
+* I used to resolve the id's of names and pronouns as the atoms were executed
+* now they are not executed
+* maybe I should execute the code, just for the sake of resolving the id's
+* no resolving an atom like `hungry($2)` just fails
+* maybe a new mode, next to the `query mode`, an `assert mode`, that first tries to query each atom, and if that fails, store the atom
+* that will not help me resolve pronouns
+* I think PAM just uses the name "Willa" as an identifier, which is possible within a single story
+* Another take: just change variabe $2 to string `$2` and store it. The stored string `$2` is *still a variable*. The reified version of the variable. Why's that important? Because we can later store `$2 = $3`. This unification of variables is allowed in Prolog.
+* Gemini: "In Prolog terms, when two unbound variables are unified, they become aliased. They don't just "point" to the same value; they become different names for the same logical memory cell."
+* for today: take the atoms, reify them, and store them in memory. later, unify the reified variables
+* how?
+* there are 2 problems:
+* how does the variable unification work
+* when is the unification performed?
+* a=b, d=c, b=c; a->b, d->c, b->c
+* a=b, b=c; a->_1, b->_1, c->_1
+* a=b, c=d, b=c; a->_1, b->_1, c->_2, d->_2, _1->_2
+* create a variable indirection table: [variable-from, variable-to]
+
 ## 2026-02-10
 
 I'm now in the grip of tree-structures. Let's have a look

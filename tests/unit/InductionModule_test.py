@@ -12,7 +12,7 @@ class TestInductionModule(unittest.TestCase):
         parser = SimpleInferenceRuleParser()
 
         tests = [
-            # ["orang_utan(E1) => ape(E1).", [InductionRule([('orang_utan', Variable('E1'))], [('ape', Variable('E1'))])]],
+            ["orang_utan(E1) => ape(E1).", [InductionRule([('orang_utan', Variable('E1'))], [('ape', Variable('E1'))])]],
             ["female(E1), cow(E1), young(E1) => heifer(E1), bovine(E1).", [InductionRule(
                 [('female', Variable('E1')), ('cow', Variable('E1')), ('young', Variable('E1'))],
                 [('heifer', Variable('E1')), ('bovine', Variable('E1'))])]],

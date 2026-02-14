@@ -50,7 +50,7 @@ class TestPAM(unittest.TestCase):
 
         inductions = InductionModule()
         inductions.import_fact_induction_rules(path + "fact_induction.pl")
-        inductions.import_plan_analyzer_rules(path + "plan_recognition.pl")
+        inductions.import_plan_analyzer_rules(path + "plan_analysis.pl")
         plan_analyzer_dialog_content = PlanAnalyzerDialogContext()
 
         # define the model
