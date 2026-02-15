@@ -2,7 +2,7 @@ import unittest
 
 from richard.core.Model import Model
 from richard.core.Solver import Solver
-from richard.core.constants import E1, E2, E3, E4
+from richard.core.constants import E1, E2, E3, E4, E5
 from richard.entity.Variable import Variable
 from richard.module.CoreModule import CoreModule
 
@@ -82,9 +82,45 @@ class TestCoreModule(unittest.TestCase):
         bindings = solver.solve([('let', E1, 'mary'), ('$unification', source, [('lost', E1)])])
         self.assertEqual(bindings, [])
 
-        # target, source
+        # # target, source
         bindings = solver.solve([('$unification', [('likes', E1, 'jane')], source)])
         self.assertEqual(bindings, [{'E1': 'john'}])
 
         bindings = solver.solve([('$unification', [('lost', E1)], source)])
         self.assertEqual(bindings, [{'E1': 'john'}])
+
+        # unbound variables
+        bindings = solver.solve([
+            ('$unification', E1, E2),
+            ('$unification', source, [('goal', E1, ('win', E2))]),
+        ])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([
+            ('$unification', source, [('goal', E1, ('win', E2))]),
+            ('$unification', E1, E2),
+        ])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([
+            ('$unification', E1, E3),
+            ('$unification', E2, E3),
+            ('$unification', source, [('goal', E1, ('win', E2))]),
+        ])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([
+            ('$unification', source, [('goal', E1, ('win', E2))]),
+            ('$unification', E1, E3),
+            ('$unification', E2, E3),
+        ])
+        self.assertEqual(bindings, [])
+
+        bindings = solver.solve([
+            ('$unification', E1, E2),
+            ('$unification', E3, E4),
+            ('$unification', ('red', E5), E4),
+            ('$unification', E1, E4),
+        ])
+        self.assertEqual(bindings, [{'E1': E2, 'E2': ('red', E5), 'E3': E4, 'E4': ('red', E5)}])
+

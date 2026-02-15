@@ -411,9 +411,9 @@ class CoreModule(SomeModule):
     # for example: ('$unification', [('just_left_of, 'sofa', 'table')], [('just_left_of', E1, E2)]
     def unification(self, arguments: list, context: ExecutionContext) -> BindingResult:
 
-        term1 = bind_variables(arguments[0], context.binding)
-        term2 = bind_variables(arguments[1], context.binding)
-        binding = unification(term1, term2)
+        term1 = arguments[0]
+        term2 = arguments[1]
+        binding = unification(term1, term2, context.binding)
         return BindingResult([] if binding is None else [binding])
 
 

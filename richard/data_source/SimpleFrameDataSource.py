@@ -23,7 +23,7 @@ class SimpleFrameDataSource(SomeDataSource):
 
         result = []
         for a in self.index[table]:
-            binding = unification(a, atom)
+            binding = unification(a, atom, {})
             if binding is not None:
                 result.append(binding)
 
