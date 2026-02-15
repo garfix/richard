@@ -54,3 +54,4 @@ IGNORED = 'ignored'
 
 # internal predicates
 DISJUNCTION = '$disjunction'
+UNIFICATION = '$unification'

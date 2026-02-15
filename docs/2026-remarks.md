@@ -1,3 +1,7 @@
+## 2026-02-15
+
+I implemented the unification of unbound variables. But I haven't worked out the effects of this unification on the execution of atoms yet.
+
 ## 2026-02-14
 
 The idea of unification of unbound variables I got from "From discourse to logic" by Kamp and Reyle.

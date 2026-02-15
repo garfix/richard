@@ -1,5 +1,7 @@
 ## todo
 
+Work out the effects of unbound variable unification on the matching of atoms.
+
 PAM: Willa was hungry
 - match inferences voor "She picked up the Michelin guide"
     - create the rule for pick_up -> grasp (action -> plan)

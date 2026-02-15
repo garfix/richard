@@ -1,6 +1,6 @@
 import re
 
-from richard.core.constants import DISJUNCTION
+from richard.core.constants import DISJUNCTION, UNIFICATION
 from richard.entity.InductionRule import InductionRule
 from richard.entity.Variable import Variable
 from richard.entity.InferenceRule import InferenceRule
@@ -281,7 +281,7 @@ class SimpleInferenceRuleParser:
             return None, new_pos
         pos = new_pos
 
-        return tuple(['$unification', atom_or_term1, atom_or_term2]), pos
+        return tuple([UNIFICATION, atom_or_term1, atom_or_term2]), pos
 
     # parent(X, Y)
     def parse_simple_atom(self, tokens: list[str], pos: int):
