@@ -71,12 +71,16 @@ def unify_variables(term1: Variable, term2: Variable, binding: dict):
     return binding
 
 
-def dereference(term: Variable, binding: dict):
+def dereference(term: any, binding: dict):
     value = term
     while isinstance(value, Variable) and value.name in binding:
         value = binding[value.name]
 
     return value
+
+
+def dereference_list(terms: list[any], binding: dict):
+    return list(map(lambda a: dereference(a, binding), terms))
 
 
 def unify_bindings(old_binding: dict, new_binding: dict) -> dict|None:

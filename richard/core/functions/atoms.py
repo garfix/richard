@@ -85,7 +85,7 @@ def reify_variables(construct: any) -> any:
         return construct
 
 
-def convert_tuple_results_to_bindings(predicate: str, results: list, binding: dict, input: list):
+def convert_tuple_results_to_bindings(predicate: str, results: list, dereferenced_arguments: list, binding: dict):
     """
     Converts results into a list of bindings
     If a result has some variable in different positions, make sure the values at the positions do not conflict
@@ -99,7 +99,7 @@ def convert_tuple_results_to_bindings(predicate: str, results: list, binding: di
         conflict = False
 
         # go through all arguments
-        for i, arg in enumerate(input):
+        for i, arg in enumerate(dereferenced_arguments):
             if result[i] is None:
                 continue
             # variable?
@@ -118,7 +118,7 @@ def convert_tuple_results_to_bindings(predicate: str, results: list, binding: di
                 # check if the result matches the given input
                 if arg != result[i]:
                     # indicates an error in the relation
-                    raise Exception(f"Result of '{predicate}' doesn't match input value: {input} => {result}")
+                    raise Exception(f"Result of '{predicate}' doesn't match input value: {dereferenced_arguments} => {result}")
 
         if not conflict:
             checked_results.append(checked_result)

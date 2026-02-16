@@ -3,7 +3,9 @@ import unittest
 
 from richard.core.Model import Model
 from richard.core.constants import E1, E2
+from richard.core.functions.unification import dereference
 from richard.data_source.Sqlite3DataSource import Sqlite3DataSource
+from richard.entity.Variable import Variable
 from richard.entity.Relation import Relation
 from richard.entity.ResultIterator import ResultIterator
 from richard.interface.SomeDataSource import SomeDataSource
@@ -112,6 +114,11 @@ class TestSolver(unittest.TestCase):
             [
                 [('count', E1, [('return_iterator',)])],
                 [{'E1': 100000000}]
+            ],
+            # unification
+            [
+                [('$unification', E2, E1), ('river', E1), ('contains', 'india', E2)],
+                [{'E1': 'brahmaputra', 'E2': Variable('E1')}]
             ],
         ]
 
