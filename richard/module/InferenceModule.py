@@ -44,7 +44,7 @@ class InferenceModule(SomeModule):
     def handle_rule(self, arguments: list, context: ExecutionContext) -> list[list]:
         results = []
         for rule in self.rules[context.relation.predicate]:
-            results.extend(self.solve_rule(rule, context.formal_parameters, context.solver, context.binding))
+            results.extend(self.solve_rule(rule, context.unbound_arguments, context.solver, context.binding))
 
         return results
 

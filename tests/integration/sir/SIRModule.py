@@ -39,8 +39,8 @@ class SIRModule(SomeModule):
 
 
     def part_of_n(self, arguments: list, context: ExecutionContext) -> list[list]:
-        part_variable = context.formal_parameters[0]
-        whole_variable = context.formal_parameters[1]
+        part_variable = context.unbound_arguments[0]
+        whole_variable = context.unbound_arguments[1]
 
         results = self.ds.select(context.relation.predicate, context.relation.formal_parameters, arguments)
 
@@ -95,8 +95,8 @@ class SIRModule(SomeModule):
 
         # solving based on class information
 
-        whole_variable = context.formal_parameters[0]
-        part_variable = context.formal_parameters[1]
+        whole_variable = context.unbound_arguments[0]
+        part_variable = context.unbound_arguments[1]
 
         whole_type = None
         if isinstance(whole_variable, Variable):

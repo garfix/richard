@@ -80,7 +80,7 @@ class PAMModule(SomeModule):
             # if id is given, a new name is linked to that id
             if isinstance(id, Variable):
                 # otherwise a new id is created for the name
-                id = context.formal_parameters[1].name
+                id = context.unbound_arguments[1].name
             self.ds.insert("entity", ["name", "id", ], [name, id])
             return [
                 [None, id]

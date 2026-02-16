@@ -10,7 +10,7 @@ from richard.processor.semantic_composer.SemanticSentence import SemanticSentenc
 @dataclass(frozen=True)
 class ExecutionContext:
     relation: Relation
-    formal_parameters: list
+    unbound_arguments: list
     binding: dict
     solver: SomeSolver
     sentence: SemanticSentence
