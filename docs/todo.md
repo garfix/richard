@@ -1,5 +1,11 @@
 ## todo
 
+unification() zou niet moeten werken, want krijgt nu dereferenced arguments
+bound arguments zijn nog niet beschikbaar
+in de tests worden atoms gebruikt als values en diens argumenten worden nog niet gedereferenced
+de laag bounded_variables kan er waarschijnlijk uit, en dereferenced arguments gaat dan bounded arguments heten
+solve_rule: stukken code naar atoms.py ; duidelijke scheiding aanbrengen ; probeer de variabelen die niet toehoren weg te halen
+
 Work out the effects of unbound variable unification on the matching of atoms.
 
 PAM: Willa was hungry
