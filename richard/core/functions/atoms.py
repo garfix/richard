@@ -1,3 +1,4 @@
+from richard.core.functions.unification import dereference
 from richard.entity.Variable import Variable
 
 
@@ -54,16 +55,62 @@ def bind_variables(construct: any, binding: dict) -> list:
         return tuple([bind_variables(arg, binding) for arg in construct])
     # variable
     elif isinstance(construct, Variable):
+        # return dereference(construct, binding)
         # bound?
         if construct.name in binding:
             # add variable value
-            return binding[construct.name]
+            return bind_variables(binding[construct.name], binding)
+            # return binding[construct.name]
         else:
             # non-bound variable
             return construct
     else:
         # just the value
         return construct
+
+
+def map_arguments(formal_parameters: list[any], arguments: list[any], binding: dict, all_variables) -> dict|None:
+    """
+    Maps all variables of formal_parameters to their argument
+    Checks if the constants in formal_parameters match their argument
+    """
+
+    # initialize with binding variables that do not affect this rule (but may be used later on)
+    rule_binding = {key: value for (key, value) in binding.items() if key not in all_variables}
+
+    for rule_argument, value in zip(formal_parameters, arguments):
+
+        if isinstance(value, Variable) and value.name in binding:
+            bound_value = binding[value.name]
+            #bound_value = bind_variables(value, binding)
+        else:
+            bound_value = value
+
+        if isinstance(rule_argument, Variable):
+            # bind variable
+            if isinstance(bound_value, Variable):
+                # A = E1
+                pass
+            else:
+                # A = 'john'
+                # check for conflicts
+                if rule_argument.name in rule_binding:
+                    if rule_binding[rule_argument.name] != bound_value:
+                        return None
+
+                rule_binding[rule_argument.name] = bound_value
+                # rule_binding[rule_argument.name] = bind_variables(bound_value, binding)
+        else:
+            if isinstance(bound_value, Variable):
+                # 'john' = E1
+                pass
+            else:
+                # 'john' = 'susan'
+                # check for conflicts
+                if bound_value != rule_argument:
+                    return None
+
+    return rule_binding
 
 
 def reify_variables(construct: any) -> any:
@@ -93,6 +140,9 @@ def convert_tuple_results_to_bindings(predicate: str, results: list, dereference
     """
     checked_results = []
     for result in results:
+
+        # result = bind_variables(result, binding)
+
         # extend the incoming binding
         checked_result = binding.copy()
         # check needed for a variable that occurs twice
@@ -100,6 +150,7 @@ def convert_tuple_results_to_bindings(predicate: str, results: list, dereference
 
         # go through all arguments
         for i, arg in enumerate(dereferenced_arguments):
+
             if result[i] is None:
                 continue
             # variable?

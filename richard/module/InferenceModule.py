@@ -1,4 +1,4 @@
-from richard.core.functions.atoms import bind_variables
+from richard.core.functions.atoms import bind_variables, map_arguments
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
 from richard.interface import SomeSolver
@@ -52,37 +52,10 @@ class InferenceModule(SomeModule):
     def solve_rule(self, rule: InferenceRule, arguments: list, solver: SomeSolver, binding: dict):
 
         rule_arguments = rule.head[1:]
-        # initialize with binding variables that do not affect this rule (but may be used later on)
-        rule_binding = {key: value for (key, value) in binding.items() if key not in rule.get_all_variables()}
 
-        for rule_argument, value in zip(rule_arguments, arguments):
-
-            if isinstance(value, Variable) and value.name in binding:
-                bound_value = binding[value.name]
-            else:
-                bound_value = value
-
-            if isinstance(rule_argument, Variable):
-                # bind variable
-                if isinstance(bound_value, Variable):
-                    # A = E1
-                    pass
-                else:
-                    # A = 'john'
-                    # check for conflicts
-                    if rule_argument.name in rule_binding:
-                        if rule_binding[rule_argument.name] != bound_value:
-                            return []
-                    rule_binding[rule_argument.name] = bound_value
-            else:
-                if isinstance(bound_value, Variable):
-                    # 'john' = E1
-                    pass
-                else:
-                    # 'john' = 'susan'
-                    # check for conflicts
-                    if bound_value != rule_argument:
-                        return []
+        rule_binding = map_arguments(rule_arguments, arguments, binding, rule.get_all_variables())
+        if rule_binding is None:
+            return []
 
         if len(rule.body) == 0:
             bindings = [ rule_binding ]
