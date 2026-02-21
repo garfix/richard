@@ -53,8 +53,10 @@ class SIRModule(SomeModule):
             if isinstance(part_variable, Variable):
                 part_type = self.get_type(context, part_variable.name, arguments[0])
 
-            # produce output
-            context.solver.solve([('store', [('output_type', 'how_many'), ('output_how_many', part_type, whole_type)])])
+            if part_type is not None and whole_type is not None:
+
+                # produce output
+                context.solver.solve([('store', [('output_type', 'how_many'), ('output_how_many', part_type, whole_type)])])
 
         return results
 
@@ -105,7 +107,7 @@ class SIRModule(SomeModule):
         if len(results) == 0:
             # produce output
             context.solver.solve([('store', [('output_type', 'dont_know_part_of'), ('output_dont_know_part_of', part_type, whole_type)])])
-            return ResultIterator([None, None], 0)
+            return []
 
         number = results[0]['N']
         response = ResultIterator([None, None], number)
