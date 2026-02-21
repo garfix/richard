@@ -127,11 +127,6 @@ class BasicGenerator(SomeGenerator):
 
                 if len(match_bindings) > 0:
                     binding = binding | match_bindings[0]
-
-                    # todo: remove (!)
-                    if len(match_bindings) > 1:
-                        binding = binding | match_bindings[1]
-
                     result_rule = rule
                     found = True
 

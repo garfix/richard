@@ -30,6 +30,7 @@ class Solver(SomeSolver):
 
         return self.solve_rest(atoms, {})
 
+
     def solve_rest(self, atoms: list[tuple], binding: dict = {}) -> list[dict]:
         if len(atoms) == 1:
             return self.solve_single(atoms[0], binding)

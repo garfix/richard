@@ -1,6 +1,5 @@
 ## todo
 
-- een todo in BasicGenerator
 - not passing arguments to rules that aren't immediately needed
 - de bounded_variables kan er waarschijnlijk uit, en dereferenced arguments gaat dan bounded arguments heten
 - perhaps just expose free variables? make them explicit in the signature?
