@@ -1,12 +1,11 @@
 ## todo
 
-unification() zou niet moeten werken, want krijgt nu dereferenced arguments
-bound arguments zijn nog niet beschikbaar
-in de tests worden atoms gebruikt als values en diens argumenten worden nog niet gedereferenced
-de laag bounded_variables kan er waarschijnlijk uit, en dereferenced arguments gaat dan bounded arguments heten
-solve_rule: stukken code naar atoms.py ; duidelijke scheiding aanbrengen ; probeer de variabelen die niet toehoren weg te halen
+- een todo in BasicGenerator
+- not passing arguments to rules that aren't immediately needed
+- de bounded_variables kan er waarschijnlijk uit, en dereferenced arguments gaat dan bounded arguments heten
+- perhaps just expose free variables? make them explicit in the signature?
 
-Work out the effects of unbound variable unification on the matching of atoms.
+- Work out the effects of unbound variable unification on the matching of atoms.
 
 PAM: Willa was hungry
 - match inferences voor "She picked up the Michelin guide"
@@ -78,6 +77,7 @@ optimize isolate independent parts:
 
 ## done
 
+- remove bindings from ExecutionContext?
 * $unification
 * replace SimpleResponder by BasicGenerator
 * learn_grammar_rule

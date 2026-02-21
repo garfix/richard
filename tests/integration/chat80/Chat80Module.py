@@ -118,7 +118,7 @@ class Chat80Module(SomeModule):
 
         part = arguments[0]
         whole = arguments[1]
-        recurse = context.solver.solve([("contains", whole, E1), ("in", part, E1)], context.binding)
+        recurse = context.solver.solve([("contains", whole, E1), ("in", part, E1)])
         out_values.extend(recurse)
         return out_values
 

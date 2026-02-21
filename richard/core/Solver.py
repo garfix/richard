@@ -24,11 +24,13 @@ class Solver(SomeSolver):
         self.sentence = sentence
 
 
-    def solve(self, atoms: list[tuple], binding: dict = {}) -> list[dict]:
-
+    def solve(self, atoms: list[tuple]) -> list[dict]:
         if not isinstance(atoms, list):
             raise Exception("Solver can only solve lists of atoms, this is not a list: " + str(atoms))
 
+        return self.solve_rest(atoms, {})
+
+    def solve_rest(self, atoms: list[tuple], binding: dict = {}) -> list[dict]:
         if len(atoms) == 1:
             return self.solve_single(atoms[0], binding)
         if len(atoms) == 0:
@@ -37,7 +39,7 @@ class Solver(SomeSolver):
             result = []
             bindings = self.solve_single(atoms[0], binding)
             for b in bindings:
-                for r in self.solve(atoms[1:], b):
+                for r in self.solve_rest(atoms[1:], b):
                     if not r in result:
                         result.append(r)
             return result
@@ -81,7 +83,7 @@ class Solver(SomeSolver):
 
     def solve_disjunction(self, disjuncts: list[list[tuple]], binding: dict):
         for disjunct in disjuncts:
-            results = self.solve(disjunct, binding)
+            results = self.solve(disjunct)
             if len(results) > 0:
                 return results
         return []
@@ -97,7 +99,7 @@ class Solver(SomeSolver):
         stringed_values = {}
 
         for relation in relations:
-            context = ExecutionContext(relation, unbound_arguments, binding, self, self.sentence, self.model)
+            context = ExecutionContext(relation, unbound_arguments, self, self.sentence, self.model)
 
             # call the relation's query function
             out_values = relation.query_function(dereferenced_arguments, context)
@@ -138,6 +140,6 @@ class Solver(SomeSolver):
 
         for relation in relations:
             if relation.write_function is not None:
-                context = ExecutionContext(relation, arguments, {}, self, self.sentence, self.model)
+                context = ExecutionContext(relation, arguments, self, self.sentence, self.model)
                 relation.write_function(arguments, context)
 

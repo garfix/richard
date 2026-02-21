@@ -70,34 +70,33 @@ class TestInferenceEngine(unittest.TestCase):
         solver = Solver(model)
 
         tests = [
-            [[('river', E1)], {}, [{'E1': 'amazon'}, {'E1': 'brahma_putra'}]],
-            [[('river', E1)], {'E1': 'brahma_putra', 'E2': 'keep'}, [{'E1': 'brahma_putra', 'E2': 'keep'}]],
-            [[('river', 'amazon')], {}, [{}]],
+            [[('river', 'brahma_putra')], [{}]],
+            [[('river', 'amazon')], [{}]],
 
-            [[('grand_parent', E1, E2)], {}, [{'E1': 'robert', 'E2': 'william'}, {'E1': 'martha', 'E2': 'beatrice'}, {'E1': 'martha', 'E2': 'antonio'}]],
-            [[('grand_parent', E1, E2)], {'E1': 'robert', 'E2': 'william'}, [{'E1': 'robert', 'E2': 'william'}]],
-            [[('grand_parent', E1, E2)], {'E1': 'martha'}, [{'E1': 'martha', 'E2': 'beatrice'}, {'E1': 'martha', 'E2': 'antonio'}]],
-            [[('grand_parent', E1, 'antonio')], {}, [{'E1': 'martha'}]],
-            [[('grand_parent', 'martha', 'antonio')], {'E1': 'keep'}, [{'E1': 'keep'}]],
-            [[('grand_parent', 'martha', 'edward')], {}, []],
+            [[('grand_parent', E1, E2)], [{'E1': 'robert', 'E2': 'william'}, {'E1': 'martha', 'E2': 'beatrice'}, {'E1': 'martha', 'E2': 'antonio'}]],
+            [[('grand_parent', 'robert', 'william')], [{}]],
+            [[('grand_parent', 'martha', E2)], [{'E2': 'beatrice'}, {'E2': 'antonio'}]],
+            [[('grand_parent', E1, 'antonio')], [{'E1': 'martha'}]],
+            [[('grand_parent', 'martha', 'antonio')], [{}]],
+            [[('grand_parent', 'martha', 'edward')], []],
             # bindings are passed
-            [[('knows', [('parent', E1, E2)], "true")], {'E1': 'martha'}, [{'E1': 'martha'}]],
-            [[('knows', [('parent', E1, E2)], "true")], {'E1': 'magdalena'}, []],
-            [[('ancestor', 'robert', 'antonio')], {'E1': 'robert'}, [{'E1': 'robert'}]],
-            [[('related', 'robert', 'antonio')], {'A': 1}, [{'A': 1}]],
-            [[('related', 'robert', 'robert')], {'A': 2}, [{'A': 2}]],
-            [[('related', 'robert', 'xantippe')], {'A': 3}, []],
-            [[('related', E1, E1)], {}, [{'E1': 'jennifer'}]],
-            [[('related', E1, E1)], {'E1': 'jennifer'}, [{'E1': 'jennifer'}]],
-            [[('related', E1, E1)], {'E1': 'robert'}, [{'E1': 'robert'}]],
+            [[('knows', [('parent', 'martha', E2)], "true")], [{}]],
+            [[('knows', [('parent', 'magdalena', E2)], "true")], []],
+            [[('ancestor', 'robert', 'antonio')], [{}]],
+            [[('related', 'robert', 'antonio')], [{}]],
+            [[('related', 'robert', 'robert')], [{}]],
+            [[('related', 'robert', 'xantippe')], []],
+            [[('related', E1, E1)], [{'E1': 'jennifer'}]],
+            [[('related', 'jennifer', 'jennifer')], [{}]],
+            [[('related', 'robert', 'robert')], [{}]],
             # test disjunction
-            [[('family', E1, 'martha')], {}, [{'E1': 'robert'}]],
-            [[('family', E1, 'william')], {}, [{'E1': 'robert'}]],
-            [[('sibling', 'spike', E1)], {}, [{'E1': 'suzy'}]],
-            [[('country', E1)], {}, [{'E1': 'netherlands'}]],
+            [[('family', E1, 'martha')], [{'E1': 'robert'}]],
+            [[('family', E1, 'william')], [{'E1': 'robert'}]],
+            [[('sibling', 'spike', E1)], [{'E1': 'suzy'}]],
+            [[('country', E1)], [{'E1': 'netherlands'}]],
         ]
 
         for test in tests:
-            question, binding, answer = test
-            result = solver.solve(question, binding)
+            question, answer = test
+            result = solver.solve(question)
             self.assertEqual(answer, result)

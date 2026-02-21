@@ -54,7 +54,6 @@ class InductionModule(SomeModule):
     # ('induce_facts', [body-atoms])
     def induce_facts(self, arguments: list, context: ExecutionContext) -> list[list]:
         atoms = arguments[0]
-        print(atoms, context.binding)
         # for rule in self.fact_induction_rules:
         return []
 

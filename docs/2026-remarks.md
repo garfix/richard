@@ -1,3 +1,17 @@
+## 2026-02-21
+
+- check online if you can find WAM's algorithm for unification
+    - An Abstract Prolog Instruction Set - David HD Warren (1983)
+    - Well, okay, this to way too much different to be of use
+- new unication
+    - remove unbound_arguments
+    - all arguments are dereferenced, so we're passing values down the line as much as possible, and this is ok, once a variable has a value, the value is all that matters
+- it's no longer necessary to pass `bindings` in the solving process. `arguments` is enough (!)
+
+## 2026-02-19
+
+That change is not trouble free. Multiple tests fail in ways that are not easily fixable. I will first concentrate on building more unit tests.
+
 ## 2026-02-15
 
 I implemented the unification of unbound variables. But I haven't worked out the effects of this unification on the execution of atoms yet.

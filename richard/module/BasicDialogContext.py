@@ -22,7 +22,7 @@ class BasicDialogContext(SqliteMemoryModule):
         name = arguments[0]
         body = arguments[1]
         self.data_source.insert('context', ['name'], [name])
-        context.solver.solve(body, context.binding)
+        context.solver.solve(body)
         self.data_source.delete('context', ['name'], [name])
         return [
             [None, None]

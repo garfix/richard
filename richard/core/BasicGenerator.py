@@ -1,4 +1,5 @@
 from richard.core.constants import CATEGORY_FORMAT, CATEGORY_TEXT, CATEGORY_VALUE, POS_TYPE_WORD_FORM
+from richard.core.functions.atoms import bind_variables
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.interface import SomeModel
@@ -122,10 +123,15 @@ class BasicGenerator(SomeGenerator):
 
                 # match the condition
                 # will bind the E2 in the example ([('output_type', 'declarative'), ('output_subject', E1, E2)])
-                match_bindings = self.solver.solve(rule.sem, binding)
+                match_bindings = self.solver.solve(bind_variables(rule.sem, binding))
 
                 if len(match_bindings) > 0:
-                    binding = match_bindings[0]
+                    binding = binding | match_bindings[0]
+
+                    # todo: remove (!)
+                    if len(match_bindings) > 1:
+                        binding = binding | match_bindings[1]
+
                     result_rule = rule
                     found = True
 

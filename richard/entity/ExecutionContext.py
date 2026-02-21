@@ -11,7 +11,6 @@ from richard.processor.semantic_composer.SemanticSentence import SemanticSentenc
 class ExecutionContext:
     relation: Relation
     unbound_arguments: list
-    binding: dict
     solver: SomeSolver
     sentence: SemanticSentence
     model: SomeModel

@@ -44,7 +44,7 @@ class InferenceModule(SomeModule):
     def handle_rule(self, arguments: list, context: ExecutionContext) -> list[list]:
         results = []
         for rule in self.rules[context.relation.predicate]:
-            results.extend(self.solve_rule(rule, arguments, context.solver, context.binding))
+            results.extend(self.solve_rule(rule, arguments, context.solver, {}))
 
         return results
 
@@ -60,7 +60,7 @@ class InferenceModule(SomeModule):
         if len(rule.body) == 0:
             bindings = [ rule_binding ]
         else:
-            bindings = solver.solve(rule.body, rule_binding)
+            bindings = solver.solve(bind_variables(rule.body, rule_binding))
 
         results = bindings_to_tuple_results(formal_parameters, arguments, bindings)
 
@@ -74,10 +74,7 @@ class InferenceModule(SomeModule):
         if not isinstance(head, tuple):
             raise Exception("The head of a rule must be a single atom: " + str(head))
 
-        bound_head = bind_variables(head, context.binding)
-        bound_body = bind_variables(body, context.binding)
-
-        self.insert_rule(InferenceRule(bound_head, bound_body))
+        self.insert_rule(InferenceRule(head, body))
 
         return [
             [None, None]

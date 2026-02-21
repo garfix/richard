@@ -117,7 +117,7 @@ class CoreModule(SomeModule):
 
         body = arguments[1]
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
         count = len(results)
 
         return [
@@ -132,7 +132,7 @@ class CoreModule(SomeModule):
         element_var = context.unbound_arguments[1]
         body = arguments[2]
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
         s = 0
         for result in results:
             s += result[element_var.name]
@@ -150,7 +150,7 @@ class CoreModule(SomeModule):
         element_var = context.unbound_arguments[1]
         body = arguments[2]
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
 
         if len(results) == 0:
             return []
@@ -175,7 +175,7 @@ class CoreModule(SomeModule):
         element_var = context.unbound_arguments[1]
         body = arguments[2]
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
 
         if len(results) == 0:
             return []
@@ -199,7 +199,7 @@ class CoreModule(SomeModule):
         element_var = context.unbound_arguments[1]
         body = arguments[2]
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
 
         if len(results) == 0:
             return []
@@ -224,8 +224,8 @@ class CoreModule(SomeModule):
         nominator = arguments[1]
         denominator = arguments[2]
 
-        nominator_results = context.solver.solve(nominator, context.binding)
-        denominator_results = context.solver.solve(denominator, context.binding)
+        nominator_results = context.solver.solve(nominator)
+        denominator_results = context.solver.solve(denominator)
 
         if len(denominator_results) == 0:
             return []
@@ -244,8 +244,7 @@ class CoreModule(SomeModule):
 
         body = arguments[0]
 
-        results = context.solver.solve(body, context.binding)
-        # print(values, context.binding, results)
+        results = context.solver.solve(body)
         count = len(results)
 
         if count > 0:
@@ -269,7 +268,7 @@ class CoreModule(SomeModule):
 
         body, number = arguments
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
         count = len(results)
 
         if count == number:
@@ -285,7 +284,7 @@ class CoreModule(SomeModule):
 
         body, number = arguments
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
         count = len(results)
 
         if count > number:
@@ -301,7 +300,7 @@ class CoreModule(SomeModule):
 
         body, number = arguments
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
         count = len(results)
 
         if count < number:
@@ -319,15 +318,14 @@ class CoreModule(SomeModule):
         range = arguments[1]
         body = arguments[2]
 
-        entities = OrderedSet([binding[quant_var.name] for binding in context.solver.solve(range, context.binding)])
+        entities = OrderedSet([binding[quant_var.name] for binding in context.solver.solve(range)])
 
         range_count = len(entities)
         results = OrderedSet()
         for entity in entities:
-            b = context.binding | {
+            bindings = context.solver.solve(bind_variables(body, {
                 quant_var.name: entity
-            }
-            bindings = context.solver.solve(body, b)
+            }))
             if len(bindings) > 0:
                 results.add(entity)
 
@@ -346,7 +344,7 @@ class CoreModule(SomeModule):
 
         body = arguments[0]
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
         count = len(results)
 
         if count == 0:
@@ -362,7 +360,7 @@ class CoreModule(SomeModule):
     def scoped(self, arguments: list, context: ExecutionContext) -> list[list]:
         body = arguments[0]
 
-        results = context.solver.solve(body, context.binding)
+        results = context.solver.solve(body)
         count = len(results)
 
         if count == 0:
@@ -398,7 +396,7 @@ class CoreModule(SomeModule):
         if not isinstance(unbound_atoms, list):
             raise Exception(f"'store' expects a list of atoms; given: {unbound_atoms}")
 
-        atoms = bind_variables(unbound_atoms, context.binding)
+        atoms = bind_variables(unbound_atoms, {})
         for atom in atoms:
             context.solver.write_atom(atom)
 
@@ -413,7 +411,7 @@ class CoreModule(SomeModule):
 
         term1 = arguments[0]
         term2 = arguments[1]
-        binding = unification(term1, term2, context.binding)
+        binding = unification(term1, term2, {})
         return BindingResult([] if binding is None else [binding])
 
 
@@ -430,7 +428,7 @@ class CoreModule(SomeModule):
 
         result = []
 
-        for binding in context.solver.solve(body, context.binding):
+        for binding in context.solver.solve(body):
             if is_list:
                 item = []
                 for v in variable:
