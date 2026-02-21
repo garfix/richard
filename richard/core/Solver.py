@@ -1,7 +1,7 @@
 from collections import defaultdict
-from richard.core.functions.atoms import convert_tuple_results_to_bindings, get_atom_variables
+from richard.core.functions.atoms import bind_variables, get_atom_variables
+from richard.core.functions.results import tuple_results_to_bindings
 from richard.core.constants import DISJUNCTION
-from richard.core.functions.unification import dereference_list
 from richard.entity.BindingResult import BindingResult
 from richard.entity.ResultIterator import ResultIterator
 from richard.interface.SomeModel import SomeModel
@@ -56,8 +56,8 @@ class Solver(SomeSolver):
         if predicate == DISJUNCTION:
             return self.solve_disjunction(atom[1], binding)
 
-        dereferenced_arguments = dereference_list(unbound_arguments, binding)
-        out_values = self.find_relation_values(predicate, unbound_arguments, dereferenced_arguments, binding)
+        arguments = bind_variables(unbound_arguments, binding)
+        out_values = self.find_relation_values(predicate, unbound_arguments, arguments, binding)
 
         if isinstance(out_values, ResultIterator):
             return out_values
@@ -73,7 +73,7 @@ class Solver(SomeSolver):
                 if len(out_values[0]) != len(unbound_arguments):
                     raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(out_values[0])) + " and should be " + str(len(unbound_arguments)))
 
-            results = convert_tuple_results_to_bindings(predicate, out_values, dereferenced_arguments, binding)
+            results = tuple_results_to_bindings(predicate, arguments, out_values, binding)
             return results
 
         raise Exception("Predicate '" + predicate + "' should return a list")

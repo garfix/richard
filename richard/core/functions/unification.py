@@ -79,10 +79,6 @@ def dereference(term: any, binding: dict):
     return value
 
 
-def dereference_list(terms: list[any], binding: dict):
-    return list(map(lambda a: dereference(a, binding), terms))
-
-
 def unify_bindings(old_binding: dict, new_binding: dict) -> dict|None:
     if old_binding is None:
         return None

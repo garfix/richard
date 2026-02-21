@@ -1,6 +1,6 @@
-from richard.core.functions.atoms import bind_variables, map_arguments
+from richard.core.functions.atoms import bind_variables, create_argument_binding
+from richard.core.functions.results import bindings_to_tuple_results
 from richard.entity.Relation import Relation
-from richard.entity.Variable import Variable
 from richard.interface import SomeSolver
 from richard.interface.SomeModule import SomeModule
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
@@ -44,16 +44,16 @@ class InferenceModule(SomeModule):
     def handle_rule(self, arguments: list, context: ExecutionContext) -> list[list]:
         results = []
         for rule in self.rules[context.relation.predicate]:
-            results.extend(self.solve_rule(rule, context.unbound_arguments, context.solver, context.binding))
+            results.extend(self.solve_rule(rule, arguments, context.solver, context.binding))
 
         return results
 
 
     def solve_rule(self, rule: InferenceRule, arguments: list, solver: SomeSolver, binding: dict):
 
-        rule_arguments = rule.head[1:]
+        formal_parameters = rule.head[1:]
 
-        rule_binding = map_arguments(rule_arguments, arguments, binding, rule.get_all_variables())
+        rule_binding = create_argument_binding(formal_parameters, arguments, binding)
         if rule_binding is None:
             return []
 
@@ -62,26 +62,7 @@ class InferenceModule(SomeModule):
         else:
             bindings = solver.solve(rule.body, rule_binding)
 
-        results = []
-
-        for solution in bindings:
-
-            result = []
-
-            for rule_argument, value in zip(rule_arguments, arguments):
-                if isinstance(value, Variable):
-                    if isinstance(rule_argument, Variable):
-                        # check if the results are not bound (completely)
-                        # this happens when r(X). is matches against r(Y).
-                        if not rule_argument.name in solution:
-                            return []
-                        result.append(solution[rule_argument.name])
-                    else:
-                        result.append(rule_argument)
-                else:
-                    result.append(value)
-
-            results.append(result)
+        results = bindings_to_tuple_results(formal_parameters, arguments, bindings)
 
         return results
 

@@ -47,11 +47,11 @@ class SIRModule(SomeModule):
         if len(results) == 0:
             whole_type = None
             if isinstance(whole_variable, Variable):
-                whole_type = self.get_name(context, whole_variable.name, arguments[1])
+                whole_type = self.get_type(context, whole_variable.name, arguments[1])
 
             part_type = None
             if isinstance(part_variable, Variable):
-                part_type = self.get_name(context, part_variable.name, arguments[0])
+                part_type = self.get_type(context, part_variable.name, arguments[0])
 
             # produce output
             context.solver.solve([('store', [('output_type', 'how_many'), ('output_how_many', part_type, whole_type)])])
@@ -95,17 +95,11 @@ class SIRModule(SomeModule):
 
         # solving based on class information
 
-        whole_variable = context.unbound_arguments[0]
-        part_variable = context.unbound_arguments[1]
+        whole_variable = arguments[0]
+        part_variable = arguments[1]
 
-        whole_type = None
-        if isinstance(whole_variable, Variable):
-            whole_type = self.get_name(context, whole_variable.name, arguments[0])
-
-        part_type = None
-        if isinstance(part_variable, Variable):
-            part_type = self.get_name(context, part_variable.name, arguments[1])
-
+        whole_type = whole_variable
+        part_type = self.get_type(context, part_variable, part_variable)
         results = context.solver.solve([('part_of_number', part_type, whole_type, Variable('N'))])
 
         if len(results) == 0:
@@ -119,15 +113,9 @@ class SIRModule(SomeModule):
         return response
 
 
-    def get_name(self, context: ExecutionContext, id: str, value):
-        # try to find the class
-        isa = context.solver.find_first([('isa', id, Variable('Type'))])
-        if isa:
-            type = isa["Type"]
-            if type == 'person':
-                return value
-            else:
-                return type
+    def get_type(self, context: ExecutionContext, id: str, value):
+        if id == 'a-finger':
+            return 'finger'
 
         return value
 

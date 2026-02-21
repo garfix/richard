@@ -46,47 +46,43 @@ def get_atoms_variables(atoms: list[tuple]) -> list[str]:
     return list(variables)
 
 
-def bind_variables(construct: any, binding: dict) -> list:
+def bind_variables(term: any, binding: dict) -> any:
+    """
+    Binds all variables in term to their binding from bindings
+    Note: bindings may in turn contain variables, and these are bound as well
+    """
     # list
-    if isinstance(construct, list):
-        return [bind_variables(arg, binding) for arg in construct]
+    if isinstance(term, list):
+        return [bind_variables(arg, binding) for arg in term]
     # tuple
-    elif isinstance(construct, tuple):
-        return tuple([bind_variables(arg, binding) for arg in construct])
+    elif isinstance(term, tuple):
+        return tuple([bind_variables(arg, binding) for arg in term])
     # variable
-    elif isinstance(construct, Variable):
-        # return dereference(construct, binding)
+    elif isinstance(term, Variable):
         # bound?
-        if construct.name in binding:
-            # add variable value
-            return bind_variables(binding[construct.name], binding)
-            # return binding[construct.name]
+        if term.name in binding:
+            # return the value, and try to bind it even further
+            return bind_variables(binding[term.name], binding)
         else:
             # non-bound variable
-            return construct
+            return term
     else:
         # just the value
-        return construct
+        return term
 
 
-def map_arguments(formal_parameters: list[any], arguments: list[any], binding: dict, all_variables) -> dict|None:
+def create_argument_binding(formal_parameters: list[any], arguments: list[any], binding: dict) -> dict|None:
     """
     Maps all variables of formal_parameters to their argument
     Checks if the constants in formal_parameters match their argument
     """
+    rule_binding = {}
 
-    # initialize with binding variables that do not affect this rule (but may be used later on)
-    rule_binding = {key: value for (key, value) in binding.items() if key not in all_variables}
+    for formal_parameter, value in zip(formal_parameters, arguments):
 
-    for rule_argument, value in zip(formal_parameters, arguments):
+        bound_value = bind_variables(value, binding)
 
-        if isinstance(value, Variable) and value.name in binding:
-            bound_value = binding[value.name]
-            #bound_value = bind_variables(value, binding)
-        else:
-            bound_value = value
-
-        if isinstance(rule_argument, Variable):
+        if isinstance(formal_parameter, Variable):
             # bind variable
             if isinstance(bound_value, Variable):
                 # A = E1
@@ -94,12 +90,11 @@ def map_arguments(formal_parameters: list[any], arguments: list[any], binding: d
             else:
                 # A = 'john'
                 # check for conflicts
-                if rule_argument.name in rule_binding:
-                    if rule_binding[rule_argument.name] != bound_value:
+                if formal_parameter.name in rule_binding:
+                    if rule_binding[formal_parameter.name] != bound_value:
                         return None
 
-                rule_binding[rule_argument.name] = bound_value
-                # rule_binding[rule_argument.name] = bind_variables(bound_value, binding)
+                rule_binding[formal_parameter.name] = bind_variables(bound_value, binding)
         else:
             if isinstance(bound_value, Variable):
                 # 'john' = E1
@@ -107,7 +102,7 @@ def map_arguments(formal_parameters: list[any], arguments: list[any], binding: d
             else:
                 # 'john' = 'susan'
                 # check for conflicts
-                if bound_value != rule_argument:
+                if bound_value != formal_parameter:
                     return None
 
     return rule_binding
@@ -131,47 +126,3 @@ def reify_variables(construct: any) -> any:
         # just the value
         return construct
 
-
-def convert_tuple_results_to_bindings(predicate: str, results: list, dereferenced_arguments: list, binding: dict):
-    """
-    Converts results into a list of bindings
-    If a result has some variable in different positions, make sure the values at the positions do not conflict
-    Also checks if the result keeps to the restrictions provided by the input
-    """
-    checked_results = []
-    for result in results:
-
-        # result = bind_variables(result, binding)
-
-        # extend the incoming binding
-        checked_result = binding.copy()
-        # check needed for a variable that occurs twice
-        conflict = False
-
-        # go through all arguments
-        for i, arg in enumerate(dereferenced_arguments):
-
-            if result[i] is None:
-                continue
-            # variable?
-            elif isinstance(arg, Variable):
-                # if the variable was bound in the input binding, check if the result matches its value
-                if arg.name in binding:
-                    if binding[arg.name] != result[i]:
-                        raise Exception(f"Result of '{predicate}' doesn't match variable '{arg.name}': {binding[arg.name]} != {result[i]}")
-                # check for conflict with previous same variable
-                if arg.name in checked_result and checked_result[arg.name] != result[i]:
-                    conflict = True
-                    break
-                # extend the binding
-                checked_result[arg.name] = result[i]
-            else:
-                # check if the result matches the given input
-                if arg != result[i]:
-                    # indicates an error in the relation
-                    raise Exception(f"Result of '{predicate}' doesn't match input value: {dereferenced_arguments} => {result}")
-
-        if not conflict:
-            checked_results.append(checked_result)
-
-    return checked_results
