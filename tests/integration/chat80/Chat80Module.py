@@ -163,7 +163,6 @@ class Chat80Module(SomeModule):
         for type in ["country", "city", "sea", "river", "ocean", "continent"]:
             out_values = self.ds.select(type, ["id", "id"], [name, Variable("E1")])
             if len(out_values) > 0:
-                context.solver.write_atom(('dialog_isa', arguments[1].name, type))
                 return [[None, value[1]] for value in out_values]
 
         if name == 'equator':

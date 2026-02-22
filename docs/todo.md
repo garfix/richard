@@ -1,20 +1,6 @@
 ## todo
 
-- de unbounded_variables kunnen er nog niet uit, ze worden gebruikt als dialog variables / dialog entity identifiers
-    - OK ook nog andere redenen? nee
-    - dialog_isa wordt gebruikt en die gebruikt reified variabelen
-    - perhaps just expose free variables? make them explicit in the signature?
-    - duidelijker maken en minder vrij (door de vrijheid wordt het onduidelijk)
-    - het probleem met de dialog variabelen, is dat een function als `has_population` erdoor afhankelijk wordt van de manier waarop het gebruikt wordt
-    - waarom zijn het eigenlijk nog variabelen? 
-    - zoek uit waarom unbounded_variables eigenlijk wel werken
-        - OK en hoe robuust ze zijn
-        - OK ze zijn niet robuust:
-            - in($1, $2) :- contains(C, $1), in(C, $2).
-        - OK is het mogelijk ze te vervangen door constanten? nee
-    - rm all dialog_isa & alle "dialog"'s uit de grammar
-    - verzin een nieuwe manier om met dialog variabelen om te gaan
-- OK de naam van een variabele kan gewoon uit de `arguments` gehaald worden
+- rm all dialog_isa & alle "dialog"'s uit de grammar
 
 PAM: Willa was hungry
 - match inferences voor "She picked up the Michelin guide"

@@ -10,7 +10,6 @@ class BasicDialogContext(SqliteMemoryModule):
 
         self.clear()
 
-        self.add_relation(Relation("dialog_isa", formal_parameters=["entity", "type"]))
         self.add_relation(Relation("context", formal_parameters=["name"]))
 
         self.add_relation(Relation("with_context", formal_parameters=["name", "body"], query_function=self.with_context))
@@ -49,5 +48,4 @@ class BasicDialogContext(SqliteMemoryModule):
 
         cursor = self.data_source.connection.cursor()
 
-        cursor.execute("CREATE TABLE dialog_isa (entity TEXT, type TEXT)")
         cursor.execute("CREATE TABLE context (name TEXT)")
