@@ -147,20 +147,14 @@ class Chat80Module(SomeModule):
 
 
     def has_population(self, arguments: list, context: ExecutionContext) -> list[list]:
-        term = context.unbound_arguments[0]
-        type = ""
-        if isinstance(term, Variable):
-            isa = context.solver.find_first([('dialog_isa', term.name, Variable('Type'))])
-            if not isinstance(isa, Variable):
-                type = isa["Type"]
 
-        if type == 'city':
-            out_values = self.ds.select("city", ["id", "population"], arguments)
-            out_values = [[row[0], row[1] * 1000] for row in out_values]
-        else:
-            out_values = self.ds.select("country", ["id", "population"], arguments)
-            out_values = [[row[0], row[1] * 1000000] for row in out_values]
-        return out_values
+        out_values = self.ds.select("city", ["id", "population"], arguments)
+        pops1 = [[row[0], row[1] * 1000] for row in out_values]
+
+        out_values = self.ds.select("country", ["id", "population"], arguments)
+        pops2 = [[row[0], row[1] * 1000000] for row in out_values]
+
+        return pops1 + pops2
 
 
     def resolve_name(self, arguments: list, context: ExecutionContext) -> list[list]:
@@ -169,7 +163,7 @@ class Chat80Module(SomeModule):
         for type in ["country", "city", "sea", "river", "ocean", "continent"]:
             out_values = self.ds.select(type, ["id", "id"], [name, Variable("E1")])
             if len(out_values) > 0:
-                context.solver.write_atom(('dialog_isa', context.unbound_arguments[1].name, type))
+                context.solver.write_atom(('dialog_isa', arguments[1].name, type))
                 return [[None, value[1]] for value in out_values]
 
         if name == 'equator':

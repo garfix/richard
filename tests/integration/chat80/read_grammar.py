@@ -213,17 +213,17 @@ def get_read_grammar():
         { "syn": "adj(E1) -> 'asian'", "sem": lambda: [('asian', E1)] },
 
         # noun
-        { "syn": "noun(E1) -> 'river'",         "sem": lambda: [('river', E1)],         "dialog": [('dialog_isa', e1, 'river')] },
-        { "syn": "noun(E1) -> 'capital'",       "sem": lambda: [('capital', E1)],       "dialog": [('dialog_isa', e1, 'city')] },
-        { "syn": "noun(E1) -> 'ocean'",         "sem": lambda: [('ocean', E1)],         "dialog": [('dialog_isa', e1, 'ocean')] },
-        { "syn": "noun(E1) -> 'country'",       "sem": lambda: [('country', E1)],       "dialog": [('dialog_isa', e1, 'country')] },
-        { "syn": "noun(E1) -> 'sea'",           "sem": lambda: [('sea', E1)],           "dialog": [('dialog_isa', e1, 'sea')] },
-        { "syn": "noun(E1) -> 'city'",          "sem": lambda: [('city', E1)],          "dialog": [('dialog_isa', e1, 'city')] },
-        { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)],     "dialog": [('dialog_isa', e1, 'continent')] },
+        { "syn": "noun(E1) -> 'river'",         "sem": lambda: [('river', E1)] },
+        { "syn": "noun(E1) -> 'capital'",       "sem": lambda: [('capital', E1)] },
+        { "syn": "noun(E1) -> 'ocean'",         "sem": lambda: [('ocean', E1)] },
+        { "syn": "noun(E1) -> 'country'",       "sem": lambda: [('country', E1)] },
+        { "syn": "noun(E1) -> 'sea'",           "sem": lambda: [('sea', E1)] },
+        { "syn": "noun(E1) -> 'city'",          "sem": lambda: [('city', E1)] },
+        { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)] },
         # plurals
         { "syn": "noun(E1) -> plural_noun(E1)'",    "sem": lambda plural_noun: plural_noun },
-        { "syn": "plural_noun(E1) -> /\w+/+'s'",    "sem": lambda token: [(token, E1)], "dialog": lambda token: [('dialog_isa', e1, token)] },
-        { "syn": "plural_noun(E1) -> /\w+/+'ies'",  "sem": lambda token: [(token+'y', E1)], "dialog": lambda token: [('dialog_isa', e1, token+'y')] },
+        { "syn": "plural_noun(E1) -> /\w+/+'s'",    "sem": lambda token: [(token, E1)] },
+        { "syn": "plural_noun(E1) -> /\w+/+'ies'",  "sem": lambda token: [(token+'y', E1)] },
 
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
 

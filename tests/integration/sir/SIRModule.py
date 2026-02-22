@@ -39,20 +39,16 @@ class SIRModule(SomeModule):
 
 
     def part_of_n(self, arguments: list, context: ExecutionContext) -> list[list]:
-        part_variable = context.unbound_arguments[0]
-        whole_variable = context.unbound_arguments[1]
+        part_variable = arguments[0]
+        whole_variable = arguments[1]
+
+        whole_type = whole_variable
+        part_type = self.get_type(context, part_variable, part_variable)
+
 
         results = self.ds.select(context.relation.predicate, context.relation.formal_parameters, arguments)
 
         if len(results) == 0:
-            whole_type = None
-            if isinstance(whole_variable, Variable):
-                whole_type = self.get_type(context, whole_variable.name, arguments[1])
-
-            part_type = None
-            if isinstance(part_variable, Variable):
-                part_type = self.get_type(context, part_variable.name, arguments[0])
-
             if part_type is not None and whole_type is not None:
 
                 # produce output

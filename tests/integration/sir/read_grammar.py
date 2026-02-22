@@ -174,7 +174,7 @@ def get_read_grammar():
         # common noun
         {
             "syn": "common_noun(E1) -> common_noun_name()",
-            "sem": lambda common_noun_name: [(common_noun_name, E1)], "dialog": lambda common_noun_name: [('isa', e1, common_noun_name)]
+            "sem": lambda common_noun_name: [(common_noun_name, E1)]
         },
 
         # preposition

@@ -129,7 +129,7 @@ class CoreModule(SomeModule):
     # returns the sum of results of the values of E2 in body-atoms in E1
     def sum(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        element_var = context.unbound_arguments[1]
+        element_var = arguments[1]
         body = arguments[2]
 
         results = context.solver.solve(body)
@@ -146,8 +146,8 @@ class CoreModule(SomeModule):
     # returns the minimum value of results of the values of E2 in body-atoms in E1
     def arg_min(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        min_var = context.unbound_arguments[0]
-        element_var = context.unbound_arguments[1]
+        min_var = arguments[0]
+        element_var = arguments[1]
         body = arguments[2]
 
         results = context.solver.solve(body)
@@ -171,8 +171,8 @@ class CoreModule(SomeModule):
     # returns the maximum value of results of the values of E2 in body-atoms in E1
     def arg_max(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        max_var = context.unbound_arguments[0]
-        element_var = context.unbound_arguments[1]
+        max_var = arguments[0]
+        element_var = arguments[1]
         body = arguments[2]
 
         results = context.solver.solve(body)
@@ -196,7 +196,7 @@ class CoreModule(SomeModule):
     # returns the average of results of the values of E2 in body-atoms in E1
     def avg(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        element_var = context.unbound_arguments[1]
+        element_var = arguments[1]
         body = arguments[2]
 
         results = context.solver.solve(body)
@@ -314,7 +314,7 @@ class CoreModule(SomeModule):
     # ('all', E1, [range-atoms], [body-atoms])
     def determiner_all(self, arguments: list, context: ExecutionContext) -> list[list]:
 
-        quant_var = context.unbound_arguments[0]
+        quant_var = arguments[0]
         range = arguments[1]
         body = arguments[2]
 

@@ -60,7 +60,7 @@ class Solver(SomeSolver):
             return self.solve_disjunction(atom[1], binding)
 
         arguments = bind_variables(unbound_arguments, binding)
-        out_values = self.find_relation_values(predicate, unbound_arguments, arguments, binding)
+        out_values = self.find_relation_values(predicate, arguments, binding)
 
         if isinstance(out_values, ResultIterator):
             return out_values
@@ -90,7 +90,7 @@ class Solver(SomeSolver):
         return []
 
 
-    def find_relation_values(self, predicate: str, unbound_arguments: list, dereferenced_arguments: list, binding: dict) -> list[list]:
+    def find_relation_values(self, predicate: str, arguments: list, binding: dict) -> list[list]:
 
         relations = self.model.find_relations(predicate)
         if len(relations) == 0:
@@ -100,10 +100,10 @@ class Solver(SomeSolver):
         stringed_values = {}
 
         for relation in relations:
-            context = ExecutionContext(relation, unbound_arguments, self, self.sentence, self.model)
+            context = ExecutionContext(relation, self, self.sentence, self.model)
 
             # call the relation's query function
-            out_values = relation.query_function(dereferenced_arguments, context)
+            out_values = relation.query_function(arguments, context)
 
             if isinstance(out_values, BindingResult):
                 return out_values
@@ -141,6 +141,6 @@ class Solver(SomeSolver):
 
         for relation in relations:
             if relation.write_function is not None:
-                context = ExecutionContext(relation, arguments, self, self.sentence, self.model)
+                context = ExecutionContext(relation, self, self.sentence, self.model)
                 relation.write_function(arguments, context)
 
