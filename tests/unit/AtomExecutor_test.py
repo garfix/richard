@@ -74,7 +74,6 @@ class TestAtomExecutor(unittest.TestCase):
             {
                 "syn": "s(E1) -> /\w+/ 'exist'",
                 "sem": lambda token: [],
-                "exec": lambda token: [('store', [('concept', token.lower())])]
             },
             {
                 "syn": "noun(E1) -> 'continents'",
@@ -108,8 +107,4 @@ class TestAtomExecutor(unittest.TestCase):
         results = dialog_context.data_source.select("isa", ['entity', 'type'], [Variable("E1"), Variable("E2")])
         self.assertEqual(["$1", "continent"], results[0])
 
-        # test the executable code
-        system.enter(SentenceRequest("Continents exist"))
-        results = dialog_context.data_source.select("concept", ['type'], [Variable("E1")])
-        self.assertEqual(["continents"], results[0])
 

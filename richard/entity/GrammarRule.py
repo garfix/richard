@@ -8,7 +8,7 @@ class GrammarRule:
     antecedent: RuleConstituent
     consequents: list[RuleConstituent]
     sem: Callable
-    exec: Callable
+    format: Callable
     post: Callable
     dialog: list[tuple] | Callable
     boost: int
@@ -18,7 +18,7 @@ class GrammarRule:
                  antecedent: RuleConstituent,
                  consequents: list[RuleConstituent],
                  sem: Callable = None,
-                 exec: Callable = None,
+                 format: Callable = None,
                  post: Callable = None,
                  dialog: list[tuple] | Callable = [],
                  boost: int = 0,
@@ -26,7 +26,7 @@ class GrammarRule:
         self.antecedent = antecedent
         self.consequents = consequents
         self.sem = sem
-        self.exec = exec
+        self.format = format
         self.post = post
         self.dialog = dialog
         self.boost = boost

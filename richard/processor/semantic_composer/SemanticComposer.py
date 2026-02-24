@@ -83,8 +83,8 @@ class SemanticComposer(SomeProcessor):
         semantics = node.rule.sem(*child_semantics)
 
         # create the executable atoms of this node by executing its function, passing the values of its children as arguments
-        if node.rule.exec:
-            executable = node.rule.exec(*child_semantics)
+        if node.rule.format:
+            executable = node.rule.format(*child_semantics)
 
         if callable(node.rule.dialog):
             inferences.extend(node.rule.dialog(*child_semantics))

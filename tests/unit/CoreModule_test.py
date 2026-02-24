@@ -124,3 +124,7 @@ class TestCoreModule(unittest.TestCase):
         ])
         self.assertEqual(bindings, [{'E1': E2, 'E2': ('red', E5), 'E3': E4, 'E4': ('red', E5)}])
 
+        bindings = solver.solve([
+            ('$unification', [('likes', E1, 'jane')], [('likes', 'john', E1)]),
+        ])
+        self.assertEqual(bindings, [])

@@ -148,7 +148,7 @@ class BasicGenerator(SomeGenerator):
         elif category == CATEGORY_TEXT:
             result = str(arguments[0])
         elif category == CATEGORY_FORMAT:
-            result = rule.exec(*arguments)
+            result = rule.format(*arguments)
         else:
             result = self.generate_node(used_rules, category, arguments, optional)
 

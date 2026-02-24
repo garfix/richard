@@ -65,13 +65,10 @@ class SimpleGrammarRulesParser:
             if 'sem' in simple_rule:
                 sem = simple_rule['sem']
 
-        exec = None
+        format = None
         if write_rules:
             if 'format' in simple_rule:
-                exec = simple_rule['format']
-        else:
-            if 'exec' in simple_rule:
-                exec = simple_rule['exec']
+                format = simple_rule['format']
 
         post = None
         if write_rules:
@@ -86,7 +83,7 @@ class SimpleGrammarRulesParser:
         if 'boost' in simple_rule:
             boost = simple_rule['boost']
 
-        return GrammarRule(antecedent, consequents, sem=sem, exec=exec, post=post, dialog=dialog, boost=boost)
+        return GrammarRule(antecedent, consequents, sem=sem, format=format, post=post, dialog=dialog, boost=boost)
 
 
     def parse_syntax(self, syntax: str, write_rules: bool):

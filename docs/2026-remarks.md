@@ -1,3 +1,50 @@
+## 2026-02-24
+
+Some thoughts: a "sense" is the informational essense of things. It has a dual nature: can take the form of a variable in questions and of a constant in statements. Apart from that it is also a pointer, which can point to other senses with which it identifies, and to itself. In questions and statements it is "fluid", in statements it is "solid". It has a name, which is unique within a dialog.
+
+Common entities like I and You can have a fixed dialog constant.
+
+Could it be that is needs to be both solid and fluid in the same sentence? I need to check some statements to see whether this may be the case. And if so, how can i refine the fluid/solid distinction?
+
+Willa was hungry. She picked up the Michelin guide. She got into her car.
+name(D1, Willa) hungry(D1)
+she(D2) michelin_guide(D3) pick_up(D2, D3)
+she(D3) car(D4) get_into(D3, D4)
+=> okay
+
+A "steeple" is a stack which contains two green cubes and a pyramid.
+name(D1) stack(D1) cube(D2) two(D2) green(D2) pyramid(D3) and(D4, D2, D3) contain(D1, D4)
+=> you can't use this definition to match new objects, because of the lack of variables
+=> at the same time, this definition lends itself to be declared by variables
+
+I own blocks which are not red, but I don't own anything which supports a pyramid
+=> needs variables to be used to check if I own something
+=> is stored in a rule
+
+The decision to use variables or constants can be left to the intent.
+
+===
+
+Interestingly, In "Cooper" I already used constants (or reified variables) to store facts in the dialog context. But it needed two grammars: a write grammar and a read grammar. "SIR" also stores information, but its facts are very simple and based on names.
+
+## 2026-02-23
+
+I need dialog entity identifiers. Variables seem to be a solution, but how to reason about them? Wouldn't you need variables that have variables as values? This is confusing. So you want dialog identifiers. Real values. That represent entities in the dialog. These may be single individuals or groups. They may be unidentified yet. Just roles, really. But not variables.
+
+Can I distribute dialog identifiers for each entity in the dialog?
+
+    John likes Mary
+    name('D1', 'John') name('D2', 'Mary') likes('D1', 'D2') -> okay
+
+    what countries have more than 5 million citizens?
+    country('D1') citizens('D1', 'C1') greater('C1', 5M) -> not possible
+
+The difference between these is that one is a statement (introduce ids), while the other a question (use variables). Can it be like that?
+
+How is it that Discourse Theory is to represent relationships using variables?
+
+The problem with the dialog ids is that you can't equate ids, while you can equate variables. However, this may not be a real problem. If you can equate variables, you may as well equate ids. You just have to allow one id to point to another id.
+
 ## 2026-02-21
 
 - check online if you can find WAM's algorithm for unification
