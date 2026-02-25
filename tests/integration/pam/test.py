@@ -188,15 +188,15 @@ class TestPAM(unittest.TestCase):
         # logger.log_all_tests()
         # logger.log_products()
 
-        # for session in tests:
-        #     tester = DialogTester(self, session, system, logger)
-        #     tester.run()
+        for session in tests:
+            tester = DialogTester(self, session, system, logger)
+            tester.run()
 
-        #     # clear
-        #     dialog_context.clear()
-        #     plan_analyzer_dialog_content.clear()
-        #     db = PAMDB()
-        #     facts.ds = db
+            # clear
+            dialog_context.clear()
+            plan_analyzer_dialog_content.clear()
+            db = PAMDB()
+            facts.ds = db
 
-        # print(logger)
+        print(logger)
 

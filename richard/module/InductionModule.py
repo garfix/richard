@@ -1,3 +1,4 @@
+from richard.core.functions.atoms import bind_variables, create_argument_binding_multiple
 from richard.entity.InductionRule import InductionRule
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
@@ -54,8 +55,15 @@ class InductionModule(SomeModule):
     # ('induce_facts', [body-atoms])
     def induce_facts(self, arguments: list, context: ExecutionContext) -> list[list]:
         atoms = arguments[0]
-        # for rule in self.fact_induction_rules:
-        return []
+        for rule in self.fact_induction_rules:
+            binding = create_argument_binding_multiple(rule.antecedent, atoms, {})
+            if binding is not None:
+                bound_consequent = bind_variables(rule.consequent, binding)
+                for atom in bound_consequent:
+                    context.solver.write_atom(atom)
+        return [
+            [None]
+        ]
 
 
     # ('analyze_plans', [body-atoms])
@@ -75,7 +83,7 @@ class InductionModule(SomeModule):
         instof = []
         inference_rules = []
 
-        self.plan_analyzer.justify(inductions, context)
+        # self.plan_analyzer.justify(inductions, context)
 
         # bindings = context.solver.solve([("recognize_plan", atoms)], context.binding)
 

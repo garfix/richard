@@ -15,5 +15,10 @@ class SomeSolver(ABC):
 
 
     @abstractmethod
+    def write_atoms(self, atoms: list[tuple]):
+        pass
+
+
+    @abstractmethod
     def write_atom(self, atom: tuple):
         pass

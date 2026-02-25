@@ -144,3 +144,7 @@ class Solver(SomeSolver):
                 context = ExecutionContext(relation, self, self.sentence, self.model)
                 relation.write_function(arguments, context)
 
+
+    def write_atoms(self, atoms: list[tuple]):
+        for atom in atoms:
+            self.write_atom(atom)

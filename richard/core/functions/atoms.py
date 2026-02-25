@@ -71,6 +71,24 @@ def bind_variables(term: any, binding: dict) -> any:
         return term
 
 
+def create_argument_binding_multiple(antecedent_atoms: list[any], sentence_atoms: list[any], binding: dict) -> dict|None:
+    for antecedent_atom in antecedent_atoms:
+        # match antecedent with sentence
+        # this may need more work
+        found = False
+        for sentence_atom in sentence_atoms:
+            new_binding = create_argument_binding(antecedent_atom, sentence_atom, binding)
+            if new_binding is not None:
+                binding = new_binding
+                found = True
+                break
+
+        if not found:
+            return None
+
+    return binding
+
+
 def create_argument_binding(formal_parameters: list[any], arguments: list[any], binding: dict) -> dict|None:
     """
     Maps all variables of formal_parameters to their argument
@@ -94,7 +112,7 @@ def create_argument_binding(formal_parameters: list[any], arguments: list[any], 
                     if rule_binding[formal_parameter.name] != bound_value:
                         return None
 
-                rule_binding[formal_parameter.name] = bind_variables(bound_value, binding)
+                rule_binding[formal_parameter.name] = bound_value
         else:
             if isinstance(bound_value, Variable):
                 # 'john' = E1

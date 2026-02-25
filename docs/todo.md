@@ -44,6 +44,10 @@ Work out context in inference rules:
 * syntax: `name{ rule. rule. }`
 * application: the rules must only be applied when context name is active
 
+## multiple sentences
+
+* the parser should always return multiple sentences, and there should be a better standard way on how to find different sentences
+
 ## output
 
 * create a separate predicate for producing output (like `output(type)`)
