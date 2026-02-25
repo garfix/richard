@@ -42,9 +42,6 @@ class AtomExecutor(SomeProcessor):
             for inference in sentence.inferences:
                 solver.write_atom(inference)
 
-            # perform executable atoms
-            solver.solve(sentence.executable)
-
             bindings = solver.solve(sentence.semantics)
 
             product = AtomExecutorProduct(bindings, solver.stats)

@@ -41,9 +41,9 @@ class SemanticComposer(SomeProcessor):
             self.check_for_sem(parse_tree)
 
             root_variables = [self.variable_generator.next() for _ in parse_tree.rule.antecedent.arguments]
-            semantics, inferences, executable = self.compose(parse_tree, root_variables)
+            semantics, inferences = self.compose(parse_tree, root_variables)
 
-            sentences.append(SemanticSentence(semantics, inferences, executable, root_variables))
+            sentences.append(SemanticSentence(semantics, inferences, root_variables))
 
         product = SemanticComposerProduct(sentences)
 
@@ -66,25 +66,19 @@ class SemanticComposer(SomeProcessor):
         # collect the semantics of the child nodes
         child_semantics = []
         inferences = []
-        executable = []
 
 
         for child, consequent in zip(node.children, node.rule.consequents):
             if not child.is_leaf_node():
                 incoming_child_variables = [map[arg] for arg in consequent.arguments]
-                semantics, child_inference, child_executable = self.compose(child, incoming_child_variables)
+                semantics, child_inference = self.compose(child, incoming_child_variables)
                 inferences.extend(child_inference)
-                executable.extend(child_executable)
                 child_semantics.append(semantics)
             elif child.rule.sem:
                 child_semantics.append(child.rule.sem())
 
         # create the semantics of this node by executing its function, passing the values of its children as arguments
         semantics = node.rule.sem(*child_semantics)
-
-        # create the executable atoms of this node by executing its function, passing the values of its children as arguments
-        if node.rule.format:
-            executable = node.rule.format(*child_semantics)
 
         if callable(node.rule.dialog):
             inferences.extend(node.rule.dialog(*child_semantics))
@@ -100,10 +94,7 @@ class SemanticComposer(SomeProcessor):
         # replace the formal parameters in the inferences with the unified variables
         unified_inferences = self.unify_variables(inferences, map)
 
-        # replace the formal parameters in the executable with the unified variables
-        unified_executable = self.unify_variables(executable, map)
-
-        return unified_semantics, unified_inferences, unified_executable
+        return unified_semantics, unified_inferences
 
 
     def create_map(self, node: ParseTreeNode, incoming_variables: list[str]):
