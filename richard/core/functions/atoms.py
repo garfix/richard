@@ -1,4 +1,3 @@
-from richard.core.functions.unification import dereference
 from richard.entity.Variable import Variable
 
 
@@ -69,24 +68,6 @@ def bind_variables(term: any, binding: dict) -> any:
     else:
         # just the value
         return term
-
-
-def create_argument_binding_multiple(antecedent_atoms: list[any], sentence_atoms: list[any], binding: dict) -> dict|None:
-    for antecedent_atom in antecedent_atoms:
-        # match antecedent with sentence
-        # this may need more work
-        found = False
-        for sentence_atom in sentence_atoms:
-            new_binding = create_argument_binding(antecedent_atom, sentence_atom, binding)
-            if new_binding is not None:
-                binding = new_binding
-                found = True
-                break
-
-        if not found:
-            return None
-
-    return binding
 
 
 def create_argument_binding(formal_parameters: list[any], arguments: list[any], binding: dict) -> dict|None:
