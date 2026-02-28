@@ -72,24 +72,12 @@ class InductionModule(SomeModule):
 
     # ('analyze_plans', [body-atoms])
     def analyze_plans(self, arguments: list, context: ExecutionContext) -> list[list]:
-
-        # print('X')
-
         atoms = arguments[0]
 
-        # induce likely facts from the input
-        # inductions = induce()
-        inductions = atoms
+        if contains_variables(atoms):
+            raise Exception(f"Cannot induce facts based on unbound atoms. Please reify {atoms}")
 
-        init_rules = []
-        sub_for = []
-        plans_for = []
-        instof = []
-        inference_rules = []
-
-        # self.plan_analyzer.justify(inductions, context)
-
-        # bindings = context.solver.solve([("recognize_plan", atoms)], context.binding)
+        self.plan_analyzer.justify(atoms, self.plan_analyzer_rules, context)
 
         return [
             [None]
