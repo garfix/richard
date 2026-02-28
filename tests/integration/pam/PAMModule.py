@@ -21,6 +21,7 @@ class PAMModule(SomeModule):
         self.add_relation(Relation("name", query_function=self.simple_entity))
         self.add_relation(Relation("female", query_function=self.simple_entity))
         self.add_relation(Relation("person", query_function=self.simple_entity))
+        self.add_relation(Relation("her", query_function=self.simple_entity))
 
         # self.add_relation(Relation("go_through_red_light", query_function=self.simple_entity))
         # self.add_relation(Relation("pull_over", query_function=self.simple_entity))

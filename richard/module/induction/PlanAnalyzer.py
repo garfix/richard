@@ -20,10 +20,16 @@ class PlanAnalyzer:
 
     def justify(self, sentence: list[tuple], induction_rules: list[InductionRule], context: ExecutionContext):
 
-        current_sentence = sentence
+        print('---')
+
+        log = []
+
+        log.append("Trying to explain")
+        log.append(sentence)
 
         chain: list[Link] = []
-        log = []
+
+        current_sentence = sentence
 
         while True:
             if self.predicted(current_sentence, log):
@@ -36,9 +42,18 @@ class PlanAnalyzer:
                 break
 
         if current_sentence:
-            pass
+            log.append("Adding inference chain to data base")
+            for link in reversed(chain):
+                self.update_db(link.atoms, log)
+            self.update_db(current_sentence, context, log)
         else:
+            log.append("No inference chain found - adding")
             self.update_db(sentence, context, log)
+
+        for line in log:
+            print(line)
+
+        print('---')
 
 
     def predicted(self, sentence: list, log: list[str]):
@@ -107,7 +122,7 @@ class PlanAnalyzer:
 
         if bindings:
             # append the fact to the chain
-            chain.append([sentence, rules])
+            chain.append(Link(sentence, rules))
             return instantiate(last_rule.consequent, bindings)
 
         return None
@@ -129,5 +144,6 @@ class PlanAnalyzer:
             self.known_plans.append(sentence)
 
 
-    def isa(self, type: str, cd: any):
-        raise Exception("todo")
+    def isa(self, type: str, sentence: any):
+        predicate = sentence[0][0]
+        return predicate == type
