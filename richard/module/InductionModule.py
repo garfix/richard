@@ -1,4 +1,4 @@
-from richard.core.functions.atoms import bind_variables
+from richard.core.functions.atoms import bind_variables, contains_variables
 from richard.core.functions.matcher import match_induction_rule
 from richard.entity.InductionRule import InductionRule
 from richard.entity.Relation import Relation
@@ -56,6 +56,10 @@ class InductionModule(SomeModule):
     # ('induce_facts', [body-atoms])
     def induce_facts(self, arguments: list, context: ExecutionContext) -> list[list]:
         atoms = arguments[0]
+
+        if contains_variables(atoms):
+            raise Exception(f"Cannot induce facts based on unbound atoms. Please reify {atoms}")
+
         for rule in self.fact_induction_rules:
             bindings = match_induction_rule(rule.antecedent, atoms)
             for binding in bindings:

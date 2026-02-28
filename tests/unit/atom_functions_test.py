@@ -42,7 +42,6 @@ class TestAtomFunctions(unittest.TestCase):
         ]
 
         for test in tests:
-            print()
             bindings = match_induction_rule(test['antecedent'], test['sentence'])
             self.assertEqual(bindings, test['bindings'])
 

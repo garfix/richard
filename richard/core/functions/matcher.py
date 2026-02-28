@@ -32,7 +32,6 @@ def match_induction_rule_atom(antecedent_atom: tuple, sentence_atoms: list[tuple
 
 
 def match_atom(formal_parameters: tuple, arguments: tuple, binding: dict) -> dict|None:
-
     new_binding = binding
     for formal_parameter, argument in zip(formal_parameters, arguments):
         term_binding = match_term(formal_parameter, argument, new_binding)
@@ -45,9 +44,9 @@ def match_atom(formal_parameters: tuple, arguments: tuple, binding: dict) -> dic
 
 
 def match_term(term1: any, term2: any, binding: dict) -> dict:
-    # terms
-    if isinstance(term1, tuple) and isinstance(term2, tuple):
-        return match_atom(term1, term2, binding)
+    """
+    Note: as the rule is matched to bound atoms, only the first 2 of the following are actually used
+    """
     # non-var / non-var
     if not isinstance(term1, Variable) and not isinstance(term2, Variable):
         return {} if term1 == term2 else None

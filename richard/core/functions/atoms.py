@@ -45,6 +45,10 @@ def get_atoms_variables(atoms: list[tuple]) -> list[str]:
     return list(variables)
 
 
+def contains_variables(atoms: list):
+    return len(get_atoms_variables(atoms)) > 0
+
+
 def bind_variables(term: any, binding: dict) -> any:
     """
     Binds all variables in term to their binding from bindings
