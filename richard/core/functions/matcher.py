@@ -53,7 +53,7 @@ def match_term(term1: any, term2: any, binding: dict) -> dict:
         return {} if term1 == term2 else None
     # var / non-var
     if isinstance(term1, Variable) and not isinstance(term2, Variable):
-        return {term1.name: term2}
+        return match_variable_nonvar(term1, term2, binding)
     # non-var / var
     if not isinstance(term1, Variable) and isinstance(term2, Variable):
         return {}
@@ -61,6 +61,17 @@ def match_term(term1: any, term2: any, binding: dict) -> dict:
     if isinstance(term1, Variable) and isinstance(term2, Variable):
         return match_variable(term1, term2, binding)
     raise Exception("Unhandled case")
+
+
+def match_variable_nonvar(var1: Variable, term2: any, binding: dict):
+    if var1.name in binding:
+        bound1 = binding[var1.name]
+        if isinstance(bound1, Variable):
+            return {var1.name: term2}
+        else:
+            return {} if bound1 == term2 else None
+    else:
+        return {var1.name: term2}
 
 
 def match_variable(var1: Variable, var2: Variable, binding: dict):
