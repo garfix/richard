@@ -9,9 +9,9 @@ B = Variable('B')
 
 class TestAtomFunctions(unittest.TestCase):
 
-    def test_create_argument_binding_multiple(self):
+    def test_match_induction_rule(self):
 
-        sentence = [('name', E1, 'Mary'), ('name', E2, 'John'), ('play_tennis', E1, E2), ('win', E1)]
+        sentence = [('name', E1, 'Mary'), ('name', E2, 'John'), ('play_tennis', E1, E2), ('win', E1), ('father', 'Bill', E1)]
 
         tests = [
             {
@@ -23,6 +23,21 @@ class TestAtomFunctions(unittest.TestCase):
                 'antecedent': [('win', A), ('name', A, B)],
                 'sentence': sentence,
                 'bindings': [{'A': E1, 'B': 'Mary'}]
+            },
+            {
+                'antecedent': [('name', A, 'John'), ('win', A)],
+                'sentence': sentence,
+                'bindings': []
+            },
+            {
+                'antecedent': [('name', A, A)],
+                'sentence': sentence,
+                'bindings': [{'A': 'Mary'}, {'A': 'John'}]
+            },
+            {
+                'antecedent': [('father', A, A)],
+                'sentence': sentence,
+                'bindings': [{'A': 'Bill'}]
             },
         ]
 

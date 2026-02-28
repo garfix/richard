@@ -1,9 +1,9 @@
+from richard.core.functions.atoms import bind_variables
 from richard.entity.Variable import Variable
 
 
 def match_induction_rule(antecedent_atoms: list[any], sentence_atoms: list[any]) -> list[dict]:
-    bindings = match_induction_rule_rest(antecedent_atoms, sentence_atoms)
-    return bindings
+    return match_induction_rule_rest(antecedent_atoms, sentence_atoms)
 
 
 def match_induction_rule_rest(antecedent_atoms: list[any], sentence_atoms: list[any], binding: dict={}) -> list[dict]:
@@ -22,6 +22,7 @@ def match_induction_rule_rest(antecedent_atoms: list[any], sentence_atoms: list[
 def match_induction_rule_atom(antecedent_atom: tuple, sentence_atoms: list[tuple], binding) -> list[dict]:
     results = []
     for sentence_atom in sentence_atoms:
+        if antecedent_atom[0] != sentence_atom[0]: continue
         new_binding = match_atom(antecedent_atom, sentence_atom, binding)
         # print(antecedent_atom, sentence_atom, binding, new_binding)
         if new_binding is not None:
@@ -35,6 +36,7 @@ def match_atom(formal_parameters: tuple, arguments: tuple, binding: dict) -> dic
     new_binding = binding
     for formal_parameter, argument in zip(formal_parameters, arguments):
         term_binding = match_term(formal_parameter, argument, new_binding)
+        # print('    ', formal_parameter, argument, new_binding, term_binding)
         if term_binding is None:
             return None
         new_binding = new_binding | term_binding
@@ -63,7 +65,10 @@ def match_term(term1: any, term2: any, binding: dict) -> dict:
 
 def match_variable(var1: Variable, var2: Variable, binding: dict):
     if var1.name in binding:
-        if binding[var1.name] == var2:
+        bound1 = binding[var1.name]
+        if isinstance(bound1, Variable):
+            return {} if bound1.name == var2.name else None
+        else:
             return {}
     else:
         return {var1.name: var2}
