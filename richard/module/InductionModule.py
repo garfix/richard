@@ -17,6 +17,7 @@ class InductionModule(SomeModule):
     plan_analyzer: PlanAnalyzer
     fact_induction_rules: list[InductionRule]
     plan_analyzer_rules: list[InductionRule]
+    deduction_rules: list[InductionRule]
 
 
     def __init__(self) -> None:
@@ -29,6 +30,7 @@ class InductionModule(SomeModule):
         self.plan_analyzer = PlanAnalyzer()
         self.fact_induction_rules = []
         self.plan_analyzer_rules = []
+        self.deduction_rules = []
 
 
     def import_fact_induction_rules(self, path: str):
@@ -51,6 +53,18 @@ class InductionModule(SomeModule):
                 raise Exception("Unable to parse induction on token " + str(pos) + " in file " + path)
             for rule in rules:
                 self.plan_analyzer_rules.append(rule)
+
+
+    def import_deduction_rules(self, path: str):
+        parser = SimpleInferenceRuleParser()
+        with open(path) as rule_file:
+            content = rule_file.read()
+            rules, pos = parser.parse_rules(content)
+            if pos is not None:
+                raise Exception("Unable to parse induction on token " + str(pos) + " in file " + path)
+            for rule in rules:
+                self.deduction_rules.append(rule)
+        print(self.deduction_rules)
 
 
     # ('induce_facts', [body-atoms])
@@ -77,7 +91,7 @@ class InductionModule(SomeModule):
         if contains_variables(atoms):
             raise Exception(f"Cannot induce facts based on unbound atoms. Please reify {atoms}")
 
-        self.plan_analyzer.justify(atoms, self.plan_analyzer_rules, context)
+        self.plan_analyzer.justify(atoms, self.plan_analyzer_rules, self.deduction_rules, context)
 
         return [
             [None]

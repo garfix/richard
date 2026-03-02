@@ -44,9 +44,17 @@ Work out context in inference rules:
 * syntax: `name{ rule. rule. }`
 * application: the rules must only be applied when context name is active
 
+## Second order sentences
+
+Nested sentences should not just be stored relationally, because the hierarchy matters. In relational form, the dependent form is stored as a fact, and this is wrong.
+
 ## multiple sentences
 
 * the parser should always return multiple sentences, and there should be a better standard way on how to find different sentences
+
+## inference to deduction
+
+Everything called inference should be called deduction, to contrast it with induction.
 
 ## output
 

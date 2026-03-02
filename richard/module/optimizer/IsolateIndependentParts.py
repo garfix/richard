@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from richard.core.functions.atoms import get_atom_variables
+from richard.core.functions.atoms import get_variables
 
 
 @dataclass(frozen=True)
@@ -23,7 +23,7 @@ class IsolateIndependentParts:
             return []
 
         head = atoms[0]
-        head_variables = set(get_atom_variables(head))
+        head_variables = set(get_variables(head))
         new_atoms = [head]
 
         batches = self.collect_batches(atoms[1:], head_variables)
@@ -48,7 +48,7 @@ class IsolateIndependentParts:
         collection: list[AtomBatch] = []
         for atom in atoms:
             # note that the top level variables are excluded, they may occur in any batch
-            variables = set(get_atom_variables(atom)) - excluded_variables
+            variables = set(get_variables(atom)) - excluded_variables
             collection.append(AtomBatch([atom], variables))
 
         # combine batches until the result is stable

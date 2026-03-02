@@ -1,7 +1,9 @@
+from richard.core.functions.atoms import bind_variables
+from richard.entity.InferenceRule import InferenceRule
 from richard.entity.InductionRule import InductionRule
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.module.induction.Link import Link
-from richard.module.induction.functions import instantiate, match
+from richard.module.induction.functions import match
 
 
 # Based on MicroPAM (see https://github.com/garfix/micropam)
@@ -18,7 +20,7 @@ class PlanAnalyzer:
         self.known_plans = []
 
 
-    def justify(self, sentence: list[tuple], induction_rules: list[InductionRule], context: ExecutionContext):
+    def justify(self, sentence: list[tuple], induction_rules: list[InductionRule], deduction_rules: list[InferenceRule], context: ExecutionContext):
 
         print('---')
 
@@ -32,12 +34,12 @@ class PlanAnalyzer:
         current_sentence = sentence
 
         while True:
-            if self.predicted(current_sentence, log):
+            if self.predicted(current_sentence, deduction_rules, context, log):
                 break
 
             chain.append(Link(current_sentence, induction_rules[:]))
 
-            current_sentence = self.try_inference(chain, log)
+            current_sentence = self.try_inference(chain, deduction_rules, context, log)
             if not current_sentence:
                 break
 
@@ -56,19 +58,20 @@ class PlanAnalyzer:
         print('---')
 
 
-    def predicted(self, sentence: list, log: list[str]):
+    def predicted(self, sentence: list, context: ExecutionContext, deduction_rules: list[InferenceRule], log: list[str]):
         # is cd part of the known plans, goals or themes?
         if self.isa("goal", sentence):
-            return self.relate(sentence, self.known_themes, self.init_rules, log) or self.relate(sentence, self.known_plans, self.sub_for, log)
+            return self.relate(sentence, self.known_themes, self.init_rules, deduction_rules, context, log) \
+                or self.relate(sentence, self.known_plans, self.sub_for, deduction_rules, context, log)
         elif self.isa("plan", sentence):
-            return self.relate(sentence, self.known_goals, self.plans_for, log)
+            return self.relate(sentence, self.known_goals, self.plans_for, deduction_rules, context, log)
         elif self.isa("action", sentence):
-            return self.relate(sentence, self.known_plans, self.instance_of, log)
+            return self.relate(sentence, self.known_plans, self.instance_of, deduction_rules, context, log)
         else:
             return None
 
 
-    def relate(self, sentence: list, item_list: list, rule_list: list[InductionRule], log: list[str]):
+    def relate(self, sentence: list, item_list: list, rule_list: list[InductionRule], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list[str]):
         # item_list contains known themes, goals, or plans
         # rule_list contains all rules that belong to the themes, goals or plans
         # each rule has an antecedent (rhs) and a consequent (lhs)
@@ -76,8 +79,8 @@ class PlanAnalyzer:
         bindings = {}
         for item in item_list:
             for rule in rule_list:
-                bindings = match(rule.antecedent, sentence, {})
-                if bindings is not None and match(rule.consequent, item, bindings) is not None:
+                bindings = match(rule.antecedent, sentence, {}, context)
+                if bindings is not None and match(rule.consequent, item, bindings, context, deduction_rules) is not None:
                     log.append("Confirms prediction from")
                     log.append(item)
                     return True
@@ -85,7 +88,7 @@ class PlanAnalyzer:
         return False
 
 
-    def try_inference(self, chain: list[Link], log: list):
+    def try_inference(self, chain: list[Link], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list):
         # chain is a list of [cd, all_inference_rules]
         # return the lhs of the first match, and extend the chain
         sentence = None
@@ -94,7 +97,7 @@ class PlanAnalyzer:
             # try all inference rules in the cd
             # if the cd matches a rule, add it to the chain
             # and return the bound lhs of the rule
-            sentence = self.try_rules(last_link.atoms, last_link.rules[:], chain)
+            sentence = self.try_rules(last_link.atoms, last_link.rules[:], chain, deduction_rules, context)
             if sentence is None:
                 log.append("No usable inferences from")
                 log.append(last_link.atoms)
@@ -109,21 +112,21 @@ class PlanAnalyzer:
         return None
 
 
-    def try_rules(self, sentence, rules: list[InductionRule], chain: list[Link]):
+    def try_rules(self, sentence, rules: list[InductionRule], chain: list[Link], deduction_rules: list[InferenceRule], context: ExecutionContext):
         # match cd with the rhs of each of the rules
         # if a match occurs, return a binding with the lhs of the rule
         last_rule = None
         bindings = None
         while len(rules) > 0:
             last_rule = rules.pop()
-            bindings = match(last_rule.antecedent, sentence, {})
+            bindings = match(last_rule.antecedent, sentence, {}, deduction_rules, context)
             if bindings is not None:
                 break
 
         if bindings:
             # append the fact to the chain
             chain.append(Link(sentence, rules))
-            return instantiate(last_rule.consequent, bindings)
+            return bind_variables(last_rule.consequent, bindings)
 
         return None
 

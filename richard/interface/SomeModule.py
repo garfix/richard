@@ -16,6 +16,7 @@ class SomeModule(ABC):
         self.relations[relation.predicate] = relation
 
 
-    def get_relations(self) -> dict[str, Relation]:
-        return self.relations
+    def get_relation(self, predicate: str) -> Relation:
+        return self.relations[predicate] if predicate in self.relations else None
+
 

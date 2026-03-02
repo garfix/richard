@@ -24,13 +24,17 @@ def format_value(value: any, indent: str = "\n") -> str:
     return text
 
 
-def get_atom_variables(construct: any) -> list[str]:
+def has_variables(term: any) -> bool:
+    return get_variables(term) > 0
+
+
+def get_variables(term: any) -> list[str]:
     variables = set()
-    if isinstance(construct, Variable):
-        variables.add(construct.name)
-    elif isinstance(construct, tuple) or isinstance(construct, list):
-        for arg in construct:
-            for v in get_atom_variables(arg):
+    if isinstance(term, Variable):
+        variables.add(term.name)
+    elif isinstance(term, tuple) or isinstance(term, list):
+        for arg in term:
+            for v in get_variables(arg):
                 variables.add(v)
 
     return list(variables)
@@ -39,7 +43,7 @@ def get_atom_variables(construct: any) -> list[str]:
 def get_atoms_variables(atoms: list[tuple]) -> list[str]:
     variables = set()
     for atom in atoms:
-        for v in get_atom_variables(atom):
+        for v in get_variables(atom):
             variables.add(v)
 
     return list(variables)

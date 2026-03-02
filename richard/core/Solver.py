@@ -1,5 +1,5 @@
 from collections import defaultdict
-from richard.core.functions.atoms import bind_variables, get_atom_variables
+from richard.core.functions.atoms import bind_variables, get_variables
 from richard.core.functions.results import tuple_results_to_bindings
 from richard.core.constants import DISJUNCTION
 from richard.entity.BindingResult import BindingResult
@@ -49,6 +49,8 @@ class Solver(SomeSolver):
     def solve_single(self, atom: tuple, binding: dict):
         predicate = atom[0]
         unbound_arguments = atom[1:]
+
+        # print(atom)
 
         # predicate stats
         if self.log_stats:
@@ -134,10 +136,10 @@ class Solver(SomeSolver):
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
-        if len(get_atom_variables(arguments)) > 0:
+        if len(get_variables(arguments)) > 0:
             raise Exception(f"'{predicate}' attempts to persist a variable: {arguments}")
 
-        print(atom)
+        # print(atom)
 
         for relation in relations:
             if relation.write_function is not None:

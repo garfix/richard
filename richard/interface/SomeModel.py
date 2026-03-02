@@ -8,6 +8,6 @@ class SomeModel(ABC):
     """
 
     @abstractmethod
-    def find_relations(self, relation: str) -> list[Relation]:
+    def find_relations(self, predicate: str) -> list[Relation]:
         pass
 

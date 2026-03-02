@@ -1,3 +1,30 @@
+## 2026-03-01
+
+I think I can combine the "constraint" step of the consequent of the MicroPAM rules with the antecedent. It's just another restriction after all.
+
+===
+
+I omitted the conceptual dependency analysis from the parsing phase, because I think that parsing and induction should be separated. Now I need to solve the problem that the inductions have not occurred when I need them in the plan analysis phase.
+
+Let's sum up where we can to the cd analysis.
+
+* in a "fact induction" step: pick_up(E1, E2) => grasp(E1, E2)
+    * problem: the induced information is not available when mathing induction rule antecedents
+    * solution(?) make the antecedent executable, not just matchable
+        * problem: the antecendent is now solved against all facts in the db, not just the sentence
+            * solution(?) solve against the sentence (as a model) and the inference rules
+* in the induction rule matching phase
+
+This is the rule
+
+    grasp(E1, E2) => take_plan(E1, E2).
+
+and this is the inference I need to make in order to match the antecedent:
+
+    grasp(E1, E2) :- pick_up(E1, E2).
+
+The sentence will need to be stored  in DB before I start the rule matching, because now it doesn't use the sentece atoms from a variable, but it tries to find them in the database.
+
 ## 2026-02-24
 
 Some thoughts: a "sense" is the informational essense of things. It has a dual nature: can take the form of a variable in questions and of a constant in statements. Apart from that it is also a pointer, which can point to other senses with which it identifies, and to itself. In questions and statements it is "fluid", in statements it is "solid". It has a name, which is unique within a dialog.

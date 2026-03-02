@@ -15,7 +15,7 @@ class PAMModule(SomeModule):
         self.ds = data_source
         self.add_relation(Relation("hungry", query_function=self.simple_entity))
         self.add_relation(Relation("michelin_guide", query_function=self.simple_entity))
-        self.add_relation(Relation("pick_up", query_function=self.simple_entity))
+        self.add_relation(Relation("pick_up", query_function=self.common_query, formal_parameters=['id1', 'id2', 'id3'], write_function=self.common_write))
         self.add_relation(Relation("get_into", query_function=self.simple_entity))
         self.add_relation(Relation("car", query_function=self.simple_entity))
         self.add_relation(Relation("name", query_function=self.simple_entity))
@@ -69,6 +69,13 @@ class PAMModule(SomeModule):
         # self.add_relation(Relation("be", query_function=self.simple_entity))
         # self.add_relation(Relation("male", query_function=self.simple_entity))
         # self.add_relation(Relation("person", query_function=self.simple_entity))
+
+    def common_write(self, arguments: list, context: ExecutionContext) -> list[list]:
+        self.ds.insert(context.relation.predicate, context.relation.formal_parameters, arguments)
+
+
+    def common_query(self, arguments: list, context: ExecutionContext) -> list[list]:
+        return self.ds.select(context.relation.predicate, context.relation.formal_parameters, arguments)
 
 
     def resolve_name(self, arguments: list, context: ExecutionContext) -> list[list]:

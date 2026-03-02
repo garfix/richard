@@ -1,4 +1,4 @@
-from richard.core.functions.atoms import get_atom_variables
+from richard.core.functions.atoms import get_variables
 from richard.core.constants import IGNORED, INFINITE
 from richard.entity.Variable import Variable
 from richard.interface.SomeModel import SomeModel
@@ -33,7 +33,7 @@ class SortByCost:
         sorted = [result['atom'] for result in results]
 
         sorted_first_atom = self.sort_arguments(sorted[0], solver, model, bound_variables)
-        bound_variables = bound_variables | set(get_atom_variables(sorted_first_atom))
+        bound_variables = bound_variables | set(get_variables(sorted_first_atom))
 
         return self.sort_rest(done + [sorted_first_atom], sorted[1:], solver, model, bound_variables)
 

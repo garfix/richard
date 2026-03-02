@@ -16,10 +16,12 @@ class InferenceModule(SomeModule):
     rules: dict[str, list[InferenceRule]]
 
 
-    def __init__(self) -> None:
+    def __init__(self, rules: list=[]) -> None:
         super().__init__()
         self.add_relation(Relation("learn_rule", query_function=self.learn_rule))
         self.rules = {}
+        for rule in rules:
+            self.insert_rule(rule)
 
 
     def insert_rule(self, rule: InferenceRule):
