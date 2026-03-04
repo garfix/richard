@@ -1,6 +1,4 @@
-from richard.core.functions.atoms import contains_variables, create_argument_binding, get_variables, has_variables
-from richard.core.functions.matcher import match_atom, match_term
-from richard.data_source.SimpleFrameDataSource import SimpleFrameDataSource
+from richard.core.functions.atoms import create_argument_binding, has_variables
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
@@ -8,6 +6,9 @@ from richard.interface.SomeModule import SomeModule
 
 
 class PlainReadWriteModule(SomeModule):
+    """
+    A flexible storage that accepts any relation, and no relation needs to be specified
+    """
 
     atoms: list[tuple]
 
@@ -50,7 +51,7 @@ class PlainReadWriteModule(SomeModule):
         self.atoms.append(tuple([context.relation.predicate] + arguments))
 
 
-    def get_relation(self, predicate: str) -> dict[str, Relation]:
+    def get_relation(self, predicate: str) -> Relation|None:
         if not predicate in self.relations:
              self.add_relation(Relation(predicate, query_function=self.query, write_function=self.write))
 

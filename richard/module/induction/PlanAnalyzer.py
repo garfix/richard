@@ -37,6 +37,7 @@ class PlanAnalyzer:
             if self.predicted(current_sentence, deduction_rules, context, log):
                 break
 
+            log.append("Does not confirm prediction")
             chain.append(Link(current_sentence, induction_rules[:]))
 
             current_sentence = self.try_inference(chain, deduction_rules, context, log)
@@ -61,12 +62,16 @@ class PlanAnalyzer:
     def predicted(self, sentence: list, context: ExecutionContext, deduction_rules: list[InferenceRule], log: list[str]):
         # is cd part of the known plans, goals or themes?
         if self.isa("goal", sentence):
-            return self.relate(sentence, self.known_themes, self.init_rules, deduction_rules, context, log) \
-                or self.relate(sentence, self.known_plans, self.sub_for, deduction_rules, context, log)
+            # return self.relate(sentence, self.known_themes, self.init_rules, deduction_rules, context, log) \
+            #     or self.relate(sentence, self.known_plans, self.sub_for, deduction_rules, context, log)
+            return self.relate(sentence, self.known_themes, deduction_rules, deduction_rules, context, log) \
+                or self.relate(sentence, self.known_plans, deduction_rules, deduction_rules, context, log)
         elif self.isa("plan", sentence):
-            return self.relate(sentence, self.known_goals, self.plans_for, deduction_rules, context, log)
+            # return self.relate(sentence, self.known_goals, self.plans_for, deduction_rules, context, log)
+            return self.relate(sentence, self.known_goals, deduction_rules, deduction_rules, context, log)
         elif self.isa("action", sentence):
-            return self.relate(sentence, self.known_plans, self.instance_of, deduction_rules, context, log)
+            # return self.relate(sentence, self.known_plans, self.instance_of, deduction_rules, context, log)
+            return self.relate(sentence, self.known_plans, deduction_rules, deduction_rules, context, log)
         else:
             return None
 
