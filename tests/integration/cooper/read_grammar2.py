@@ -1,7 +1,6 @@
-from richard.core.constants import E1, E2, E3, E4, E5, e1, e2, e3, Body, Range
+from richard.core.constants import E1
 from richard.entity.ReifiedVariable import ReifiedVariable
 from richard.entity.Variable import Variable
-from richard.processor.parser.helper.grammar_functions import apply
 
 T1 = Variable('T1')
 T2 = Variable('T2')

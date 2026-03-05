@@ -39,6 +39,18 @@ class TestCoreModule(unittest.TestCase):
         self.assertEqual(bindings, [{'E1': 5}])
 
 
+    def test_scoped(self):
+
+        model = Model([])
+        solver = Solver(model)
+
+        bindings = solver.solve([('scoped', [('let', E1, 3)])])
+        self.assertEqual(bindings, [{'E1': 3}])
+
+        bindings = solver.solve([('scoped', [('equals', 2, 3)])])
+        self.assertEqual(bindings, [])
+
+
     def test_unification(self):
 
         model = Model([])
