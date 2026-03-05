@@ -25,7 +25,7 @@ def format_value(value: any, indent: str = "\n") -> str:
 
 
 def has_variables(term: any) -> bool:
-    return get_variables(term) > 0
+    return len(get_variables(term)) > 0
 
 
 def get_variables(term: any) -> list[str]:

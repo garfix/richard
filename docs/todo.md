@@ -48,6 +48,10 @@ Work out context in inference rules:
 
 Nested sentences should not just be stored relationally, because the hierarchy matters. In relational form, the dependent form is stored as a fact, and this is wrong.
 
+## scoped
+
+`scoped` used to result in no new variables. This has changed. Now it does. And the tests still pass. And this has advantages, but maybe also disadvantages. Create a new predicate that explicitly exposes variables? Change the name of `scoped` to `execute`?
+
 ## multiple sentences
 
 * the parser should always return multiple sentences, and there should be a better standard way on how to find different sentences

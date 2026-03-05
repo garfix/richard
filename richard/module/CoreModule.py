@@ -357,7 +357,7 @@ class CoreModule(SomeModule):
 
     # ('scoped', [body-atoms])
     # a wrapper around a list of atoms, that allows the execution of the atoms in a variable
-    def scoped(self, arguments: list, context: ExecutionContext) -> list[list]:
+    def scoped(self, arguments: list, context: ExecutionContext) -> BindingResult|list[list]:
         body = arguments[0]
 
         results = context.solver.solve(body)
@@ -366,9 +366,7 @@ class CoreModule(SomeModule):
         if count == 0:
             result = []
         else:
-            result = [
-                [None]
-            ]
+            result = BindingResult(results)
 
         return result
 

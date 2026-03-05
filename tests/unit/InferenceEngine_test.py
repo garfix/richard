@@ -80,7 +80,7 @@ class TestInferenceEngine(unittest.TestCase):
             [[('grand_parent', 'martha', 'antonio')], [{}]],
             [[('grand_parent', 'martha', 'edward')], []],
             # bindings are passed
-            [[('knows', [('parent', 'martha', E2)], "true")], [{}]],
+            [[('knows', [('parent', 'martha', E2)], "true")], [{'E2': 'william'}]],
             [[('knows', [('parent', 'magdalena', E2)], "true")], []],
             [[('ancestor', 'robert', 'antonio')], [{}]],
             [[('related', 'robert', 'antonio')], [{}]],
