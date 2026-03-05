@@ -80,6 +80,30 @@ class TestAtomFunctions(unittest.TestCase):
                 'binding': {},
                 'result': {'B': '$2', 'C': '$3'}
             },
+            {
+                'atom1': ('name', A),
+                'atom2': ('name', A),
+                'binding': {},
+                'result': {}
+            },
+            {
+                'atom1': ('name', A),
+                'atom2': ('name', B),
+                'binding': {'B': C},
+                'result': {'A': B, 'B': C}
+            },
+            {
+                'atom1': ('name', A),
+                'atom2': ('name', C),
+                'binding': {'A': B},
+                'result': None
+            },
+            {
+                'atom1': ('name', 'Bob'),
+                'atom2': ('name', None),
+                'binding': {},
+                'result': {}
+            },
         ]
 
         for test in tests:

@@ -44,10 +44,13 @@ def match_atom(formal_parameters: tuple, arguments: tuple, binding: dict) -> dic
 
 
 def match_term(term1: any, term2: any, binding: dict) -> dict|None:
+    # any / None
     if term2 is None:
         return {}
+    # list / list
     if isinstance(term1, list) and isinstance(term2, list):
         return match_list(term1, term2, binding)
+    # tuple / tuple
     if isinstance(term1, tuple) and isinstance(term2, tuple):
         return match_atom(term1, term2, binding)
     # non-var / non-var

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from richard.core.functions.atoms import get_atoms_variables
+from richard.core.functions.atoms import get_variables
 
 
 @dataclass(frozen=True)
@@ -17,7 +17,7 @@ class InferenceRule:
 
     def get_all_variables(self) -> list[str]:
         variables = []
-        variables.extend(get_atoms_variables(self.head))
-        variables.extend(get_atoms_variables(self.body))
+        variables.extend(get_variables(self.head))
+        variables.extend(get_variables(self.body))
 
         return variables

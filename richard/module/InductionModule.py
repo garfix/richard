@@ -1,4 +1,4 @@
-from richard.core.functions.atoms import bind_variables, contains_variables
+from richard.core.functions.atoms import bind_variables, has_variables
 from richard.core.functions.matcher import match_induction_rule
 from richard.entity.InductionRule import InductionRule
 from richard.entity.Relation import Relation
@@ -71,7 +71,7 @@ class InductionModule(SomeModule):
     def induce_facts(self, arguments: list, context: ExecutionContext) -> list[list]:
         atoms = arguments[0]
 
-        if contains_variables(atoms):
+        if has_variables(atoms):
             raise Exception(f"Cannot induce facts based on unbound atoms. Please reify {atoms}")
 
         for rule in self.fact_induction_rules:
@@ -88,7 +88,7 @@ class InductionModule(SomeModule):
     def analyze_plans(self, arguments: list, context: ExecutionContext) -> list[list]:
         atoms = arguments[0]
 
-        if contains_variables(atoms):
+        if has_variables(atoms):
             raise Exception(f"Cannot induce facts based on unbound atoms. Please reify {atoms}")
 
         self.plan_analyzer.justify(atoms, self.plan_analyzer_rules, self.deduction_rules, context)
