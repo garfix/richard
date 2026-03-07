@@ -1,11 +1,13 @@
 from richard.core.functions.terms import bind_variables, has_variables
-from richard.core.functions.matcher import match_induction_rule
+from richard.core.functions.unification import unification
+from richard.core.functions.variables import generate_variables
 from richard.entity.InductionRule import InductionRule
 from richard.entity.Relation import Relation
 from richard.interface.SomeModule import SomeModule
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.module.helper.SimpleInferenceRuleParser import SimpleInferenceRuleParser
 from richard.module.induction.PlanAnalyzer import PlanAnalyzer
+from richard.processor.semantic_composer.helper.VariableGenerator import VariableGenerator
 
 
 class InductionModule(SomeModule):
@@ -18,6 +20,7 @@ class InductionModule(SomeModule):
     fact_induction_rules: list[InductionRule]
     plan_analyzer_rules: list[InductionRule]
     deduction_rules: list[InductionRule]
+    variable_generator: VariableGenerator
 
 
     def __init__(self) -> None:
@@ -25,6 +28,7 @@ class InductionModule(SomeModule):
         self.add_relation(Relation("induce_facts", query_function=self.induce_facts))
         self.add_relation(Relation("analyze_plans", query_function=self.analyze_plans))
         self.rules = {}
+        self.variable_generator = VariableGenerator("ID")
 
         # the analyzer contains data that need to persist between sentences
         self.plan_analyzer = PlanAnalyzer()
@@ -74,9 +78,12 @@ class InductionModule(SomeModule):
             raise Exception(f"Cannot induce facts based on unbound atoms. Please reify {atoms}")
 
         for rule in self.fact_induction_rules:
-            bindings = match_induction_rule(rule.antecedent, atoms)
-            for binding in bindings:
-                bound_consequent = bind_variables(rule.consequent, binding)
+            variable_map = {}
+            antecedent = generate_variables(rule.antecedent, self.variable_generator, variable_map)
+            consequent = [generate_variables(atom, self.variable_generator, variable_map) for atom in rule.consequent]
+            binding = unification(antecedent, atoms, {})
+            if binding is not None:
+                bound_consequent = bind_variables(consequent, binding)
                 context.solver.write_atoms(bound_consequent)
         return [
             [None]

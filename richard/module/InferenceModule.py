@@ -20,7 +20,6 @@ class InferenceModule(SomeModule):
     variable_generator: VariableGenerator
 
 
-
     def __init__(self, rules: list=[]) -> None:
         super().__init__()
         self.add_relation(Relation("learn_rule", query_function=self.learn_rule))
@@ -62,12 +61,11 @@ class InferenceModule(SomeModule):
         # replace variables in rule with new variables
         variable_map = {}
         head = generate_variables(rule.head[1:], self.variable_generator, variable_map)
+        body = [generate_variables(atom, self.variable_generator, variable_map) for atom in rule.body]
 
         rule_binding = unification(head, arguments, binding)
         if rule_binding is None:
             return []
-
-        body = [generate_variables(atom, self.variable_generator, variable_map) for atom in rule.body]
 
         if len(rule.body) == 0:
             bindings = [ rule_binding ]

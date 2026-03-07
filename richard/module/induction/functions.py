@@ -13,6 +13,5 @@ def match(pattern, sentence, binding: dict, deduction_rules: list[InferenceRule]
     ])
     solver = Solver(model)
 
-    # print(sentence)
     results = solver.solve(pattern)
     return results[0] if len(results) > 0 else None

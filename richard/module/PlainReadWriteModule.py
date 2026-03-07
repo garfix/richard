@@ -28,7 +28,7 @@ class PlainReadWriteModule(SomeModule):
         predicate = atom[0]
         if predicate not in self.relations:
             arguments = atom[1:]
-            formal_parameters = [Variable(f"E{i}") for i in enumerate(arguments)]
+            formal_parameters = [Variable(f"E{i}") for i, _ in enumerate(arguments)]
             self.add_relation(Relation(predicate, formal_parameters=formal_parameters, query_function=self.query, write_function=self.write))
 
 
@@ -39,7 +39,7 @@ class PlainReadWriteModule(SomeModule):
         results = []
         for atom in self.atoms:
             if atom[0] == predicate:
-                if unification(formal_parameters, arguments, {}) is not None:
+                if unification(formal_parameters, list(arguments), {}) is not None:
                     results.append(atom[1:])
 
         return results

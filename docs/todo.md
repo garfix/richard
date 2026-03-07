@@ -1,8 +1,7 @@
 ## todo
 
-- remove solve1()
+- rm match_induction_rule
 - can i do unification in more places?
-
 
 PAM: Willa was hungry
 - match inferences voor "She picked up the Michelin guide"
