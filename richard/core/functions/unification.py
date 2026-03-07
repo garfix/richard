@@ -16,9 +16,9 @@ def unification(term1: any, term2: any, binding: dict) -> dict|None:
         binding = unify_variables(term1, term2, binding)
     # single variable
     elif isinstance(term2, Variable):
-        binding = unify_bindings(binding, {term2.name: term1})
+        binding = unify_variable_with_nonvar(term2, term1, binding)
     elif isinstance(term1, Variable):
-        binding = unify_bindings(binding, {term1.name: term2})
+        binding = unify_variable_with_nonvar(term1, term2, binding)
     # other
     elif term1 != term2:
         binding = None
@@ -46,8 +46,8 @@ def unify_tuples(term1: tuple, term2: tuple, binding: dict):
     if len(term1) != len(term2):
         binding = None
     else:
-        for bound_arg, free_arg in zip(term1, term2):
-            binding = unify_bindings(binding, unification(bound_arg, free_arg, binding))
+        for arg1, arg2 in zip(term1, term2):
+            binding = unify_bindings(binding, unification(arg1, arg2, binding))
 
     return binding
 
@@ -67,6 +67,17 @@ def unify_variables(term1: Variable, term2: Variable, binding: dict):
         binding = unify_bindings(binding, {deref2.name: deref1})
     else:
         binding = unification(deref1, deref2, binding)
+
+    return binding
+
+
+def unify_variable_with_nonvar(term1: Variable, term2: any, binding: dict):
+    deref1 = dereference(term1, binding)
+
+    if isinstance(deref1, Variable):
+        binding = unify_bindings(binding, {deref1.name: term2})
+    else:
+        binding = unification(deref1, term2, binding)
 
     return binding
 

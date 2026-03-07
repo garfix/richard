@@ -1,3 +1,11 @@
+## 2026-03-07
+
+I just thought I'd try out using unification in the inference module, in stead of the custom mapping functions. I got it working! It's a bit slower (20%), but reducing the number of core algorithms is important too, any perhaps there are ways to speed it up.
+
+I also found a bug in the unification code that badly needed fixing.
+
+I'm intrigued by this idea of only using unification to replace the custom mapping algorithms, which always were a headache. So I'll see if I can do more of them.
+
 ## 2026-03-01
 
 I think I can combine the "constraint" step of the consequent of the MicroPAM rules with the antecedent. It's just another restriction after all.

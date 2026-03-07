@@ -1,5 +1,9 @@
 ## todo
 
+- remove solve1()
+- can i do unification in more places?
+
+
 PAM: Willa was hungry
 - match inferences voor "She picked up the Michelin guide"
     - create the rule for pick_up -> grasp (action -> plan)
