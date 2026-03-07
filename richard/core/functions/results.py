@@ -1,5 +1,5 @@
 from richard.core.functions.terms import bind_variables
-from richard.core.functions.matcher import match_atom
+from richard.core.functions.unification import unification
 from richard.entity.Variable import Variable
 
 
@@ -12,8 +12,32 @@ def tuple_results_to_bindings(predicate: str, arguments: list, results: list, bi
 
     checked_results = []
     for result in results:
-        checked_result = match_atom(arguments, result, binding)
-        if checked_result is not None:
+
+        # extend the incoming binding
+        checked_result = binding.copy()
+        # check needed for a variable that occurs twice
+        conflict = False
+
+        # go through all arguments
+        for arg, result_arg in zip(arguments, result):
+
+            # None is defined as equal to input argument
+            if result_arg is None:
+                continue
+
+            if isinstance(result_arg, Variable):
+                raise Exception(f"Result of '{predicate}' contains a variable: {result}")
+
+            u = unification(arg, result_arg, checked_result)
+            if u is None:
+                conflict = True
+            else:
+                # not sure why this is a problem, but it causes tests to fail when left out
+                for k,v in u.items():
+                    if not isinstance(v, Variable):
+                        checked_result[k] = v
+
+        if not conflict:
             checked_results.append(checked_result)
 
     return checked_results

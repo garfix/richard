@@ -9,7 +9,7 @@ knows(A, "true") :- scoped(A).
 ancestor(X, Y) :- parent(X, Y).
 ancestor(X, Y) :- parent(X, Z), ancestor(Z, Y).
 related(X, Y) :- ancestor(X, Y).
-related(X, X).
+related(X, X) :- equals(X, X).
 related('jennifer', 'jennifer').
 related('jennifer', 'david').
 family(X, Y) :- (
