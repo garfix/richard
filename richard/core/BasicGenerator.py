@@ -1,5 +1,5 @@
 from richard.core.constants import CATEGORY_FORMAT, CATEGORY_TEXT, CATEGORY_VALUE, POS_TYPE_WORD_FORM
-from richard.core.functions.atoms import bind_variables
+from richard.core.functions.terms import bind_variables
 from richard.entity.GrammarRule import GrammarRule
 from richard.entity.GrammarRules import GrammarRules
 from richard.interface import SomeModel

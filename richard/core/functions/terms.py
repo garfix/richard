@@ -1,7 +1,7 @@
 from richard.entity.Variable import Variable
 
 
-def format_value(value: any, indent: str = "\n") -> str:
+def format_term(value: any, indent: str = "\n") -> str:
     """
     Formats nested lists, tuples and strings
     """
@@ -9,13 +9,13 @@ def format_value(value: any, indent: str = "\n") -> str:
         text = indent + "("
         sep = ""
         for element in value:
-            text += sep + format_value(element, indent + "    ")
+            text += sep + format_term(element, indent + "    ")
             sep = ", "
         text += ")"
     elif isinstance(value, list):
         text = indent + "["
         for element in value:
-            text += format_value(element, indent + "    ")
+            text += format_term(element, indent + "    ")
         text += indent + "]"
     elif isinstance(value, str):
         text = "'" + value + "'"
@@ -63,43 +63,6 @@ def bind_variables(term: any, binding: dict) -> any:
     else:
         # just the value
         return term
-
-
-def create_argument_binding(formal_parameters: list[any], arguments: list[any], binding: dict) -> dict|None:
-    """
-    Maps all variables of formal_parameters to their argument
-    Checks if the constants in formal_parameters match their argument
-    """
-    rule_binding = {}
-
-    for formal_parameter, value in zip(formal_parameters, arguments):
-
-        bound_value = bind_variables(value, binding)
-
-        if isinstance(formal_parameter, Variable):
-            # bind variable
-            if isinstance(bound_value, Variable):
-                # A = E1
-                pass
-            else:
-                # A = 'john'
-                # check for conflicts
-                if formal_parameter.name in rule_binding:
-                    if rule_binding[formal_parameter.name] != bound_value:
-                        return None
-
-                rule_binding[formal_parameter.name] = bound_value
-        else:
-            if isinstance(bound_value, Variable):
-                # 'john' = E1
-                pass
-            else:
-                # 'john' = 'susan'
-                # check for conflicts
-                if bound_value != formal_parameter:
-                    return None
-
-    return rule_binding
 
 
 def reify_variables(construct: any) -> any:

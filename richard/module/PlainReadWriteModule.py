@@ -1,4 +1,5 @@
-from richard.core.functions.atoms import create_argument_binding, has_variables
+from richard.core.functions.terms import has_variables
+from richard.core.functions.unification import unification
 from richard.entity.ExecutionContext import ExecutionContext
 from richard.entity.Relation import Relation
 from richard.entity.Variable import Variable
@@ -38,7 +39,7 @@ class PlainReadWriteModule(SomeModule):
         results = []
         for atom in self.atoms:
             if atom[0] == predicate:
-                if create_argument_binding(formal_parameters, arguments, {}) is not None:
+                if unification(formal_parameters, arguments, {}) is not None:
                     results.append(atom[1:])
 
         return results

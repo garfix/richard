@@ -1,5 +1,4 @@
-from richard.core.functions.atoms import bind_variables, create_argument_binding
-from richard.core.functions.results import bindings_to_tuple_results
+from richard.core.functions.terms import bind_variables
 from richard.core.functions.unification import unification
 from richard.core.functions.variables import generate_variables
 from richard.entity.Relation import Relation
@@ -58,84 +57,17 @@ class InferenceModule(SomeModule):
         return results
 
 
-    def solve_rule1(self, rule: InferenceRule, arguments: list, solver: SomeSolver, binding: dict):
-
-        # replace variables in rule with new variables
-        variable_map = {}
-        head = generate_variables(rule.head[1:], self.variable_generator, variable_map)
-        body = []
-        for atom in rule.body:
-            body.append(generate_variables(atom, self.variable_generator, variable_map))
-
-        formal_parameters = rule.head[1:]
-        head = tuple(head)
-        arguments = tuple(arguments)
-
-        rule_binding = create_argument_binding(formal_parameters, arguments, binding)
-        rule_binding2 = unification(head, arguments, binding)
-
-        if rule_binding is None:
-            return []
-
-        # print()
-        # print('arguments, binding', arguments, binding)
-        # print('head', rule.head[1:], head)
-        # print('rule_binding', rule_binding, rule_binding2)
-
-        if rule_binding2 is None:
-            rule_binding2 = {}
-            # print(' return2')
-            # return []
-
-            print()
-            print('arguments, binding', arguments, binding)
-            print('rule', rule)
-            print('rule2', head, body)
-            print('rule_binding', rule_binding)
-            print('rule_binding2', rule_binding2)
-
-        if len(rule.body) == 0:
-            bindings = [ rule_binding ]
-            bindings2 = [ rule_binding2 ]
-        else:
-            bindings = solver.solve(bind_variables(rule.body, rule_binding))
-            bindings2 = solver.solve(bind_variables(body, rule_binding2))
-
-        results = bindings_to_tuple_results(formal_parameters, arguments, bindings)
-
-        results2 = []
-        for binding2 in bindings2:
-            result2 = bind_variables(bind_variables(head, rule_binding2), binding2)
-            results2.append(result2)
-
-        # print()
-        # print('arguments, binding', arguments, binding)
-        # print('rule', rule)
-        # print('rule2', head, body)
-        # print('rule_binding', rule_binding)
-        # print('rule_binding2', rule_binding2)
-        # print('solved', bind_variables(rule.body, rule_binding))
-        # print('solved2', bind_variables(body, rule_binding2))
-        # print('result bindings', bindings)
-        # print('result bindings2', bindings2)
-        # print('results', results)
-        # print('results2', results2)
-
-        return results2
-
-
     def solve_rule(self, rule: InferenceRule, arguments: list, solver: SomeSolver, binding: dict):
 
         # replace variables in rule with new variables
         variable_map = {}
         head = generate_variables(rule.head[1:], self.variable_generator, variable_map)
-        body = []
-        for atom in rule.body:
-            body.append(generate_variables(atom, self.variable_generator, variable_map))
 
         rule_binding = unification(head, arguments, binding)
         if rule_binding is None:
             return []
+
+        body = [generate_variables(atom, self.variable_generator, variable_map) for atom in rule.body]
 
         if len(rule.body) == 0:
             bindings = [ rule_binding ]

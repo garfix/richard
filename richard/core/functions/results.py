@@ -1,4 +1,4 @@
-from richard.core.functions.atoms import bind_variables
+from richard.core.functions.terms import bind_variables
 from richard.core.functions.matcher import match_atom
 from richard.entity.Variable import Variable
 

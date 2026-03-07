@@ -1,4 +1,4 @@
-from richard.core.functions.atoms import bind_variables, has_variables
+from richard.core.functions.terms import bind_variables, has_variables
 from richard.core.functions.matcher import match_induction_rule
 from richard.entity.InductionRule import InductionRule
 from richard.entity.Relation import Relation
@@ -64,7 +64,6 @@ class InductionModule(SomeModule):
                 raise Exception("Unable to parse induction on token " + str(pos) + " in file " + path)
             for rule in rules:
                 self.deduction_rules.append(rule)
-        print(self.deduction_rules)
 
 
     # ('induce_facts', [body-atoms])

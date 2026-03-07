@@ -1,4 +1,4 @@
-from richard.core.functions.atoms import bind_variables
+from richard.core.functions.terms import bind_variables
 from richard.entity.InferenceRule import InferenceRule
 from richard.entity.InductionRule import InductionRule
 from richard.entity.ExecutionContext import ExecutionContext
