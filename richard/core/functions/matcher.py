@@ -1,35 +1,6 @@
 from richard.entity.Variable import Variable
 
 
-def match_induction_rule(antecedent_atoms: list[any], sentence_atoms: list[any]) -> list[dict]:
-    return match_induction_rule_rest(antecedent_atoms, sentence_atoms)
-
-
-def match_induction_rule_rest(antecedent_atoms: list[any], sentence_atoms: list[any], binding: dict={}) -> list[dict]:
-    if len(antecedent_atoms) == 0:
-        return [binding]
-    else:
-        antecedent_atom = antecedent_atoms[0]
-        new_bindings = match_induction_rule_atom(antecedent_atom, sentence_atoms, binding)
-        results = []
-        for new_binding in new_bindings:
-            results.extend(match_induction_rule_rest(antecedent_atoms[1:], sentence_atoms, new_binding))
-
-    return results
-
-
-def match_induction_rule_atom(antecedent_atom: tuple, sentence_atoms: list[tuple], binding) -> list[dict]:
-    results = []
-    for sentence_atom in sentence_atoms:
-        if antecedent_atom[0] != sentence_atom[0]: continue
-        new_binding = match_atom(antecedent_atom, sentence_atom, binding)
-        # print(antecedent_atom, sentence_atom, binding, new_binding)
-        if new_binding is not None:
-            results.append(new_binding)
-
-    return results
-
-
 def match_atom(formal_parameters: tuple, arguments: tuple, binding: dict) -> dict|None:
     new_binding = binding
     # print('match_atom', formal_parameters, arguments, binding)
