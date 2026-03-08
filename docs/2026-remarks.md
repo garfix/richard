@@ -1,3 +1,19 @@
+## 2026-03-08
+
+This induction is a problem:
+
+    read_plan(S1, E1, E2), restaurant_guide(E2) => goal(know(E1, fact(restaurant(E2), distance(E2, E3)))).
+
+* `read_plan(S1, E1, E2)` is the part to be recognized in the sentence
+* `restaurant_guide(E2)` is to be retrieved from the database
+
+But I just made "the database" inaccessible from the match process, because new plans and goals are stored there, and they would interfere with the new induction rounds.
+
+Possible solutions:
+
+* solve some of the antecedent in the sentence, and some in the whole database. `read_plan(S1, E1, E2) | restaurant_guide(E2) => goal(know(E1, fact(restaurant(E2), distance(E2, E3)))).` Mark the `|`, it divides the sentence part with the database part
+* keep track of the rules that have triggered and just don't try them again
+
 ## 2026-03-07
 
 I just thought I'd try out using unification in the inference module, in stead of the custom mapping functions. I got it working! It's a bit slower (20%), but reducing the number of core algorithms is important too, any perhaps there are ways to speed it up.

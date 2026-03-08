@@ -121,17 +121,17 @@ class PlanAnalyzer:
         # match cd with the rhs of each of the rules
         # if a match occurs, return a binding with the lhs of the rule
         last_rule = None
-        bindings = None
+        binding = None
         while len(rules) > 0:
             last_rule = rules.pop()
-            bindings = match(last_rule.antecedent, sentence, {}, deduction_rules, context)
-            if bindings is not None:
+            binding = match(last_rule.antecedent, sentence, {}, deduction_rules, context)
+            if binding is not None:
                 break
 
-        if bindings:
+        if binding:
             # append the fact to the chain
             chain.append(Link(sentence, rules))
-            return bind_variables(last_rule.consequent, bindings)
+            return bind_variables(last_rule.consequent, binding)
 
         return None
 
