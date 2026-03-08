@@ -15,6 +15,15 @@ Possible solutions:
 * keep track of the rules that have triggered and just don't try them again
     * try them, but if they give a known response: skip
 
+===
+
+In MicroPAM, in antecedents like this, that have an extra condition:
+
+    [['goal', ['planner', '?x'],
+              ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]], ['isa', 'restaurant', '?y']]
+
+the condition is a problem at the moment.
+
 ## 2026-03-07
 
 I just thought I'd try out using unification in the inference module, in stead of the custom mapping functions. I got it working! It's a bit slower (20%), but reducing the number of core algorithms is important too, any perhaps there are ways to speed it up.

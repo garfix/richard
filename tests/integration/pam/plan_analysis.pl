@@ -1,9 +1,18 @@
+# [['do-$restaurant-plan', ['planner', '?x'], ['restaurant', '?y']]],
+# [['goal', ['planner', '?x'],
+#             ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]], ['isa', 'restaurant', '?y']]
+goal(prox(E1, E2)), equals(E2, 'restaurant') => do_restaurant_plan(E1, E2).
+
+# [['goal', ['planner', '?x'], ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]]],
+# [['goal', ['planner', '?x'],
+#           ['objective', ['know', ['actor', '?x'], ['fact', ['is', ['actor', '?y'], ['prox', '?z']]]]]]]
+goal(know(E1, fact(distance(E2, E3)))) => goal(prox(E1, E2)).
 
 # [['goal', ['planner', '?x'],
 #             ['objective', ['know', ['actor', '?x'],
 #                                     ['fact', ['is', ['actor', 'restaurant'], ['prox', '?z']]]]]]],
 # [['read-plan', ['planner', '?x'], ['object', '?w']], ['isa', 'restaurant-guide', '?w']]
-read_plan(S1, E1, E2), restaurant_guide(E2) => goal(know(E1, fact(restaurant(E2), distance(E2, E3)))).
+read_plan(S1, E1, E2), restaurant_guide(E2) => goal(know(E1, fact(distance('restaurant', E3)))).
 
 # [['goal', ['planner', '?x'], ['objective', ['enjoyment', ['actor', '?x']]]]],
 # [['read-plan', ['planner', '?x'], ['object', '?w']], ['isa', 'book', '?w']]
