@@ -49,7 +49,9 @@ class PlainReadWriteModule(SomeModule):
         if has_variables(arguments):
             raise Exception(f"Atom should be bound: {arguments}")
 
-        self.atoms.append(tuple([context.relation.predicate] + arguments))
+        print('write', tuple([context.relation.predicate] + list(arguments)))
+
+        self.atoms.append(tuple([context.relation.predicate] + list(arguments)))
 
 
     def get_relation(self, predicate: str) -> Relation|None:

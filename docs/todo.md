@@ -2,6 +2,8 @@
 
 - apply unification in Solver:solve()
 
+- I added `sentence` as an extra data source for `match`. This works for now, but I'm not confident it's the final solution
+
 PAM: Willa was hungry
 - match inferences voor "She picked up the Michelin guide"
     - handle pronouns like "She" and "her"

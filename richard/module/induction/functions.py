@@ -6,12 +6,16 @@ from richard.module.PlainReadWriteModule import PlainReadWriteModule
 from richard.module.InferenceModule import InferenceModule
 
 
-def match(pattern, sentence, binding: dict, deduction_rules: list[InferenceRule], context: ExecutionContext):
+def match(pattern, current_subject, binding: dict, deduction_rules: list[InferenceRule], context: ExecutionContext, sentence):
     model = Model([
         PlainReadWriteModule(sentence),
+        PlainReadWriteModule(current_subject),
         InferenceModule(deduction_rules)
     ])
+    # print('sentence', current_subject)
     solver = Solver(model)
 
     results = solver.solve(pattern)
+    # results = context.solver.solve(pattern)
+
     return results[0] if len(results) > 0 else None

@@ -13,6 +13,7 @@ Possible solutions:
 
 * solve some of the antecedent in the sentence, and some in the whole database. `read_plan(S1, E1, E2) | restaurant_guide(E2) => goal(know(E1, fact(restaurant(E2), distance(E2, E3)))).` Mark the `|`, it divides the sentence part with the database part
 * keep track of the rules that have triggered and just don't try them again
+    * try them, but if they give a known response: skip
 
 ## 2026-03-07
 
