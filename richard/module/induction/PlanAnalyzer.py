@@ -99,10 +99,11 @@ class PlanAnalyzer:
                     # a = match(rule.consequent, item, binding, deduction_rules, context, current_subject)
                     # print(' XX result', a)
 
-                if binding is not None and match(rule.consequent, item, binding, deduction_rules, context, current_subject) is not None:
-                    log.append("Confirms prediction from")
-                    log.append(item)
-                    return True
+                if binding is not None:
+                    if match(rule.consequent, item, binding, deduction_rules, context, current_subject) is not None:
+                        log.append("Confirms prediction from")
+                        log.append(item)
+                        return True
 
         return False
 
