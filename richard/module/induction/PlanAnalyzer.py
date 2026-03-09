@@ -37,7 +37,7 @@ class PlanAnalyzer:
         current_subject = sentence
 
         while True:
-            if self.predicted(current_subject, deduction_rules, context, log, sentence):
+            if self.predicted(current_subject, induction_rules, deduction_rules, context, log, sentence):
                 break
 
             log.append("Does not confirm prediction")
@@ -50,7 +50,7 @@ class PlanAnalyzer:
         if current_subject:
             log.append("Adding inference chain to data base")
             for link in reversed(chain):
-                self.update_db(link.atoms, log)
+                self.update_db(link.atoms, context, log)
             self.update_db(current_subject, context, log)
         else:
             log.append("No inference chain found - adding")
@@ -62,33 +62,44 @@ class PlanAnalyzer:
         print('---')
 
 
-    def predicted(self, current_subject: list, context: ExecutionContext, deduction_rules: list[InferenceRule], log: list[str], sentence):
+    def predicted(self, current_subject: list, induction_rules: list[InductionRule], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list[str], sentence):
         # is cd part of the known plans, goals or themes?
         if self.isa("goal", current_subject):
             # return self.relate(sentence, self.known_themes, self.init_rules, deduction_rules, context, log) \
             #     or self.relate(sentence, self.known_plans, self.sub_for, deduction_rules, context, log)
-            return self.relate(current_subject, self.known_themes, deduction_rules, deduction_rules, context, log, sentence) \
-                or self.relate(current_subject, self.known_plans, deduction_rules, deduction_rules, context, log, sentence)
+            return self.relate(current_subject, self.known_themes, induction_rules, deduction_rules, context, log, sentence) \
+                or self.relate(current_subject, self.known_plans, induction_rules, deduction_rules, context, log, sentence)
         elif self.isa("plan", current_subject):
             # return self.relate(sentence, self.known_goals, self.plans_for, deduction_rules, context, log)
-            return self.relate(current_subject, self.known_goals, deduction_rules, deduction_rules, context, log, sentence)
+            return self.relate(current_subject, self.known_goals, induction_rules, deduction_rules, context, log, sentence)
         elif self.isa("action", current_subject):
             # return self.relate(sentence, self.known_plans, self.instance_of, deduction_rules, context, log)
-            return self.relate(current_subject, self.known_plans, deduction_rules, deduction_rules, context, log, sentence)
+            return self.relate(current_subject, self.known_plans, induction_rules, deduction_rules, context, log, sentence)
         else:
             return None
 
 
-    def relate(self, current_subject: list, item_list: list, rule_list: list[InductionRule], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list[str], sentence):
+    def relate(self, current_subject: list, item_list: list, induction_rules: list[InductionRule], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list[str], sentence):
         # item_list contains known themes, goals, or plans
         # rule_list contains all rules that belong to the themes, goals or plans
         # each rule has an antecedent (rhs) and a consequent (lhs)
         # the function tries the match the cd (via the antecedent) with the known theme, goal, or plan (via the consequent)
-        bindings = {}
+        binding = {}
         for item in item_list:
-            for rule in rule_list:
-                bindings = match(rule.antecedent, current_subject, {}, context, sentence)
-                if bindings is not None and match(rule.consequent, item, bindings, context, deduction_rules, current_subject) is not None:
+            for rule in induction_rules:
+                binding = match(rule.antecedent, current_subject, {}, deduction_rules, context, sentence)
+                # print(' XX antecedent', rule.antecedent)
+                # print(' XX binding', binding)
+                # if binding is not None:
+                    # print()
+                    # print(' XX antecedent', rule.antecedent)
+                    # print(' XX consequent', rule.consequent)
+                    # print(' XX item', item)
+                    # print(' XX binding', binding)
+                    # a = match(rule.consequent, item, binding, deduction_rules, context, current_subject)
+                    # print(' XX result', a)
+
+                if binding is not None and match(rule.consequent, item, binding, deduction_rules, context, current_subject) is not None:
                     log.append("Confirms prediction from")
                     log.append(item)
                     return True
@@ -155,15 +166,19 @@ class PlanAnalyzer:
         context.solver.write_atoms(sentence)
 
         # add cd to the known themes, goals or plans
-        if self.isa("is", sentence):
-            log.append("---theme")
-            self.known_themes.append(sentence)
+        # if self.isa("is", sentence):
+        #     log.append("---theme")
+        #     self.known_themes.append(sentence)
         if self.isa("goal", sentence):
             self.known_goals.append(sentence)
-        if self.isa("plan", sentence):
+        elif self.isa("plan", sentence):
             self.known_plans.append(sentence)
+        else:
+            log.append("---theme")
+            # note: in MicroPAM only sentences with "is" are stored as themes (i.e. only the first sentence)
+            self.known_themes.append(sentence)
 
 
-    def isa(self, type: str, sentence: any):
-        predicate = sentence[0][0]
+    def isa(self, type: str, current_subject: any):
+        predicate = current_subject[0][0]
         return predicate == type

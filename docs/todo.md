@@ -4,6 +4,8 @@
 
 - I added `sentence` as an extra data source for `match`. This works for now, but I'm not confident it's the final solution
 
+- the `match` in `relate` matches perhaps by accident: I thought I had to bind the consequent, then replace the constants by variables. But omitting both seems to have the same effect. check this
+
 PAM: Willa was hungry
 - match inferences voor "She picked up the Michelin guide"
     - handle pronouns like "She" and "her"

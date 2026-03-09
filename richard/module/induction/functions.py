@@ -12,7 +12,9 @@ def match(pattern, current_subject, binding: dict, deduction_rules: list[Inferen
         PlainReadWriteModule(current_subject),
         InferenceModule(deduction_rules)
     ])
-    # print('sentence', current_subject)
+    # print()
+    # print('sentence', sentence)
+    # print('current_subject', current_subject)
     solver = Solver(model)
 
     results = solver.solve(pattern)

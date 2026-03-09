@@ -1,3 +1,23 @@
+## 2026-03-09
+
+Here's the last deduction:
+
+    goal(not(hungry(E1))) => hungry(E1).
+
+The result, `('hungry', '$4')` is then to be matched against a previous input. In this case it's `('hungry', '$2')` ("Willa was hungry"). But there are two problems:
+
+* `('hungry', '$2')` is not available from the current data sources I use in the matcher
+* '$2' is not equal to '$4'
+
+===
+
+Responses:
+
+* it is available from `known_themes` and this is made available as `item_list` in `relate`
+* the consequent is matched unbound, currently, and this allows binding using variables
+
+So the prediction now works, but some things may need to be done
+
 ## 2026-03-08
 
 This induction is a problem:
@@ -23,6 +43,18 @@ In MicroPAM, in antecedents like this, that have an extra condition:
               ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]], ['isa', 'restaurant', '?y']]
 
 the condition is a problem at the moment.
+
+===
+
+How does
+
+    ['goal', ['planner', ['person', ['name', ['Willa']]]], ['objective', ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [0]]]]]]]
+
+explain
+
+    ['is', ['actor', ['person', ['name', ['Willa']]]], ['state', ['hunger', ['val', [5]]]]],
+
+It's just another rule (theme).    
 
 ## 2026-03-07
 

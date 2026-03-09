@@ -66,7 +66,7 @@ class TestPAM(unittest.TestCase):
             output_buffer,
             dialog_context,
             plan_analyzer_dialog_content,
-            # PlainReadWriteModule()
+            PlainReadWriteModule()
         ])
 
 
