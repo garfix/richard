@@ -1,3 +1,85 @@
+## 2026-03-11
+
+In short, the approaches suggested by the LLM's:
+
+* use a table that matches `canonical representations` to mentions
+    * before the main query, resolve all mentions to canonical ids and query with these ids
+    * join the canonical table in the query on mentions and canonical ids
+    * the canonical form can also be seen as the `entity`
+* use a `same_as` table that links mentions
+    * join this table in the query, once for each clause
+    * expand each mention to all its identitical mentions ($2 or $4)
+    * use a resursive common table expression
+* use an `engine` that is specialized 
+    * in logical queries (datalog, souffle, triple store) 
+    * graph databases
+    * use logic programming (prolog)
+
+The approach I'll take will likely be:
+
+* create a `same_as` table, and store identity equalities there as you find them
+* create a lookup table in memory that maps each mention to all identical mentions
+* in each relation, specify which columns hold mentions
+* whenever an atom is solved, replace each mention in the atom with a list of identical mentions
+
+## 2026-03-10
+
+Now I know how to find that $2 = $4, I need to be able to store this in the database (and/or in memory) in a way that allows asking questions like 
+
+    Why did Willa pick up a Michelin guide?
+
+"Willa" will have $2 as identifier, but information about picking up the Micheling Guide is linked to $4. I know that $2 = $4, but how can I use that to answer the question?
+
+* Create a table `identity` that links two identifiers.
+* Read the contents of the table while answering questions, and pass the contents as unification operations (`$2 = $4`) before executing a command.
+
+    name(E1, 'Willa'), michelin_guide(E2), plan(pick_up(E1, E2))
+
+db
+
+    name('$2', 'Willa')
+    michelin_guide('$3')
+    plan(pick_up('$4', '$3'))
+
+Issues:
+
+* how does MicroPAM manage to do this?
+    * There is no "she" in MicroPAM. It's represented as `['actor', ['person', ['name', ['Willa']]]]`. That means that the pronoun resolution that would be done by PAM, is already done by the preprocessor in MicroPAM
+* is working with unification/multiple identities something that is supported by some databases?
+    * The LLM's ensured me that this is a common problem, and gave me several options. I'll work them out in in separate document
+* cases to hand:
+    * salt is a compound; sodium-chloride is an element; salt is sodium-chloride
+    * why did Willa pick up the Michelin Guide? `$2 = $4` is known
+* find ways to make it work
+    * insert `same_as` atoms: name(E1, 'Willa'), same_as(E1, E1alt), michelin_guide(E2), plan(pick_up(E1alt, E2))
+    * expand bindings after each atom: name(E1, 'Willa') # E1 yields $2, then postprocess the solve1 by creating an additional binding with $4 (Note: I'm not *just* using SQL, I can add smarts)
+
+Check this:
+
+    name(E1, 'Willa')
+        [{ E1: $2 }]
+        expand using same_as relations
+        [{ E1: $2 }, { E1: $4 }]
+    michelin_guide(E2)
+    plan(pick_up(E1, E2))
+
+This is interesting, but not solid. Once E1 is bound to an ID, it can't match entities with alternate ID's any more. 
+
+What works better is this. Before each `solve1`, expand the variable, and do a union over all the variant atoms. Continue with the first ID you happened to encounter.
+
+    name(E1, 'Willa')
+        [{ E1: $2 }]
+    michelin_guide(E2)
+    plan(pick_up(E1, E2))
+        in: [{ E1: $2 }]
+        expand: [{ E1: $2 }, { E1: $4 }]
+        do plan(pick_up(E1, E2))
+        contract: [{ E1: $2 }]
+
+I can also do the id-expansion directly in the SQL query, like this: `E1 in ($2, $4)`, and save on the number of queries.
+
+Note: I will need to make clear which relation columns contain mentions (skolem constants); I need to know which database values to treat as mentions.
+
 ## 2026-03-09
 
 Here's the last deduction:
