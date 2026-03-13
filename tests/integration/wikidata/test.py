@@ -92,7 +92,6 @@ class TestWikiData(unittest.TestCase):
 
         logger.log_no_tests()
         # logger.log_products()
-        # logger.log_stats()
 
         tester = DialogTester(self, tests, system, logger)
         tester.run()

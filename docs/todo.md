@@ -45,6 +45,10 @@ Nested sentences should not just be stored relationally, because the hierarchy m
 
 Everything called inference should be called deduction, to contrast it with induction.
 
+## ResultIterator
+
+The `ResultIterator` was an about that contained `n` results as an iterator, to avoid returning a super large amount of results. Do I need a replacement for it?
+
 ## output
 
 * create a separate predicate for producing output (like `output(type)`)

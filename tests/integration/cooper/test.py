@@ -181,7 +181,6 @@ class TestCooper(unittest.TestCase):
         # logger.log_all_tests()
         # logger.log_only_last_test()
         # logger.log_products()
-        # logger.log_stats()
 
         tester = DialogTester(self, tests1, system1, logger)
         tester.run()

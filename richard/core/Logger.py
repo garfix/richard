@@ -44,13 +44,6 @@ class Logger(SomeLogger):
         self.show_products = ALL
 
 
-    def log_stats(self):
-        """
-        Log statistics with the products
-        """
-        self.show_stats = True
-
-
     def is_active(self):
         """
         Should the current test be logged?
@@ -98,10 +91,6 @@ class Logger(SomeLogger):
 
             for product in result.products:
                 product.log(self)
-
-
-    def should_log_stats(self):
-        return self.is_active() and self.show_stats
 
 
     def __str__(self) -> str:

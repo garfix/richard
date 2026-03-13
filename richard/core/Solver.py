@@ -3,7 +3,6 @@ from richard.core.functions.terms import bind_variables, get_variables
 from richard.core.functions.results import tuple_results_to_bindings
 from richard.core.constants import DISJUNCTION
 from richard.entity.BindingResult import BindingResult
-from richard.entity.ResultIterator import ResultIterator
 from richard.interface.SomeModel import SomeModel
 from richard.interface.SomeSolver import SomeSolver
 from richard.entity.ExecutionContext import ExecutionContext
@@ -13,13 +12,11 @@ from richard.processor.semantic_composer.SemanticSentence import SemanticSentenc
 class Solver(SomeSolver):
 
     model: SomeModel
-    log_stats: bool
     stats: dict
     sentence: SemanticSentence
 
-    def __init__(self, model: SomeModel, sentence: SemanticSentence=None, log_stats: bool=False) -> None:
+    def __init__(self, model: SomeModel, sentence: SemanticSentence=None) -> None:
         self.model = model
-        self.log_stats = log_stats
         self.stats = defaultdict(lambda: 0)
         self.sentence = sentence
 
@@ -50,38 +47,13 @@ class Solver(SomeSolver):
         predicate = atom[0]
         unbound_arguments = atom[1:]
 
-        # print(atom)
-
-        # predicate stats
-        if self.log_stats:
-            if not predicate in self.stats:
-                self.stats[predicate] = 0
-            self.stats[predicate] += 1
-
         if predicate == DISJUNCTION:
             return self.solve_disjunction(atom[1], binding)
 
         arguments = bind_variables(unbound_arguments, binding)
         out_values = self.find_relation_values(predicate, arguments, binding)
 
-        if isinstance(out_values, ResultIterator):
-            return out_values
-
-        if isinstance(out_values, BindingResult):
-            completed_values = [binding | out_value for out_value in out_values]
-            return list(completed_values)
-
-        if isinstance(out_values, list):
-            if len(out_values) > 0:
-                if not isinstance(out_values[0], list) and not isinstance(out_values[0], tuple):
-                    raise Exception("The results of '" + predicate + "' should be lists or tuples")
-                if len(out_values[0]) != len(unbound_arguments):
-                    raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(out_values[0])) + " and should be " + str(len(unbound_arguments)))
-
-            results = tuple_results_to_bindings(predicate, arguments, out_values, binding)
-            return results
-
-        raise Exception("Predicate '" + predicate + "' should return a list")
+        return out_values
 
 
     def solve_disjunction(self, disjuncts: list[list[tuple]], binding: dict):
@@ -108,15 +80,20 @@ class Solver(SomeSolver):
             out_values = relation.query_function(arguments, context)
 
             if isinstance(out_values, BindingResult):
-                return out_values
-
-            if isinstance(out_values, ResultIterator):
-                if len(relations) > 1:
-                    raise Exception("A relation that returns a ResultIterator can't be used in combination with another relation by the same name: " + relation.predicate)
-                return out_values
+                # return out_values
+                completed_values = [binding | out_value for out_value in out_values]
+                return list(completed_values)
 
             if not isinstance(out_values, list):
                 raise Exception("The results of '" + predicate + "' should be a list")
+
+            if len(out_values) > 0:
+                if not isinstance(out_values[0], list) and not isinstance(out_values[0], tuple):
+                    raise Exception("The results of '" + predicate + "' should be lists or tuples")
+                if len(out_values[0]) != len(arguments):
+                    raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(out_values[0])) + " and should be " + str(len(unbound_arguments)))
+
+            out_values = tuple_results_to_bindings(predicate, arguments, out_values, binding)
 
             # deduplicate results
             for out_value in out_values:

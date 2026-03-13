@@ -118,6 +118,7 @@ class CoreModule(SomeModule):
         body = arguments[1]
 
         results = context.solver.solve(body)
+
         count = len(results)
 
         return [

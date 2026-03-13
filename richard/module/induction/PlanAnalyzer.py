@@ -100,7 +100,15 @@ class PlanAnalyzer:
                     # print(' XX result', a)
 
                 if binding is not None:
-                    if match(rule.consequent, item, binding, deduction_rules, context, current_subject) is not None:
+                    m = match(rule.consequent, item, binding, deduction_rules, context, current_subject)
+                    if m is not None:
+                        print()
+                        print(' XX antecedent', rule.antecedent)
+                        print(' XX consequent', rule.consequent)
+                        print(' XX item', item)
+                        print(' XX binding', binding)
+                        print(' XX result', m)
+
                         log.append("Confirms prediction from")
                         log.append(item)
                         return True

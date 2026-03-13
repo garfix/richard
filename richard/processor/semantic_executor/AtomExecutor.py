@@ -32,10 +32,6 @@ class AtomExecutor(SomeProcessor):
         products = []
         for sentence in sentences:
 
-
-            # log_stats=request.logger.should_log_stats()
-
-
             solver = Solver(self.model, sentence)
 
             # store the inferences in the sentence context

@@ -1,5 +1,5 @@
+from richard.entity.BindingResult import BindingResult
 from richard.entity.Relation import Relation
-from richard.entity.ResultIterator import ResultIterator
 from richard.entity.Variable import Variable
 from richard.interface.SomeDataSource import SomeDataSource
 from richard.interface.SomeModule import SomeModule
@@ -106,9 +106,8 @@ class SIRModule(SomeModule):
             return []
 
         number = results[0]['N']
-        response = ResultIterator([None, None], number)
 
-        return response
+        return BindingResult([{} for n in range(number)])
 
 
     def get_type(self, context: ExecutionContext, id: str, value):
