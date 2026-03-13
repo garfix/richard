@@ -12,12 +12,10 @@ from richard.processor.semantic_composer.SemanticSentence import SemanticSentenc
 class Solver(SomeSolver):
 
     model: SomeModel
-    stats: dict
     sentence: SemanticSentence
 
     def __init__(self, model: SomeModel, sentence: SemanticSentence=None) -> None:
         self.model = model
-        self.stats = defaultdict(lambda: 0)
         self.sentence = sentence
 
 

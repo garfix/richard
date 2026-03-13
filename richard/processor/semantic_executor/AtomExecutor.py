@@ -40,7 +40,7 @@ class AtomExecutor(SomeProcessor):
 
             bindings = solver.solve(sentence.semantics)
 
-            product = AtomExecutorProduct(bindings, solver.stats)
+            product = AtomExecutorProduct(bindings)
 
             # todo: is this right?
             products = [product]
