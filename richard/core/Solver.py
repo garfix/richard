@@ -33,9 +33,7 @@ class Solver(SomeSolver):
             result = []
             bindings = self.solve_single(atoms[0], binding)
             for b in bindings:
-                for r in self.solve_rest(atoms[1:], b):
-                    if not r in result:
-                        result.append(r)
+                result.extend(self.solve_rest(atoms[1:], b))
             return result
 
 
@@ -66,8 +64,7 @@ class Solver(SomeSolver):
         if len(relations) == 0:
             raise Exception("No relation called '" + predicate + "' available in the model")
 
-        rows = []
-        stringed_values = {}
+        deduplicated_bindings = {}
 
         for relation in relations:
             context = ExecutionContext(relation, self, self.sentence, self.model)
@@ -92,15 +89,12 @@ class Solver(SomeSolver):
 
                 # deduplicate results
                 for out_binding in out_bindings:
-                    stringed_value = str(out_binding)
-                    if stringed_value not in stringed_values:
-                        stringed_values[stringed_value] = out_binding
-                        rows.append(out_binding)
+                    deduplicated_bindings[str(out_binding)] = out_binding
 
             else:
                 raise Exception("The result of '" + predicate + "' should be a list")
 
-        return rows
+        return deduplicated_bindings.values()
 
 
     def write_atom(self, atom: tuple):
