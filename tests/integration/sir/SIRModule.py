@@ -107,7 +107,7 @@ class SIRModule(SomeModule):
 
         number = results[0]['N']
 
-        return BindingResult([{} for n in range(number)])
+        return BindingResult([{'A': n} for n in range(number)])
 
 
     def get_type(self, context: ExecutionContext, id: str, value):

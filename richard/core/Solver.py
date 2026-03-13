@@ -27,8 +27,6 @@ class Solver(SomeSolver):
 
 
     def solve_rest(self, atoms: list[tuple], binding: dict = {}) -> list[dict]:
-        if len(atoms) == 1:
-            return self.solve_single(atoms[0], binding)
         if len(atoms) == 0:
             return [binding]
         else:
@@ -49,9 +47,9 @@ class Solver(SomeSolver):
             return self.solve_disjunction(atom[1], binding)
 
         arguments = bind_variables(unbound_arguments, binding)
-        out_values = self.find_relation_values(predicate, arguments, binding)
+        out_bindings = self.find_relation_values(predicate, arguments, binding)
 
-        return out_values
+        return out_bindings
 
 
     def solve_disjunction(self, disjuncts: list[list[tuple]], binding: dict):
@@ -78,27 +76,29 @@ class Solver(SomeSolver):
             out_values = relation.query_function(arguments, context)
 
             if isinstance(out_values, BindingResult):
-                # return out_values
+
                 completed_values = [binding | out_value for out_value in out_values]
                 return list(completed_values)
 
-            if not isinstance(out_values, list):
-                raise Exception("The results of '" + predicate + "' should be a list")
+            elif isinstance(out_values, list):
 
-            if len(out_values) > 0:
-                if not isinstance(out_values[0], list) and not isinstance(out_values[0], tuple):
-                    raise Exception("The results of '" + predicate + "' should be lists or tuples")
-                if len(out_values[0]) != len(arguments):
-                    raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(out_values[0])) + " and should be " + str(len(unbound_arguments)))
+                if len(out_values) > 0:
+                    if not isinstance(out_values[0], list) and not isinstance(out_values[0], tuple):
+                        raise Exception("The results of '" + predicate + "' should be lists or tuples")
+                    if len(out_values[0]) != len(arguments):
+                        raise Exception("The number of arguments in the results of '" + predicate + "' is " + str(len(out_values[0])) + " and should be " + str(len(unbound_arguments)))
 
-            out_values = tuple_results_to_bindings(predicate, arguments, out_values, binding)
+                out_bindings = tuple_results_to_bindings(predicate, arguments, out_values, binding)
 
-            # deduplicate results
-            for out_value in out_values:
-                stringed_value = str(out_value)
-                if stringed_value not in stringed_values:
-                    stringed_values[stringed_value] = out_value
-                    rows.append(out_value)
+                # deduplicate results
+                for out_binding in out_bindings:
+                    stringed_value = str(out_binding)
+                    if stringed_value not in stringed_values:
+                        stringed_values[stringed_value] = out_binding
+                        rows.append(out_binding)
+
+            else:
+                raise Exception("The result of '" + predicate + "' should be a list")
 
         return rows
 
