@@ -74,6 +74,8 @@ class Solver(SomeSolver):
 
             if isinstance(out_values, BindingResult):
 
+                # note: only one predicate can have a BindingResult, at this time
+                # also: no validity checks are done, nor deduplication
                 completed_values = [binding | out_value for out_value in out_values]
                 return list(completed_values)
 
@@ -108,7 +110,7 @@ class Solver(SomeSolver):
         if len(get_variables(arguments)) > 0:
             raise Exception(f"'{predicate}' attempts to persist a variable: {arguments}")
 
-        # print(atom)
+        print(atom)
 
         for relation in relations:
             if relation.write_function is not None:

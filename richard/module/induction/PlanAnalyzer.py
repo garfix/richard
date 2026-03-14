@@ -83,37 +83,35 @@ class PlanAnalyzer:
         # item_list contains known themes, goals, or plans
         # rule_list contains all rules that belong to the themes, goals or plans
         # each rule has an antecedent (rhs) and a consequent (lhs)
-        # the function tries the match the cd (via the antecedent) with the known theme, goal, or plan (via the consequent)
+        # the function tries the match the current_subject (via the antecedent) with the known theme, goal, or plan (via the consequent)
         binding = {}
         for item in item_list:
             for rule in induction_rules:
                 binding = match(rule.antecedent, current_subject, {}, deduction_rules, context, sentence)
-                # print(' XX antecedent', rule.antecedent)
-                # print(' XX binding', binding)
-                # if binding is not None:
-                    # print()
-                    # print(' XX antecedent', rule.antecedent)
-                    # print(' XX consequent', rule.consequent)
-                    # print(' XX item', item)
-                    # print(' XX binding', binding)
-                    # a = match(rule.consequent, item, binding, deduction_rules, context, current_subject)
-                    # print(' XX result', a)
-
                 if binding is not None:
                     m = match(rule.consequent, item, binding, deduction_rules, context, current_subject)
                     if m is not None:
-                        print()
-                        print(' XX antecedent', rule.antecedent)
-                        print(' XX consequent', rule.consequent)
-                        print(' XX item', item)
-                        print(' XX binding', binding)
-                        print(' XX result', m)
+                        # print()
+                        # print(' XX antecedent', rule.antecedent)
+                        # print(' XX consequent', rule.consequent)
+                        # print(' XX item', item)
+                        # print(' XX binding', binding)
+                        # print(' XX result', m)
+
+                        # the equality between dialog variables that connect two sentences can now be stored
+                        self.store_identity(binding, m, context)
 
                         log.append("Confirms prediction from")
                         log.append(item)
                         return True
 
         return False
+
+
+    def store_identity(self, rule_binding: dict, item_binding: dict, context: ExecutionContext):
+        for variable in rule_binding:
+            if variable in item_binding:
+                context.solver.write_atom(('same_as', rule_binding[variable], item_binding[variable]))
 
 
     def try_inference(self, chain: list[Link], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list, sentence):
@@ -156,6 +154,8 @@ class PlanAnalyzer:
                 continue
             else:
                 self.try_check[hash] = True
+
+            # print('binding', binding)
 
             if binding is not None:
                 break

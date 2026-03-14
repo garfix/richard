@@ -12,7 +12,7 @@ class PlanAnalyzerDialogContext(SomeModule):
         super().__init__()
         self.data_source = SimpleFrameDataSource()
 
-        self.add_relation(Relation("goal_episode", formal_parameters=["event_id"], query_function=self.query, write_function=self.write))
+        self.add_relation(Relation("same_as", formal_parameters=["mention_1", "mention_2"], query_function=self.query, write_function=self.write))
 
 
     def query(self, arguments: list, context: ExecutionContext) -> list[list]:
