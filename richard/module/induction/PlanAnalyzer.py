@@ -84,22 +84,27 @@ class PlanAnalyzer:
         # rule_list contains all rules that belong to the themes, goals or plans
         # each rule has an antecedent (rhs) and a consequent (lhs)
         # the function tries the match the current_subject (via the antecedent) with the known theme, goal, or plan (via the consequent)
-        binding = {}
         for item in item_list:
             for rule in induction_rules:
-                binding = match(rule.antecedent, current_subject, {}, deduction_rules, context, sentence)
-                if binding is not None:
-                    m = match(rule.consequent, item, binding, deduction_rules, context, current_subject)
-                    if m is not None:
-                        # print()
-                        # print(' XX antecedent', rule.antecedent)
-                        # print(' XX consequent', rule.consequent)
-                        # print(' XX item', item)
-                        # print(' XX binding', binding)
-                        # print(' XX result', m)
+                subject_binding = match(rule.antecedent, current_subject, {}, deduction_rules, context, sentence)
+                if subject_binding is not None:
+                    item_binding = match(rule.consequent, item, subject_binding, deduction_rules, context, current_subject)
 
+                    # bound = bind_variables(rule.consequent, subject_binding)
+                    # log.append('')
+                    # log.append(f' XX antecedent: {rule.antecedent}')
+                    # log.append(f' XX current_subject: {current_subject}')
+                    # log.append(f' XX subject_binding: {subject_binding}')
+                    # log.append('')
+                    # log.append(f' XX consequent: {rule.consequent}')
+                    # log.append(f' XX bound consequent: {bound}')
+                    # log.append(f' XX item: {item}')
+                    # log.append(f' XX item_binding: {item_binding}')
+                    # log.append('')
+
+                    if item_binding is not None:
                         # the equality between dialog variables that connect two sentences can now be stored
-                        self.store_identity(binding, m, context)
+                        self.store_identity(subject_binding, item_binding, context)
 
                         log.append("Confirms prediction from")
                         log.append(item)
@@ -123,7 +128,7 @@ class PlanAnalyzer:
             # try all inference rules in the cd
             # if the cd matches a rule, add it to the chain
             # and return the bound lhs of the rule
-            current_subject = self.try_rules(last_link.atoms, last_link.rules[:], chain, deduction_rules, context, sentence)
+            current_subject = self.try_rules(last_link.atoms, last_link.rules[:], chain, deduction_rules, context, log, sentence)
             if current_subject is None:
                 log.append("No usable inferences from")
                 log.append(last_link.atoms)
@@ -138,7 +143,7 @@ class PlanAnalyzer:
         return None
 
 
-    def try_rules(self, current_subject, rules: list[InductionRule], chain: list[Link], deduction_rules: list[InferenceRule], context: ExecutionContext, sentence):
+    def try_rules(self, current_subject, rules: list[InductionRule], chain: list[Link], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list, sentence):
         # match cd with the rhs of each of the rules
         # if a match occurs, return a binding with the lhs of the rule
         last_rule = None
@@ -146,6 +151,12 @@ class PlanAnalyzer:
         while len(rules) > 0:
             last_rule = rules.pop()
             binding = match(last_rule.antecedent, current_subject, {}, deduction_rules, context, sentence)
+
+            # log.append('')
+            # log.append(f' XX antecedent: {last_rule.antecedent}')
+            # log.append(f' XX current_subject: {current_subject}')
+            # log.append(f' XX binding: {binding}')
+            # log.append('')
 
             # if the combination of antecedent and binding has happened before, skip it
             hash = hash_it([last_rule.antecedent, binding])
@@ -160,7 +171,7 @@ class PlanAnalyzer:
             if binding is not None:
                 break
 
-        if binding:
+        if binding is not None:
             # append the fact to the chain
             chain.append(Link(current_subject, rules))
             return bind_variables(last_rule.consequent, binding)

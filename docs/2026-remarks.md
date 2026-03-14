@@ -1,3 +1,38 @@
+## 2026-03-14
+
+So far, when matching a rule to an item, I forgot to use the subject binding. Now I need it, otherwise the rule matches an unrelated goal. As a consequence, the consequent now doesn't just magically match the sentence anymore.
+
+I now have
+
+    XX bound consequent: [('hungry', '$4')]
+    XX item: [('name', '$2', 'Willa'), ('hungry', '$2')]
+    XX item_binding: None
+
+I am trying to match `('hungry', '$4')` against `('hungry', '$2')` in the model. This doesn't work because `$4` and `$2` are values. If I can treat them as variables while solving the query, this problem is solved. But that won't be easy.
+
+===
+
+What if I _do_ allow variables in the PlainReadWriteModule? Then unification could solve the problem automatically. To try this I have to disable a number of checks that in fact check if there are no variables in the data :)
+
+I could create a dialog store, which is not a database, but allows facts with variables.
+
+===
+
+The problem is now not the "hungry" problem from above, but 
+
+    XX consequent: [('goal', [('prox', E1, E2)])]
+    XX bound consequent: [('goal', [('prox', E1, E2)])]
+    XX item: [('goal', [('prox', E1, 'restaurant')])]
+    XX item_binding: {'E2': 'restaurant'}
+
+the new prox goal (getting close to the car) matches an earlier goal of getting close to a restaurant. This can only be fixed by making more clear that we're talking about a car now.
+
+===
+
+Okay, I now have code that passes the plan analysis for the three Willa sentences, and produces the correct facts for the database.
+
+Time to clean up the mess.
+
 ## 2026-03-11
 
 In short, the approaches suggested by the LLM's:

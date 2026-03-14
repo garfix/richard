@@ -1,15 +1,12 @@
 ## todo
 
 - make $2 = $4. How? that depends on how it's going to be used.
-    - add a core `same_as` relation
     - mark relation columns as `mention` (discourse variable, skolem constant)
     - for every bound mention, use it in subsequent atoms by querying the alternative mentions as well
         - foreach (E1 = alternate mention) query, or
         - query with E1 in (alternate mentions)
 - cases to handle: 
     - salt is a compound; sodium-chloride is an element; salt is sodium-chloride
-
-- apply unification in Solver:solve()
 
 - I added `sentence` as an extra data source for `match`. This works for now, but I'm not confident it's the final solution
 

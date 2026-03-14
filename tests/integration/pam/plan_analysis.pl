@@ -1,3 +1,5 @@
+# She picked up the Michelin Guide
+
 # [['is', ['actor', '?x'], ['state', ['hunger', ['val', '?n']]]], ['pos-val', '?n']],
 # [['goal', ['planner', '?x'], ['objective', ['is', ['actor', '?x'], ['state', ['hunger', ['val', [0]]]]]]]]
 goal(not(hungry(E1))) => hungry(E1).
@@ -40,7 +42,21 @@ plan(take(S1, E1, E2)) => goal(possess(S1, E1, E2)).
 grasp(S1, E1, E2) => plan(take(S1, E1, E2)).
 
 
+# She got into her car
 
+# [['goal', ['planner', '?x'], ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]]],
+# [['use-vehicle-plan', ['planner', '?x']]]
+plan(use_vehicle(E1, 'car')) => goal(prox(E1, E2)).
 
+# [['use-vehicle-plan', ['planner', '?x'], ['object', '?y']]],
+# [['goal', ['planner', '?x'],
+#             ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]], ['isa', 'car', '?y']]
+goal(prox(E1, 'car')) => plan(use_vehicle(E1, 'car')).
 
-# read_plan() -> plan(read()) (?)
+# [['goal', ['planner', '?x'], ['objective', ['prox', ['actor', '?x'], ['location', '?y']]]]],
+# [['walk-plan', ['planner', '?x'], ['location', '?y']]]
+plan(walk(S1, E1, E2)) => goal(prox(E1, E2)).
+
+# [['walk-plan', ['planner', '?x'], ['location', '?y']]],
+# [['ptrans', ['actor', '?x'], ['object', '?x'], ['to', '?y']]]
+get_into(S1, E1, E2), car(E2) => plan(walk(S1, E1, 'car')).
