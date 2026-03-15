@@ -1,8 +1,10 @@
 from richard.core.functions.helper import hash_it
 from richard.core.functions.terms import bind_variables
+from richard.core.functions.variables import variablize
 from richard.entity.InferenceRule import InferenceRule
 from richard.entity.InductionRule import InductionRule
 from richard.entity.ExecutionContext import ExecutionContext
+from richard.entity.Variable import Variable
 from richard.module.induction.Link import Link
 from richard.module.induction.functions import match
 
@@ -88,23 +90,29 @@ class PlanAnalyzer:
             for rule in induction_rules:
                 subject_binding = match(rule.antecedent, current_subject, {}, deduction_rules, context, sentence)
                 if subject_binding is not None:
-                    item_binding = match(rule.consequent, item, subject_binding, deduction_rules, context, current_subject)
 
-                    # bound = bind_variables(rule.consequent, subject_binding)
-                    # log.append('')
-                    # log.append(f' XX antecedent: {rule.antecedent}')
-                    # log.append(f' XX current_subject: {current_subject}')
-                    # log.append(f' XX subject_binding: {subject_binding}')
-                    # log.append('')
-                    # log.append(f' XX consequent: {rule.consequent}')
-                    # log.append(f' XX bound consequent: {bound}')
-                    # log.append(f' XX item: {item}')
-                    # log.append(f' XX item_binding: {item_binding}')
-                    # log.append('')
+                    x = bind_variables(rule.consequent, subject_binding)
+                    x = variablize(x)
+
+                    item_binding = match(x, item, {}, deduction_rules, context, current_subject)
+                    # item_binding = match(rule.consequent, item, subject_binding, deduction_rules, context, current_subject)
 
                     if item_binding is not None:
                         # the equality between dialog variables that connect two sentences can now be stored
-                        self.store_identity(subject_binding, item_binding, context)
+
+                        # bound = bind_variables(rule.consequent, subject_binding)
+                        # log.append('')
+                        # log.append(f' XX antecedent: {rule.antecedent}')
+                        # log.append(f' XX current_subject: {current_subject}')
+                        # log.append(f' XX subject_binding: {subject_binding}')
+                        # log.append('')
+                        # log.append(f' XX consequent: {rule.consequent}')
+                        # log.append(f' XX bound consequent: {bound}')
+                        # log.append(f' XX item: {item}')
+                        # log.append(f' XX item_binding: {item_binding}')
+                        # log.append('')
+
+                        self.store_identity(subject_binding, item_binding, context, log)
 
                         log.append("Confirms prediction from")
                         log.append(item)
@@ -113,10 +121,17 @@ class PlanAnalyzer:
         return False
 
 
-    def store_identity(self, rule_binding: dict, item_binding: dict, context: ExecutionContext):
-        for variable in rule_binding:
-            if variable in item_binding:
-                context.solver.write_atom(('same_as', rule_binding[variable], item_binding[variable]))
+    def store_identity(self, rule_binding: dict, item_binding: dict, context: ExecutionContext, log: list):
+        for variable in item_binding:
+            if isinstance(item_binding[variable], str) and item_binding[variable][0:1] == "$":
+                log.append(f'SAME AS {variable}, {item_binding[variable]}')
+                context.solver.write_atom(('same_as', variable, item_binding[variable]))
+
+
+        # for variable in rule_binding:
+        #     if variable in item_binding:
+        #         log.append(f'SAME AS {rule_binding[variable]}, {item_binding[variable]}')
+        #         context.solver.write_atom(('same_as', rule_binding[variable], item_binding[variable]))
 
 
     def try_inference(self, chain: list[Link], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list, sentence):

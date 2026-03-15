@@ -20,3 +20,17 @@ def generate_variables(term: any, variable_generator: VariableGenerator, variabl
     else:
         # just the value
         return term
+
+def variablize(term):
+    # list
+    if isinstance(term, list):
+        return [variablize(arg) for arg in term]
+    # tuple
+    elif isinstance(term, tuple):
+        return tuple([variablize(arg) for arg in term])
+    # variable
+    elif isinstance(term, str) and term[0:1] == "$":
+        return Variable(term)
+    else:
+        # just the value
+        return term

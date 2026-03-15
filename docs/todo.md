@@ -1,5 +1,8 @@
 ## todo
 
+- the `same_as` relation is no longer stored
+    - reason: the variables are not made dynamic and everything is now `E1`
+
 - make $2 = $4. How? that depends on how it's going to be used.
     - mark relation columns as `mention` (discourse variable, skolem constant)
     - for every bound mention, use it in subsequent atoms by querying the alternative mentions as well

@@ -110,7 +110,7 @@ class Solver(SomeSolver):
         if len(get_variables(arguments)) > 0:
             raise Exception(f"'{predicate}' attempts to persist a variable: {arguments}")
 
-        print(atom)
+        # print(atom)
 
         for relation in relations:
             if relation.write_function is not None:
