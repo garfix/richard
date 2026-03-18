@@ -27,7 +27,7 @@ class TestAtomExecutor(unittest.TestCase):
         read_grammar = [
             { "syn": "s(E1) -> noun(E1) verb(V)", "sem": lambda noun, verb: noun + verb },
             { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: [('resolve_name', proper_noun, E1)] },
-            { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: token },
+            { "syn": "proper_noun(E1) -> /\\w+/", "sem": lambda token: token },
             { "syn": "verb(E1) -> 'walks'", "sem": lambda: [('walks', E1)] },
         ]
 
@@ -72,7 +72,7 @@ class TestAtomExecutor(unittest.TestCase):
                 "sem": lambda noun: noun
             },
             {
-                "syn": "s(E1) -> /\w+/ 'exist'",
+                "syn": "s(E1) -> /\\w+/ 'exist'",
                 "sem": lambda token: [],
             },
             {

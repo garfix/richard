@@ -192,7 +192,7 @@ def get_read_grammar():
         { "syn": "number(E1) -> 'eight'", "sem": lambda: 8 },
         { "syn": "number(E1) -> 'nine'", "sem": lambda: 9 },
         { "syn": "number(E1) -> 'ten'", "sem": lambda: 10 },
-        { "syn": "number(E1) -> /\d+/", "sem": lambda token: int(token) },
+        { "syn": "number(E1) -> /\\d+/", "sem": lambda token: int(token) },
         { "syn": "number(E1) -> number(E1) 'million'", "sem": lambda number: number * 1000000 },
 
         # pp
@@ -222,13 +222,13 @@ def get_read_grammar():
         { "syn": "noun(E1) -> 'continent'",     "sem": lambda: [('continent', E1)] },
         # plurals
         { "syn": "noun(E1) -> plural_noun(E1)'",    "sem": lambda plural_noun: plural_noun },
-        { "syn": "plural_noun(E1) -> /\w+/+'s'",    "sem": lambda token: [(token, E1)] },
-        { "syn": "plural_noun(E1) -> /\w+/+'ies'",  "sem": lambda token: [(token+'y', E1)] },
+        { "syn": "plural_noun(E1) -> /\\w+/+'s'",    "sem": lambda token: [(token, E1)] },
+        { "syn": "plural_noun(E1) -> /\\w+/+'ies'",  "sem": lambda token: [(token+'y', E1)] },
 
         { "syn": "noun(E1) -> proper_noun(E1)", "sem": lambda proper_noun: proper_noun },
 
         # proper noun
         # negative boost: make it less important than the noun
-        { "syn": "proper_noun(E1) -> /\w+/", "sem": lambda token: [('resolve_name', token, E1)], "boost": -1 },
+        { "syn": "proper_noun(E1) -> /\\w+/", "sem": lambda token: [('resolve_name', token, E1)], "boost": -1 },
 
     ]
