@@ -1,3 +1,9 @@
+## 2026-03-18
+
+Storing facts using variables is still a very bad idea. And I didn't need it to analyze the sentences. The confusion aroused because Kamp en Reyle use `x = y` when they talk about discourse referents. They mean constants, not variables, and unifying constants this way confused me a lot. It's a kind of logic i've not seen before.
+
+
+
 ## 2026-03-14
 
 So far, when matching a rule to an item, I forgot to use the subject binding. Now I need it, otherwise the rule matches an unrelated goal. As a consequence, the consequent now doesn't just magically match the sentence anymore.

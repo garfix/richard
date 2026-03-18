@@ -1,26 +1,17 @@
 ## todo
 
-- the `same_as` relation is no longer stored
-    - reason: the variables are not made dynamic and everything is now `E1`
-
 - make $2 = $4. How? that depends on how it's going to be used.
     - mark relation columns as `mention` (discourse variable, skolem constant)
     - for every bound mention, use it in subsequent atoms by querying the alternative mentions as well
         - foreach (E1 = alternate mention) query, or
         - query with E1 in (alternate mentions)
-- cases to handle: 
-    - salt is a compound; sodium-chloride is an element; salt is sodium-chloride
 
 - I added `sentence` as an extra data source for `match`. This works for now, but I'm not confident it's the final solution
 
 - the `match` in `relate` matches perhaps by accident: I thought I had to bind the consequent, then replace the constants by variables. But omitting both seems to have the same effect. check this
 
-PAM: Willa was hungry
-- match inferences voor "She picked up the Michelin guide"
-    - handle pronouns like "She" and "her"
-    - hoe houd ik de delen van de zin bijeen? tree structure?
+## PAM
 
-PAM
 - de deducties van PAM moeten een mate van onzekerheid hebben; het zijn geen zekerheden; hoe streep je hypothesen af?
 
 ## context

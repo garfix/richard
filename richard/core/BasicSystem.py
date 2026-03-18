@@ -8,6 +8,8 @@ from richard.interface.SomeLogger import SomeLogger
 from richard.interface.SomeModel import SomeModel
 from richard.interface.SomeParser import SomeParser
 from richard.interface.SomeSystem import SomeSystem
+from richard.processor.parser.BasicParserProduct import BasicParserProduct
+from richard.processor.semantic_composer.SemanticComposerProduct import SemanticComposerProduct
 from .Model import Model
 
 
@@ -36,9 +38,14 @@ class BasicSystem(SomeSystem):
         self.logger = logger
 
 
-    def enter(self, request: SentenceRequest):
+    def enter(self, request: SentenceRequest) -> ProcessResult|None:
         if not self.parser:
             return None
+
+        return self.parse(request)
+
+
+    def parse(self, request: SentenceRequest):
 
         parse_result = self.parser.process(request)
         if parse_result.error_type != "":
@@ -51,22 +58,40 @@ class BasicSystem(SomeSystem):
             return parse_result
 
         for parse_product in parse_result.products:
-            composer_result = self.composer.process(parse_product)
-            if composer_result.error_type != "":
-                return self.log_error(composer_result)
+            result = self.compose(parse_product)
+            if result is not None:
+                return result
 
-            if self.logger:
-                self.logger.add_process_result(self.composer, composer_result)
+        return None
 
-            if not self.executor:
-                return composer_result
 
-            for composer_product in composer_result.products:
-                executor_result = self.executor.process(composer_product)
-                if executor_result.error_type != "":
-                    return self.log_error(executor_result)
+    def compose(self, parse_product: BasicParserProduct):
 
-                return executor_result
+        composer_result = self.composer.process(parse_product)
+        if composer_result.error_type != "":
+            return self.log_error(composer_result)
+
+        if self.logger:
+            self.logger.add_process_result(self.composer, composer_result)
+
+        if not self.executor:
+            return composer_result
+
+        for composer_product in composer_result.products:
+            result = self.execute(composer_product)
+            if result is not None:
+                return result
+
+        return None
+
+
+    def execute(self, composer_product: SemanticComposerProduct):
+
+        executor_result = self.executor.process(composer_product)
+        if executor_result.error_type != "":
+            return self.log_error(executor_result)
+
+        return executor_result
 
 
     def log_error(self, result: ProcessResult):
