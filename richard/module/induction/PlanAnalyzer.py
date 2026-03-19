@@ -27,10 +27,11 @@ class PlanAnalyzer:
 
     def justify(self, sentence: list[tuple], induction_rules: list[InductionRule], deduction_rules: list[InferenceRule], context: ExecutionContext):
 
-        print('---')
-
         log = []
 
+        log.append('')
+        log.append('---')
+        log.append('')
         log.append("Trying to explain")
         log.append(sentence)
 
@@ -58,10 +59,8 @@ class PlanAnalyzer:
             log.append("No inference chain found - adding")
             self.update_db(sentence, context, log)
 
-        for line in log:
-            print(line)
-
-        print('---')
+        # for line in log:
+        #     print(line)
 
 
     def predicted(self, current_subject: list, induction_rules: list[InductionRule], deduction_rules: list[InferenceRule], context: ExecutionContext, log: list[str], sentence):

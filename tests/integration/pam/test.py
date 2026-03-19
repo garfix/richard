@@ -192,24 +192,30 @@ class TestPAM(unittest.TestCase):
             # ],
         ]
 
+        solver = Solver(model)
+
         logger.log_no_tests()
-        # logger.log_all_tests()
+        logger.log_all_tests()
         # logger.log_products()
 
-        try:
 
-            for session in tests:
+        for i, session in enumerate(tests):
+
+            try:
+
                 tester = DialogTester(self, session, system, logger)
                 tester.run()
 
-                # clear
-                dialog_context.clear()
-                plan_analyzer_dialog_content.clear()
-                db = PAMDB()
-                facts.ds = db
-        except:
-            pass
+            except Exception as e:
+                print(e)
 
-        solver = Solver(model)
-        self.assertEqual(solver.solve([('same_as', Variable('E1'), Variable('E2'))]), [{'E1': '$4', 'E2': '$2'}, {'E1': '$7', 'E2': '$4'}])
+            if i == 0:
+                self.assertEqual(solver.solve([('same_as', Variable('E1'), Variable('E2'))]), [{'E1': '$4', 'E2': '$2'}, {'E1': '$7', 'E2': '$4'}])
+
+            # clear
+            dialog_context.clear()
+            plan_analyzer_dialog_content.clear()
+            db = PAMDB()
+            facts.ds = db
+
 
