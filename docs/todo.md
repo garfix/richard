@@ -1,5 +1,9 @@
 ## todo
 
+- answer the question
+
+- what is a good hierarchical data structure?
+
 - make $2 = $4. How? that depends on how it's going to be used.
     - mark relation columns as `mention` (discourse variable, skolem constant)
     - for every bound mention, use it in subsequent atoms by querying the alternative mentions as well
@@ -19,6 +23,10 @@
 Work out context in inference rules:
 * syntax: `name{ rule. rule. }`
 * application: the rules must only be applied when context name is active
+
+## Syntax
+
+I want to simplify the structure of quantifiers. Maybe I made them needlessly complicated to make sure they served as a scoping mechanism. But scoping can be done in a different way; a way that's simpler to comprehend. Look at different representation forms to see if they can simplify things.
 
 ## Second order sentences
 

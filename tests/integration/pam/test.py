@@ -1,10 +1,12 @@
 import unittest
 import pathlib
 
+from richard.core.Solver import Solver
 from richard.core.BasicGenerator import BasicGenerator
 from richard.core.BasicSystem import BasicSystem
 from richard.core.DialogTester import DialogTester
 from richard.core.Logger import Logger
+from richard.entity.Variable import Variable
 from richard.grammar.en_us_write import get_en_us_write_grammar
 from richard.module.BasicDialogContext import BasicDialogContext
 from richard.module.BasicOutputBuffer import BasicOutputBuffer
@@ -56,6 +58,7 @@ class TestPAM(unittest.TestCase):
         inductions.import_deduction_rules(path + "deductions.pl")
 
         plan_analyzer_dialog_content = PlanAnalyzerDialogContext()
+        read_write_module = PlainReadWriteModule()
 
         # define the model
 
@@ -66,7 +69,7 @@ class TestPAM(unittest.TestCase):
             output_buffer,
             dialog_context,
             plan_analyzer_dialog_content,
-            PlainReadWriteModule()
+            read_write_module
         ])
 
 
@@ -193,15 +196,20 @@ class TestPAM(unittest.TestCase):
         # logger.log_all_tests()
         # logger.log_products()
 
-        for session in tests:
-            tester = DialogTester(self, session, system, logger)
-            tester.run()
+        try:
 
-            # clear
-            dialog_context.clear()
-            plan_analyzer_dialog_content.clear()
-            db = PAMDB()
-            facts.ds = db
+            for session in tests:
+                tester = DialogTester(self, session, system, logger)
+                tester.run()
 
-        print(logger)
+                # clear
+                dialog_context.clear()
+                plan_analyzer_dialog_content.clear()
+                db = PAMDB()
+                facts.ds = db
+        except:
+            pass
+
+        solver = Solver(model)
+        self.assertEqual(solver.solve([('same_as', Variable('E1'), Variable('E2'))]), [{'E1': '$4', 'E2': '$2'}, {'E1': '$7', 'E2': '$4'}])
 

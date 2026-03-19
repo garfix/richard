@@ -2,7 +2,9 @@
 
 Storing facts using variables is still a very bad idea. And I didn't need it to analyze the sentences. The confusion aroused because Kamp en Reyle use `x = y` when they talk about discourse referents. They mean constants, not variables, and unifying constants this way confused me a lot. It's a kind of logic i've not seen before.
 
+===
 
+Looking into knowledge structures (see knowledge-structures.md). Interesting find: [AMR](https://en.wikipedia.org/wiki/Abstract_Meaning_Representation)
 
 ## 2026-03-14
 
