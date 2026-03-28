@@ -1,4 +1,4 @@
-**This project is discontinued - succeeded by Vrel**
+**This project is discontinued - succeeded by [Vrel](https://github.com/garfix/vrel)**
 
 A Natural Language Understanding and Execution library for Python
 
