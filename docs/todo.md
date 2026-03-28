@@ -1,8 +1,23 @@
 ## todo
 
 - answer the question
+    - wat vinden we in de literatuur over het beantwoorden van vragen in de CD context?
 
-- what is a good hierarchical data structure?
+- what is a good hierarchical semantic structure?
+    - specs
+        - should allow accessing relational database just as easy as current
+        - should allow storing facts and rules in the database (some of whom relational)
+        - should make encode quantification manually easier than the current system
+        - should allow quantification in questions, statements and commands
+        - should represent nested structures
+        - should allow flattening of nested structures for database query purposes
+        - should allow passing an atom as a unit (why abc(A, B, C))
+    - options
+        - AMR - https://github.com/amrisi/amr-guidelines/blob/master/amr.md
+        - create a class instance for an atom for easier atom modification, like adding an argument; also much better for portability
+    - consequences
+        - add an in-between step between parsing and semantic analysis: quantification
+        - add an extra action that flattens the data structure for database query purposes
 
 - make $2 = $4. How? that depends on how it's going to be used.
     - mark relation columns as `mention` (discourse variable, skolem constant)

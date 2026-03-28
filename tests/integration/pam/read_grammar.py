@@ -40,7 +40,7 @@ def get_read_grammar():
         },
         {
             "syn": "question() -> 'why' 'did' clause(C1)",
-            "sem": lambda clause: [('intent_explanation', clause)],
+            "sem": lambda clause: [('intent_explanation', clause, C1)],
         },
         # declarative
         {
@@ -298,11 +298,11 @@ def get_read_grammar():
 
         # proper noun
         {
-            "syn": "proper_noun(E1) -> /\w+/",
+            "syn": "proper_noun(E1) -> /\\w+/",
             "sem": lambda token: [('name', E1, token)],
         },
         {
-            "syn": "proper_noun(E1) -> 'the' /\w+/",
+            "syn": "proper_noun(E1) -> 'the' /\\w+/",
             "sem": lambda token: [('name', E1, 'the ' + token)],
         },
         # nbar

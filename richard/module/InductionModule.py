@@ -103,3 +103,12 @@ class InductionModule(SomeModule):
             [None]
         ]
 
+
+    def explain(self, arguments: list, context: ExecutionContext) -> list[list]:
+        atoms = arguments[0]
+
+        self.plan_analyzer.justify(atoms, self.plan_analyzer_rules, self.deduction_rules, context)
+
+        return [
+            [None]
+        ]

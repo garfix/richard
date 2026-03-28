@@ -1,4 +1,3 @@
-from collections import defaultdict
 from richard.core.functions.terms import bind_variables, get_variables
 from richard.core.functions.results import tuple_results_to_bindings
 from richard.core.constants import DISJUNCTION
@@ -110,7 +109,7 @@ class Solver(SomeSolver):
         if len(get_variables(arguments)) > 0:
             raise Exception(f"'{predicate}' attempts to persist a variable: {arguments}")
 
-        # print(atom)
+        # print("WRITE", atom)
 
         for relation in relations:
             if relation.write_function is not None:

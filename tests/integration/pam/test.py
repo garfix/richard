@@ -195,7 +195,7 @@ class TestPAM(unittest.TestCase):
         solver = Solver(model)
 
         logger.log_no_tests()
-        logger.log_all_tests()
+        # logger.log_all_tests()
         # logger.log_products()
 
 

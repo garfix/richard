@@ -1,3 +1,182 @@
+## 2026-02-28
+
+I wrote research/amr.md
+
+## 2026-02-26
+
+    AMR example:
+
+    (w / want-01
+    :ARG0 (j / person :name "John")
+    :ARG1 (d / do-02
+                :ARG0 (n / person :name "Jane")
+                :ARG1 (h / homework)))
+
+    applied to:
+
+        ('name', $10, 'Willa')
+        ('michelin_guide', $11)
+        ('pick_up', $9, $10, $11)
+
+    becomes, perhaps:
+        
+        ('pick_up', $9, {
+            id: $10,
+            preds: [('name', $10, 'Willa')]
+        }, {
+            preds: [('michelin_guide', $11)]
+        })
+
+===
+
+AMR is really really cool. But will it work when data is to be pulled from the database, applying several quantifiers?
+
+"What are the continents no country in which contains more than two cities whose population exceeds 1 million?"
+
+    [
+        ('intent_list', '$48', 
+            [
+                ('continent', $48)
+                ('none', 
+                    [
+                        ('country', $49)
+                        ('in', $49, $48)
+                        ('det_greater_than', 
+                            [
+                                ('city', $50)
+                                ('has_population', $50, $51)
+                                ('let', $52, 1000000)
+                                ('greater_than', $51, $52)
+                                ('contains', $49, $50)
+                            ], 2)
+                    ])
+            ])
+    ]
+
+Thanks again to Anthropic's Claude:
+
+(w / amr-unknown
+   :domain (c / continent
+              :polarity -
+              :condition (h / have-condition
+                            :ARG0 c
+                            :ARG1 (n / country
+                                     :location c
+                                     :quant (m / more-than :value 2)
+                                     :ARG0-of (t / contain-01
+                                                  :ARG1 (ci / city
+                                                            :ARG0-of (e / exceed-01
+                                                                        :ARG1 1000000)))))))
+
+Every child has 2 parents:
+
+    (h / have-rel-role-91
+    :ARG0 (c / child
+                :quant (e / every))
+    :ARG1 (p / person
+                :quant 2)
+    :ARG2 "parent")
+
+    SELECT c.name
+    FROM continent c
+    WHERE NOT EXISTS (
+    SELECT n.id FROM country n
+    WHERE n.location = c.id
+        AND (
+        SELECT COUNT(*) FROM city ci
+        JOIN population pop ON ci.id = pop.city_id
+        WHERE ci.country = n.id
+            AND pop.value > 1000000
+        ) > 2
+    )
+
+If I call `has` with to NP's, how to I get it to to a quantification right? Up until now the quantification is done by the parser. What if I want to do it in the relation?
+
+- make the relation produce a relational structure
+    - disadvantage: you have to do this extra work *in every relation*
+- add an in-between step between parsing and semantic analysis: quantification
+
+===
+
+I read the paper "Abstract Meaning Representation for Sembanking". AMR is still cool, but I think maybe the way it handles questions is not handy, and the article says it doesn't handle articles like "a" and "the". That could also be problematic.
+
+For now I'll keep the stance that I'll develop a formalism that borrows from AMR, but will not adhere strictly.
+
+I looked at UMR a bit, but it doesn't seem to be a big thing.
+
+===
+
+             
+
+
+## 2026-02-25
+
+Option: pass in the variable of the main event.
+
+intent_explanation(Question, C1) :-
+    explain(Question, C1, Explanation), store(output_type('question', Explanation)).
+
+Then find the event's atom by first argument, and ignore the other atoms. Very crude, and breaks easily.
+
+===
+
+    {
+        isa: pick_up
+        {
+            sub {
+                name: "Willa"
+            }
+            obj {
+                isa: michelin_guide
+            }
+        }
+    }
+
+
+## 2026-02-24
+
+I found an interesting bit of information:
+
+"PAM flags those requests that provide explanations as being WHY requests". Inside ... (p.172)  While this is about deciding when to stop making inferences, it can also tell an answerer when a fact can be used as an answer to a **why** question.
+
+===
+
+The problem with
+
+    ('intent_explanation', [
+        ('name', $10, 'Willa')
+        ('michelin_guide', $11)
+        ('pick_up', $9, $10, $11)
+    ])
+
+is that the explanation should be aimed at the verb, not the np's. In this predicate logic representation you can't tell the difference.
+
+## 2026-03-19
+
+Trying to answer "Why did Willa pick up a Michelin guide?" with "Because she wanted to be not hungry."
+
+The question:
+
+    ('intent_explanation', [
+        ('name', $10, 'Willa')
+        ('michelin_guide', $11)
+        ('pick_up', $9, $10, $11)
+    ])
+
+The answer must be found in following the path through:
+
+    [('plan', [('take', '$3', '$4', '$5')])]
+    [('goal', [('possess', '$3', '$4', '$5')])]
+    [('plan', [('read', '$3', '$4', '$5')])]
+    [('goal', [('know', '$4', [('fact', [('distance', 'restaurant')])])])]
+    [('goal', [('prox', '$4', 'restaurant')])]
+    [('plan', [('do_restaurant', '$4', 'restaurant')])]
+
+    (*) note: this fact was not written to the database
+    [('goal', [('not', [('hungry', '$4')])])]
+
+Currently the plans and goals are not connected.
+
 ## 2026-03-18
 
 Storing facts using variables is still a very bad idea. And I didn't need it to analyze the sentences. The confusion aroused because Kamp en Reyle use `x = y` when they talk about discourse referents. They mean constants, not variables, and unifying constants this way confused me a lot. It's a kind of logic i've not seen before.
