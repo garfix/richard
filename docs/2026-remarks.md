@@ -2,6 +2,18 @@
 
 I wrote research/amr.md
 
+===
+
+I will start a new project, because there are too many things that have to change:
+
+* major syntax rules changes based on AMR
+* the atom itself will change
+* names will always be part of entities with types
+* create a global variable generator
+* dialog variables should look different from dialog constants
+
+It will also be in Python, and I will just copy code from Richard into it. But it's just easier to start over.
+
 ## 2026-02-26
 
     AMR example:

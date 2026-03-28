@@ -1,3 +1,5 @@
+**This project is discontinued - succeeded by Vrel**
+
 A Natural Language Understanding and Execution library for Python
 
 This library is able to turn a sentence in any ordinary human language directly into executable Python code. It can be used as answering engine, a command executor, or to join me in my study to explore what is possible with a natural language interface.
@@ -14,6 +16,9 @@ Note! While still on version 0 I will introduce backward-incompatible changes as
 
 ## Versions
 
+* current March 2025
+    * analyzing a few sentence from PAM
+    * major rewrites of all parts of the system
 * 0.4 February 2025
     * storing facts and learning rules
     * integrate tokenizer into parser to enable morphological analysis
